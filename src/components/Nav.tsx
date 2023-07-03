@@ -1,5 +1,6 @@
 // Components
 import {
+  Avatar,
   Box,
   Button,
   Container,
@@ -12,7 +13,9 @@ import {
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
-import ThemeButton from "./ThemeButton";
+
+// Authentication
+import { useAuthContext } from "@/contexts/AuthContext";
 
 function NavLink({
   href,
@@ -30,7 +33,6 @@ function NavLink({
       as={NextLink}
       variant={pathname === href ? "solid" : variant}
       href={href}
-      mx={2}
     >
       {children}
     </Button>
@@ -38,6 +40,7 @@ function NavLink({
 }
 
 export default function Nav({ type }: { type?: string }) {
+  const { user, logout } = useAuthContext();
   const pathname = usePathname();
 
   return (
@@ -96,10 +99,18 @@ export default function Nav({ type }: { type?: string }) {
         borderLeft={"1px solid"}
         borderColor={useColorModeValue("gray.200", "gray.700")}
       >
-        <NavLink href={"/login"} pathname={pathname}>
-          Login
-        </NavLink>
-        <ThemeButton />
+        {!user ? (
+          <NavLink href={"/login"} pathname={pathname}>
+            Login
+          </NavLink>
+        ) : (
+          <>
+            <NavLink href={"/platform/home"} pathname={pathname}>
+              Control Panel
+            </NavLink>
+          </>
+        )}
+        {/* <Avatar size={"md"} src="/images/avatar.jpg" mx={2} /> */}
       </Flex>
     </Flex>
   );

@@ -8,20 +8,29 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 
+import { AuthProvider } from "@/contexts/AuthContext";
+
 // Theme
 import PageProgress from "@/components/PageProgress";
 import theme from "@/theme";
+import { NextPage } from "next";
 
-export default function App({ Component, pageProps }: AppProps) {
+type NextPageWithLayout = NextPage & {
+  getLayout?: (page: React.ReactElement) => React.ReactNode;
+};
+
+export default function App({ Component, pageProps }: any) {
+  const getLayout = Component.getLayout || ((page: any) => page)
+
   return (
     <>
       <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-      <>
+      <AuthProvider>
         <ChakraProvider>
           <PageProgress />
-          <Component {...pageProps} />
+          {getLayout(<Component {...pageProps} />)}
         </ChakraProvider>
-      </>
+      </AuthProvider>
     </>
   );
 }

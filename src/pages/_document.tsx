@@ -7,13 +7,12 @@ import AuthProvider from "@/contexts/AuthContext";
 export default function Document() {
   return (
     <Html lang="en">
-      <Head />
-      <AuthProvider>
+      <Head>
         <body>
           <Main />
           <NextScript />
         </body>
-      </AuthProvider>
+      </Head>
     </Html>
   );
 }

@@ -9,6 +9,7 @@ import {
 } from "@chakra-ui/react";
 
 import NextLink from "next/link";
+import ThemeButton from "./ThemeButton";
 
 export default function Footer() {
   return (
@@ -17,8 +18,8 @@ export default function Footer() {
         as="footer"
         position={"sticky"}
         top={0}
-        flexDir={"column"}
-        w={"100vw"}
+        flexDir={"row"}
+        w={"100%"}
         h={"6rem"}
         border={"1px solid"}
         borderColor={useColorModeValue("gray.300", "gray.700")}
@@ -28,6 +29,7 @@ export default function Footer() {
         justify={"center"}
       >
         <Text>© EVE Labs LLC. All rights reserved.</Text>
+        <ThemeButton />
       </Flex>
     </>
   )

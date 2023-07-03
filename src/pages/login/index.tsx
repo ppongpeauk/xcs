@@ -1,5 +1,7 @@
 // Next
 import Head from "next/head";
+import { usePathname } from "next/navigation";
+import { useRouter } from "next/router";
 
 // Components
 import Footer from "@/components/Footer";
@@ -39,14 +41,39 @@ import NextLink from "next/link";
 import { FaUser } from "react-icons/fa";
 import { RiLockPasswordFill } from "react-icons/ri";
 
+// Authentication
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { useContext } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
+
 export default function Login() {
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const auth = getAuth();
+  const [user, loading, error] = useAuthState(auth);
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
+
+  function redirectOnAuth() {
+    // Check to see if there are any redirect query parameters
+    // otherwise, redirect to the platform home
+    if (router.query.redirect) {
+      router.push(router.query.redirect as string);
+    } else {
+      router.push("/platform/home");
+    }
+  }
+
+  if (user) {
+    redirectOnAuth();
+  }
 
   return (
     <>
       <Head>
-        <title>test!</title>
+        <title>EVE XCS | Login</title>
       </Head>
       <Nav />
       <Modal onClose={onClose} isOpen={isOpen} isCentered>
@@ -117,27 +144,70 @@ export default function Login() {
               <br />
               <Box px={[0, 16]}>
                 <Formik
-                  initialValues={{ username: "", password: "" }}
+                  initialValues={{ email: "", password: "" }}
                   onSubmit={(values, actions) => {
-                    setTimeout(() => {
-                      // alert(JSON.stringify(values, null, 2));
-                      toast({
-                        title: "Incorrect username or password.",
-                        description: "Please try again.",
-                        status: "error",
-                        duration: 5000,
-                        isClosable: true,
+                    signInWithEmailAndPassword(
+                      auth,
+                      values.email,
+                      values.password
+                    )
+                      .then(() => {
+                        redirectOnAuth();
+                      })
+                      .catch((error) => {
+                        const errorCode = error.code;
+                        let errorMessage = error.message;
+                        switch (errorCode) {
+                          case "auth/invalid-email":
+                            errorMessage = "The email address is invalid.";
+                            break;
+                          case "auth/invalid-password":
+                            errorMessage = "The password is invalid.";
+                            break;
+                          case "auth/user-disabled":
+                            errorMessage =
+                              "The user corresponding to the given email has been disabled.";
+                            break;
+                          case "auth/user-not-found":
+                            errorMessage =
+                              "The user corresponding to the given email does not exist.";
+                            break;
+                          case "auth/wrong-password":
+                            errorMessage =
+                              "Incorrect email or password. Please try again.";
+                            break;
+                          default:
+                            errorMessage = "An unknown error occurred.";
+                        }
+                        toast({
+                          description: errorMessage,
+                          status: "error",
+                          duration: 5000,
+                          isClosable: true,
+                        });
+                      })
+                      .finally(() => {
+                        actions.setSubmitting(false);
                       });
-                      actions.setSubmitting(false);
-                    }, 1000);
+                    // setTimeout(() => {
+                    //   // alert(JSON.stringify(values, null, 2));
+                    //   toast({
+                    //     title: "Incorrect email or password.",
+                    //     description: "Please try again.",
+                    //     status: "error",
+                    //     duration: 5000,
+                    //     isClosable: true,
+                    //   });
+                    //   actions.setSubmitting(false);
+                    // }, 1000);
                   }}
                 >
                   {(props) => (
                     <Form>
-                      <Field name="username">
+                      <Field name="email">
                         {({ field, form }: any) => (
                           <FormControl>
-                            <FormLabel>Username</FormLabel>
+                            <FormLabel>Email</FormLabel>
                             <InputGroup mb={2}>
                               <InputLeftElement pointerEvents="none">
                                 <FaUser color="gray.300" />
@@ -145,8 +215,9 @@ export default function Login() {
                               <Input
                                 {...field}
                                 type="text"
-                                placeholder="Username"
+                                placeholder="Email"
                                 variant={"filled"}
+                                required={true}
                               />
                             </InputGroup>
                           </FormControl>
@@ -165,6 +236,7 @@ export default function Login() {
                                 type="password"
                                 placeholder="Password"
                                 variant={"filled"}
+                                required={true}
                               />
                             </InputGroup>
                           </FormControl>
