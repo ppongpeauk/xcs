@@ -8,7 +8,6 @@ export default function Document() {
   return (
     <Html lang="en">
       <Head />
-
       <AuthProvider>
         <body>
           <Main />
