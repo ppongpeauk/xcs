@@ -1,5 +1,8 @@
-import Footer from "@/components/Footer";
+// Next
+import Head from "next/head";
+
 // Components
+import Footer from "@/components/Footer";
 import Nav from "@/components/Nav";
 import Section from "@/components/section";
 import {
@@ -31,10 +34,10 @@ import {
 } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
 import NextLink from "next/link";
+
+// Icons
 import { FaUser } from "react-icons/fa";
 import { RiLockPasswordFill } from "react-icons/ri";
-
-import Head from "next/head";
 
 export default function Login() {
   const { isOpen, onOpen, onClose } = useDisclosure();
