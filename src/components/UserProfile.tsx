@@ -70,7 +70,7 @@ export default function Profile({ username }: { username?: string }) {
         </title>
       </Head>
       <Container display={"flex"} maxW={"full"} px={8} pt={8}>
-        <Box pos={"relative"} width={"min-content"} minH={"100%"}>
+        <Box pos={"relative"} width={["full", "min-content"]} minH={"100%"}>
           {/* Badge */}
           <Flex
             w={["100%", "300px"]}
@@ -99,7 +99,7 @@ export default function Profile({ username }: { username?: string }) {
             />
             {/* Avatar */}
             <Box
-              w={"75%"}
+              w={["90%", "75%"]}
               h={"auto"}
               objectFit={"cover"}
               justifySelf={"center"}
@@ -135,17 +135,17 @@ export default function Profile({ username }: { username?: string }) {
             </Box>
           </Flex>
 
+          <Box my={8} w={"full"} rounded={"lg"}>
+            <Heading as={"h2"} size={"md"} mb={2}>
+              About Me
+            </Heading>
+            <Text as={"h2"} size={"md"} mb={4}>
+              {user?.bio}
+            </Text>
+          </Box>
+
           {/* Organizations */}
-          <Box
-            bg={useColorModeValue("gray.300", "gray.700")}
-            px={8}
-            py={4}
-            mt={8}
-            w={"full"}
-            rounded={"xl"}
-            border={"2px solid"}
-            borderColor={useColorModeValue("gray.300", "gray.600")}
-          >
+          <Box py={6} w={"full"}>
             <Flex
               w={"full"}
               h={"fit-content"}
