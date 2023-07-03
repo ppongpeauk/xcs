@@ -69,8 +69,14 @@ export default function Profile({ username }: { username?: string }) {
           EVE XCS - {user ? `${user.name}'s Profile` : "User Profile"}
         </title>
       </Head>
-      <Container display={"flex"} maxW={"full"} px={8} pt={8}>
-        <Box pos={"relative"} width={["full", "min-content"]} minH={"100%"}>
+      <Container
+        display={"flex"}
+        maxW={"container.xl"}
+        px={8}
+        pt={8}
+        flexDir={"column"}
+      >
+        <Box pos={"relative"} width={["full", "min-content"]}>
           {/* Badge */}
           <Flex
             w={["100%", "300px"]}
@@ -134,8 +140,9 @@ export default function Profile({ username }: { username?: string }) {
               </Text>
             </Box>
           </Flex>
-
-          <Box my={8} w={"full"} rounded={"lg"}>
+        </Box>
+        <Box>
+          <Box my={8} w={["full", "300px"]} rounded={"lg"}>
             <Heading as={"h2"} size={"md"} mb={2}>
               About Me
             </Heading>
@@ -143,9 +150,10 @@ export default function Profile({ username }: { username?: string }) {
               {user?.bio}
             </Text>
           </Box>
-
+        </Box>
+        <Flex flexDir={["column", "row"]}>
           {/* Organizations */}
-          <Box py={6} w={"full"}>
+          <Box py={6} w={["full", "300px"]} mr={[0, 16]}>
             <Flex
               w={"full"}
               h={"fit-content"}
@@ -154,7 +162,7 @@ export default function Profile({ username }: { username?: string }) {
               justify={"flex-start"}
               flexGrow={1}
             >
-              <Heading as={"h2"} size={"md"} mb={4}>
+              <Heading as={"h2"} size={"md"} mb={2}>
                 Organizations
               </Heading>
               <Box w={"full"} h={"full"}>
@@ -169,7 +177,31 @@ export default function Profile({ username }: { username?: string }) {
               </Box>
             </Flex>
           </Box>
-        </Box>
+          <Box py={6} w={"full"}>
+            <Flex
+              w={"full"}
+              h={"fit-content"}
+              flexDir={"column"}
+              align={"flex-start"}
+              justify={"flex-start"}
+              flexGrow={1}
+            >
+              <Heading as={"h2"} size={"md"} mb={2}>
+                Connected Experiences
+              </Heading>
+              <Box w={"full"} h={"full"}>
+                <Text
+                  as={"h2"}
+                  size={"md"}
+                  mb={2}
+                  color={useColorModeValue("gray.500", "gray.400")}
+                >
+                  No connected experiences yet.
+                </Text>
+              </Box>
+            </Flex>
+          </Box>
+        </Flex>
       </Container>
     </>
   );

@@ -25,13 +25,20 @@ export default function AuthProvider({
     id: "FF0gCiIJYUPfmA4CTfqXTyPcHQb2",
     email: "kurtsiberg@gmail.com",
     avatar: "https://cdn.discordapp.com/attachments/998830838999421029/1106249233901834381/slouch3.png",
-    bio: "I'm a cool guy",
+    bio: "hello! i'm pete, a software engineer and designer. i'm currently a student at GMU, and i'm working on a few projects.",
     location: "New York, NY",
     website: "https://ppngpkl.dev",
   });
+  const [idToken, setIdToken] = useState<any>(null);
 
   useEffect(() => {
-    console.log(user);
+    if (user) {
+      user.getIdToken().then((token) => {
+        setIdToken(token);
+      }
+    )} else {
+      setIdToken(null);
+    };
   }, [user]);
 
   function logOut() {
@@ -40,6 +47,7 @@ export default function AuthProvider({
   
   const values = {
     user,
+    idToken,
     currentUser,
     auth,
     getAuth,

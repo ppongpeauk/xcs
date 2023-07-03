@@ -25,6 +25,7 @@ import NextLink from "next/link";
 import { usePathname } from "next/navigation";
 import { AiFillCrown, AiFillHome, AiFillInfoCircle } from "react-icons/ai";
 import { BiExit } from "react-icons/bi";
+import { BsPersonBadgeFill } from "react-icons/bs";
 import { FaBuilding, FaUserAlt } from "react-icons/fa";
 import { ImTree } from "react-icons/im";
 import { MdSensors } from "react-icons/md";
@@ -217,7 +218,7 @@ export default function PlatformNav({
             <NavLink
               href={"/platform/profile"}
               pathname={pathname}
-              leftIcon={<FaUserAlt />}
+              leftIcon={<BsPersonBadgeFill />}
             >
               Profile
             </NavLink>

@@ -12,6 +12,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 
 // Theme
 import PageProgress from "@/components/PageProgress";
+import "@/styles/globals.css";
 import theme from "@/theme";
 import { NextPage } from "next";
 
