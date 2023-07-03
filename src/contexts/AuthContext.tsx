@@ -16,6 +16,19 @@ export default function AuthProvider({
   children: React.ReactNode;
 }) {;
   const [user, loading, error] = useAuthState(auth);
+  const [currentUser, setCurrentUser] = useState<any>({
+    name: {
+      first: "Pete",
+      last: "Pongpeauk",
+    },
+    username: "restrafes",
+    id: "FF0gCiIJYUPfmA4CTfqXTyPcHQb2",
+    email: "kurtsiberg@gmail.com",
+    avatar: "https://cdn.discordapp.com/attachments/998830838999421029/1106249233901834381/slouch3.png",
+    bio: "I'm a cool guy",
+    location: "New York, NY",
+    website: "https://ppngpkl.dev",
+  });
 
   useEffect(() => {
     console.log(user);
@@ -26,8 +39,8 @@ export default function AuthProvider({
   }
   
   const values = {
-
     user,
+    currentUser,
     auth,
     getAuth,
     logOut,

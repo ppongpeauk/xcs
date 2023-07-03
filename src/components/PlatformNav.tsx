@@ -134,6 +134,7 @@ export default function PlatformNav({
     <>
       <Flex
         as="nav"
+        display={["none", "flex"]}
         position={"sticky"}
         top={0}
         h={"100vh"}
@@ -166,6 +167,7 @@ export default function PlatformNav({
                 "/images/logo-white.png"
               )}
               mx={[4, 16]}
+              w={"full"}
               h={"24px"}
               alt={"EVE XCS"}
               objectFit={"cover"}

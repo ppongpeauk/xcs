@@ -21,25 +21,23 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     if (!user) {
       push("/login?redirect=" + window.location.pathname);
     }
-  }, []);
+  }, [user, push]);
 
   // Return nothing if the user is not logged in
-  if (!user) {
-    return <></>;
-  }
-
   return (
-    <Flex w={"100vw"} flexDir={"row"}>
-      <PlatformNav
-        children={
-          <Box width={"full"}>
-            <Box as="main" minH={"100vh"}>
-              {children}
+    <>
+      <Flex w={"100vw"} flexDir={"row"}>
+        <PlatformNav
+          children={
+            <Box width={"full"}>
+              <Box as="main" minH={"100vh"}>
+                {children}
+              </Box>
+              <Footer />
             </Box>
-            <Footer />
-          </Box>
-        }
-      />
-    </Flex>
+          }
+        />
+      </Flex>
+    </>
   );
 }
