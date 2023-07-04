@@ -28,9 +28,14 @@ export default function Footer() {
         align={"center"}
         justify={"center"}
       >
-        <Text>© EVE Labs LLC. All rights reserved.</Text>
+        <Text>
+          <Text as={"span"} fontWeight={"bold"} letterSpacing={"tighter"}>
+            © RESTRAFES & CO. LLC.
+          </Text>{" "}
+          All rights reserved.
+        </Text>
         <ThemeButton />
       </Flex>
     </>
-  )
+  );
 }
