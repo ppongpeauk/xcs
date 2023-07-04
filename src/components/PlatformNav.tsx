@@ -30,6 +30,9 @@ import { FaBuilding, FaUserAlt } from "react-icons/fa";
 import { ImTree } from "react-icons/im";
 import { MdSensors } from "react-icons/md";
 
+// Authentication
+import { useAuthContext } from "@/contexts/AuthContext";
+
 function NavLink({
   href,
   variant = "ghost",
@@ -107,6 +110,7 @@ export default function PlatformNav({
 }) {
   const pathname = usePathname();
   const [currentRouteLabel, setCurrentRouteLabel] = useState<string | null>("");
+  const { currentUser } = useAuthContext();
 
   useEffect(() => {
     if (!title) {
@@ -128,8 +132,6 @@ export default function PlatformNav({
       }
     }
   }, [pathname]);
-
-  
 
   return (
     <>
@@ -314,11 +316,7 @@ export default function PlatformNav({
           <Heading size={"lg"}>{currentRouteLabel}</Heading>
           <Flex align={"center"} justify={"flex-end"}>
             <Button variant={"unstyled"} h={"full"} onClick={() => {}}>
-              <Avatar
-                src={
-                  "https://cdn.discordapp.com/attachments/998830838999421029/1106249233901834381/slouch3.png"
-                }
-              />
+              <Avatar src={currentUser?.avatar} />
             </Button>
           </Flex>
         </Flex>
