@@ -55,7 +55,7 @@ export default async function handler(
     // Check if API Key already exists for this location that hasn't been used yet
     let apiKey = Object.keys(organization.apiKeys).find(
       (key) =>
-        organization?.apiKeys[key].location === locationId &&
+        organization?.apiKeys[key].locationId === locationId &&
         organization.apiKeys[key].lastUsedAt === null
     );
 
@@ -71,7 +71,9 @@ export default async function handler(
     buffer = Buffer.from(
       buffer
         .toString()
-        .replace("{{locationId}}", locationId)
+        .replace("{{locationId}}", location.id)
+        .replace("{{locationName}}", location.name)
+        .replace("{{configUrl}}", `${process.env.NEXT_PUBLIC_ROOT_URL}/platform/locations/${location.id}`)
         .replace("{{apiKey}}", apiKey)
     );
 
@@ -84,12 +86,12 @@ export default async function handler(
         $set: {
           [`apiKeys.${apiKey}`]: {
             author: uid,
-            location: locationId,
+            locationId: locationId,
             createdAt: timestamp,
             lastUsedAt: null,
           },
         },
-      }
+      },
     );
 
     // Log
@@ -101,7 +103,7 @@ export default async function handler(
             type: "api-key-generated",
             performer: uid,
             timestamp: timestamp,
-            location: locationId,
+            locationId: locationId,
           },
         },
       }

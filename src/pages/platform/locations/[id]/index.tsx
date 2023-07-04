@@ -48,7 +48,7 @@ export default function PlatformLocation() {
   const { idToken } = useAuthContext();
   const [location, setLocation] = useState<any>(null);
   const toast = useToast();
-
+  
   const {
     isOpen: isDeleteDialogOpen,
     onOpen: onDeleteDialogOpen,
@@ -104,9 +104,9 @@ export default function PlatformLocation() {
         if (res.status === 200)
           return res.json();
         if (res.status === 404) {
-          push("/404");
+          return push("/404");
         } else if (res.status === 403) {
-          push("/403");
+          return push("/403");
         }
       })
       .then((data) => {
@@ -139,13 +139,13 @@ export default function PlatformLocation() {
         const url = window.URL.createObjectURL(new Blob([blob]));
         const link = document.createElement("a");
         link.href = url;
-        link.setAttribute("download", `xcs-starter-${locationName}.rbxmx`);
+        link.setAttribute("download", `xcs-template-${locationName}.rbxmx`);
         document.body.appendChild(link);
         link.click();
         link.parentNode?.removeChild(link);
 
         toast({
-          title: "Downloading starter pack...",
+          title: "Downloading template...",
           status: "success",
           duration: 5000,
           isClosable: true,
@@ -364,7 +364,7 @@ export default function PlatformLocation() {
                       onClick={downloadStarterPack}
                       isLoading={packLoading}
                     >
-                      Download Pack
+                      Download Template
                     </Button>
                     <Button
                       colorScheme="red"

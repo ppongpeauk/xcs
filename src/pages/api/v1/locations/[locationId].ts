@@ -59,14 +59,18 @@ export default async function handler(
     if (body.name !== undefined) {
       body.name = body.name.trim();
       if (body.name.length > 32 || body.name.length < 3) {
-        return res.status(400).json({ message: "Name must be between 3-32 characters." });
+        return res
+          .status(400)
+          .json({ message: "Name must be between 3-32 characters." });
       }
     }
 
     if (body.description) {
       body.description = body.description.trim();
       if (body.description.length > 256) {
-        return res.status(400).json({ message: "Description must be less than 256 characters." });
+        return res
+          .status(400)
+          .json({ message: "Description must be less than 256 characters." });
       }
     }
 
@@ -108,15 +112,21 @@ export default async function handler(
   if (req.method === "DELETE") {
     const time = new Date();
     const timestamp = time.getTime();
-    
+
     // Delete Location
     await locations.deleteOne({ id: locationId });
 
-    // Delete all API keys for this location
-    await organizations.updateOne(
-      { id: organization.id },
-      { $unset: { apiKeys: { locationId: locationId } } }
-    );
+    // Delete API Keys
+    const apiKeys = organization.apiKeys;
+    for (const apiKeyId in apiKeys) {
+      const apiKey = apiKeys[apiKeyId];
+      if (apiKey.locationId === location.id) {
+        await organizations.updateOne(
+          { id: organization.id },
+          { $unset: { [`apiKeys.${apiKeyId}`]: "" } }
+        );
+      }
+    }
 
     // Log Deletion
     await organizations.updateOne(
@@ -132,7 +142,7 @@ export default async function handler(
         },
       }
     );
-    
+
     return res
       .status(200)
       .json({ message: "Successfully deleted location!", success: true });

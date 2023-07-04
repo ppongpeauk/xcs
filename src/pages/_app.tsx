@@ -31,7 +31,9 @@ export default function App({ Component, pageProps }: any) {
       <AuthProvider>
         <ChakraProvider>
           <PageProgress />
-          <div className={font.className}>
+          <div className={font.className} style={{
+            width: "full"
+          }}>
             {getLayout(<Component {...pageProps} />)}
           </div>
         </ChakraProvider>

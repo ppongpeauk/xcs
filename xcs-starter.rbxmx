@@ -84,6 +84,12 @@
 EVE XCS - a fork of NTE Axesys by @OverloadDetected
 @restrafes - 7-16-2021
 
+---------------------------------------------------
+
+This configuration has been generated for {{locationName}}.
+To configure access points for this location, visit:
+{{configUrl}}
+
 --]]
 
 --[[
