@@ -5,6 +5,7 @@ import {
   Button,
   Container,
   FormControl,
+  FormHelperText,
   FormLabel,
   Heading,
   Input,
@@ -22,7 +23,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { Suspense, useEffect, useState } from "react";
 
-import { ChevronRightIcon } from "@chakra-ui/icons";
+import { ChevronRightIcon, DeleteIcon } from "@chakra-ui/icons";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -38,6 +39,7 @@ import DeleteDialog from "@/components/DeleteDialog";
 import { useToast } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
 import { AiFillTag } from "react-icons/ai";
+import { IoIosRemoveCircle } from "react-icons/io";
 import { IoBusiness } from "react-icons/io5";
 import { SiRoblox } from "react-icons/si";
 
@@ -53,6 +55,8 @@ export default function PlatformLocation() {
     onOpen: onDeleteDialogOpen,
     onClose: onDeleteDialogClose,
   } = useDisclosure();
+
+  const [packLoading, setPackLoading] = useState<boolean>(false);
 
   const onDelete = () => {
     fetch(`/api/v1/locations/${query.id}`, {
@@ -103,6 +107,57 @@ export default function PlatformLocation() {
       });
   };
 
+  let downloadStarterPack = () => {
+    setPackLoading(true);
+    fetch(`/api/v1/locations/${query.id}/starter-pack`, {
+      method: "GET",
+      headers: { Authorization: `Bearer ${idToken}` },
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          return res.blob();
+        } else {
+          return res.json().then((json: any) => {
+            throw new Error(json.message);
+          });
+        }
+      })
+      .then((blob) => {
+        // Convert location name to kebab case for file name
+        const locationName = location.name
+          .replace(/\s+/g, "-")
+          .replace(".", "")
+          .toLowerCase();
+
+        const url = window.URL.createObjectURL(new Blob([blob]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", `xcs-starter-${locationName}.rbxmx`);
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode?.removeChild(link);
+
+        toast({
+          title: "Downloading starter pack...",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+      })
+      .catch((err) => {
+        toast({
+          title: "Error",
+          description: err.message,
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
+      })
+      .finally(() => {
+        setPackLoading(false);
+      });
+  };
+
   // Fetch location data
   useEffect(() => {
     if (!idToken) return;
@@ -117,7 +172,7 @@ export default function PlatformLocation() {
       </Head>
       <DeleteDialog
         title="Delete Location"
-        body="Are you sure you want to delete this location? This action cannot be undone."
+        body="Are you sure you want to delete this location? This will revoke all API keys and delete all data associated with this location. This action cannot be undone."
         isOpen={isDeleteDialogOpen}
         onClose={onDeleteDialogClose}
         onDelete={onDelete}
@@ -251,7 +306,7 @@ export default function PlatformLocation() {
                   </Field>
                   <Field name="placeId">
                     {({ field, form }: any) => (
-                      <FormControl>
+                      <FormControl mb={2}>
                         <FormLabel>Experience ID</FormLabel>
                         <InputGroup mb={2}>
                           <InputLeftElement pointerEvents="none">
@@ -263,9 +318,13 @@ export default function PlatformLocation() {
                             autoComplete="off"
                             placeholder="Experience ID"
                             variant={"filled"}
-                            disabled={location?.roblox?.placeId !== null}
+                            isDisabled={true}
+                            // disabled={location?.roblox?.placeId !== null}
                           />
                         </InputGroup>
+                        <FormHelperText>
+                          This cannot be changed once set.
+                        </FormHelperText>
                       </FormControl>
                     )}
                   </Field>
@@ -293,26 +352,33 @@ export default function PlatformLocation() {
                     >
                       Update
                     </Button>
-                    <Button colorScheme="blue" mb={2}>
+                    <Button
+                      mb={2}
+                      onClick={downloadStarterPack}
+                      isLoading={packLoading}
+                    >
                       Download Pack
                     </Button>
                     <Button
                       colorScheme="red"
                       mb={2}
                       onClick={onDeleteDialogOpen}
+                      leftIcon={<IoIosRemoveCircle />}
                     >
                       Delete
                     </Button>
                   </Stack>
                   <Text>
-                    Roles can be managed in the settings of{" "}
+                    Security clearances can be managed in the settings of{" "}
                     <Link
                       as={NextLink}
                       href={`/platform/organizations/${location?.organizationId}`}
                       textDecor={"underline"}
                       textUnderlineOffset={4}
                       whiteSpace={"nowrap"}
-                      _hover={{ color: useColorModeValue("gray.600", "gray.400") }}
+                      _hover={{
+                        color: useColorModeValue("gray.600", "gray.400"),
+                      }}
                     >
                       the organization
                     </Link>{" "}

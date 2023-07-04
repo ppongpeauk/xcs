@@ -86,7 +86,7 @@ export default async function handler(
       {
         $push: {
           logs: {
-            type: "organization_updated",
+            type: "organization-updated",
             performer: uid,
             timestamp: timestamp,
             data: body,
@@ -97,7 +97,7 @@ export default async function handler(
 
     return res
       .status(200)
-      .json({ message: "successfully updated", success: true });
+      .json({ message: "Successfully updated organization!", success: true });
   }
 
   return res.status(500).json({ message: "An unknown errror occurred." });

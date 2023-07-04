@@ -39,7 +39,7 @@ export default function PlatformLocations() {
   const [organizationsLoading, setOrganizationsLoading] =
     useState<boolean>(true);
 
-  const [selectedOrganization, setSelectedOrganization] = useState<any>();
+  const [selectedOrganization, setSelectedOrganization] = useState<any>(null);
 
   const { idToken } = useAuthContext();
 
@@ -59,6 +59,9 @@ export default function PlatformLocations() {
       .then((res) => res.json())
       .then((data) => {
         setOrganizations(data.organizations);
+        if (data.organizations.length === 0) {
+          setLocationsLoading(false);
+        }
       })
       .finally(() => {
         setOrganizationsLoading(false);
@@ -101,17 +104,16 @@ export default function PlatformLocations() {
       />
       <Container maxW={"full"} p={8}>
         <Heading>Locations</Heading>
-        {organizationsLoading ? (
-          <Skeleton height={4} width={"128px"} />
-        ) : (
-          <HStack
-            display={"flex"}
-            py={4}
-            justify={"flex-start"}
-            align={"center"}
-            spacing={4}
-          >
-            <FormControl w={"fit-content"}>
+        <HStack
+          display={"flex"}
+          py={2}
+          justify={"flex-start"}
+          align={"flex-end"}
+          spacing={4}
+        >
+          <FormControl w={"fit-content"}>
+            <FormLabel>Organization</FormLabel>
+            {selectedOrganization ? (
               <Select
                 w={"fit-content"}
                 value={selectedOrganization?.name}
@@ -128,53 +130,71 @@ export default function PlatformLocations() {
                   </option>
                 ))}
               </Select>
-            </FormControl>
-            <Button
-              leftIcon={<BsBuildingFillAdd />}
-              aria-label={"Create Location"}
-              onClick={onCreateLocationModalOpen}
-            >
-              Create Location
-            </Button>
-          </HStack>
-        )}
+            ) : null}
+          </FormControl>
+          <Button
+            leftIcon={<BsBuildingFillAdd />}
+            onClick={onCreateLocationModalOpen}
+            isDisabled={!selectedOrganization}
+          >
+            Create Location
+          </Button>
+        </HStack>
 
-        {locationsLoading ? (
-          <Skeleton height={4} width={"128px"} />
-        ) : (
-          <Flex>
-            {locations.length === 0 ? (
-              <Text>dawg this shit&apos;s empty</Text>
-            ) : (
-              locations?.map((location: any) => (
-                <Box
-                  key={location.id}
-                  w={"240px"}
-                  p={4}
-                  borderWidth={1}
-                  borderRadius={"xl"}
-                  borderColor={useColorModeValue("gray.200", "gray.700")}
-                  mr={4}
-                >
-                  <Box p={2}>
-                    <Heading size={"md"} mb={2}>{location.name}</Heading>
-                    <Text fontSize={"sm"} mb={2}>{location.description}</Text>
-                    <Text fontSize={"sm"}>Updated at {(new Date(location.updatedAt)).toDateString()}</Text>
+        <Box>
+          {locationsLoading ? (
+            <Stack>
+              <Skeleton height={4} width={"50%"} />
+              <Skeleton height={4} width={"50%"} />
+              <Skeleton height={4} width={"50%"} />
+            </Stack>
+          ) : organizations.length === 0 ? (
+            <Text>
+              You are currently not a member of any organization. Create or join
+              an organization to get started.
+            </Text>
+          ) : (
+            <Flex>
+              {locations.length === 0 ? (
+                <Text>dawg this shit&apos;s empty</Text>
+              ) : (
+                locations?.map((location: any) => (
+                  <Box
+                    key={location.id}
+                    w={"240px"}
+                    h={"max-content"}
+                    px={4}
+                    borderWidth={1}
+                    borderRadius={"xl"}
+                    borderColor={useColorModeValue("gray.200", "gray.700")}
+                    mr={4}
+                  >
+                    <Box my={4}>
+                      <Heading size={"md"} mb={2}>
+                        {location.name}
+                      </Heading>
+                      <Text fontSize={"sm"} mb={2}>
+                        {location.description}
+                      </Text>
+                      <Text fontSize={"sm"}>
+                        Updated at {new Date(location.updatedAt).toDateString()}
+                      </Text>
+                    </Box>
+                    <Stack my={4}>
+                      <Button
+                        as={NextLink}
+                        href={`/platform/locations/${location.id}`}
+                        variant={"solid"}
+                      >
+                        View
+                      </Button>
+                    </Stack>
                   </Box>
-                  <Stack p={2}>
-                    <Button
-                      as={NextLink}
-                      href={`/platform/locations/${location.id}`}
-                      variant={"solid"}
-                    >
-                      View
-                    </Button>
-                  </Stack>
-                </Box>
-              ))
-            )}
-          </Flex>
-        )}
+                ))
+              )}
+            </Flex>
+          )}
+        </Box>
       </Container>
     </>
   );

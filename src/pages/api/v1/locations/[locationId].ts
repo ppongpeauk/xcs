@@ -76,7 +76,7 @@ export default async function handler(
     ) {
       return res
         .status(400)
-        .json({ message: "experience id immutable after setup" });
+        .json({ message: "You cannot change the experience ID once set." });
     }
 
     const time = new Date();
@@ -90,7 +90,7 @@ export default async function handler(
       {
         $push: {
           logs: {
-            type: "location_updated",
+            type: "location-updated",
             performer: uid,
             timestamp: timestamp,
             location: locationId,
@@ -109,7 +109,16 @@ export default async function handler(
     const time = new Date();
     const timestamp = time.getTime();
     
+    // Delete Location
     await locations.deleteOne({ id: locationId });
+
+    // Delete all API keys for this location
+    await organizations.updateOne(
+      { id: organization.id },
+      { $pull: { apiKeys: { locationId: locationId } } }
+    );
+
+    // Log Deletion
     await organizations.updateOne(
       { id: organization.id },
       {
@@ -123,6 +132,7 @@ export default async function handler(
         },
       }
     );
+    
     return res
       .status(200)
       .json({ message: "Successfully deleted location!", success: true });

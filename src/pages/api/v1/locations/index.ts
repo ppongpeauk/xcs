@@ -92,7 +92,7 @@ export default async function handler(
       {
         $push: {
           logs: {
-            type: "location_created",
+            type: "location-created",
             performer: uid,
             timestamp: timestamp,
             locationId: uuid,
