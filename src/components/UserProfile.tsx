@@ -141,8 +141,8 @@ export default function Profile({ username }: { username?: string }) {
             </Box>
           </Flex>
         </Box>
-        <Box>
-          <Box my={8} w={["full", "300px"]} rounded={"lg"}>
+        <Box mt={4}>
+          <Box my={4} w={["full", "300px"]} rounded={"lg"}>
             <Heading as={"h2"} size={"md"} mb={2}>
               About Me
             </Heading>
@@ -153,7 +153,7 @@ export default function Profile({ username }: { username?: string }) {
         </Box>
         <Flex flexDir={["column", "row"]}>
           {/* Organizations */}
-          <Box py={6} w={["full", "300px"]} mr={[0, 16]}>
+          <Box py={4} w={["full", "300px"]} mr={[0, 16]}>
             <Flex
               w={"full"}
               h={"fit-content"}

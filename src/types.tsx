@@ -18,3 +18,13 @@ export interface User {
     avatar: string;
   }
 }
+
+export interface Organization {
+  id: string,
+  isPersonal: boolean,
+  name: string,
+  description: string,
+  members: {}
+  invitations: [],
+  logs: {}
+}

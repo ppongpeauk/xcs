@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import Layout from "@/layouts/PlatformLayout";
 import {
   Box,
@@ -9,14 +10,18 @@ import {
   Skeleton,
   Stack,
   Text,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import Head from "next/head";
 import NextLink from "next/link";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { useCallback, useEffect, useState } from "react";
 
 import { useAuthContext } from "@/contexts/AuthContext";
 
 export default function PlatformLocations() {
+  const { query } = useRouter();
+
   // Fetch locations
   const [locations, setLocations] = useState<any>([]);
   const [locationsLoading, setLocationsLoading] = useState<boolean>(true);
@@ -121,9 +126,8 @@ export default function PlatformLocations() {
                   h={"full"}
                   p={4}
                   borderWidth={1}
-                  borderRadius={"md"}
-                  borderColor={"gray.200"}
-                  boxShadow={"lg"}
+                  borderRadius={"xl"}
+                  borderColor={useColorModeValue("gray.200", "gray.700")}
                   mr={4}
                 >
                   <Box p={2}>
@@ -132,7 +136,7 @@ export default function PlatformLocations() {
                     <Text>Created at {location.createdAt}</Text>
                   </Box>
                   <Stack p={2}>
-                    <Button as={NextLink} href={`/platform/locations/${location.id}`} variant={"outline"}>very fancy view button</Button>
+                    <Button as={NextLink} href={`/platform/locations/${location.id}`} variant={"solid"}>view button</Button>
                   </Stack>
                 </Box>
               ))
