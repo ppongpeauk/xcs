@@ -18,6 +18,9 @@ export default function Logout() {
 
   return (
     <>
+      <p>
+        You have been logged out. You will be redirected to the home page in a few seconds.
+      </p>
     </>
   );
 }
