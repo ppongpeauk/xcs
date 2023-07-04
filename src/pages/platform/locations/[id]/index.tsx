@@ -39,6 +39,7 @@ import DeleteDialog from "@/components/DeleteDialog";
 import { useToast } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
 import { AiFillTag } from "react-icons/ai";
+import { BsFillCloudDownloadFill } from "react-icons/bs";
 import { IoIosRemoveCircle } from "react-icons/io";
 import { IoBusiness } from "react-icons/io5";
 import { SiRoblox } from "react-icons/si";
@@ -351,7 +352,7 @@ export default function PlatformLocation() {
                       </FormControl>
                     )}
                   </Field>
-                  <Stack direction={"row"} spacing={4} py={4}>
+                  <Stack direction={"row"} spacing={4} py={2}>
                     <Button
                       mb={2}
                       isLoading={props.isSubmitting}
@@ -363,6 +364,7 @@ export default function PlatformLocation() {
                       mb={2}
                       onClick={downloadStarterPack}
                       isLoading={packLoading}
+                      leftIcon={<BsFillCloudDownloadFill />}
                     >
                       Download Template
                     </Button>

@@ -24,8 +24,8 @@ import { useAuthContext } from "@/contexts/AuthContext";
 import { useToast } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
-import { BsBuildingFillAdd } from "react-icons/bs";
 import { MdOutlineAddCircle, MdOutlineJoinRight } from "react-icons/md";
+
 export default function PlatformOrganizations() {
   const { push } = useRouter();
   const [organizations, setOrganizations] = useState<any>([]);

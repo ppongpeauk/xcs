@@ -26,7 +26,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import CreateLocationDialog from "@/components/CreateLocationDialog";
 import { useAuthContext } from "@/contexts/AuthContext";
-import { BsBuildingFillAdd } from "react-icons/bs";
+import { MdOutlineAddCircle } from "react-icons/md";
 
 export default function PlatformLocations() {
   const { query, push } = useRouter();
@@ -162,11 +162,11 @@ export default function PlatformLocations() {
             </FormControl>
           ) : null}
           <Button
-            leftIcon={<BsBuildingFillAdd />}
+            leftIcon={<MdOutlineAddCircle />}
             onClick={onCreateLocationModalOpen}
             isDisabled={!selectedOrganization}
           >
-            Create Location
+            Create
           </Button>
         </HStack>
 
@@ -209,13 +209,14 @@ export default function PlatformLocations() {
                     key={location.id}
                     w={"240px"}
                     h={"max-content"}
-                    px={4}
+                    py={6}
+                    px={8}
                     borderWidth={1}
                     borderRadius={"xl"}
                     borderColor={useColorModeValue("gray.200", "gray.700")}
                     mr={4}
                   >
-                    <Box my={4}>
+                    <Box mb={4}>
                       <Heading size={"md"} mb={2}>
                         {location.name}
                       </Heading>
@@ -230,7 +231,7 @@ export default function PlatformLocations() {
                         Updated at {new Date(location.updatedAt).toDateString()}
                       </Text>
                     </Box>
-                    <Stack my={4}>
+                    <Stack>
                       <Button
                         as={NextLink}
                         href={`/platform/locations/${location.id}`}
