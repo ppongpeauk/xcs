@@ -15,13 +15,15 @@ import PageProgress from "@/components/PageProgress";
 import "@/styles/globals.css";
 import theme from "@/theme";
 import { NextPage } from "next";
+import { Exo, Roboto_Flex, Signika, Sora } from "next/font/google";
+const font = Roboto_Flex({ subsets: ["latin"] });
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: React.ReactElement) => React.ReactNode;
 };
 
 export default function App({ Component, pageProps }: any) {
-  const getLayout = Component.getLayout || ((page: any) => page)
+  const getLayout = Component.getLayout || ((page: any) => page);
 
   return (
     <>
@@ -29,7 +31,9 @@ export default function App({ Component, pageProps }: any) {
       <AuthProvider>
         <ChakraProvider>
           <PageProgress />
-          {getLayout(<Component {...pageProps} />)}
+          <div className={font.className}>
+            {getLayout(<Component {...pageProps} />)}
+          </div>
         </ChakraProvider>
       </AuthProvider>
     </>

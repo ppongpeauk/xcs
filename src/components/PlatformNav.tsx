@@ -316,7 +316,7 @@ export default function PlatformNav({
             <Button variant={"unstyled"} h={"full"} onClick={() => {}}>
               <Avatar
                 src={
-                  "https://cdn.discordapp.com/attachments/975857519199158292/1101596785606131792/342716556_6948966861786125_4195991580296149283_n.jpg"
+                  "https://cdn.discordapp.com/attachments/998830838999421029/1106249233901834381/slouch3.png"
                 }
               />
             </Button>

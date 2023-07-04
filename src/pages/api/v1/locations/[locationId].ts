@@ -16,7 +16,7 @@ export default async function handler(
   const token = authHeader?.split(" ")[1];
 
   // Verify Token
-  const uid = tokenToID(token as string);
+  const uid = await tokenToID(token as string);
   if (!uid) {
     return res.status(401).json({ message: "Unauthorized" });
   }
@@ -55,12 +55,25 @@ export default async function handler(
 
     const body = req.body as any;
 
+    // Character limits
+    if (body.name !== undefined) {
+      body.name = body.name.trim();
+      if (body.name.length > 32 || body.name.length < 3) {
+        return res.status(400).json({ message: "Name must be between 3-32 characters." });
+      }
+    }
+
+    if (body.description) {
+      body.description = body.description.trim();
+      if (body.description.length > 256) {
+        return res.status(400).json({ message: "Description must be less than 256 characters." });
+      }
+    }
+
     if (
-      location.roblox.experienceId !== null &&
-      body.experienceId != null &&
-      location.roblox.experienceId != body.experienceId
+      location.roblox.placeId !== null &&
+      location.roblox.placeId != body.roblox.placeId
     ) {
-      console.log("experience id immutable");
       return res
         .status(400)
         .json({ message: "experience id immutable after setup" });
@@ -88,8 +101,32 @@ export default async function handler(
     );
     return res
       .status(200)
-      .json({ message: "successfully updated", success: true });
+      .json({ message: "Successfully updated location!", success: true });
   }
 
-  return res.status(500).json({ message: "Hello World" });
+  // Deleting Location Data
+  if (req.method === "DELETE") {
+    const time = new Date();
+    const timestamp = time.getTime();
+    
+    await locations.deleteOne({ id: locationId });
+    await organizations.updateOne(
+      { id: organization.id },
+      {
+        $push: {
+          logs: {
+            type: "location_deleted",
+            performer: uid,
+            timestamp: timestamp,
+            locationId: locationId,
+          },
+        },
+      }
+    );
+    return res
+      .status(200)
+      .json({ message: "Successfully deleted location!", success: true });
+  }
+
+  return res.status(500).json({ message: "An unknown error has occurred." });
 }

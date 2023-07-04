@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import {
   Box,
   Button,
@@ -12,6 +13,7 @@ import {
   StackItem,
   Text,
   useColorModeValue,
+  useToast,
 } from "@chakra-ui/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -53,21 +55,41 @@ function OrganizationItem() {
 
 export default function Profile({ username }: { username?: string }) {
   const router = useRouter();
-  const { currentUser } = useAuthContext();
-
+  const { idToken, currentUser, user: authUser } = useAuthContext();
   const [user, setUser] = useState<any | undefined>(undefined);
+  const toast = useToast();
 
   useEffect(() => {
-    // TEMP
-    setUser(currentUser);
-  }, [currentUser]);
+    if (!idToken || !currentUser) return;
+    if (!username) return;
+    fetch(`/api/v1/users/${username}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${idToken}`,
+      },
+    })
+      .then((res) => {
+        if (res.status === 404) return router.push("/404");
+        return res.json();
+      })
+      .then((res) => {
+        setUser(res.user);
+      })
+      .catch((err) => {
+        toast({
+          title: "User not found",
+          description: "Could not find user",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      });
+  }, [idToken, username, currentUser, router, toast]);
 
-  return (
+  return user ? (
     <>
       <Head>
-        <title>
-          EVE XCS - {user ? `${user.name}'s Profile` : "User Profile"}
-        </title>
+        <title>{`EVE XCS - ${user?.name?.first}'s Profile`}</title>
       </Head>
       <Container
         display={"flex"}
@@ -177,7 +199,7 @@ export default function Profile({ username }: { username?: string }) {
               </Box>
             </Flex>
           </Box>
-          <Box py={6} w={"full"}>
+          <Box py={4} w={"full"}>
             <Flex
               w={"full"}
               h={"fit-content"}
@@ -204,5 +226,7 @@ export default function Profile({ username }: { username?: string }) {
         </Flex>
       </Container>
     </>
+  ) : (
+    <Skeleton height={"100vh"} width={"100vw"} />
   );
 }

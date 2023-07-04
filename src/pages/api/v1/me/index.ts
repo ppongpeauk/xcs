@@ -6,9 +6,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  // Organization ID
-  const { organizationId } = req.query as { organizationId: string };
-
   // Authorization Header
   const authHeader = req.headers.authorization;
 
@@ -23,24 +20,16 @@ export default async function handler(
 
   const mongoClient = await clientPromise;
   const db = mongoClient.db(process.env.MONGODB_DB as string);
-  const organizations = db.collection("organizations");
-  let organization = (await organizations
-    .find({ id: organizationId })
-    .toArray()) as any;
+  const users = db.collection("users");
+  const user = await users.findOne({ id: uid });
 
-  if (organization.length == 0) {
-    return res.status(404).json({ message: "Organization not found" });
-  }
-
-  organization = organization[0];
-
-  if (!organization.members[uid]) {
-    return res.status(401).json({ message: "Unauthorized" });
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
   }
 
   if (req.method === "GET") {
     return res.status(200).json({
-      organization: organization,
+      user: user,
     });
   }
 
@@ -64,14 +53,12 @@ export default async function handler(
       }
     }
 
-    if (body.description) {
-      body.description = body.description.trim();
-      if (body.description.length >= 256) {
-        return res
-          .status(400)
-          .json({
-            message: "Description must be less than or equal to 256 characters.",
-          });
+    if (body.bio) {
+      body.bio = body.bio.trim();
+      if (body.bio.length >= 256) {
+        return res.status(400).json({
+          message: "Biography must be less than or equal to 256 characters.",
+        });
       }
     }
 
@@ -80,13 +67,13 @@ export default async function handler(
 
     body.lastUpdatedDate = timestamp;
 
-    await organizations.updateOne({ id: organizationId }, { $set: body });
-    await organizations.updateOne(
-      { id: organization.id },
+    await users.updateOne({ id: uid }, { $set: body });
+    await users.updateOne(
+      { id: uid },
       {
         $push: {
           logs: {
-            type: "organization_updated",
+            type: "user_updated",
             performer: uid,
             timestamp: timestamp,
             data: body,
@@ -100,5 +87,5 @@ export default async function handler(
       .json({ message: "successfully updated", success: true });
   }
 
-  return res.status(500).json({ message: "An unknown errror occurred." });
+  return res.status(500).json({ message: "something went really wrong" });
 }

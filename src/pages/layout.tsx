@@ -1,6 +1,4 @@
-import { Roboto_Flex } from "next/font/google";
 import Head from "next/head";
-const font = Roboto_Flex({ subsets: ["latin"] });
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -18,7 +16,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           content="Control your access points with ease."
         />
       </Head>
-      <main className={font.className}>{children}</main>
+      <main>
+        {children}
+      </main>
     </>
   );
 }

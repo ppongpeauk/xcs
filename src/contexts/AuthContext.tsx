@@ -1,8 +1,8 @@
 import { auth } from "@/lib/firebase";
 import { createContext, useContext, useEffect, useState } from "react";
 
-import { getAuth, signInWithEmailAndPassword, signOut } from 'firebase/auth';
-import { useAuthState } from 'react-firebase-hooks/auth';
+import { getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 const AuthContext = createContext(null);
 
@@ -14,9 +14,13 @@ export default function AuthProvider({
   children,
 }: {
   children: React.ReactNode;
-}) {;
+}) {
   const [user, loading, error] = useAuthState(auth);
-  const [currentUser, setCurrentUser] = useState<any>({
+  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [idToken, setIdToken] = useState<any>(null);
+
+  /*
+  {
     name: {
       first: "Pete",
       last: "Pongpeauk",
@@ -28,23 +32,29 @@ export default function AuthProvider({
     bio: "hello! i'm pete, a software engineer and designer. i'm currently a student at GMU, and i'm working on a few projects.",
     location: "New York, NY",
     website: "https://ppngpkl.dev",
-  });
-  const [idToken, setIdToken] = useState<any>(null);
+  }
+  */
 
   useEffect(() => {
     if (user) {
       user.getIdToken().then((token) => {
         setIdToken(token);
-      }
-    )} else {
+        // Fetch user metadata
+        fetch("/api/v1/me", { headers: { authorization: `Bearer ${token}` } })
+          .then((res) => res.json())
+          .then((data) => {
+            setCurrentUser(data.user);
+          });
+      });
+    } else {
       setIdToken(null);
-    };
+    }
   }, [user]);
 
   function logOut() {
     signOut(auth);
   }
-  
+
   const values = {
     user,
     idToken,
@@ -64,4 +74,3 @@ export default function AuthProvider({
 }
 
 export { AuthContext, AuthProvider };
-

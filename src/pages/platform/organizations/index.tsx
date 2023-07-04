@@ -24,7 +24,7 @@ export default function PlatformOrganizations() {
 
   useEffect(() => {
     if (!idToken) return;
-    fetch("/api/v1/self/organizations", {
+    fetch("/api/v1/me/organizations", {
       method: "GET",
       headers: { Authorization: `Bearer ${idToken}` },
     }).then((res) => {
@@ -55,34 +55,36 @@ export default function PlatformOrganizations() {
       </Head>
       <Container maxW={"full"} p={8}>
         <Heading>Organizations</Heading>
-        <Flex>
-          {organizations.map((organization: any) => (
-            <Box
-              key={organization.id}
-              h={"full"}
-              p={4}
-              borderWidth={1}
-              borderRadius={"xl"}
-              borderColor={useColorModeValue("gray.200", "gray.700")}
-              mr={4}
-            >
-              <Box p={2}>
-                <Heading size={"md"}>{organization.name}</Heading>
-                <Text>ID: {organization.id}</Text>
-                <Text>Created at {organization.createdAt}</Text>
+        <Box p={4}>
+          <Flex>
+            {organizations.map((organization: any) => (
+              <Box
+                key={organization.id}
+                h={"full"}
+                p={4}
+                borderWidth={1}
+                borderRadius={"xl"}
+                borderColor={useColorModeValue("gray.200", "gray.700")}
+                mr={4}
+              >
+                <Box p={2}>
+                  <Heading size={"md"}>{organization.name}</Heading>
+                  <Text>ID: {organization.id}</Text>
+                  <Text>Created at {organization.createdAt}</Text>
+                </Box>
+                <Stack p={2}>
+                  <Button
+                    as={NextLink}
+                    href={`/platform/organizations/${organization.id}`}
+                    variant={"solid"}
+                  >
+                    View
+                  </Button>
+                </Stack>
               </Box>
-              <Stack p={2}>
-                <Button
-                  as={NextLink}
-                  href={`/platform/organizations/${organization.id}`}
-                  variant={"solid"}
-                >
-                  view button
-                </Button>
-              </Stack>
-            </Box>
-          ))}
-        </Flex>
+            ))}
+          </Flex>
+        </Box>
       </Container>
     </>
   );

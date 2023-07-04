@@ -205,7 +205,6 @@ export default function PlatformOrganization() {
                             type="text"
                             placeholder="Name"
                             variant={"filled"}
-                            required={true}
                             width={"fit-content"}
                           />
                         </InputGroup>
@@ -222,7 +221,6 @@ export default function PlatformOrganization() {
                             type="text"
                             placeholder="Member (JSON)"
                             variant={"filled"}
-                            required={true}
                           />
                         </InputGroup>
                       </FormControl>
@@ -238,7 +236,6 @@ export default function PlatformOrganization() {
                             type="text"
                             placeholder="Clearances (JSON)"
                             variant={"filled"}
-                            required={true}
                           />
                         </InputGroup>
                       </FormControl>

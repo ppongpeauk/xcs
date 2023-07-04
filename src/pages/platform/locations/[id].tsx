@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import Layout from "@/layouts/PlatformLayout";
 import {
   Box,
@@ -14,6 +15,8 @@ import {
   Stack,
   Switch,
   Text,
+  Textarea,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -25,21 +28,68 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbSeparator,
+  useDisclosure,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 
 import { useAuthContext } from "@/contexts/AuthContext";
 
+import DeleteDialog from "@/components/DeleteDialog";
 import { useToast } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
 import { AiFillTag } from "react-icons/ai";
+import { IoBusiness } from "react-icons/io5";
 import { SiRoblox } from "react-icons/si";
 
 export default function PlatformLocation() {
+  const router = useRouter();
   const { query } = useRouter();
   const { idToken } = useAuthContext();
   const [location, setLocation] = useState<any>(null);
   const toast = useToast();
+
+  const {
+    isOpen: isDeleteDialogOpen,
+    onOpen: onDeleteDialogOpen,
+    onClose: onDeleteDialogClose,
+  } = useDisclosure();
+
+  const onDelete = () => {
+    fetch(`/api/v1/locations/${query.id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${idToken}` },
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          return res.json();
+        } else {
+          return res.json().then((json: any) => {
+            throw new Error(json.message);
+          });
+        }
+      })
+      .then((data) => {
+        toast({
+          title: data.message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+        router.push("/platform/locations");
+      })
+      .catch((err) => {
+        toast({
+          title: "Error",
+          description: err.message,
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
+      })
+      .finally(() => {
+        onDeleteDialogClose();
+      });
+  };
 
   let refreshData = () => {
     setLocation(null);
@@ -65,6 +115,13 @@ export default function PlatformLocation() {
       <Head>
         <title>EVE XCS - {location?.name}</title>
       </Head>
+      <DeleteDialog
+        title="Delete Location"
+        body="Are you sure you want to delete this location? This action cannot be undone."
+        isOpen={isDeleteDialogOpen}
+        onClose={onDeleteDialogClose}
+        onDelete={onDelete}
+      />
       <Container maxW={"full"} p={8}>
         <Breadcrumb
           spacing="8px"
@@ -96,27 +153,14 @@ export default function PlatformLocation() {
           </BreadcrumbItem>
         </Breadcrumb>
         <Heading>{location?.name}</Heading>
-
-        {/* Create a form with a "Download Pack" button and a ROBLOX place id input box */}
-        {/* When the user clicks the "Download Pack" button, send a request to the API to create a new pack */}
-        {/* <InputGroup>
-            <InputLeftElement pointerEvents={"none"}>
-              <SiRoblox />
-            </InputLeftElement>
-            <Input
-              variant={"filled"}
-              type="text"
-              placeholder="Experience ID"
-              w={"fit-content"}
-            />
-          </InputGroup> */}
-        <Box p={4}>
+        <Box p={4} w={"min-content"}>
           {location ? (
             <Formik
               initialValues={{
                 name: location?.name,
+                description: location?.description,
                 enabled: location?.enabled,
-                experienceId: location?.roblox?.experienceId,
+                placeId: location?.roblox?.placeId || "",
               }}
               onSubmit={(values, actions) => {
                 fetch(`/api/v1/locations/${query.id}`, {
@@ -127,7 +171,14 @@ export default function PlatformLocation() {
                   },
                   body: JSON.stringify({
                     name: values.name,
-                    experienceId: values.experienceId,
+                    description: values.description || "",
+                    enabled: values.enabled,
+                    roblox: {
+                      placeId:
+                        values.placeId.trim() == ""
+                          ? null
+                          : values.placeId.trim(),
+                    },
                   }),
                 })
                   .then((res: any) => {
@@ -168,36 +219,51 @@ export default function PlatformLocation() {
                   <Field name="name">
                     {({ field, form }: any) => (
                       <FormControl>
-                        <FormLabel>location-name</FormLabel>
+                        <FormLabel>Name</FormLabel>
                         <InputGroup mb={2}>
                           <Input
                             {...field}
                             type="text"
-                            placeholder="Name"
+                            autoComplete="off"
+                            placeholder="Location Name"
                             variant={"filled"}
-                            required={true}
-                            width={"fit-content"}
                           />
                         </InputGroup>
                       </FormControl>
                     )}
                   </Field>
-                  <Field name="experienceId">
+                  <Field name="description">
                     {({ field, form }: any) => (
                       <FormControl>
-                        <FormLabel>experience-id</FormLabel>
+                        <FormLabel>Description</FormLabel>
+                        <InputGroup mb={2}>
+                          <Textarea
+                            {...field}
+                            type="text"
+                            autoComplete="off"
+                            placeholder="Location Description"
+                            variant={"filled"}
+                            maxH={"240px"}
+                          />
+                        </InputGroup>
+                      </FormControl>
+                    )}
+                  </Field>
+                  <Field name="placeId">
+                    {({ field, form }: any) => (
+                      <FormControl>
+                        <FormLabel>Experience ID</FormLabel>
                         <InputGroup mb={2}>
                           <InputLeftElement pointerEvents="none">
-                            <SiRoblox color="gray.300" />
+                            <IoBusiness />
                           </InputLeftElement>
                           <Input
                             {...field}
                             type="text"
+                            autoComplete="off"
                             placeholder="Experience ID"
                             variant={"filled"}
-                            required={false}
-                            disabled={location?.roblox?.experienceId !== null}
-                            width={"fit-content"}
+                            disabled={location?.roblox?.placeId !== null}
                           />
                         </InputGroup>
                       </FormControl>
@@ -206,30 +272,36 @@ export default function PlatformLocation() {
                   <Field name="enabled">
                     {({ field, form }: any) => (
                       <FormControl>
-                        <FormLabel>readers-enabled</FormLabel>
+                        <FormLabel>Enabled</FormLabel>
                         <InputGroup mb={2}>
                           <Switch
                             {...field}
-                            placeholder="readers-enabled"
-                            colorScheme="gray"
+                            placeholder="Enabled"
                             variant={"filled"}
-                            required={false}
                             width={"fit-content"}
+                            defaultChecked={location?.enabled}
                           />
                         </InputGroup>
                       </FormControl>
                     )}
                   </Field>
-                  <Stack direction={"row"} spacing={4}>
+                  <Stack direction={"row"} spacing={4} py={4}>
                     <Button
                       mb={2}
                       isLoading={props.isSubmitting}
                       type={"submit"}
                     >
-                      update
+                      Update
                     </Button>
                     <Button colorScheme="blue" mb={2}>
-                      download pack
+                      Download Pack
+                    </Button>
+                    <Button
+                      colorScheme="red"
+                      mb={2}
+                      onClick={onDeleteDialogOpen}
+                    >
+                      Delete
                     </Button>
                   </Stack>
                   <Text>
@@ -237,7 +309,10 @@ export default function PlatformLocation() {
                     <Link
                       as={NextLink}
                       href={`/platform/organizations/${location?.organizationId}`}
+                      textDecor={"underline"}
                       textUnderlineOffset={4}
+                      whiteSpace={"nowrap"}
+                      _hover={{ color: useColorModeValue("gray.600", "gray.400") }}
                     >
                       the organization
                     </Link>{" "}
