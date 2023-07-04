@@ -24,6 +24,7 @@ export default async function handler(
   const mongoClient = await clientPromise;
   const db = mongoClient.db(process.env.MONGODB_DB as string);
   const organizations = db.collection("organizations");
+  const locations = db.collection("locations");
   let organization = (await organizations
     .find({ id: organizationId })
     .toArray()) as any;
@@ -51,7 +52,33 @@ export default async function handler(
     }
 
     let body = req.body as any;
-    delete body.logs; // Prevent logs from being tampered
+
+    // Character limits
+    if (body.name !== undefined) {
+      body.name = body.name.trim();
+      if (body.name.length > 32 || body.name.length < 3) {
+        return res
+          .status(400)
+          .json({ message: "Name must be between 3-32 characters." });
+      }
+    }
+
+    if (body.description) {
+      body.description = body.description.trim();
+      if (body.description.length > 256) {
+        return res
+          .status(400)
+          .json({ message: "Description must be less than 256 characters." });
+      }
+    }
+
+    // Prevent values from being tampered with
+    delete body.logs;
+    delete body.id;
+    delete body.apiKeys;
+    if (organization.members[uid].role < 3) {
+      delete body.members[uid];
+    }
 
     // Character limits
 
@@ -67,18 +94,16 @@ export default async function handler(
     if (body.description) {
       body.description = body.description.trim();
       if (body.description.length >= 256) {
-        return res
-          .status(400)
-          .json({
-            message: "Description must be less than or equal to 256 characters.",
-          });
+        return res.status(400).json({
+          message: "Description must be less than or equal to 256 characters.",
+        });
       }
     }
 
     const time = new Date();
     const timestamp = time.getTime();
 
-    body.lastUpdatedDate = timestamp;
+    body.updatedAt = timestamp;
 
     await organizations.updateOne({ id: organizationId }, { $set: body });
     await organizations.updateOne(
@@ -98,6 +123,22 @@ export default async function handler(
     return res
       .status(200)
       .json({ message: "Successfully updated organization!", success: true });
+  }
+
+  // Deleting Organization Data
+  if (req.method === "DELETE") {
+    const time = new Date();
+    const timestamp = time.getTime();
+
+    // Delete Organization
+    await organizations.deleteOne({ id: organizationId });
+
+    // Delete All Locations in Organization
+    await locations.deleteMany({ organizationId: organizationId });
+
+    return res
+      .status(200)
+      .json({ message: "Successfully deleted organization!", success: true });
   }
 
   return res.status(500).json({ message: "An unknown errror occurred." });

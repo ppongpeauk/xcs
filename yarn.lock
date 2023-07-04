@@ -4331,6 +4331,13 @@ json5@^1.0.2:
   dependencies:
     minimist "^1.2.0"
 
+jsoneditor-react@^3.1.2:
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/jsoneditor-react/-/jsoneditor-react-3.1.2.tgz#bc36356ac5ecb0d8f88d49a5ccbeecdd7f996164"
+  integrity sha512-XqU8BMdIhrlS5HUnn7rGhgZw315bdJGQrf6NG5UH40FSw2xNirQrxnM05aeAplHkp8FNkzN2WX0tfvEWdl2UUA==
+  dependencies:
+    prop-types "^15.7.2"
+
 jsonwebtoken@^9.0.0:
   version "9.0.0"
   resolved "https://registry.yarnpkg.com/jsonwebtoken/-/jsonwebtoken-9.0.0.tgz#d0faf9ba1cc3a56255fe49c0961a67e520c1926d"
@@ -5080,7 +5087,7 @@ prelude-ls@~1.1.2:
   resolved "https://registry.yarnpkg.com/prelude-ls/-/prelude-ls-1.1.2.tgz#21932a549f5e52ffd9a827f570e04be62a97da54"
   integrity sha512-ESF23V4SKG6lVSGZgYNpbsiaAkdab6ZgOxe52p7+Kid3W3u3bxR4Vfd/o21dmN7jSt0IwgZ4v5MUd26FEtXE9w==
 
-prop-types@^15.5.8, prop-types@^15.6.2, prop-types@^15.8.1:
+prop-types@^15.5.8, prop-types@^15.6.2, prop-types@^15.7.2, prop-types@^15.8.1:
   version "15.8.1"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.8.1.tgz#67d87bf1a694f48435cf332c24af10214a3140b5"
   integrity sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==

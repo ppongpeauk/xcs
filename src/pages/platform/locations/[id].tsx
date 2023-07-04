@@ -44,8 +44,7 @@ import { IoBusiness } from "react-icons/io5";
 import { SiRoblox } from "react-icons/si";
 
 export default function PlatformLocation() {
-  const router = useRouter();
-  const { query } = useRouter();
+  const { query, push } = useRouter();
   const { idToken } = useAuthContext();
   const [location, setLocation] = useState<any>(null);
   const toast = useToast();
@@ -79,7 +78,7 @@ export default function PlatformLocation() {
           duration: 5000,
           isClosable: true,
         });
-        router.push("/platform/locations");
+        push("/platform/locations");
       })
       .catch((err) => {
         toast({
@@ -101,7 +100,15 @@ export default function PlatformLocation() {
       method: "GET",
       headers: { Authorization: `Bearer ${idToken}` },
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (res.status === 200)
+          return res.json();
+        if (res.status === 404) {
+          push("/404");
+        } else if (res.status === 403) {
+          push("/403");
+        }
+      })
       .then((data) => {
         setLocation(data.location);
       });
@@ -318,8 +325,8 @@ export default function PlatformLocation() {
                             autoComplete="off"
                             placeholder="Experience ID"
                             variant={"filled"}
-                            isDisabled={true}
-                            // disabled={location?.roblox?.placeId !== null}
+                            // isDisabled={true}
+                            disabled={location?.roblox?.placeId !== null}
                           />
                         </InputGroup>
                         <FormHelperText>

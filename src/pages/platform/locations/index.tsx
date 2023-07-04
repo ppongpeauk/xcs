@@ -10,6 +10,7 @@ import {
   HStack,
   Heading,
   IconButton,
+  Image,
   InputGroup,
   Select,
   Skeleton,
@@ -89,6 +90,32 @@ export default function PlatformLocations() {
     setSelectedOrganization(organizations[0]);
   }, [organizations]);
 
+  useEffect(() => {
+    if (!query.organization) return;
+    const organization = organizations.find(
+      (organization: any) => organization.id === query.organization
+    );
+    setSelectedOrganization(organization);
+  }, [organizations, query.organization]);
+
+  // const experienceToThumbnail = useCallback((placeId: string) => {
+  //   if (!placeId) return;
+  //   const url = fetch(
+  //     `https://thumbnails.roblox.com/v1/places/gameicons?placeIds=${placeId}&returnPolicy=PlaceHolder&size=256x256&format=Png&isCircular=false`,
+  //     {
+  //       method: "GET",
+  //       headers: {
+  //         "Accept": "application/json",
+  //       }
+  //     })
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       const thumbnail = data.data[0].imageUrl;
+  //       return thumbnail;
+  //     });
+  //   return url;
+  // }, []);
+
   return (
     <>
       <Head>
@@ -98,40 +125,42 @@ export default function PlatformLocations() {
         isOpen={isCreateLocationModalOpen}
         onClose={onCreateLocationModalClose}
         selectedOrganization={selectedOrganization}
-        onCreateLocation={(locationId) => {
-          push(`/platform/locations/${locationId}`);
+        onCreate={(id) => {
+          push(`/platform/locations/${id}`);
         }}
       />
       <Container maxW={"full"} p={8}>
         <Heading>Locations</Heading>
         <HStack
           display={"flex"}
-          py={2}
+          py={4}
           justify={"flex-start"}
           align={"flex-end"}
           spacing={4}
         >
-          <FormControl w={"fit-content"}>
-            <FormLabel>Organization</FormLabel>
-            {selectedOrganization ? (
-              <Select
-                w={"fit-content"}
-                value={selectedOrganization?.name}
-                onChange={(e) => {
-                  const organization = organizations.find(
-                    (organization: any) => organization.name === e.target.value
-                  );
-                  setSelectedOrganization(organization);
-                }}
-              >
-                {organizations?.map((organization: any) => (
-                  <option key={organization.id} value={organization.name}>
-                    {organization.name}
-                  </option>
-                ))}
-              </Select>
-            ) : null}
-          </FormControl>
+          {selectedOrganization ? (
+            <FormControl w={"fit-content"}>
+              <>
+                <FormLabel>Organization</FormLabel>
+                <Select
+                  value={selectedOrganization?.name}
+                  onChange={(e) => {
+                    const organization = organizations.find(
+                      (organization: any) =>
+                        organization.name === e.target.value
+                    );
+                    setSelectedOrganization(organization);
+                  }}
+                >
+                  {organizations?.map((organization: any) => (
+                    <option key={organization.id} value={organization.name}>
+                      {organization.name}
+                    </option>
+                  ))}
+                </Select>
+              </>
+            </FormControl>
+          ) : null}
           <Button
             leftIcon={<BsBuildingFillAdd />}
             onClick={onCreateLocationModalOpen}
@@ -156,7 +185,24 @@ export default function PlatformLocations() {
           ) : (
             <Flex>
               {locations.length === 0 ? (
-                <Text>dawg this shit&apos;s empty</Text>
+                <Text>
+                  This organization does not have any locations yet.{" "}
+                  <Text as={"span"}>
+                    <Button
+                      variant={"link"}
+                      color={"unset"}
+                      textDecor={"underline"}
+                      textUnderlineOffset={4}
+                      onClick={onCreateLocationModalOpen}
+                      _hover={{
+                        color: useColorModeValue("gray.600", "gray.400"),
+                      }}
+                    >
+                      Create one
+                    </Button>
+                  </Text>{" "}
+                  to get started!
+                </Text>
               ) : (
                 locations?.map((location: any) => (
                   <Box
@@ -173,6 +219,10 @@ export default function PlatformLocations() {
                       <Heading size={"md"} mb={2}>
                         {location.name}
                       </Heading>
+                      {/* <Image
+                        src={experienceToThumbnail(location?.roblox?.placeId)}
+                        alt={location.name}
+                      /> */}
                       <Text fontSize={"sm"} mb={2}>
                         {location.description}
                       </Text>

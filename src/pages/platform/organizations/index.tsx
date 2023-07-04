@@ -5,22 +5,38 @@ import {
   Button,
   Container,
   Flex,
+  FormControl,
+  FormLabel,
+  HStack,
   Heading,
+  Select,
+  Skeleton,
   Stack,
   Text,
   useColorModeValue,
+  useDisclosure,
 } from "@chakra-ui/react";
 import Head from "next/head";
 import { useEffect, useState } from "react";
 
+import CreateOrganizationDialog from "@/components/CreateOrganizationDialog";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { useToast } from "@chakra-ui/react";
 import NextLink from "next/link";
-
+import { useRouter } from "next/router";
+import { BsBuildingFillAdd } from "react-icons/bs";
+import { MdOutlineAddCircle, MdOutlineJoinRight } from "react-icons/md";
 export default function PlatformOrganizations() {
+  const { push } = useRouter();
   const [organizations, setOrganizations] = useState<any>([]);
   const { idToken } = useAuthContext();
   const toast = useToast();
+
+  const {
+    isOpen: isCreateOrganizationModalOpen,
+    onOpen: onCreateOrganizationModalOpen,
+    onClose: onCreateOrganizationModalClose,
+  } = useDisclosure();
 
   useEffect(() => {
     if (!idToken) return;
@@ -35,6 +51,7 @@ export default function PlatformOrganizations() {
         .json()
         .then((data) => {
           setOrganizations(data.organizations);
+          console.log(data.organizations);
         })
         .catch((err) => {
           toast({
@@ -48,16 +65,61 @@ export default function PlatformOrganizations() {
     });
   }, [idToken, toast]);
 
+  const onCreateOrganization = () => {
+    onCreateOrganizationModalClose();
+    toast({
+      title: "Success",
+      description: "Organization created successfully",
+      status: "success",
+      duration: 9000,
+      isClosable: true,
+    });
+  };
+
   return (
     <>
       <Head>
         <title>EVE XCS - Organizations</title>
       </Head>
+      <CreateOrganizationDialog
+        isOpen={isCreateOrganizationModalOpen}
+        onClose={onCreateOrganizationModalClose}
+        onCreate={(id) => {
+          push(`/platform/organizations/${id}`);
+        }}
+      />
+
       <Container maxW={"full"} p={8}>
         <Heading>Organizations</Heading>
-        <Box p={4}>
-          <Flex>
-            {organizations.map((organization: any) => (
+        <HStack
+          display={"flex"}
+          py={4}
+          justify={"flex-start"}
+          align={"flex-end"}
+          spacing={4}
+        >
+          <FormControl w={"fit-content"}>
+            <Button
+              variant={"solid"}
+              leftIcon={<MdOutlineJoinRight />}
+              // onClick={onCreateOrganizationModalOpen}
+            >
+              Join
+            </Button>
+          </FormControl>
+          <FormControl w={"fit-content"}>
+            <Button
+              variant={"solid"}
+              leftIcon={<MdOutlineAddCircle />}
+              onClick={onCreateOrganizationModalOpen}
+            >
+              Create
+            </Button>
+          </FormControl>
+        </HStack>
+        <Flex>
+          {organizations.length !== 0 ? (
+            organizations.map((organization: any) => (
               <Box
                 key={organization.id}
                 h={"full"}
@@ -82,9 +144,14 @@ export default function PlatformOrganizations() {
                   </Button>
                 </Stack>
               </Box>
-            ))}
-          </Flex>
-        </Box>
+            ))
+          ) : (
+            <Text>
+              You are currently not a member of any organization. Create or join
+              an organization to get started.
+            </Text>
+          )}
+        </Flex>
       </Container>
     </>
   );

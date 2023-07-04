@@ -82,7 +82,7 @@ export default async function handler(
     const time = new Date();
     const timestamp = time.getTime();
 
-    body.lastUpdatedDate = timestamp;
+    body.updatedAt = timestamp;
 
     await locations.updateOne({ id: locationId }, { $set: body });
     await organizations.updateOne(

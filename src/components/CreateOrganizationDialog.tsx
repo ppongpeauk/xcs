@@ -3,6 +3,7 @@ import {
   FormControl,
   FormLabel,
   Input,
+  Link,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -18,17 +19,16 @@ import {
 import { Field, Form, Formik } from "formik";
 
 import { useAuthContext } from "@/contexts/AuthContext";
+import NextLink from "next/link";
 import { useRef } from "react";
 
-export default function CreateLocationDialog({
+export default function CreateOrganizationDialog({
   isOpen,
   onClose,
-  selectedOrganization,
   onCreate,
 }: {
   isOpen: boolean;
   onClose: () => void;
-  selectedOrganization: any;
   onCreate: (location: any) => void;
 }) {
   const toast = useToast();
@@ -39,10 +39,9 @@ export default function CreateLocationDialog({
   return (
     <>
       <Formik
-        initialValues={{ name: "", description: "" }}
+        initialValues={{ name: "" }}
         onSubmit={(values, actions) => {
-          console.log(selectedOrganization.id);
-          fetch("/api/v1/locations", {
+          fetch("/api/v1/organizations", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -50,8 +49,6 @@ export default function CreateLocationDialog({
             },
             body: JSON.stringify({
               name: values.name,
-              description: values.description,
-              organizationId: selectedOrganization.id,
             }),
           })
             .then((res) => {
@@ -71,11 +68,11 @@ export default function CreateLocationDialog({
                 isClosable: true,
               });
               onClose();
-              onCreate(data.locationId);
+              onCreate(data.organizationId);
             })
             .catch((error) => {
               toast({
-                title: "There was an error creating the location.",
+                title: "There was an error creating the organization.",
                 description: error.message,
                 status: "error",
                 duration: 9000,
@@ -92,7 +89,7 @@ export default function CreateLocationDialog({
             <ModalOverlay />
             <Form>
               <ModalContent>
-                <ModalHeader>Create Location</ModalHeader>
+                <ModalHeader>Create Organization</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody pb={4}>
                   <VStack spacing={2}>
@@ -103,7 +100,7 @@ export default function CreateLocationDialog({
                           <Input
                             {...field}
                             variant={"filled"}
-                            placeholder={"Location Name"}
+                            placeholder={"Organization Name"}
                           />
                         </FormControl>
                       )}
@@ -121,26 +118,31 @@ export default function CreateLocationDialog({
                         </FormControl>
                       )}
                     </Field> */}
-                    <Field name="description">
-                      {({ field, form }: any) => (
-                        <FormControl>
-                          <FormLabel>Description</FormLabel>
-                          <Textarea
-                            {...field}
-                            variant={"filled"}
-                            placeholder={"Location Description"}
-                            maxH={"200px"}
-                          />
-                        </FormControl>
-                      )}
-                    </Field>
                   </VStack>
                   <Text fontSize={"sm"} pt={4}>
-                    This location will be created under the{" "}
-                    <Text as={"span"} fontWeight={"bold"}>
-                      {selectedOrganization?.name}
+                    By creating an organization, you agree to our{" "}
+                    <Text as={"span"}>
+                      <Link
+                        as={NextLink}
+                        href={"/terms"}
+                        textDecor={"underline"}
+                        textUnderlineOffset={4}
+                      >
+                        Terms of Service
+                      </Link>
                     </Text>{" "}
-                    organization.
+                    and{" "}
+                    <Text as={"span"}>
+                      <Link
+                        as={NextLink}
+                        href={"/privacy"}
+                        textDecor={"underline"}
+                        textUnderlineOffset={4}
+                      >
+                        Privacy Policy
+                      </Link>
+                    </Text>
+                    .
                   </Text>
                 </ModalBody>
 

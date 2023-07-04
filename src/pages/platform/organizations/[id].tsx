@@ -37,13 +37,21 @@ import RoleEditModal from "@/components/RoleEditModal";
 import { useToast } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
 import { AiFillTag } from "react-icons/ai";
+import { IoIosRemoveCircle } from "react-icons/io";
 import { SiRoblox } from "react-icons/si";
 
+import DeleteDialog from "@/components/DeleteDialog";
 export default function PlatformOrganization() {
-  const { query } = useRouter();
+  const { query, push } = useRouter();
   const { idToken } = useAuthContext();
   const [organization, setOrganization] = useState<any>(null);
   const toast = useToast();
+
+  const {
+    isOpen: isDeleteDialogOpen,
+    onOpen: onDeleteDialogOpen,
+    onClose: onDeleteDialogClose,
+  } = useDisclosure();
 
   const {
     isOpen: roleModalOpen,
@@ -57,15 +65,69 @@ export default function PlatformOrganization() {
     onClose: memberModalOnClose,
   } = useDisclosure();
 
+  const onDelete = () => {
+    fetch(`/api/v1/organizations/${query.id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${idToken}` },
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          return res.json();
+        } else {
+          return res.json().then((json: any) => {
+            throw new Error(json.message);
+          });
+        }
+      })
+      .then((data) => {
+        toast({
+          title: data.message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+        push("/platform/organizations");
+      })
+      .catch((err) => {
+        toast({
+          title: "Error",
+          description: err.message,
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
+      })
+      .finally(() => {
+        onDeleteDialogClose();
+      });
+  };
+
   let refreshData = () => {
     setOrganization(null);
     fetch(`/api/v1/organizations/${query.id}`, {
       method: "GET",
       headers: { Authorization: `Bearer ${idToken}` },
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (res.status === 200) return res.json();
+
+        if (res.status === 404) {
+          push("/404");
+        } else if (res.status === 403) {
+          push("/403");
+        }
+      })
       .then((data) => {
         setOrganization(data.organization);
+      })
+      .catch((err) => {
+        toast({
+          title: "Error",
+          description: err.message,
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
       });
   };
 
@@ -81,8 +143,23 @@ export default function PlatformOrganization() {
       <Head>
         <title>EVE XCS - {organization?.name}</title>
       </Head>
-      <RoleEditModal isOpen={roleModalOpen} onOpen={roleModalOnOpen} onClose={roleModalOnClose} />
-      <MemberEditModal isOpen={memberModalOpen} onOpen={memberModalOnOpen} onClose={memberModalOnClose} />
+      <DeleteDialog
+        title="Delete Organization"
+        body="Are you sure you want to delete this organization? This will remove all associated data, including locations. This action cannot be undone."
+        isOpen={isDeleteDialogOpen}
+        onClose={onDeleteDialogClose}
+        onDelete={onDelete}
+      />
+      <RoleEditModal
+        isOpen={roleModalOpen}
+        onOpen={roleModalOnOpen}
+        onClose={roleModalOnClose}
+      />
+      <MemberEditModal
+        isOpen={memberModalOpen}
+        onOpen={memberModalOnOpen}
+        onClose={memberModalOnClose}
+      />
       <Container maxW={"full"} p={8}>
         <Breadcrumb
           spacing="8px"
@@ -129,27 +206,24 @@ export default function PlatformOrganization() {
             <Formik
               initialValues={{
                 name: organization?.name,
-                members: JSON.stringify({
-                  "FF0gCiIJYUPfmA4CTfqXTyPcHQb2": {
-                    role: 0,
-                    clearances: [
-                      "177bc9de-1a0b-11ee-be56-0242ac120002"
-                    ],
-                  },
-                  "NFtVOowrYwXFMwSjllxFbs5D9nC3": {
-                    role: 1,
-                    clearances: [
-                      "177bc9de-1a0b-11ee-be56-0242ac120002"
-                    ],
-                  }
-                }),
-                clearances: JSON.stringify({
-                  "177bc9de-1a0b-11ee-be56-0242ac120002": {
-                    name: "Administrator",
-                  }
-                }),
+                members: JSON.stringify(organization?.members),
+                clearances: JSON.stringify(organization?.clearances),
               }}
               onSubmit={(values, actions) => {
+                try {
+                  JSON.parse(values.members)
+                  JSON.parse(values.clearances)
+                } catch (err) {
+                  toast({
+                    title: "Error",
+                    description: "Invalid JSON.",
+                    status: "error",
+                    duration: 9000,
+                    isClosable: true,
+                  });
+                  return actions.setSubmitting(false);
+                }
+               
                 fetch(`/api/v1/organizations/${query.id}`, {
                   method: "PUT",
                   headers: {
@@ -158,6 +232,8 @@ export default function PlatformOrganization() {
                   },
                   body: JSON.stringify({
                     name: values.name,
+                    members: JSON.parse(values.members),
+                    clearances: JSON.parse(values.clearances),
                   }),
                 })
                   .then((res: any) => {
@@ -247,15 +323,38 @@ export default function PlatformOrganization() {
                       isLoading={props.isSubmitting}
                       type={"submit"}
                     >
-                      update
+                      Update
                     </Button>
-                    <Button mb={2} isLoading={props.isSubmitting} onClick={roleModalOnOpen}>
-                      edit reader groups
+                    <Button
+                      mb={2}
+                      isLoading={props.isSubmitting}
+                      onClick={roleModalOnOpen}
+                    >
+                      Edit Clearances
                     </Button>
-                    <Button mb={2} isLoading={props.isSubmitting} onClick={memberModalOnOpen}>
-                      manage members
+                    <Button
+                      mb={2}
+                      isLoading={props.isSubmitting}
+                      onClick={memberModalOnOpen}
+                    >
+                      Manage Members
                     </Button>
-
+                    <Button
+                      as={NextLink}
+                      mb={2}
+                      isLoading={props.isSubmitting}
+                      href={`/platform/locations/?organization=${query.id}`}
+                    >
+                      Manage Locations
+                    </Button>
+                    <Button
+                      colorScheme="red"
+                      mb={2}
+                      onClick={onDeleteDialogOpen}
+                      leftIcon={<IoIosRemoveCircle />}
+                    >
+                      Delete
+                    </Button>
                   </Stack>
                 </Form>
               )}

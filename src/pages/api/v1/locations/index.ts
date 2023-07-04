@@ -50,11 +50,30 @@ export default async function handler(
       return res.status(403).json({ message: "Forbidden" });
     }
 
+    // Check if organization has less than 3 locations
+    const ownedOrganizations = await locations
+      .find({
+        organizationId: organizationId,
+      })
+      .toArray();
+
+    if (ownedOrganizations.length >= 3) {
+      return res.status(403).json({
+        message:
+          "This organization has reached the maximum amount of locations. " +
+          (organization.members[uid].role === 3
+            ? "Upgrade your account to create more locations."
+            : "The owner of this organization must upgrade their account to create more locations."),
+      });
+    }
+
     // Character limits
     if (name !== undefined) {
       name = name.trim();
       if (name.length > 32 || name.length < 3) {
-        return res.status(400).json({ message: "Name must be between 3-32 characters." });
+        return res
+          .status(400)
+          .json({ message: "Name must be between 3-32 characters." });
       }
     }
 
@@ -101,13 +120,11 @@ export default async function handler(
       }
     );
 
-    return res
-      .status(200)
-      .json({
-        message: "Successfully created a location!",
-        success: true,
-        locationId: uuid,
-      });
+    return res.status(200).json({
+      message: "Successfully created a location!",
+      success: true,
+      locationId: uuid,
+    });
   }
 
   return res.status(500).json({ message: "An unknown error has occurred." });
