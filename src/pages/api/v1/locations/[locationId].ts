@@ -53,7 +53,7 @@ export default async function handler(
       return res.status(400).json({ message: "No body provided" });
     }
 
-    const body = req.body as any;
+    let body = req.body as any;
 
     // Character limits
     if (body.name !== undefined) {
