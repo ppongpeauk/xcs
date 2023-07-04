@@ -115,7 +115,7 @@ export default async function handler(
     // Delete all API keys for this location
     await organizations.updateOne(
       { id: organization.id },
-      { $pull: { apiKeys: { locationId: locationId } } }
+      { $unset: { apiKeys: { locationId: locationId } } }
     );
 
     // Log Deletion
