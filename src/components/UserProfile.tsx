@@ -64,6 +64,7 @@ export default function Profile({ username }: { username?: string }) {
   useEffect(() => {
     if (!idToken || !currentUser) return;
     if (!username) return;
+    setUser(undefined);
     fetch(`/api/v1/users/${username}`, {
       method: "GET",
       headers: {
