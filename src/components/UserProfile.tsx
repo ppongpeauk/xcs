@@ -160,14 +160,14 @@ export default function Profile({ username }: { username?: string }) {
                   zIndex={1}
                   mb={2}
                 >
-                  {user?.name?.first} {user?.name?.last}
+                  {user?.name?.first || "First"} {user?.name?.last || "Last"}
                 </Heading>
               </Skeleton>
-              <SkeletonText isLoaded={!!user}>
+              <Skeleton isLoaded={!!user}>
                 <Text as={"h2"} size={"md"} textAlign={"center"} zIndex={1}>
-                  @{user?.username}
+                  @{user?.username || "username"}
                 </Text>
-              </SkeletonText>
+              </Skeleton>
             </Box>
           </Flex>
         </Box>
