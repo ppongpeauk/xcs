@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import {
+  Avatar,
   Box,
   Button,
   Container,
@@ -152,9 +153,9 @@ export default function Profile({ username }: { username?: string }) {
               aspectRatio={1 / 1}
             >
               <Skeleton isLoaded={!!user}>
-                <Image
-                  src={user?.avatar || "/images/logo.jpg"}
-                  alt={user?.name}
+                <Avatar
+                  src={user?.avatar}
+                  borderRadius={0}
                   w={"100%"}
                   h={"auto"}
                 />

@@ -1,5 +1,5 @@
 import Section from "@/components/section";
-import { Box, Container, Flex, Image, Text } from "@chakra-ui/react";
+import { Box, Container, Flex, Image, Text, useColorModeValue } from "@chakra-ui/react";
 
 export default function Home() {
   return (
@@ -10,7 +10,7 @@ export default function Home() {
         minH={"calc(100vh - 6rem)"}
       >
         <Flex flexBasis={1} flexGrow={1} order={[2, 1]}>
-          <Image src={"/images/hero3.jpg"} objectFit={"cover"} />
+          <Image src={"/images/hero3.jpg"} objectFit={"cover"} alt={"Home Image"} />
         </Flex>
         <Flex
           flexBasis={1}

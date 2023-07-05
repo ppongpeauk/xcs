@@ -342,7 +342,7 @@ export default function PlatformNav({
           <HStack align={"center"} justify={"flex-end"} spacing={4}>
             <ThemeButton />
             <Button variant={"unstyled"} h={"full"} onClick={() => {}}>
-              <SkeletonCircle isLoaded={!!currentUser?.avatar} w={"auto"} h={"auto"}>
+              <SkeletonCircle isLoaded={!!currentUser} w={"auto"} h={"auto"}>
                 <Avatar src={currentUser?.avatar} size={"md"} />
               </SkeletonCircle>
             </Button>
