@@ -7,6 +7,7 @@ import {
   AlertDialogHeader,
   AlertDialogOverlay,
   Button,
+  useColorModeValue,
 } from "@chakra-ui/react";
 
 export default function DeleteDialog({ isOpen, onClose, cancelRef, onDelete, title, body } : any) {
@@ -18,7 +19,7 @@ export default function DeleteDialog({ isOpen, onClose, cancelRef, onDelete, tit
         onClose={onClose}
       >
         <AlertDialogOverlay>
-          <AlertDialogContent>
+          <AlertDialogContent bg={useColorModeValue("white", "gray.800")}>
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
               {
                 title ? title : "Delete item"
