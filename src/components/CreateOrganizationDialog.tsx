@@ -121,7 +121,7 @@ export default function CreateOrganizationDialog({
                       )}
                     </Field> */}
                   </VStack>
-                  <Text fontSize={"sm"} pt={2} color={"gray.500"}>
+                  <Text fontSize={"sm"} pt={2}>
                     By creating an organization, you agree to our{" "}
                     <Text as={"span"}>
                       <Link

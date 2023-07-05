@@ -106,7 +106,7 @@ export default function JoinOrganizationDialog({
                       )}
                     </Field>
                   </VStack>
-                  <Text mt={2} fontSize={"sm"} color={"gray.500"}>
+                  <Text mt={2} fontSize={"sm"}>
                     Have an invite code? Enter it here to join an organization.
                   </Text>
                 </ModalBody>
