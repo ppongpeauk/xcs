@@ -11,13 +11,84 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
-export default function UserProfileNS() {
+// Get profile data
+export async function getServerSideProps({ query }: any) {
+  if (!query.username) {
+    return {
+      props: {
+        user: null,
+      },
+    };
+  }
+
+  const user = await fetch(
+    `https://xcs.restrafes.co/api/v1/users/${query.username}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  )
+    .then((res) => res.json())
+    .then((ret) => {
+      return ret?.user;
+    });
+  return {
+    props: {
+      user,
+    },
+  };
+}
+export default function UserProfileNS({ user }: any) {
   const { query, push } = useRouter();
   const { currentUser } = useAuthContext();
   let { username: queryUsername } = query;
-  const username = queryUsername?.length ? queryUsername[0] : currentUser?.username;
+  const username = queryUsername?.length
+    ? queryUsername[0]
+    : currentUser?.username;
 
-  return <UserProfile username={username}/>;
+  return (
+    <>
+      <Head>
+        <meta property="og:site_name" content="EVE XCS" />
+        {user ? (
+          <>
+            <meta
+              property="og:title"
+              content={`EVE XCS | ${user.name.first} ${user.name.last}'s Profile`}
+            />
+            <meta
+              property="og:url"
+              content={`https://xcs.restrafes.co/platform/profile/${username}`}
+            />
+            <meta
+              property="og:description"
+              content={
+                user.bio ||
+                `Join ${user.name.first} and a community of architects in managing access points with effortlessly on EVE XCS.`
+              }
+            />
+            <meta property="og:image" content={user.avatar} />
+          </>
+        ) : (
+          <>
+            <meta property="og:title" content={`EVE XCS | Your Profile`} />
+            <meta
+              property="og:url"
+              content={`https://xcs.restrafes.co/platform/profile`}
+            />
+            <meta
+              property="og:description"
+              content={`Join a community of architects in managing access points with effortlessly on EVE XCS.`}
+            />
+          </>
+        )}
+        <meta property="og:type" content="website" />
+      </Head>
+      <UserProfile username={username} />
+    </>
+  );
 }
 
 UserProfileNS.getLayout = (page: any) => <Layout>{page}</Layout>;

@@ -8,17 +8,17 @@ export default async function handler(
 ) {
   const { username } = req.query as { username: string };
 
-  // Authorization Header
-  const authHeader = req.headers.authorization;
+  // // Authorization Header
+  // const authHeader = req.headers.authorization;
 
-  // Bearer Token
-  const token = authHeader?.split(" ")[1];
+  // // Bearer Token
+  // const token = authHeader?.split(" ")[1];
 
-  // Verify Token
-  const uid = await tokenToID(token as string);
-  if (!uid) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
+  // // Verify Token
+  // const uid = await tokenToID(token as string);
+  // if (!uid) {
+  //   return res.status(401).json({ message: "Unauthorized" });
+  // }
 
   const mongoClient = await clientPromise;
   const db = mongoClient.db(process.env.MONGODB_DB as string);
