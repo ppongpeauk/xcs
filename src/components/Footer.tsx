@@ -18,7 +18,7 @@ export default function Footer() {
         as="footer"
         position={"sticky"}
         top={0}
-        flexDir={"row"}
+        flexDir={"column"}
         w={"100%"}
         h={"6rem"}
         borderTop={"1px solid"}
@@ -35,6 +35,9 @@ export default function Footer() {
             © RESTRAFES & CO. LLC.
           </Text>{" "}
           All rights reserved.
+        </Text>
+        <Text color={"gray.400"} fontSize={"sm"}>
+          Commit: {process.env.NEXT_PUBLIC_SHA} ({process.env.NEXT_PUBLIC_BRANCH})
         </Text>
       </Flex>
     </>
