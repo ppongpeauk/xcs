@@ -60,7 +60,7 @@ export default function PlatformLocations() {
       .then((res) => res.json())
       .then((data) => {
         setOrganizations(data.organizations);
-        if (data.organizations.length === 0) {
+        if (data?.organizations?.length === 0) {
           setLocationsLoading(false);
         }
       })
