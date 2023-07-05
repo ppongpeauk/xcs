@@ -46,7 +46,8 @@ import { SiRoblox } from "react-icons/si";
 import DeleteDialog from "@/components/DeleteDialog";
 export default function PlatformOrganization() {
   const { query, push } = useRouter();
-  const { idToken } = useAuthContext();
+  const { user } = useAuthContext();
+  const [idToken, setIdToken] = useState<string | null>(null);
   const [organization, setOrganization] = useState<any>(null);
   const toast = useToast();
 
@@ -140,6 +141,12 @@ export default function PlatformOrganization() {
     if (!query.id) return;
     refreshData();
   }, [query.id, idToken]);
+
+  useEffect(() => {
+    user.getIdToken().then((token: string) => {
+      setIdToken(token);
+    });
+  }, [user]);
 
   return (
     <>

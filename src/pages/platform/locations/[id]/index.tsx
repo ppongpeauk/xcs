@@ -47,7 +47,8 @@ import { SiRoblox } from "react-icons/si";
 
 export default function PlatformLocation() {
   const { query, push } = useRouter();
-  const { idToken } = useAuthContext();
+  const { user } = useAuthContext();
+  const [idToken, setIdToken] = useState<string | null>(null);
   const [location, setLocation] = useState<any>(null);
   const toast = useToast();
 
@@ -172,6 +173,12 @@ export default function PlatformLocation() {
     if (!query.id) return;
     refreshData();
   }, [query.id, idToken]);
+
+  useEffect(() => {
+    user.getIdToken().then((token: string) => {
+      setIdToken(token);
+    });
+  }, [user]);
 
   return (
     <>
