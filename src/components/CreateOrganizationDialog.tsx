@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import {
   Button,
   FormControl,
@@ -14,6 +15,7 @@ import {
   Text,
   Textarea,
   VStack,
+  useColorModeValue,
   useToast,
 } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
@@ -88,7 +90,7 @@ export default function CreateOrganizationDialog({
           <Modal isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />
             <Form>
-              <ModalContent>
+              <ModalContent bg={useColorModeValue("white", "gray.800")}>
                 <ModalHeader>Create Organization</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody pb={4}>
