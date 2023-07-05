@@ -4,6 +4,7 @@
 import { useEffect, useState } from "react";
 
 // Components
+import ThemeButton from "@/components/ThemeButton";
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import {
   AbsoluteCenter,
@@ -14,6 +15,7 @@ import {
   Container,
   Divider,
   Flex,
+  HStack,
   Heading,
   Image,
   Link,
@@ -186,7 +188,15 @@ export default function PlatformNav({
                 alt={"EVE XCS"}
                 objectFit={"contain"}
               />
-              <Code ml={2} fontSize={"xs"} h={"fit-content"} px={"4px"}>
+              <Code
+                ml={2}
+                fontSize={"xs"}
+                h={"fit-content"}
+                px={"4px"}
+                fontWeight={"bold"}
+                bg={useColorModeValue("gray.900", "white")}
+                color={useColorModeValue("white", "gray.900")}
+              >
                 BETA
               </Code>
             </Flex>
@@ -328,11 +338,12 @@ export default function PlatformNav({
           zIndex={500}
         >
           <Heading size={"lg"}>{currentRouteLabel}</Heading>
-          <Flex align={"center"} justify={"flex-end"}>
+          <HStack align={"center"} justify={"flex-end"} spacing={4}>
+            <ThemeButton />
             <Button variant={"unstyled"} h={"full"} onClick={() => {}}>
               <Avatar src={currentUser?.avatar} />
             </Button>
-          </Flex>
+          </HStack>
         </Flex>
         {children}
       </Flex>

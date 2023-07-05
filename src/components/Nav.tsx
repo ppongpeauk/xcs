@@ -1,4 +1,5 @@
 // Components
+import ThemeButton from "@/components/ThemeButton";
 import {
   Avatar,
   Box,
@@ -6,6 +7,7 @@ import {
   Code,
   Container,
   Flex,
+  HStack,
   Image,
   Link,
   Spacer,
@@ -53,7 +55,7 @@ export default function Nav({ type }: { type?: string }) {
       h={"6rem"}
       align={"center"}
       bg={useColorModeValue("white", "gray.800")}
-      border ={"1px solid"}
+      border={"1px solid"}
       borderColor={useColorModeValue("gray.300", "gray.700")}
       zIndex={50}
     >
@@ -90,7 +92,15 @@ export default function Nav({ type }: { type?: string }) {
               alt={"EVE XCS"}
               objectFit={"contain"}
             />
-            <Code ml={2} fontSize={"xs"} h={"fit-content"} px={"4px"}>
+            <Code
+              ml={2}
+              fontSize={"xs"}
+              h={"fit-content"}
+              px={"4px"}
+              fontWeight={"bold"}
+              bg={useColorModeValue("gray.900", "white")}
+              color={useColorModeValue("white", "gray.900")}
+            >
               BETA
             </Code>
           </Flex>
@@ -101,13 +111,15 @@ export default function Nav({ type }: { type?: string }) {
       </Flex>
       <Spacer />
       {/* Links */}
-      <Flex
+      <HStack
         align={"center"}
         h={"100%"}
         px={[4, 8]}
-        borderLeft={"1px solid"}
-        borderColor={useColorModeValue("gray.200", "gray.700")}
+        // borderLeft={"1px solid"}
+        // borderColor={useColorModeValue("gray.200", "gray.700")}
+        spacing={2}
       >
+        <ThemeButton />
         {!user ? (
           <NavLink href={"/login"} pathname={pathname}>
             Login
@@ -115,12 +127,12 @@ export default function Nav({ type }: { type?: string }) {
         ) : (
           <>
             <NavLink href={"/platform/home"} pathname={pathname}>
-              Control Panel
+              Access Platform
             </NavLink>
           </>
         )}
         {/* <Avatar size={"md"} src="/images/avatar.jpg" mx={2} /> */}
-      </Flex>
+      </HStack>
     </Flex>
   );
 }

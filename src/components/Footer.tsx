@@ -36,7 +36,6 @@ export default function Footer() {
           </Text>{" "}
           All rights reserved.
         </Text>
-        <ThemeButton />
       </Flex>
     </>
   );
