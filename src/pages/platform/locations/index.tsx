@@ -188,8 +188,7 @@ export default function PlatformLocations() {
             </Stack>
           ) : organizations.length === 0 ? (
             <Text>
-              You are currently not a member of any organization. Create or join
-              an organization to get started.
+              You are currently not a member of any organization.
             </Text>
           ) : (
             <Flex>

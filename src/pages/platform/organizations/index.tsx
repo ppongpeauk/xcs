@@ -9,6 +9,7 @@ import {
   FormLabel,
   HStack,
   Heading,
+  Link,
   Select,
   Skeleton,
   Stack,
@@ -180,7 +181,38 @@ export default function PlatformOrganizations() {
             </Stack>
           ) : (
             <Text>
-              You are currently not a member of any organization. Create or join
+              You are currently not a member of any organization.{" "}
+              <Text as={"span"}>
+                <Button
+                  minW={"unset"}
+                  variant={"link"}
+                  color={"unset"}
+                  textDecor={"underline"}
+                  textUnderlineOffset={4}
+                  onClick={onCreateOrganizationModalOpen}
+                  _hover={{
+                    color: useColorModeValue("gray.600", "gray.400"),
+                  }}
+                >
+                  Create
+                </Button>
+              </Text>{" "}
+              or{" "}
+              <Text as={"span"}>
+                <Button
+                  minW={"unset"}
+                  variant={"link"}
+                  color={"unset"}
+                  textDecor={"underline"}
+                  textUnderlineOffset={4}
+                  onClick={onJoinOrganizationModalOpen}
+                  _hover={{
+                    color: useColorModeValue("gray.600", "gray.400"),
+                  }}
+                >
+                  join
+                </Button>
+              </Text>{" "}
               an organization to get started.
             </Text>
           )}
