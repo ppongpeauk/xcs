@@ -92,7 +92,9 @@ export default function Profile({ username }: { username?: string }) {
   return (
     <>
       <Head>
-        <title>{`EVE XCS - ${user?.name?.first}'s Profile`}</title>
+        {
+          user ? (<title>{`EVE XCS - ${user?.name?.first}'s Profile`}</title>) : (<title>{`EVE XCS - Profile`}</title>)
+        }
       </Head>
       <Container
         display={"flex"}
