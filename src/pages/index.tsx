@@ -8,19 +8,15 @@ export default function HomePage() {
     <>
       <Head>
         <title>EVE XCS | Home</title>
-        <meta key={1} name="description" content="EVE XCS" />
-        <link key={1} rel="icon" href="/favicon.ico" />
-
-        <meta key={1} property="og:site_name" content="EVE XCS" />
-        <meta key={1} property="og:title" content="EVE XCS" />
-        <meta key={1} property="og:type" content="website" />
-        <meta key={1} property="og:url" content="https://xcs.restrafes.co/" />
-        <meta key={1} property="og:image" content="/images/hero3.jpg" />
+        <meta property="og:title" content="Home" />
+        <meta property="og:site_name" content="EVE XCS" />
+        <meta property="og:url" content="https://xcs.restrafes.co" />
         <meta
-          key={1}
           property="og:description"
           content="Control your access points with ease."
         />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="" />
       </Head>
       <Nav />
       <Home />
