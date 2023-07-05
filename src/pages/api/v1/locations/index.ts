@@ -1,6 +1,7 @@
 import clientPromise from "@/lib/mongodb";
 import { tokenToID } from "@/pages/api/firebase";
 import { NextApiRequest, NextApiResponse } from "next";
+import { generate as generateString } from "randomstring";
 import { v4 as uuidv4 } from "uuid";
 
 export default async function handler(
@@ -89,10 +90,14 @@ export default async function handler(
     // Creating a new location
     const time = new Date();
     const timestamp = time.getTime();
-    const uuid = uuidv4();
+    // const id = uuidv4();
+    const id = generateString({
+      length: 24,
+      charset: "alphanumeric",
+    }).toLowerCase();
 
     await locations.insertOne({
-      id: uuid,
+      id: id,
       name: name,
       description: "",
       tags: [],
@@ -114,7 +119,7 @@ export default async function handler(
             type: "location-created",
             performer: uid,
             timestamp: timestamp,
-            locationId: uuid,
+            locationId: id,
           },
         },
       }
@@ -123,7 +128,7 @@ export default async function handler(
     return res.status(200).json({
       message: "Successfully created a location!",
       success: true,
-      locationId: uuid,
+      locationId: id,
     });
   }
 

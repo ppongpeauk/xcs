@@ -1,6 +1,7 @@
 import clientPromise from "@/lib/mongodb";
 import { tokenToID } from "@/pages/api/firebase";
 import { NextApiRequest, NextApiResponse } from "next";
+import { generate as generateString } from "randomstring";
 import { v4 as uuidv4 } from "uuid";
 
 export default async function handler(
@@ -57,10 +58,14 @@ export default async function handler(
     // Creating a new organization
     const time = new Date();
     const timestamp = time.getTime();
-    const uuid = uuidv4();
+    // const id = uuidv4();
+    const id = generateString({
+      length: 24,
+      charset: "alphanumeric",
+    }).toLowerCase();
 
     await organizations.insertOne({
-      id: uuid,
+      id: id,
       isPersonal: false,
       name: name,
       description: "",
@@ -80,7 +85,7 @@ export default async function handler(
     });
 
     await organizations.updateOne(
-      { id: uuid },
+      { id: id },
       {
         $push: {
           logs: {
@@ -95,7 +100,7 @@ export default async function handler(
     return res.status(200).json({
       message: "Successfully created an organization!",
       success: true,
-      organizationId: uuid,
+      organizationId: id,
     });
   }
 
