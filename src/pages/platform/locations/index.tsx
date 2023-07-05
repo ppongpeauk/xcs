@@ -204,44 +204,52 @@ export default function PlatformLocations() {
                   to get started!
                 </Text>
               ) : (
-                locations?.map((location: any) => (
-                  <Box
-                    key={location.id}
-                    w={"240px"}
-                    h={"max-content"}
-                    py={6}
-                    px={8}
-                    borderWidth={1}
-                    borderRadius={"xl"}
-                    borderColor={useColorModeValue("gray.200", "gray.700")}
-                    mr={4}
-                  >
-                    <Box mb={4}>
-                      <Heading size={"md"} mb={2}>
-                        {location.name}
-                      </Heading>
-                      {/* <Image
+                <Stack direction={"row"}>
+                  {locations?.map((location: any) => (
+                    <Flex
+                      key={location.id}
+                      w={"384px"}
+                      h={"auto"}
+                      py={4}
+                      px={8}
+                      borderWidth={1}
+                      borderRadius={"xl"}
+                      borderColor={useColorModeValue("gray.200", "gray.700")}
+                      mr={4}
+                      aspectRatio={2 / 1}
+                      align={"center"}
+                      justify={"space-between"}
+                      flexDir={"column"}
+                    >
+                      <Box mb={4} w={"full"}>
+                        <Heading size={"lg"} mb={2}>
+                          {location.name}
+                        </Heading>
+                        {/* <Image
                         src={experienceToThumbnail(location?.roblox?.placeId)}
                         alt={location.name}
                       /> */}
-                      <Text fontSize={"sm"} mb={2}>
-                        {location.description}
-                      </Text>
-                      <Text fontSize={"sm"}>
-                        Updated at {new Date(location.updatedAt).toDateString()}
-                      </Text>
-                    </Box>
-                    <Stack>
-                      <Button
-                        as={NextLink}
-                        href={`/platform/locations/${location.id}`}
-                        variant={"solid"}
-                      >
-                        View
-                      </Button>
-                    </Stack>
-                  </Box>
-                ))
+                        <Text fontSize={"sm"} mb={2}>
+                          {location.description}
+                        </Text>
+                        <Text fontSize={"xs"}>
+                          Updated at{" "}
+                          {new Date(location.updatedAt).toDateString()}
+                        </Text>
+                      </Box>
+                      <Stack w={"full"}>
+                        <Button
+                          as={NextLink}
+                          href={`/platform/locations/${location.id}`}
+                          variant={"solid"}
+                          w={"full"}
+                        >
+                          View
+                        </Button>
+                      </Stack>
+                    </Flex>
+                  ))}
+                </Stack>
               )}
             </Flex>
           )}

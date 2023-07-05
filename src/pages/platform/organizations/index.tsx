@@ -29,6 +29,7 @@ import { MdOutlineAddCircle, MdOutlineJoinRight } from "react-icons/md";
 export default function PlatformOrganizations() {
   const { push } = useRouter();
   const [organizations, setOrganizations] = useState<any>([]);
+  const [organizationsLoading, setOrganizationsLoading] = useState<boolean>(true);
   const { idToken } = useAuthContext();
   const toast = useToast();
 
@@ -40,6 +41,7 @@ export default function PlatformOrganizations() {
 
   useEffect(() => {
     if (!idToken) return;
+    setOrganizationsLoading(true);
     fetch("/api/v1/me/organizations", {
       method: "GET",
       headers: { Authorization: `Bearer ${idToken}` },
@@ -51,7 +53,7 @@ export default function PlatformOrganizations() {
         .json()
         .then((data) => {
           setOrganizations(data.organizations);
-          console.log(data.organizations);
+          setOrganizationsLoading(false);
         })
         .catch((err) => {
           toast({
@@ -117,41 +119,51 @@ export default function PlatformOrganizations() {
             </Button>
           </FormControl>
         </HStack>
-        <Flex>
-          {organizations.length !== 0 ? (
-            organizations.map((organization: any) => (
-              <Box
-                key={organization.id}
-                h={"full"}
-                p={4}
-                borderWidth={1}
-                borderRadius={"xl"}
-                borderColor={useColorModeValue("gray.200", "gray.700")}
-                mr={4}
-              >
-                <Box p={2}>
-                  <Heading size={"md"}>{organization.name}</Heading>
-                  <Text>ID: {organization.id}</Text>
-                  <Text>Created at {organization.createdAt}</Text>
+        <Box>
+          {organizationsLoading ? (
+            <Stack>
+              <Skeleton height={4} width={"50%"} />
+              <Skeleton height={4} width={"50%"} />
+              <Skeleton height={4} width={"50%"} />
+            </Stack>
+          ) : organizations.length !== 0 ? (
+            <Stack direction={"row"}>
+              {organizations.map((organization: any) => (
+                <Box
+                  key={organization.id}
+                  w={"384px"}
+                  h={"max-content"}
+                  py={4}
+                  px={8}
+                  borderWidth={1}
+                  borderRadius={"xl"}
+                  borderColor={useColorModeValue("gray.200", "gray.700")}
+                  mr={4}
+                >
+                  <Box p={2}>
+                    <Heading size={"md"}>{organization.name}</Heading>
+                    <Text>ID: {organization.id}</Text>
+                    <Text>Created at {organization.createdAt}</Text>
+                  </Box>
+                  <Stack p={2}>
+                    <Button
+                      as={NextLink}
+                      href={`/platform/organizations/${organization.id}`}
+                      variant={"solid"}
+                    >
+                      View
+                    </Button>
+                  </Stack>
                 </Box>
-                <Stack p={2}>
-                  <Button
-                    as={NextLink}
-                    href={`/platform/organizations/${organization.id}`}
-                    variant={"solid"}
-                  >
-                    View
-                  </Button>
-                </Stack>
-              </Box>
-            ))
+              ))}
+            </Stack>
           ) : (
             <Text>
               You are currently not a member of any organization. Create or join
               an organization to get started.
             </Text>
           )}
-        </Flex>
+        </Box>
       </Container>
     </>
   );
