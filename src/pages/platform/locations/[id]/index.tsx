@@ -13,6 +13,7 @@ import {
   InputLeftElement,
   Link,
   Skeleton,
+  SkeletonText,
   Stack,
   Switch,
   Text,
@@ -49,7 +50,7 @@ export default function PlatformLocation() {
   const { idToken } = useAuthContext();
   const [location, setLocation] = useState<any>(null);
   const toast = useToast();
-  
+
   const {
     isOpen: isDeleteDialogOpen,
     onOpen: onDeleteDialogOpen,
@@ -102,8 +103,7 @@ export default function PlatformLocation() {
       headers: { Authorization: `Bearer ${idToken}` },
     })
       .then((res) => {
-        if (res.status === 200)
-          return res.json();
+        if (res.status === 200) return res.json();
         if (res.status === 404) {
           return push("/404");
         } else if (res.status === 403) {
@@ -216,8 +216,8 @@ export default function PlatformLocation() {
           </BreadcrumbItem>
         </Breadcrumb>
         <Heading>{location?.name}</Heading>
-        <Box p={4} w={"min-content"}>
-          {location ? (
+        {location ? (
+          <Box p={4} w={"min-content"}>
             <Formik
               initialValues={{
                 name: location?.name,
@@ -396,10 +396,15 @@ export default function PlatformLocation() {
                 </Form>
               )}
             </Formik>
-          ) : (
+          </Box>
+        ) : (
+          <Stack>
             <Skeleton height="20px" />
-          )}
-        </Box>
+            <Skeleton height="20px" />
+            <Skeleton height="20px" />
+            <Skeleton height="20px" />
+          </Stack>
+        )}
       </Container>
     </>
   );

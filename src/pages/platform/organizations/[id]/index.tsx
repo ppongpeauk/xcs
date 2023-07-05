@@ -202,8 +202,8 @@ export default function PlatformOrganization() {
               w={"fit-content"}
             />
           </InputGroup> */}
-        <Box p={4} w={"fit-content"}>
-          {organization ? (
+        {organization ? (
+          <Box p={4} w={"fit-content"}>
             <Formik
               initialValues={{
                 name: organization?.name,
@@ -212,8 +212,8 @@ export default function PlatformOrganization() {
               }}
               onSubmit={(values, actions) => {
                 try {
-                  JSON.parse(values.members)
-                  JSON.parse(values.clearances)
+                  JSON.parse(values.members);
+                  JSON.parse(values.clearances);
                 } catch (err) {
                   toast({
                     title: "Error",
@@ -224,7 +224,7 @@ export default function PlatformOrganization() {
                   });
                   return actions.setSubmitting(false);
                 }
-               
+
                 fetch(`/api/v1/organizations/${query.id}`, {
                   method: "PUT",
                   headers: {
@@ -360,10 +360,15 @@ export default function PlatformOrganization() {
                 </Form>
               )}
             </Formik>
-          ) : (
+          </Box>
+        ) : (
+          <Stack>
             <Skeleton height="20px" />
-          )}
-        </Box>
+            <Skeleton height="20px" />
+            <Skeleton height="20px" />
+            <Skeleton height="20px" />
+          </Stack>
+        )}
       </Container>
     </>
   );
