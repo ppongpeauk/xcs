@@ -28,7 +28,7 @@ import {
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
 import { AiFillCrown, AiFillHome, AiFillInfoCircle } from "react-icons/ai";
-import { BiExit } from "react-icons/bi";
+import { BiSolidExit } from "react-icons/bi";
 import { BsPersonBadgeFill } from "react-icons/bs";
 import { FaBuilding, FaIdBadge, FaUserAlt } from "react-icons/fa";
 import { ImTree } from "react-icons/im";
@@ -316,7 +316,7 @@ export default function PlatformNav({
           >
             Help & Information
           </NavLink>
-          <NavLink href={"/logout"} pathname={pathname} leftIcon={<BiExit />}>
+          <NavLink href={"/logout"} pathname={pathname} leftIcon={<BiSolidExit />}>
             Log Out
           </NavLink>
         </VStack>

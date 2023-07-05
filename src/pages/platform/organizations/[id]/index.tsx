@@ -38,6 +38,7 @@ import RoleEditModal from "@/components/RoleEditModal";
 import { useToast } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
 import { AiFillTag } from "react-icons/ai";
+import { BiSolidExit } from "react-icons/bi";
 import { FaIdBadge, FaUserShield } from "react-icons/fa";
 import { ImTree } from "react-icons/im";
 import { IoIosRemoveCircle } from "react-icons/io";
@@ -60,6 +61,12 @@ export default function PlatformOrganization() {
   } = useDisclosure();
 
   const {
+    isOpen: isLeaveDialogOpen,
+    onOpen: onLeaveDialogOpen,
+    onClose: onLeaveDialogClose,
+  } = useDisclosure();
+
+  const {
     isOpen: roleModalOpen,
     onOpen: roleModalOnOpen,
     onClose: roleModalOnClose,
@@ -76,6 +83,43 @@ export default function PlatformOrganization() {
     onOpen: inviteModalOnOpen,
     onClose: inviteModalOnClose,
   } = useDisclosure();
+
+  const onLeave = () => {
+    fetch(`/api/v1/organizations/${query.id}/leave`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${idToken}` },
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          return res.json();
+        } else {
+          return res.json().then((json: any) => {
+            throw new Error(json.message);
+          });
+        }
+      })
+      .then((data) => {
+        toast({
+          title: data.message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+        push("/platform/organizations");
+      })
+      .catch((err) => {
+        toast({
+          title: "Error",
+          description: err.message,
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
+      })
+      .finally(() => {
+        onLeaveDialogClose();
+      });
+  };
 
   const onDelete = () => {
     fetch(`/api/v1/organizations/${query.id}`, {
@@ -169,6 +213,16 @@ export default function PlatformOrganization() {
         onClose={onDeleteDialogClose}
         onDelete={onDelete}
       />
+
+      <DeleteDialog
+        title="Leave Organization"
+        body="Are you sure you want to leave this organization?"
+        isOpen={isLeaveDialogOpen}
+        onClose={onLeaveDialogClose}
+        onDelete={onLeave}
+        buttonText="Leave"
+      />
+
       <RoleEditModal
         isOpen={roleModalOpen}
         onOpen={roleModalOnOpen}
@@ -385,14 +439,25 @@ export default function PlatformOrganization() {
                     >
                       View Locations
                     </Button>
-                    <Button
-                      colorScheme="red"
-                      mb={2}
-                      onClick={onDeleteDialogOpen}
-                      leftIcon={<IoIosRemoveCircle />}
-                    >
-                      Delete
-                    </Button>
+                    {organization.user.role > 2 ? (
+                      <Button
+                        colorScheme="red"
+                        mb={2}
+                        onClick={onDeleteDialogOpen}
+                        leftIcon={<IoIosRemoveCircle />}
+                      >
+                        Delete
+                      </Button>
+                    ) : (
+                      <Button
+                        colorScheme="red"
+                        mb={2}
+                        onClick={onLeaveDialogOpen}
+                        leftIcon={<BiSolidExit />}
+                      >
+                        Leave Organization
+                      </Button>
+                    )}
                   </HStack>
                 </Form>
               )}

@@ -25,6 +25,7 @@ export default async function handler(
   const db = mongoClient.db(process.env.MONGODB_DB as string);
   const organizations = db.collection("organizations");
   const locations = db.collection("locations");
+  const invitations = db.collection("invitations");
   let organization = (await organizations
     .find({ id: organizationId })
     .toArray()) as any;
@@ -40,6 +41,8 @@ export default async function handler(
   }
 
   if (req.method === "GET") {
+    organization.user = organization.members[uid];
+
     return res.status(200).json({
       organization: organization,
     });
@@ -134,6 +137,9 @@ export default async function handler(
 
     // Delete All Locations in Organization
     await locations.deleteMany({ organizationId: organizationId });
+
+    // Delete All Invitations in Organization
+    await invitations.deleteMany({ organizationId: organizationId });
 
     return res
       .status(200)

@@ -10,7 +10,7 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 
-export default function DeleteDialog({ isOpen, onClose, cancelRef, onDelete, title, body } : any) {
+export default function DeleteDialog({ isOpen, onClose, cancelRef, onDelete, title, body, buttonText="Delete" } : any) {
   return (
     <>
       <AlertDialog
@@ -37,7 +37,7 @@ export default function DeleteDialog({ isOpen, onClose, cancelRef, onDelete, tit
                 Cancel
               </Button>
               <Button colorScheme={"red"} onClick={onDelete} ml={3}>
-                Delete
+                {buttonText}
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>
