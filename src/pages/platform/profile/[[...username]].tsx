@@ -56,7 +56,7 @@ export default function UserProfileNS({ user }: any) {
           <>
             <meta
               property="og:title"
-              content={`EVE XCS | ${user.name.first} ${user.name.last}'s Profile`}
+              content={`${user.name.first}'s Profile`}
             />
             <meta
               property="og:url"
@@ -64,23 +64,20 @@ export default function UserProfileNS({ user }: any) {
             />
             <meta
               property="og:description"
-              content={
-                user.bio ||
-                `Join ${user.name.first} and a community of architects in managing access points with effortlessly on EVE XCS.`
-              }
+              content={`Join ${user.name.first} and a community of architects in managing access points effortlessly on EVE XCS.`}
             />
             <meta property="og:image" content={user.avatar} />
           </>
         ) : (
           <>
-            <meta property="og:title" content={`EVE XCS | Your Profile`} />
+            <meta property="og:title" content={`Your Profile`} />
             <meta
               property="og:url"
               content={`https://xcs.restrafes.co/platform/profile`}
             />
             <meta
               property="og:description"
-              content={`Join a community of architects in managing access points with effortlessly on EVE XCS.`}
+              content={`Join a community of architects in managing access points effortlessly on EVE XCS.`}
             />
           </>
         )}
