@@ -9,6 +9,8 @@ import {
   Image,
   Link,
   Skeleton,
+  SkeletonCircle,
+  SkeletonText,
   Stack,
   StackItem,
   Text,
@@ -86,7 +88,7 @@ export default function Profile({ username }: { username?: string }) {
       });
   }, [idToken, username, currentUser, router, toast]);
 
-  return user ? (
+  return (
     <>
       <Head>
         <title>{`EVE XCS - ${user?.name?.first}'s Profile`}</title>
@@ -137,29 +139,40 @@ export default function Profile({ username }: { username?: string }) {
               border={"2px solid"}
               borderColor={useColorModeValue("gray.300", "gray.600")}
             >
-              <Suspense fallback={<Skeleton />}>
+              {user ? (
                 <Image
                   src={user?.avatar}
                   alt={user?.name}
                   w={"100%"}
                   h={"auto"}
                 />
-              </Suspense>
+              ) : (
+                <Skeleton w={"100%"} h={"auto"} aspectRatio={1 / 1} />
+              )}
             </Box>
             {/* Name */}
-            <Box mb={8}>
-              <Heading
-                as={"h1"}
-                size={"lg"}
-                textAlign={"center"}
-                zIndex={1}
-                mb={2}
-              >
-                {user?.name.first} {user?.name.last}
-              </Heading>
-              <Text as={"h2"} size={"md"} textAlign={"center"} zIndex={1}>
-                @{user?.username}
-              </Text>
+            <Box mb={8} w={"full"}>
+              {user ? (
+                <>
+                  <Heading
+                    as={"h1"}
+                    size={"lg"}
+                    textAlign={"center"}
+                    zIndex={1}
+                    mb={2}
+                  >
+                    {user?.name?.first} {user?.name?.last}
+                  </Heading>
+                  <Text as={"h2"} size={"md"} textAlign={"center"} zIndex={1}>
+                    @{user?.username}
+                  </Text>
+                </>
+              ) : (
+                <Box>
+                  <Skeleton w={"full"} h={"32px"} mb={2} />
+                  <Skeleton w={"full"} h={"16px"} />
+                </Box>
+              )}
             </Box>
           </Flex>
         </Box>
@@ -169,7 +182,11 @@ export default function Profile({ username }: { username?: string }) {
               About Me
             </Heading>
             <Text as={"h2"} size={"md"} mb={4}>
-              {user?.bio}
+              {user ? (
+                user?.bio || "This user has not set a bio yet."
+              ) : (
+                <SkeletonText noOfLines={3} spacing={2} />
+              )}
             </Text>
           </Box>
         </Box>
@@ -226,7 +243,5 @@ export default function Profile({ username }: { username?: string }) {
         </Flex>
       </Container>
     </>
-  ) : (
-    <Skeleton height={"100vh"} width={"100vw"} />
   );
 }
