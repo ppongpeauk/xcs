@@ -19,6 +19,7 @@ import {
   Heading,
   Image,
   Link,
+  SkeletonCircle,
   Spacer,
   Text,
   VStack,
@@ -341,7 +342,9 @@ export default function PlatformNav({
           <HStack align={"center"} justify={"flex-end"} spacing={4}>
             <ThemeButton />
             <Button variant={"unstyled"} h={"full"} onClick={() => {}}>
-              <Avatar src={currentUser?.avatar} />
+              <SkeletonCircle isLoaded={!!currentUser?.avatar} w={"auto"} h={"auto"}>
+                <Avatar src={currentUser?.avatar} size={"md"} />
+              </SkeletonCircle>
             </Button>
           </HStack>
         </Flex>
