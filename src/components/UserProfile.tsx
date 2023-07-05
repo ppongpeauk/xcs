@@ -152,27 +152,22 @@ export default function Profile({ username }: { username?: string }) {
             </Box>
             {/* Name */}
             <Box mb={8} w={"full"}>
-              {user ? (
-                <>
-                  <Heading
-                    as={"h1"}
-                    size={"lg"}
-                    textAlign={"center"}
-                    zIndex={1}
-                    mb={2}
-                  >
-                    {user?.name?.first} {user?.name?.last}
-                  </Heading>
-                  <Text as={"h2"} size={"md"} textAlign={"center"} zIndex={1}>
-                    @{user?.username}
-                  </Text>
-                </>
-              ) : (
-                <Box>
-                  <Skeleton w={"full"} h={"32px"} mb={2} />
-                  <Skeleton w={"full"} h={"16px"} />
-                </Box>
-              )}
+              <Skeleton isLoaded={!!user}>
+                <Heading
+                  as={"h1"}
+                  size={"lg"}
+                  textAlign={"center"}
+                  zIndex={1}
+                  mb={2}
+                >
+                  {user?.name?.first} {user?.name?.last}
+                </Heading>
+              </Skeleton>
+              <SkeletonText isLoaded={!!user}>
+                <Text as={"h2"} size={"md"} textAlign={"center"} zIndex={1}>
+                  @{user?.username}
+                </Text>
+              </SkeletonText>
             </Box>
           </Flex>
         </Box>
@@ -182,11 +177,9 @@ export default function Profile({ username }: { username?: string }) {
               About Me
             </Heading>
             <Text as={"h2"} size={"md"} mb={4}>
-              {user ? (
-                user?.bio || "This user has not set a bio yet."
-              ) : (
-                <SkeletonText noOfLines={3} spacing={2} />
-              )}
+              <Skeleton isLoaded={!!user}>
+                {user?.bio || "This user has not set a bio yet."}
+              </Skeleton>
             </Text>
           </Box>
         </Box>
@@ -205,20 +198,22 @@ export default function Profile({ username }: { username?: string }) {
                 Organizations
               </Heading>
               <Box w={"full"} h={"full"}>
-                <OrganizationItem />
-                <OrganizationItem />
-                <OrganizationItem />
-                <OrganizationItem />
-                <OrganizationItem />
-                <OrganizationItem />
-                <OrganizationItem />
-                <OrganizationItem />
+                <Skeleton isLoaded={!!user}>
+                  <OrganizationItem />
+                  <OrganizationItem />
+                  <OrganizationItem />
+                  <OrganizationItem />
+                  <OrganizationItem />
+                  <OrganizationItem />
+                  <OrganizationItem />
+                  <OrganizationItem />
+                </Skeleton>
               </Box>
             </Flex>
           </Box>
           <Box py={4} w={"full"}>
             <Flex
-              w={"full"}
+              w={"fit-content"}
               h={"fit-content"}
               flexDir={"column"}
               align={"flex-start"}
@@ -235,7 +230,9 @@ export default function Profile({ username }: { username?: string }) {
                   mb={2}
                   color={useColorModeValue("gray.500", "gray.400")}
                 >
-                  No connected experiences yet.
+                  <Skeleton isLoaded={!!user}>
+                    No connected experiences yet.
+                  </Skeleton>
                 </Text>
               </Box>
             </Flex>
