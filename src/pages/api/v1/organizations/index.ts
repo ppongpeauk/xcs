@@ -58,11 +58,11 @@ export default async function handler(
     // Creating a new organization
     const time = new Date();
     const timestamp = time.getTime();
-    // const id = uuidv4();
-    const id = generateString({
-      length: 24,
-      charset: "alphanumeric",
-    }).toLowerCase();
+    const id = uuidv4();
+    // const id = generateString({
+    //   length: 24,
+    //   charset: "alphanumeric",
+    // }).toLowerCase();
 
     await organizations.insertOne({
       id: id,

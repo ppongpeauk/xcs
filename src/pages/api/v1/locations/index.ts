@@ -90,11 +90,11 @@ export default async function handler(
     // Creating a new location
     const time = new Date();
     const timestamp = time.getTime();
-    // const id = uuidv4();
-    const id = generateString({
-      length: 24,
-      charset: "alphanumeric",
-    }).toLowerCase();
+    const id = uuidv4();
+    // const id = generateString({
+    //   length: 24,
+    //   charset: "alphanumeric",
+    // }).toLowerCase();
 
     await locations.insertOne({
       id: id,
