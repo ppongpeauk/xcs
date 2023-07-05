@@ -32,11 +32,11 @@ export default function Footer() {
       >
         <Text>
           <Text as={"span"} fontWeight={"bold"} letterSpacing={"tighter"}>
-            © RESTRAFES & CO. LLC.
+            © RESTRAFES & CO LLC.
           </Text>{" "}
           All rights reserved.
         </Text>
-        <Text color={"gray.400"} fontSize={"sm"}>
+        <Text color={"gray.400"} fontSize={"xs"} letterSpacing={"tighter"}>
           Commit: {process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA || "dev"} ({process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF || "dev"})
         </Text>
       </Flex>

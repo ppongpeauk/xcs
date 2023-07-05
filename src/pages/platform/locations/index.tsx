@@ -26,6 +26,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import CreateLocationDialog from "@/components/CreateLocationDialog";
 import { useAuthContext } from "@/contexts/AuthContext";
+import { FaBuilding, FaUserAlt } from "react-icons/fa";
 import { MdOutlineAddCircle } from "react-icons/md";
 
 export default function PlatformLocations() {
@@ -42,7 +43,8 @@ export default function PlatformLocations() {
 
   const [selectedOrganization, setSelectedOrganization] = useState<any>(null);
 
-  const { idToken } = useAuthContext();
+  const { user } = useAuthContext();
+  const [idToken, setIdToken] = useState<string | null>(null);
 
   const {
     isOpen: isCreateLocationModalOpen,
@@ -98,6 +100,12 @@ export default function PlatformLocations() {
     setSelectedOrganization(organization);
   }, [organizations, query.organization]);
 
+  useEffect(() => {
+    user.getIdToken().then((token: string) => {
+      setIdToken(token);
+    });
+  }, [user]);
+
   // const experienceToThumbnail = useCallback((placeId: string) => {
   //   if (!placeId) return;
   //   const url = fetch(
@@ -138,29 +146,30 @@ export default function PlatformLocations() {
           align={"flex-end"}
           spacing={4}
         >
-          {selectedOrganization ? (
-            <FormControl w={"fit-content"}>
-              <>
-                <FormLabel>Organization</FormLabel>
-                <Select
-                  value={selectedOrganization?.name}
-                  onChange={(e) => {
-                    const organization = organizations.find(
-                      (organization: any) =>
-                        organization.name === e.target.value
-                    );
-                    setSelectedOrganization(organization);
-                  }}
-                >
-                  {organizations?.map((organization: any) => (
-                    <option key={organization.id} value={organization.name}>
-                      {organization.name}
-                    </option>
-                  ))}
-                </Select>
-              </>
-            </FormControl>
-          ) : null}
+          <FormControl w={"fit-content"}>
+            <FormLabel>Organization</FormLabel>
+            <>
+              <Select
+                value={selectedOrganization?.name}
+                onChange={(e) => {
+                  const organization = organizations.find(
+                    (organization: any) => organization.name === e.target.value
+                  );
+                  setSelectedOrganization(organization);
+                }}
+                minW={"200px"}
+                isReadOnly={organizationsLoading}
+                // icon={<FaBuilding />}
+                // iconSize="sm"
+              >
+                {organizations?.map((organization: any) => (
+                  <option key={organization.id} value={organization.name}>
+                    {organization.name}
+                  </option>
+                ))}
+              </Select>
+            </>
+          </FormControl>
           <Button
             leftIcon={<MdOutlineAddCircle />}
             onClick={onCreateLocationModalOpen}
@@ -201,7 +210,7 @@ export default function PlatformLocations() {
                       Create one
                     </Button>
                   </Text>{" "}
-                  to get started!
+                  to get started.
                 </Text>
               ) : (
                 <Stack direction={"row"}>

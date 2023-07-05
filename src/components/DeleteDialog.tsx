@@ -20,7 +20,7 @@ export default function DeleteDialog({ isOpen, onClose, cancelRef, onDelete, tit
       >
         <AlertDialogOverlay>
           <AlertDialogContent bg={useColorModeValue("white", "gray.800")}>
-            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+            <AlertDialogHeader fontSize="lg" fontWeight="bold" pb={2}>
               {
                 title ? title : "Delete item"
               }

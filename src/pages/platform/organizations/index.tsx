@@ -20,6 +20,7 @@ import Head from "next/head";
 import { useEffect, useState } from "react";
 
 import CreateOrganizationDialog from "@/components/CreateOrganizationDialog";
+import JoinOrganizationDialog from "@/components/JoinOrganizationDialog";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { useToast } from "@chakra-ui/react";
 import NextLink from "next/link";
@@ -29,14 +30,22 @@ import { MdOutlineAddCircle, MdOutlineJoinRight } from "react-icons/md";
 export default function PlatformOrganizations() {
   const { push } = useRouter();
   const [organizations, setOrganizations] = useState<any>([]);
-  const [organizationsLoading, setOrganizationsLoading] = useState<boolean>(true);
-  const { idToken } = useAuthContext();
+  const [organizationsLoading, setOrganizationsLoading] =
+    useState<boolean>(true);
+  const { user } = useAuthContext();
+  const [idToken, setIdToken] = useState<string | null>(null);
   const toast = useToast();
 
   const {
     isOpen: isCreateOrganizationModalOpen,
     onOpen: onCreateOrganizationModalOpen,
     onClose: onCreateOrganizationModalClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isJoinOrganizationModalOpen,
+    onOpen: onJoinOrganizationModalOpen,
+    onClose: onJoinOrganizationModalClose,
   } = useDisclosure();
 
   useEffect(() => {
@@ -78,6 +87,12 @@ export default function PlatformOrganizations() {
     });
   };
 
+  useEffect(() => {
+    user.getIdToken().then((token: string) => {
+      setIdToken(token);
+    });
+  }, [user]);
+
   return (
     <>
       <Head>
@@ -90,7 +105,13 @@ export default function PlatformOrganizations() {
           push(`/platform/organizations/${id}`);
         }}
       />
-
+      <JoinOrganizationDialog
+        isOpen={isJoinOrganizationModalOpen}
+        onClose={onJoinOrganizationModalClose}
+        onJoin={(id) => {
+          push(`/platform/organizations/${id}`);
+        }}
+      />
       <Container maxW={"full"} p={8}>
         <Heading>Organizations</Heading>
         <HStack
@@ -103,19 +124,19 @@ export default function PlatformOrganizations() {
           <FormControl w={"fit-content"}>
             <Button
               variant={"solid"}
-              leftIcon={<MdOutlineJoinRight />}
-              // onClick={onCreateOrganizationModalOpen}
+              leftIcon={<MdOutlineAddCircle />}
+              onClick={onCreateOrganizationModalOpen}
             >
-              Join
+              Create
             </Button>
           </FormControl>
           <FormControl w={"fit-content"}>
             <Button
               variant={"solid"}
-              leftIcon={<MdOutlineAddCircle />}
-              onClick={onCreateOrganizationModalOpen}
+              leftIcon={<MdOutlineJoinRight />}
+              onClick={onJoinOrganizationModalOpen}
             >
-              Create
+              Join
             </Button>
           </FormControl>
         </HStack>

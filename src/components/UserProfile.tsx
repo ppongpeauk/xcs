@@ -57,8 +57,9 @@ function OrganizationItem() {
 
 export default function Profile({ username }: { username?: string }) {
   const router = useRouter();
-  const { idToken, currentUser, user: authUser } = useAuthContext();
+  const { currentUser, user: authUser } = useAuthContext();
   const [user, setUser] = useState<any | undefined>(undefined);
+  const [idToken, setIdToken] = useState<string | null>(null);
   const toast = useToast();
 
   useEffect(() => {
@@ -88,6 +89,12 @@ export default function Profile({ username }: { username?: string }) {
         });
       });
   }, [idToken, username, currentUser, router, toast]);
+
+  useEffect(() => {
+    authUser.getIdToken().then((token: string) => {
+      setIdToken(token);
+    });
+  }, [authUser]);
 
   return (
     <>

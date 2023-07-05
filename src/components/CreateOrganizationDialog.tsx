@@ -91,7 +91,7 @@ export default function CreateOrganizationDialog({
             <ModalOverlay />
             <Form>
               <ModalContent bg={useColorModeValue("white", "gray.800")}>
-                <ModalHeader>Create Organization</ModalHeader>
+                <ModalHeader pb={2}>Create Organization</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody pb={4}>
                   <VStack spacing={2}>
@@ -121,7 +121,7 @@ export default function CreateOrganizationDialog({
                       )}
                     </Field> */}
                   </VStack>
-                  <Text fontSize={"sm"} pt={4}>
+                  <Text fontSize={"sm"} pt={2} color={"gray.500"}>
                     By creating an organization, you agree to our{" "}
                     <Text as={"span"}>
                       <Link

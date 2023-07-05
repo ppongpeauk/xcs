@@ -22,16 +22,14 @@ import { Field, Form, Formik } from "formik";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { useRef } from "react";
 
-export default function CreateLocationDialog({
+export default function JoinOrganizationDialog({
   isOpen,
   onClose,
-  selectedOrganization,
-  onCreate,
+  onJoin,
 }: {
   isOpen: boolean;
   onClose: () => void;
-  selectedOrganization: any;
-  onCreate: (location: any) => void;
+  onJoin: (organization: any) => void;
 }) {
   const toast = useToast();
   const initialRef = useRef(null);
@@ -41,19 +39,16 @@ export default function CreateLocationDialog({
   return (
     <>
       <Formik
-        initialValues={{ name: "", description: "" }}
+        initialValues={{ inviteCode: "" }}
         onSubmit={(values, actions) => {
-          console.log(selectedOrganization.id);
-          fetch("/api/v1/locations", {
+          fetch("/api/v1/organizations/join", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${idToken}`,
             },
             body: JSON.stringify({
-              name: values.name,
-              description: values.description,
-              organizationId: selectedOrganization.id,
+              inviteCode: values.inviteCode,
             }),
           })
             .then((res) => {
@@ -73,11 +68,11 @@ export default function CreateLocationDialog({
                 isClosable: true,
               });
               onClose();
-              onCreate(data.locationId);
+              onJoin(data.organizationId);
             })
             .catch((error) => {
               toast({
-                title: "There was an error creating the location.",
+                title: "There was an error joining the organization.",
                 description: error.message,
                 status: "error",
                 duration: 9000,
@@ -94,55 +89,25 @@ export default function CreateLocationDialog({
             <ModalOverlay />
             <Form>
               <ModalContent bg={useColorModeValue("white", "gray.800")}>
-                <ModalHeader pb={2}>Create Location</ModalHeader>
+                <ModalHeader>Join Organization</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody pb={4}>
                   <VStack spacing={2}>
-                    <Field name="name">
+                    <Field name="inviteCode">
                       {({ field, form }: any) => (
                         <FormControl>
-                          <FormLabel>Name</FormLabel>
+                          <FormLabel>Invite Code</FormLabel>
                           <Input
                             {...field}
                             variant={"filled"}
-                            placeholder={"Location Name"}
-                          />
-                        </FormControl>
-                      )}
-                    </Field>
-                    {/* <Field name="organization">
-                      {({ field, form }: any) => (
-                        <FormControl>
-                          <FormLabel>Organization</FormLabel>
-                          <Input
-                            {...field}
-                            variant={"filled"}
-                            value={selectedOrganization.name}
-                            isDisabled={true}
-                          />
-                        </FormControl>
-                      )}
-                    </Field> */}
-                    <Field name="description">
-                      {({ field, form }: any) => (
-                        <FormControl>
-                          <FormLabel>Description</FormLabel>
-                          <Textarea
-                            {...field}
-                            variant={"filled"}
-                            placeholder={"Location Description"}
-                            maxH={"200px"}
+                            placeholder={"Invite Code"}
                           />
                         </FormControl>
                       )}
                     </Field>
                   </VStack>
-                  <Text fontSize={"sm"} pt={4}>
-                    This location will be created under the{" "}
-                    <Text as={"span"} fontWeight={"bold"}>
-                      {selectedOrganization?.name}
-                    </Text>{" "}
-                    organization.
+                  <Text mt={2} fontSize={"sm"} color={"gray.500"}>
+                    Have an invite code? Enter it here to join an organization.
                   </Text>
                 </ModalBody>
 
@@ -153,7 +118,7 @@ export default function CreateLocationDialog({
                     isLoading={props.isSubmitting}
                     type={"submit"}
                   >
-                    Create
+                    Join
                   </Button>
                   <Button onClick={onClose}>Cancel</Button>
                 </ModalFooter>

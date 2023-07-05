@@ -38,6 +38,8 @@ import RoleEditModal from "@/components/RoleEditModal";
 import { useToast } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
 import { AiFillTag } from "react-icons/ai";
+import { FaIdBadge, FaUserShield } from "react-icons/fa";
+import { ImTree } from "react-icons/im";
 import { IoIosRemoveCircle } from "react-icons/io";
 import { SiRoblox } from "react-icons/si";
 
@@ -146,7 +148,7 @@ export default function PlatformOrganization() {
       </Head>
       <DeleteDialog
         title="Delete Organization"
-        body="Are you sure you want to delete this organization? This will remove all associated data, including locations. This action cannot be undone."
+        body="Are you sure you want to delete this organization? This will remove all associated data, including locations and API keys. This action cannot be undone."
         isOpen={isDeleteDialogOpen}
         onClose={onDeleteDialogClose}
         onDelete={onDelete}
@@ -330,13 +332,15 @@ export default function PlatformOrganization() {
                       mb={2}
                       isLoading={props.isSubmitting}
                       onClick={roleModalOnOpen}
+                      leftIcon={<FaUserShield />}
                     >
-                      Edit Clearances
+                      Manage Clearances
                     </Button>
                     <Button
                       mb={2}
                       isLoading={props.isSubmitting}
                       onClick={memberModalOnOpen}
+                      leftIcon={<FaIdBadge />}
                     >
                       Manage Members
                     </Button>
@@ -345,8 +349,9 @@ export default function PlatformOrganization() {
                       mb={2}
                       isLoading={props.isSubmitting}
                       href={`/platform/locations/?organization=${query.id}`}
+                      leftIcon={<ImTree />}
                     >
-                      Manage Locations
+                      View Locations
                     </Button>
                     <Button
                       colorScheme="red"
