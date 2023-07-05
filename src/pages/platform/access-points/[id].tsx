@@ -1,9 +1,11 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import Layout from "@/layouts/PlatformLayout";
 import {
   Box,
   Button,
   Container,
   FormControl,
+  FormHelperText,
   FormLabel,
   Heading,
   Input,
@@ -15,58 +17,49 @@ import {
   Switch,
   Text,
   Textarea,
-  useDisclosure,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { Suspense, useEffect, useState } from "react";
 
-import { ChevronRightIcon } from "@chakra-ui/icons";
+import { ChevronRightIcon, DeleteIcon } from "@chakra-ui/icons";
 import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbSeparator,
+  useDisclosure,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 
 import { useAuthContext } from "@/contexts/AuthContext";
 
-import MemberEditModal from "@/components/MemberEditModal";
-import RoleEditModal from "@/components/RoleEditModal";
+import DeleteDialog from "@/components/DeleteDialog";
 import { useToast } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
 import { AiFillTag } from "react-icons/ai";
+import { BsFillCloudDownloadFill } from "react-icons/bs";
 import { IoIosRemoveCircle } from "react-icons/io";
+import { IoBusiness } from "react-icons/io5";
 import { SiRoblox } from "react-icons/si";
 
-import DeleteDialog from "@/components/DeleteDialog";
-export default function PlatformOrganization() {
+export default function PlatformAccessPoint() {
   const { query, push } = useRouter();
   const { idToken } = useAuthContext();
-  const [organization, setOrganization] = useState<any>(null);
+  const [accessPoint, setAccessPoint] = useState<any>(null);
   const toast = useToast();
-
+  
   const {
     isOpen: isDeleteDialogOpen,
     onOpen: onDeleteDialogOpen,
     onClose: onDeleteDialogClose,
   } = useDisclosure();
 
-  const {
-    isOpen: roleModalOpen,
-    onOpen: roleModalOnOpen,
-    onClose: roleModalOnClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: memberModalOpen,
-    onOpen: memberModalOnOpen,
-    onClose: memberModalOnClose,
-  } = useDisclosure();
+  const [packLoading, setPackLoading] = useState<boolean>(false);
 
   const onDelete = () => {
-    fetch(`/api/v1/organizations/${query.id}`, {
+    fetch(`/api/v1/locations/${query.id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${idToken}` },
     })
@@ -86,7 +79,7 @@ export default function PlatformOrganization() {
           duration: 5000,
           isClosable: true,
         });
-        push("/platform/organizations");
+        push("/platform/locations");
       })
       .catch((err) => {
         toast({
@@ -103,22 +96,61 @@ export default function PlatformOrganization() {
   };
 
   let refreshData = () => {
-    setOrganization(null);
-    fetch(`/api/v1/organizations/${query.id}`, {
+    setAccessPoint(null);
+    fetch(`/api/v1/locations/${query.id}`, {
       method: "GET",
       headers: { Authorization: `Bearer ${idToken}` },
     })
       .then((res) => {
-        if (res.status === 200) return res.json();
-
+        if (res.status === 200)
+          return res.json();
         if (res.status === 404) {
-          push("/404");
+          return push("/404");
         } else if (res.status === 403) {
-          push("/403");
+          return push("/403");
         }
       })
       .then((data) => {
-        setOrganization(data.organization);
+        setAccessPoint(data.location);
+      });
+  };
+
+  let downloadStarterPack = () => {
+    setPackLoading(true);
+    fetch(`/api/v1/locations/${query.id}/starter-pack`, {
+      method: "GET",
+      headers: { Authorization: `Bearer ${idToken}` },
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          return res.blob();
+        } else {
+          return res.json().then((json: any) => {
+            throw new Error(json.message);
+          });
+        }
+      })
+      .then((blob) => {
+        // Convert location name to kebab case for file name
+        const locationName = accessPoint.name
+          .replace(/\s+/g, "-")
+          .replace(".", "")
+          .toLowerCase();
+
+        const url = window.URL.createObjectURL(new Blob([blob]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", `xcs-template-${locationName}.rbxmx`);
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode?.removeChild(link);
+
+        toast({
+          title: "Downloading template...",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
       })
       .catch((err) => {
         toast({
@@ -128,10 +160,13 @@ export default function PlatformOrganization() {
           duration: 9000,
           isClosable: true,
         });
+      })
+      .finally(() => {
+        setPackLoading(false);
       });
   };
 
-  // Fetch organization data
+  // Fetch location data
   useEffect(() => {
     if (!idToken) return;
     if (!query.id) return;
@@ -141,24 +176,14 @@ export default function PlatformOrganization() {
   return (
     <>
       <Head>
-        <title>EVE XCS - {organization?.name}</title>
+        <title>EVE XCS - {accessPoint?.name}</title>
       </Head>
       <DeleteDialog
-        title="Delete Organization"
-        body="Are you sure you want to delete this organization? This will remove all associated data, including locations. This action cannot be undone."
+        title="Delete Location"
+        body="Are you sure you want to delete this location? This will revoke all API keys and delete all data associated with this location. This action cannot be undone."
         isOpen={isDeleteDialogOpen}
         onClose={onDeleteDialogClose}
         onDelete={onDelete}
-      />
-      <RoleEditModal
-        isOpen={roleModalOpen}
-        onOpen={roleModalOnOpen}
-        onClose={roleModalOnClose}
-      />
-      <MemberEditModal
-        isOpen={memberModalOpen}
-        onOpen={memberModalOnOpen}
-        onClose={memberModalOnClose}
       />
       <Container maxW={"full"} p={8}>
         <Breadcrumb
@@ -176,55 +201,32 @@ export default function PlatformOrganization() {
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbItem>
-            <BreadcrumbLink as={NextLink} href={`./`} textUnderlineOffset={4}>
-              Organizations
+            <BreadcrumbLink
+              as={NextLink}
+              href={`./?organization=${accessPoint?.organizationId}`}
+              textUnderlineOffset={4}
+            >
+              Locations
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbItem isCurrentPage>
             <BreadcrumbLink href="#" textUnderlineOffset={4}>
-              {organization?.name}
+              {accessPoint?.name}
             </BreadcrumbLink>
           </BreadcrumbItem>
         </Breadcrumb>
-        <Heading>{organization?.name}</Heading>
-
-        {/* Create a form with a "Download Pack" button and a ROBLOX place id input box */}
-        {/* When the user clicks the "Download Pack" button, send a request to the API to create a new pack */}
-        {/* <InputGroup>
-            <InputLeftElement pointerEvents={"none"}>
-              <SiRoblox />
-            </InputLeftElement>
-            <Input
-              variant={"filled"}
-              type="text"
-              placeholder="Experience ID"
-              w={"fit-content"}
-            />
-          </InputGroup> */}
-        <Box p={4}>
-          {organization ? (
+        <Heading>{accessPoint?.name}</Heading>
+        <Box p={4} w={"min-content"}>
+          {accessPoint ? (
             <Formik
               initialValues={{
-                name: organization?.name,
-                members: JSON.stringify(organization?.members),
-                clearances: JSON.stringify(organization?.clearances),
+                name: accessPoint?.name,
+                description: accessPoint?.description,
+                enabled: accessPoint?.enabled,
+                placeId: accessPoint?.roblox?.placeId || "",
               }}
               onSubmit={(values, actions) => {
-                try {
-                  JSON.parse(values.members)
-                  JSON.parse(values.clearances)
-                } catch (err) {
-                  toast({
-                    title: "Error",
-                    description: "Invalid JSON.",
-                    status: "error",
-                    duration: 9000,
-                    isClosable: true,
-                  });
-                  return actions.setSubmitting(false);
-                }
-               
-                fetch(`/api/v1/organizations/${query.id}`, {
+                fetch(`/api/v1/locations/${query.id}`, {
                   method: "PUT",
                   headers: {
                     Authorization: `Bearer ${idToken}`,
@@ -232,8 +234,14 @@ export default function PlatformOrganization() {
                   },
                   body: JSON.stringify({
                     name: values.name,
-                    members: JSON.parse(values.members),
-                    clearances: JSON.parse(values.clearances),
+                    description: values.description || "",
+                    enabled: values.enabled,
+                    roblox: {
+                      placeId:
+                        values.placeId.trim() == ""
+                          ? null
+                          : values.placeId.trim(),
+                    },
                   }),
                 })
                   .then((res: any) => {
@@ -257,7 +265,7 @@ export default function PlatformOrganization() {
                   })
                   .catch((error) => {
                     toast({
-                      title: "There was an error updating the organization.",
+                      title: "There was an error updating the location.",
                       description: error.message,
                       status: "error",
                       duration: 9000,
@@ -274,50 +282,77 @@ export default function PlatformOrganization() {
                   <Field name="name">
                     {({ field, form }: any) => (
                       <FormControl>
-                        <FormLabel>organization-name</FormLabel>
+                        <FormLabel>Name</FormLabel>
                         <InputGroup mb={2}>
                           <Input
                             {...field}
                             type="text"
-                            placeholder="Name"
+                            autoComplete="off"
+                            placeholder="Location Name"
+                            variant={"filled"}
+                          />
+                        </InputGroup>
+                      </FormControl>
+                    )}
+                  </Field>
+                  <Field name="description">
+                    {({ field, form }: any) => (
+                      <FormControl>
+                        <FormLabel>Description</FormLabel>
+                        <InputGroup mb={2}>
+                          <Textarea
+                            {...field}
+                            type="text"
+                            autoComplete="off"
+                            placeholder="Location Description"
+                            variant={"filled"}
+                            maxH={"240px"}
+                          />
+                        </InputGroup>
+                      </FormControl>
+                    )}
+                  </Field>
+                  <Field name="placeId">
+                    {({ field, form }: any) => (
+                      <FormControl mb={2}>
+                        <FormLabel>Experience ID</FormLabel>
+                        <InputGroup mb={2}>
+                          <InputLeftElement pointerEvents="none">
+                            <IoBusiness />
+                          </InputLeftElement>
+                          <Input
+                            {...field}
+                            type="text"
+                            autoComplete="off"
+                            placeholder="Experience ID"
+                            variant={"filled"}
+                            // isDisabled={true}
+                            disabled={accessPoint?.roblox?.placeId !== null}
+                          />
+                        </InputGroup>
+                        <FormHelperText>
+                          This cannot be changed once set.
+                        </FormHelperText>
+                      </FormControl>
+                    )}
+                  </Field>
+                  <Field name="enabled">
+                    {({ field, form }: any) => (
+                      <FormControl>
+                        <FormLabel>Enabled</FormLabel>
+                        <InputGroup mb={2}>
+                          <Switch
+                            {...field}
+                            placeholder="Enabled"
                             variant={"filled"}
                             width={"fit-content"}
+                            defaultChecked={accessPoint?.enabled}
                           />
                         </InputGroup>
                       </FormControl>
                     )}
                   </Field>
-                  <Field name="members">
-                    {({ field, form }: any) => (
-                      <FormControl>
-                        <FormLabel>(TEMP) members</FormLabel>
-                        <InputGroup mb={2}>
-                          <Textarea
-                            {...field}
-                            type="text"
-                            placeholder="Member (JSON)"
-                            variant={"filled"}
-                          />
-                        </InputGroup>
-                      </FormControl>
-                    )}
-                  </Field>
-                  <Field name="clearances">
-                    {({ field, form }: any) => (
-                      <FormControl>
-                        <FormLabel>(TEMP) clearances</FormLabel>
-                        <InputGroup mb={2}>
-                          <Textarea
-                            {...field}
-                            type="text"
-                            placeholder="Clearances (JSON)"
-                            variant={"filled"}
-                          />
-                        </InputGroup>
-                      </FormControl>
-                    )}
-                  </Field>
-                  <Stack direction={"row"} spacing={4}>
+                  <Stack direction={"row"} spacing={4} py={2}>
                     <Button
                       mb={2}
                       isLoading={props.isSubmitting}
@@ -327,25 +362,11 @@ export default function PlatformOrganization() {
                     </Button>
                     <Button
                       mb={2}
-                      isLoading={props.isSubmitting}
-                      onClick={roleModalOnOpen}
+                      onClick={downloadStarterPack}
+                      isLoading={packLoading}
+                      leftIcon={<BsFillCloudDownloadFill />}
                     >
-                      Edit Clearances
-                    </Button>
-                    <Button
-                      mb={2}
-                      isLoading={props.isSubmitting}
-                      onClick={memberModalOnOpen}
-                    >
-                      Manage Members
-                    </Button>
-                    <Button
-                      as={NextLink}
-                      mb={2}
-                      isLoading={props.isSubmitting}
-                      href={`/platform/locations/?organization=${query.id}`}
-                    >
-                      Manage Locations
+                      Download Template
                     </Button>
                     <Button
                       colorScheme="red"
@@ -356,6 +377,22 @@ export default function PlatformOrganization() {
                       Delete
                     </Button>
                   </Stack>
+                  <Text>
+                    Security clearances can be managed in the settings of{" "}
+                    <Link
+                      as={NextLink}
+                      href={`/platform/organizations/${accessPoint?.organizationId}`}
+                      textDecor={"underline"}
+                      textUnderlineOffset={4}
+                      whiteSpace={"nowrap"}
+                      _hover={{
+                        color: useColorModeValue("gray.600", "gray.400"),
+                      }}
+                    >
+                      the organization
+                    </Link>{" "}
+                    in which this location belongs to.
+                  </Text>
                 </Form>
               )}
             </Formik>
@@ -368,4 +405,4 @@ export default function PlatformOrganization() {
   );
 }
 
-PlatformOrganization.getLayout = (page: any) => <Layout>{page}</Layout>;
+PlatformAccessPoint.getLayout = (page: any) => <Layout>{page}</Layout>;

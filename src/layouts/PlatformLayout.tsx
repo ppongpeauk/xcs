@@ -45,7 +45,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <PlatformNav
           children={
             <Box width={"full"}>
-              <Box as="main" minH={"100vh"}>
+              <Box as="main" minH={"calc(100vh - 6rem)"}>
                 {children}
               </Box>
               <Footer />

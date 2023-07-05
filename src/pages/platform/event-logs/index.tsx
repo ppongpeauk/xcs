@@ -1,5 +1,5 @@
 import Layout from "@/layouts/PlatformLayout";
-import { Container, Heading } from "@chakra-ui/react";
+import { Container, Heading, Text } from "@chakra-ui/react";
 import Head from "next/head";
 
 export default function PlatformEventLogs() {
@@ -9,9 +9,8 @@ export default function PlatformEventLogs() {
         <title>EVE XCS - Event Logs</title>
       </Head>
       <Container maxW={"full"} p={8}>
-        <Heading>
-          Event Logs
-        </Heading>
+        <Heading pb={2}>Event Logs</Heading>
+        <Text>Check back later.</Text>
       </Container>
     </>
   );

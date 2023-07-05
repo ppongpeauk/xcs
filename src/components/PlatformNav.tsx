@@ -10,6 +10,7 @@ import {
   Avatar,
   Box,
   Button,
+  Code,
   Container,
   Divider,
   Flex,
@@ -115,18 +116,21 @@ export default function PlatformNav({
   useEffect(() => {
     if (!title) {
       switch (pathname) {
-        case "/platform/home":
-          setCurrentRouteLabel("Home");
-          break;
-        case "/platform/event-logs":
-          setCurrentRouteLabel("Event Logs");
-          break;
-        case "/platform/organizations":
-          setCurrentRouteLabel("Organizations");
-          break;
-        case "/platform/organizations/[id]":
-          setCurrentRouteLabel("Organization");
-          break;
+        // case "/platform/home":
+        //   setCurrentRouteLabel("Home");
+        //   break;
+        // case "/platform/event-logs":
+        //   setCurrentRouteLabel("Event Logs");
+        //   break;
+        // case "/platform/organizations":
+        //   setCurrentRouteLabel("Organizations");
+        //   break;
+        // case "/platform/organizations/[id]":
+        //   setCurrentRouteLabel("Organization");
+        //   break;
+        // case "/platform/locations":
+        //   setCurrentRouteLabel("Locations");
+        //   break;
         default:
           setCurrentRouteLabel("");
       }
@@ -142,7 +146,6 @@ export default function PlatformNav({
         top={0}
         h={"100vh"}
         w={"250px"}
-        py={9}
         flexDir={"column"}
         align={"flex-start"}
         bg={useColorModeValue("white", "gray.800")}
@@ -151,11 +154,20 @@ export default function PlatformNav({
         zIndex={500}
       >
         {/* Title */}
-        <Box>
+        <Flex
+          transform={"translateY(-1px)"}
+          h={"6rem"}
+          width={"full"}
+          borderBottom={"1px solid"}
+          borderColor={useColorModeValue("gray.300", "gray.700")}
+        >
           <Flex
             as={NextLink}
-            href={"/"}
+            width={"full"}
+            h={"full"}
+            href={"/platform/home"}
             align={"center"}
+            justify={"center"}
             transition={"filter 0.2s ease"}
             _hover={{
               filter: useColorModeValue("opacity(0.75)", "brightness(0.75)"),
@@ -164,34 +176,36 @@ export default function PlatformNav({
               filter: useColorModeValue("opacity(0.5)", "brightness(0.5)"),
             }}
           >
-            <Image
-              src={useColorModeValue(
-                "/images/logo-black.png",
-                "/images/logo-white.png"
-              )}
-              mx={[4, 16]}
-              w={"full"}
-              h={"24px"}
-              alt={"EVE XCS"}
-              objectFit={"cover"}
-            />
+            <Flex>
+              <Image
+                src={useColorModeValue(
+                  "/images/logo-black.png",
+                  "/images/logo-white.png"
+                )}
+                h={"24px"}
+                alt={"EVE XCS"}
+                objectFit={"contain"}
+              />
+              <Code ml={2} fontSize={"xs"} h={"fit-content"} px={"4px"}>
+                BETA
+              </Code>
+            </Flex>
           </Flex>
-        </Box>
+        </Flex>
 
-        <Box w={"full"} py={4}>
+        <Box w={"full"}>
           {/* Divider */}
-          {/* <Box position={"relative"} p={8} w={"full"} mt={8}>
-          <Divider />
-          <AbsoluteCenter
-            bg={useColorModeValue("white", "gray.800")}
-            px={2}
-            color={"gray.300"}
-            textTransform={"uppercase"}
-            fontSize={"sm"}
-          >
-            Main Menu
-          </AbsoluteCenter>
-        </Box> */}
+          {/* <Box position={"relative"} px={8} py={6} w={"full"}>
+            <Divider />
+            <AbsoluteCenter
+              bg={useColorModeValue("white", "gray.800")}
+              px={2}
+              textTransform={"uppercase"}
+              fontSize={"sm"}
+            >
+              Main Menu
+            </AbsoluteCenter>
+          </Box> */}
 
           {/* Links */}
           <VStack
@@ -200,8 +214,8 @@ export default function PlatformNav({
             justify={"flex-start"}
             w={"100%"}
             px={4}
-            pt={16}
-            spacing={2}
+            py={8}
+            spacing={1}
           >
             <NavLink
               href={"/platform/home"}
@@ -242,38 +256,37 @@ export default function PlatformNav({
         </Box>
 
         {/* Upgrade Prompt */}
-        {/* <Box w={"full"} py={8}>
-        <Flex
-          flexDir={"column"}
-          align={"flex-start"}
-          justify={"flex-start"}
-          bg={useColorModeValue("gray.100", "gray.700")}
-          mx={4}
-          my={"auto"}
-          p={4}
-          rounded={"xl"}
-          border={"1px solid"}
-          borderColor={useColorModeValue("gray.300", "gray.700")}
-        >
-          <Heading size={"md"} mb={2}>
-            Upgrade to XCS PRO
-          </Heading>
-          <Text alignSelf={"center"} fontSize={"sm"} pb={4}>
-            Upgrade to unlock more features and functionality.
-          </Text>
-          <Button
-            as={NextLink}
-            href={"/platform/upgrade"}
-            variant={"solid"}
-            colorScheme={"blue"}
-            size={"sm"}
-            alignSelf={"center"}
-            leftIcon={<ChevronRightIcon />}
+        {/* <Box w={"full"}>
+          <Flex
+            flexDir={"column"}
+            align={"flex-start"}
+            justify={"flex-start"}
+            bg={useColorModeValue("gray.100", "gray.700")}
+            mx={4}
+            p={4}
+            rounded={"xl"}
+            border={"1px solid"}
+            borderColor={useColorModeValue("gray.300", "gray.700")}
           >
-            Upgrade
-          </Button>
-        </Flex>
-      </Box> */}
+            <Heading size={"sm"} mb={2}>
+              Upgrade to XCS PRO
+            </Heading>
+            <Text alignSelf={"center"} fontSize={"sm"} pb={4}>
+              Upgrade to unlock more features and functionality.
+            </Text>
+            <Button
+              as={NextLink}
+              href={"/platform/upgrade"}
+              variant={"solid"}
+              colorScheme={"blue"}
+              size={"sm"}
+              alignSelf={"center"}
+              px={8}
+            >
+              Upgrade
+            </Button>
+          </Flex>
+        </Box> */}
 
         <VStack
           flexDir={"column"}
@@ -281,7 +294,8 @@ export default function PlatformNav({
           justify={"flex-start"}
           w={"100%"}
           px={4}
-          spacing={2}
+          py={8}
+          spacing={1}
           mt={"auto"}
         >
           <NavLink

@@ -93,7 +93,7 @@ export default function Profile({ username }: { username?: string }) {
       </Head>
       <Container
         display={"flex"}
-        maxW={"container.xl"}
+        maxW={"full"}
         px={8}
         pt={8}
         flexDir={"column"}
@@ -105,7 +105,7 @@ export default function Profile({ username }: { username?: string }) {
             h={"auto"}
             aspectRatio={1 / 1.6}
             rounded={"xl"}
-            bg={useColorModeValue("gray.100", "gray.700")}
+            bg={useColorModeValue("white", "gray.700")}
             border={"2px solid"}
             borderColor={useColorModeValue("gray.300", "gray.600")}
             p={8}

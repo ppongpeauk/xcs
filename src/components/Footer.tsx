@@ -21,7 +21,9 @@ export default function Footer() {
         flexDir={"row"}
         w={"100%"}
         h={"6rem"}
-        border={"1px solid"}
+        borderTop={"1px solid"}
+        borderBottom={"1px solid"}
+        borderRight={"1px solid"}
         borderColor={useColorModeValue("gray.300", "gray.700")}
         p={4}
         zIndex={50}

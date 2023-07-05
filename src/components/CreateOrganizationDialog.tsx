@@ -127,6 +127,7 @@ export default function CreateOrganizationDialog({
                         href={"/terms"}
                         textDecor={"underline"}
                         textUnderlineOffset={4}
+                        whiteSpace={"nowrap"}
                       >
                         Terms of Service
                       </Link>
@@ -138,6 +139,7 @@ export default function CreateOrganizationDialog({
                         href={"/privacy"}
                         textDecor={"underline"}
                         textUnderlineOffset={4}
+                        whiteSpace={"nowrap"}
                       >
                         Privacy Policy
                       </Link>
