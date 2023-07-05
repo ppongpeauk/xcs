@@ -22,40 +22,7 @@ export default async function handler(
   const mongoClient = await clientPromise;
   const db = mongoClient.db(process.env.MONGODB_DB as string);
   const organizations = db.collection("organizations");
-
-  // Invite Code Validation
-  if (req.method === "GET") {
-    let { inviteCode } = req.query as {
-      inviteCode: string;
-    };
-
-    if (inviteCode !== undefined) {
-      inviteCode = inviteCode.trim();
-    }
-
-    const organization = await organizations.findOne({
-      "invitations.codes": {
-        $elemMatch: {
-          code: inviteCode,
-        },
-      },
-    });
-
-    if (!organization) {
-      return res.status(404).json({
-        success: false,
-        valid: false,
-        message: "Invalid invite code.",
-      });
-    }
-
-    return res.status(200).json({
-      success: true,
-      valid: true,
-      message: "Invite code is valid.",
-      organizationId: organization.id,
-    });
-  }
+  const invitations = db.collection("invitations");
 
   // Joining an organization with an invite code
   if (req.method === "POST") {
@@ -67,12 +34,20 @@ export default async function handler(
       inviteCode = inviteCode.trim();
     }
 
+    const inviteCodeData = await invitations.findOne({
+      inviteCode: inviteCode,
+    });
+
+    if (!inviteCodeData) {
+      return res.status(404).json({
+        success: false,
+        valid: false,
+        message: "Invalid invite code.",
+      });
+    }
+
     const organization = await organizations.findOne({
-      "invitations.codes": {
-        $elemMatch: {
-          code: inviteCode,
-        },
-      },
+      id: inviteCodeData.organizationId,
     });
 
     if (!organization) {
@@ -83,12 +58,15 @@ export default async function handler(
       });
     }
 
-    // Get the invite code object
-    const inviteCodeServerData = organization.invitations.codes.find(
-      (code: any) => code.code === inviteCode
-    );
+    // Check if the user is already in the organization
+    if (organization.members[uid]) {
+      return res.status(400).json({
+        success: false,
+        valid: false,
+        message: "You are already in this organization.",
+      });
+    }
 
-    // Creating a new organization
     const time = new Date();
     const timestamp = time.getTime();
 
@@ -99,7 +77,8 @@ export default async function handler(
         $push: {
           logs: {
             type: "user-joined",
-            performer: uid,
+            performer: inviteCodeData.creatorId,
+            target: uid,
             timestamp: timestamp,
           },
         },
@@ -112,21 +91,21 @@ export default async function handler(
       {
         $set: {
           [`members.${uid}`]: {
-            role: inviteCodeServerData.role || 1,
+            role: inviteCodeData.role || 1,
             clearances: [],
             joined: new Date().getTime(),
-          },
-        },
-        $pull: {
-          "invitations.codes": {
-            code: inviteCode,
           },
         },
       }
     );
 
+    // Remove the invite code if it's single use
+    if (inviteCodeData.singleUse) {
+      await invitations.deleteOne({ inviteCode: inviteCode });
+    }
+
     return res.status(200).json({
-      message: "Successfully joined!",
+      message: `Successfully joined ${organization.name}!`,
       success: true,
       organizationId: organization.id,
     });

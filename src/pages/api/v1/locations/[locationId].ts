@@ -27,6 +27,7 @@ export default async function handler(
   const organizations = db.collection("organizations");
 
   let location = (await locations.findOne({ id: locationId })) as any;
+
   if (!location) {
     return res.status(404).json({ message: "Location not found" });
   }
@@ -34,6 +35,7 @@ export default async function handler(
   let organization = await organizations.findOne({
     id: location.organizationId,
   });
+  
   if (!organization) {
     return res.status(404).json({ message: "Organization not found" });
   }
@@ -42,6 +44,10 @@ export default async function handler(
     return res.status(401).json({ message: "Unauthorized" });
   }
 
+  // Append Organization Data to Location
+  location.organization = organization;
+  delete location.organization.invitations;
+  
   // Fetching Location Data
   if (req.method === "GET") {
     return res.status(200).json({ location: location });

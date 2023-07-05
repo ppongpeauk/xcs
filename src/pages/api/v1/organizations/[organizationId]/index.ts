@@ -76,12 +76,11 @@ export default async function handler(
     delete body.logs;
     delete body.id;
     delete body.apiKeys;
-    if (organization.members[uid].role < 3) {
+    if (body.members[uid] && organization.members[uid].role < 3) {
       delete body.members[uid];
     }
 
     // Character limits
-
     if (body.name) {
       body.name = body.name.trim();
       if (body.name.length > 32 || body.name.length < 3) {

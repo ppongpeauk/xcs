@@ -211,12 +211,21 @@ export default function PlatformLocation() {
           <BreadcrumbItem>
             <BreadcrumbLink
               as={NextLink}
-              href={`./?organization=${location?.organizationId}`}
+              href={`/platform/organizations/${location?.organization.id}`}
+              textUnderlineOffset={4}
+            >
+              {location?.organization.name}
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          {/* <BreadcrumbItem>
+            <BreadcrumbLink
+              as={NextLink}
+              href={`./?organization=${location?.organization.id}`}
               textUnderlineOffset={4}
             >
               Locations
             </BreadcrumbLink>
-          </BreadcrumbItem>
+          </BreadcrumbItem> */}
           <BreadcrumbItem isCurrentPage>
             <BreadcrumbLink href="#" textUnderlineOffset={4}>
               {location?.name}

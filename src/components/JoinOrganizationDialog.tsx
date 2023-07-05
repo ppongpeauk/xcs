@@ -41,6 +41,12 @@ export default function JoinOrganizationDialog({
       <Formik
         initialValues={{ inviteCode: "" }}
         onSubmit={(values, actions) => {
+          // Handle Links
+          values.inviteCode = values.inviteCode.replace(
+            `${process.env.NEXT_PUBLIC_ROOT_URL}/join/`,
+            ""
+          );
+
           fetch("/api/v1/organizations/join", {
             method: "POST",
             headers: {

@@ -41,9 +41,11 @@ import { AiFillTag } from "react-icons/ai";
 import { FaIdBadge, FaUserShield } from "react-icons/fa";
 import { ImTree } from "react-icons/im";
 import { IoIosRemoveCircle } from "react-icons/io";
+import { RiMailAddFill } from "react-icons/ri";
 import { SiRoblox } from "react-icons/si";
 
 import DeleteDialog from "@/components/DeleteDialog";
+import InviteOrganizationModal from "@/components/InviteOrganizationModal";
 export default function PlatformOrganization() {
   const { query, push } = useRouter();
   const { user } = useAuthContext();
@@ -67,6 +69,12 @@ export default function PlatformOrganization() {
     isOpen: memberModalOpen,
     onOpen: memberModalOnOpen,
     onClose: memberModalOnClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: inviteModalOpen,
+    onOpen: inviteModalOnOpen,
+    onClose: inviteModalOnClose,
   } = useDisclosure();
 
   const onDelete = () => {
@@ -171,6 +179,14 @@ export default function PlatformOrganization() {
         onOpen={memberModalOnOpen}
         onClose={memberModalOnClose}
       />
+      <InviteOrganizationModal
+        isOpen={inviteModalOpen}
+        onOpen={inviteModalOnOpen}
+        onClose={inviteModalOnClose}
+        onCreate={() => {}}
+        organizationId={organization?.id}
+      />
+
       <Container maxW={"full"} p={8}>
         <Breadcrumb
           spacing="8px"
@@ -351,6 +367,14 @@ export default function PlatformOrganization() {
                       leftIcon={<FaIdBadge />}
                     >
                       Manage Members
+                    </Button>
+                    <Button
+                      mb={2}
+                      isLoading={props.isSubmitting}
+                      onClick={inviteModalOnOpen}
+                      leftIcon={<RiMailAddFill />}
+                    >
+                      Invite Members
                     </Button>
                     <Button
                       as={NextLink}
