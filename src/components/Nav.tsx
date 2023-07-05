@@ -3,6 +3,7 @@ import {
   Avatar,
   Box,
   Button,
+  Code,
   Container,
   Flex,
   Image,
@@ -52,12 +53,15 @@ export default function Nav({ type }: { type?: string }) {
       h={"6rem"}
       align={"center"}
       bg={useColorModeValue("white", "gray.800")}
-      borderBottom={"1px solid"}
+      border ={"1px solid"}
       borderColor={useColorModeValue("gray.300", "gray.700")}
       zIndex={50}
     >
       {/* Title */}
-      <Box
+      <Flex
+        align={"center"}
+        justify={"center"}
+        w={"240px"}
         h={"full"}
         borderRight={"1px solid"}
         borderColor={useColorModeValue("gray.300", "gray.700")}
@@ -66,6 +70,7 @@ export default function Nav({ type }: { type?: string }) {
           as={NextLink}
           href={"/"}
           align={"center"}
+          justify={"center"}
           h={"100%"}
           transition={"filter 0.2s ease"}
           _hover={{
@@ -75,21 +80,25 @@ export default function Nav({ type }: { type?: string }) {
             filter: useColorModeValue("opacity(0.5)", "brightness(0.5)"),
           }}
         >
-          <Image
-            src={useColorModeValue(
-              "/images/logo-black.png",
-              "/images/logo-white.png"
-            )}
-            px={[4, 8]}
-            h={"24px"}
-            alt={"EVE XCS"}
-            objectFit={"cover"}
-          />
+          <Flex>
+            <Image
+              src={useColorModeValue(
+                "/images/logo-black.png",
+                "/images/logo-white.png"
+              )}
+              h={"24px"}
+              alt={"EVE XCS"}
+              objectFit={"contain"}
+            />
+            <Code ml={2} fontSize={"xs"} h={"fit-content"} px={"4px"}>
+              BETA
+            </Code>
+          </Flex>
           {/* <Text fontSize={"2xl"} fontWeight={"bold"} letterSpacing={"tighter"}>
           EVE XCS
         </Text> */}
         </Flex>
-      </Box>
+      </Flex>
       <Spacer />
       {/* Links */}
       <Flex

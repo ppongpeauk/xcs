@@ -145,7 +145,7 @@ export default function PlatformNav({
         position={"sticky"}
         top={0}
         h={"100vh"}
-        w={"250px"}
+        w={"240px"}
         flexDir={"column"}
         align={"flex-start"}
         bg={useColorModeValue("white", "gray.800")}
