@@ -138,17 +138,16 @@ export default function Profile({ username }: { username?: string }) {
               overflow={"hidden"}
               border={"2px solid"}
               borderColor={useColorModeValue("gray.300", "gray.600")}
+              aspectRatio={1 / 1}
             >
-              {user ? (
+              <Skeleton isLoaded={!!user}>
                 <Image
-                  src={user?.avatar}
+                  src={user?.avatar || "/images/logo.jpg"}
                   alt={user?.name}
                   w={"100%"}
                   h={"auto"}
                 />
-              ) : (
-                <Skeleton w={"100%"} h={"auto"} aspectRatio={1 / 1} />
-              )}
+              </Skeleton>
             </Box>
             {/* Name */}
             <Box mb={8} w={"full"}>
