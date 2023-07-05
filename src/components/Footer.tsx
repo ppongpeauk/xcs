@@ -37,7 +37,7 @@ export default function Footer() {
           All rights reserved.
         </Text>
         <Text color={"gray.400"} fontSize={"sm"}>
-          Commit: {process.env.NEXT_PUBLIC_SHA} ({process.env.NEXT_PUBLIC_BRANCH})
+          Commit: {process.env.VERCEL_GIT_COMMIT_SHA || "dev"} ({process.env.VERCEL_GIT_COMMIT_REF || "dev"})
         </Text>
       </Flex>
     </>
