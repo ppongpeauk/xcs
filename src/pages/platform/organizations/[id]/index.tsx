@@ -143,6 +143,7 @@ export default function PlatformOrganization() {
   }, [query.id, idToken]);
 
   useEffect(() => {
+    if (!user) return;
     user.getIdToken().then((token: string) => {
       setIdToken(token);
     });

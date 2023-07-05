@@ -175,6 +175,7 @@ export default function PlatformLocation() {
   }, [query.id, idToken]);
 
   useEffect(() => {
+    if (!user) return;
     user.getIdToken().then((token: string) => {
       setIdToken(token);
     });

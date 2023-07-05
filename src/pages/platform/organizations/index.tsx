@@ -89,6 +89,7 @@ export default function PlatformOrganizations() {
   };
 
   useEffect(() => {
+    if (!user) return;
     user.getIdToken().then((token: string) => {
       setIdToken(token);
     });

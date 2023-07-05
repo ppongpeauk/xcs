@@ -91,6 +91,7 @@ export default function Profile({ username }: { username?: string }) {
   }, [idToken, username, currentUser, router, toast]);
 
   useEffect(() => {
+    if (!authUser) return;
     authUser.getIdToken().then((token: string) => {
       setIdToken(token);
     });
