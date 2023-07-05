@@ -16,7 +16,7 @@ export default function HomePage() {
           content="Control your access points with ease."
         />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="" />
+        <meta property="og:image" content="/images/hero3.jpg" />
       </Head>
       <Nav />
       <Home />
