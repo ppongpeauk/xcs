@@ -55,7 +55,7 @@ export default function Invite({ invite }: any) {
             />
             <meta
               property="og:url"
-              content={`https://xcs.restrafes.co/invite/${query.id}`}
+              content={`https://xcs.restrafes.co/invite/${invite.inviteCode}`}
             />
             <meta
               property="og:description"
