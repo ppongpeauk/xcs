@@ -23,6 +23,7 @@ import Head from "next/head";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import Section from "./section";
 
 export default function Invitation({ invite }: { invite: any }) {
   const { query, push } = useRouter();
@@ -165,10 +166,10 @@ export default function Invitation({ invite }: { invite: any }) {
                   <Skeleton
                     display={"flex"}
                     isLoaded={!loading}
-                    w={"100%"}
                     h={"100%"}
                     objectFit={"contain"}
                     justifyContent={"center"}
+                    rounded={"full"}
                   >
                     <Avatar
                       src={invite?.from?.avatar}
