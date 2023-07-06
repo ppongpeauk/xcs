@@ -42,7 +42,7 @@ export default async function handler(
 
   if (req.method === "POST") {
     let { activationCode } = req.query as { activationCode: string };
-    
+
     let { firstName, lastName, email, username, password } = req.body as {
       firstName: string;
       lastName: string;
@@ -68,7 +68,7 @@ export default async function handler(
       });
     }
 
-    if (invitation?.uses !== 0 &&  invitation?.uses >= invitation?.maxUses) {
+    if (invitation?.uses !== 0 && invitation?.uses >= invitation?.maxUses) {
       return res.status(403).json({
         message: `This activation code has reached its maximum uses.`,
       });
@@ -133,107 +133,114 @@ export default async function handler(
         }
       });
 
+    let firebaseError;
     await app();
-    await admin.auth()
+    const firebaseUser = await admin
+      .auth()
       .createUser({
         email,
         password,
-        emailVerified: true,
+        emailVerified: false,
+      })
+      .then((userRecord) => {
+        return userRecord;
       })
       .catch((error) => {
-        switch (error.code) {
-          case "auth/email-already-exists":
-            return res.status(400).json({
-              message: "An account with this email address already exists.",
-            });
-          case "auth/invalid-email":
-            return res.status(400).json({
-              message: "Invalid email address.",
-            });
-          case "auth/operation-not-allowed":
-            return res.status(400).json({
-              message: "Email/password accounts are not enabled.",
-            });
-          case "auth/weak-password":
-            return res.status(400).json({
-              message: "Password is too weak.",
-            });
-          default:
-            return res.status(500).json({
-              message:
-                "An unknown error has occurred while creating your account.",
-            });
-        }
-      })
-      .then(async (userRecord) => {
-        if (!userRecord)
-          return res
-            .status(500)
-            .json({ message: "An unknown error has occurred." });
-        await users
-          .insertOne({
-            name: {
-              first: firstName,
-              last: lastName,
-              privacyLevel: 2,
-            },
-            email: {
-              address: email,
-              privacyLevel: 2,
-              verified: false,
-            },
-            username,
-            notifications: {
-              email: {
-                enabled: true,
-                frequency: "daily",
-              },
-            },
-            alerts: [
-              {
-                title: "Email address not verified",
-                description: `Your email address has not been verified. Please check your email for a verification link.`,
-                type: "warning",
-                action: {
-                  title: "Verify email",
-                  url: `${process.env.NEXT_PUBLIC_ROOT_URL}/platform/onboarding/verify-email`,
-                },
-              },
-            ],
-            platform: {
-              membership: "basic",
-            },
-            payment: {
-              customerId: null,
-            },
-            roblox: {
-              id: null,
-              verified: false,
-            },
-            avatar: null,
-            bio: null,
-            id: userRecord.uid,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          })
-          .then(async (result) => {
-            if (invitation?.uses + 1 >= invitation?.maxUses) {
-              await invitations.deleteOne({
-                inviteCode: activationCode,
-              });
-            } else {
-              await invitations.updateOne(
-                { inviteCode: activationCode },
-                { $inc: { uses: 1 } }
-              );
-            }
+        return error;
+      });
+
+    if (firebaseUser.code) {
+      firebaseError = firebaseUser;
+      switch (firebaseError.code) {
+        case "auth/email-already-exists":
+          return res.status(400).json({
+            message: "An account with this email address already exists.",
           });
+          break;
+        case "auth/invalid-email":
+          return res.status(400).json({
+            message: "Invalid email address.",
+          });
+          break;
+        case "auth/operation-not-allowed":
+          return res.status(400).json({
+            message: "Email/password accounts are not enabled.",
+          });
+          break;
+        case "auth/weak-password":
+          return res.status(400).json({
+            message: "Password is too weak.",
+          });
+          break;
+        default:
+          return res.status(500).json({
+            message:
+              "An unknown error has occurred while creating your account.",
+          });
+          break;
+      }
+    }
+
+    const createMongoUser = await users
+      .insertOne({
+        name: {
+          first: firstName,
+          last: lastName,
+          privacyLevel: 2,
+        },
+        email: {
+          address: email,
+          privacyLevel: 2,
+          verified: false,
+        },
+        username,
+        notifications: {
+          email: {
+            enabled: true,
+            frequency: "daily",
+          },
+        },
+        alerts: [
+          {
+            title: "Email address not verified",
+            description: `Your email address has not been verified. Please check your email for a verification link.`,
+            type: "warning",
+            action: {
+              title: "Verify email",
+              url: `${process.env.NEXT_PUBLIC_ROOT_URL}/platform/onboarding/verify-email`,
+            },
+          },
+        ],
+        platform: {
+          membership: "basic",
+        },
+        payment: {
+          customerId: null,
+        },
+        roblox: {
+          id: null,
+          verified: false,
+        },
+        avatar: null,
+        bio: null,
+        id: firebaseUser.uid,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       })
-      .catch((error) => {
+      .then(async (result) => {
+        if (invitation?.uses + 1 >= invitation?.maxUses) {
+          await invitations.deleteOne({
+            inviteCode: activationCode,
+          });
+        } else {
+          await invitations.updateOne(
+            { inviteCode: activationCode },
+            { $inc: { uses: 1 } }
+          );
+        }
+      }).catch((error) => {
         console.log(error);
-        return res.status(500).json({
-          message: "An unknown error has occurred.",
-        });
+        throw error;
       });
 
     return res.status(200).json({
