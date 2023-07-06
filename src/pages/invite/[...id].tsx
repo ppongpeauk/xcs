@@ -73,7 +73,6 @@ export default function Invite({ invite }: any) {
           </>
         )}
         <meta property="og:type" content="website" />
-        <title>EVE XCS - Invitation</title>
       </Head>
       <Invitation invite={invite} />
     </>
