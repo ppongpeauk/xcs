@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import Invitation from "@/components/Invitation";
 import Head from "next/head";
+import { useRouter } from "next/router";
 
 export async function getServerSideProps({ query }: any) {
   if (!query.id) {
@@ -32,6 +33,8 @@ export async function getServerSideProps({ query }: any) {
 }
 
 export default function Invite({ invite }: any) {
+  const { query } = useRouter();
+
   const inviteTypeSwitch = (type: string) => {
     switch (type) {
       case "organization":
@@ -49,14 +52,17 @@ export default function Invite({ invite }: any) {
         <title>EVE XCS - Invitation</title>
 
         <meta name="og:site_name" content={"EVE XCS"} />
-        <meta name="og:title" content={"Invitation"} />
-        <meta name="og:url" content={`https://xcs.restrafes.co/invite/HULLO`} />
-        <meta name="og:type" content="website" />
+        <meta name="og:title" content={"EVE XCS - Invitation"} />
         <meta
-          name="og:image"
-          content={"https://cdn.discordapp.com/attachments/998830838999421029/1106249233901834381/slouch3.png"}
+          name="og:url"
+          content={`https://xcs.restrafes.co/invite/${query.id}`}
         />
-        <meta name="og:description" content={"You've been invited by Pete to create an account."} />
+        <meta name="og:type" content="website" />
+        <meta name="og:image" content={invite.from.avatar} />
+        <meta
+          name="og:description"
+          content={`You've been invited by ${invite.from.name.first} to ${invite.type}.`}
+        />
         {/* <meta name="twitter:card" content="summary_large_image" /> */}
         {/* {invite ? (
           <>
