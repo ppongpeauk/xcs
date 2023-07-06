@@ -1,11 +1,13 @@
 import admin from "firebase-admin";
+import { useEffect } from "react";
 
 function b64_to_utf8(str: string) {
   return decodeURIComponent(escape(atob(str)));
 }
 
 const serviceAccount = {
-  auth_provider_x509_cert_url: process.env.FIREBASE_ADMIN_auth_provider_x509_cert_url,
+  auth_provider_x509_cert_url:
+    process.env.FIREBASE_ADMIN_auth_provider_x509_cert_url,
   auth_uri: process.env.FIREBASE_ADMIN_auth_uri,
   client_email: process.env.FIREBASE_ADMIN_client_email,
   client_id: process.env.FIREBASE_ADMIN_client_id,
@@ -17,11 +19,16 @@ const serviceAccount = {
   type: process.env.FIREBASE_ADMIN_type,
 } as admin.ServiceAccount;
 
-if (admin.apps.length === 0) {
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-  });
-}
+const app = () => {
+  if (!admin.apps.length) {
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount),
+    });
+  }
+  return admin.app();
+};
+
+export { admin, app };
 
 export async function tokenToID(token: string) {
   if (!token) {

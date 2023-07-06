@@ -11,6 +11,7 @@ import Section from "@/components/section";
 import {
   Box,
   Button,
+  Checkbox,
   Container,
   Flex,
   FormControl,
@@ -40,6 +41,7 @@ import NextLink from "next/link";
 
 // Icons
 import { FaUser } from "react-icons/fa";
+import { MdEmail, MdPin } from "react-icons/md";
 import { RiLockPasswordFill } from "react-icons/ri";
 
 // Authentication
@@ -75,7 +77,7 @@ export default function Login() {
     !user && (
       <>
         <Head>
-          <title>EVE XCS | Login</title>
+          <title>EVE XCS - Login</title>
         </Head>
         <Nav />
         <Modal onClose={onClose} isOpen={isOpen} isCentered>
@@ -130,8 +132,9 @@ export default function Login() {
                   useColorModeValue("gray.200", "gray.700"),
                 ]}
                 rounded={"xl"}
+                w={["full", "md"]}
               >
-                <Box>
+                <Box w={"full"} px={8}>
                   <Text
                     fontSize={"3xl"}
                     fontWeight={"bold"}
@@ -143,9 +146,9 @@ export default function Login() {
                   </Text>
                 </Box>
                 <br />
-                <Box px={[0, 16]}>
+                <Box px={[0, 4]}>
                   <Formik
-                    initialValues={{ email: "", password: "" }}
+                    initialValues={{ email: "", password: "", showPassword: false }}
                     onSubmit={(values, actions) => {
                       signInWithEmailAndPassword(
                         auth,
@@ -207,18 +210,17 @@ export default function Login() {
                       <Form>
                         <Field name="email">
                           {({ field, form }: any) => (
-                            <FormControl>
+                            <FormControl my={2}>
                               <FormLabel>Email</FormLabel>
-                              <InputGroup mb={2}>
+                              <InputGroup>
                                 <InputLeftElement pointerEvents="none">
-                                  <FaUser color="gray.300" />
+                                  <MdEmail color="gray.300" />
                                 </InputLeftElement>
                                 <Input
                                   {...field}
                                   type="text"
                                   placeholder="Email"
                                   variant={"filled"}
-                                  required={true}
                                 />
                               </InputGroup>
                             </FormControl>
@@ -226,20 +228,28 @@ export default function Login() {
                         </Field>
                         <Field name="password">
                           {({ field, form }: any) => (
-                            <FormControl>
+                            <FormControl my={2}>
                               <FormLabel>Password</FormLabel>
-                              <InputGroup mb={4}>
+                              <InputGroup>
                                 <InputLeftElement pointerEvents="none">
                                   <RiLockPasswordFill color="gray.300" />
                                 </InputLeftElement>
                                 <Input
                                   {...field}
-                                  type="password"
+                                  type={props.values.showPassword ? "text" : "password"}
                                   placeholder="Password"
                                   variant={"filled"}
-                                  required={true}
                                 />
                               </InputGroup>
+                            </FormControl>
+                          )}
+                        </Field>
+                        <Field name="showPassword">
+                          {({ field, form }: any) => (
+                            <FormControl my={2}>
+                              <Checkbox {...field}>
+                                Show password
+                              </Checkbox>
                             </FormControl>
                           )}
                         </Field>
@@ -263,7 +273,7 @@ export default function Login() {
                       Forgot your password?
                     </Link>
                   </Text>
-                  <Text fontSize={"sm"}>
+                  {/* <Text fontSize={"sm"}>
                     <Link
                       as={NextLink}
                       href="/auth/activate"
@@ -271,7 +281,7 @@ export default function Login() {
                     >
                       Activate an account.
                     </Link>
-                  </Text>
+                  </Text> */}
                   <Text fontSize={"sm"}>
                     Need help?{" "}
                     <Box

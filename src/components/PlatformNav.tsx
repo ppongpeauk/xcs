@@ -317,7 +317,7 @@ export default function PlatformNav({
           >
             Help & Information
           </NavLink>
-          <NavLink href={"/logout"} pathname={pathname} leftIcon={<BiSolidExit />}>
+          <NavLink href={"/auth/logout"} pathname={pathname} leftIcon={<BiSolidExit />}>
             Log Out
           </NavLink>
         </VStack>

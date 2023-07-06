@@ -43,7 +43,7 @@ export default function Invitation({ invite }: { invite: any }) {
     if (invite.type === "organization") {
       push(`/platform/organizations/?invitation=${query.id}`);
     } else if (invite.type === "xcs") {
-      push(`/register/${query.id}`);
+      push(`/auth/signup/${query.id}`);
     }
   };
 
@@ -121,7 +121,7 @@ export default function Invitation({ invite }: { invite: any }) {
                   {invite ? (
                     <>
                       {invite?.from?.name.first} has invited you to{" "}
-                      {inviteTypeSwitch(invite?.type)}
+                      {inviteTypeSwitch(invite?.type)}.
                       {invite?.type === "organization" ? (
                         <Text
                           as={"span"}

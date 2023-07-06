@@ -122,7 +122,7 @@ export default function Nav({ type }: { type?: string }) {
       >
         <ThemeButton />
         {!user ? (
-          <NavLink href={"/login"} pathname={pathname}>
+          <NavLink href={"/auth/login"} pathname={pathname}>
             Login
           </NavLink>
         ) : (

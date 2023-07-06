@@ -44,7 +44,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       // Wait for auth to initialize before checking if the user is logged in
       await waitForAuthInit().then(async () => {
         if (!user) {
-          await push("/login?redirect=" + window.location.pathname);
+          await push("/auth/login?redirect=" + window.location.pathname);
         }
       });
     }

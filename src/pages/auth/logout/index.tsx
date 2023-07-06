@@ -13,7 +13,7 @@ export default function Logout() {
 
   useEffect(() => {
     logOut();
-    router.push("/");
+    router.push("/auth/login");
   }, []);
 
   return (
