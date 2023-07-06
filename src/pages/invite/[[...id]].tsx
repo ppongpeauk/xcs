@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import Invitation from "@/components/Invitation";
 import Head from "next/head";
+import { useRouter } from "next/router";
 
 export async function getServerSideProps({ query }: any) {
   if (!query.id) {
@@ -22,16 +23,19 @@ export async function getServerSideProps({ query }: any) {
   )
     .then((res) => res.json())
     .then((ret) => {
-      return ret?.invitation || null;
+      return ret.invitation || null;
     });
+
   return {
     props: {
-      invite,
+      invite: invite || null,
     },
   };
 }
 
 export default function Invite({ invite }: any) {
+  const { query } = useRouter();
+
   const inviteTypeSwitch = (type: string) => {
     switch (type) {
       case "organization":
@@ -47,43 +51,25 @@ export default function Invite({ invite }: any) {
     <>
       <Head>
         <title>EVE XCS - Invitation</title>
+
         {invite ? (
           <>
+            <meta name="og:site_name" content={"EVE XCS"} />
+            <meta name="og:title" content={"EVE XCS - Invitation"} />
             <meta
-              property="og:title"
-              content={"Invitation from " + invite.from?.name.first}
+              name="og:url"
+              content={`https://xcs.restrafes.co/invite/${query.id}`}
             />
-            <meta property="og:site_name" content="EVE XCS" />
+            <meta name="og:type" content="website" />
+            <meta name="og:image" content={invite.from.avatar} />
             <meta
-              property="og:url"
-              content={`https://xcs.restrafes.co/invite/${invite.inviteCode}`}
-            />
-            <meta
-              property="og:description"
-              content={`You've been invited by ${
-                invite.from?.name.first
-              } to ${inviteTypeSwitch(invite.type)}.`}
-            />
-            <meta property="og:type" content="website" />
-            <meta
-              property="og:image"
-              content={"https://xcs.restrafes.co/images/logo-white.png"}
+              name="og:description"
+              content={`You've been invited by ${invite.from.name.first} to ${
+                inviteTypeSwitch(invite.type) || "join their organization"
+              }.`}
             />
           </>
-        ) : (
-          <>
-            <meta property="og:title" content={"Invitation"} />
-            <meta
-              property="og:url"
-              content={`https://xcs.restrafes.co/`}
-            />
-            <meta property="og:type" content="website" />
-            <meta
-              property="og:image"
-              content={"https://xcs.restrafes.co/images/logo-white.png"}
-            />
-          </>
-        )}
+        ) : null}
       </Head>
       <Invitation invite={invite} />
     </>
