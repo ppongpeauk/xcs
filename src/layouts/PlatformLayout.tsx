@@ -40,6 +40,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }
 
   useEffect(() => {
+    
     async function checkUser() {
       // Wait for auth to initialize before checking if the user is logged in
       await waitForAuthInit().then(async () => {
