@@ -46,13 +46,14 @@ export default function Invite({ invite }: any) {
   return (
     <>
       <Head>
-        <meta property="og:site_name" content="EVE XCS" />
+        <title>EVE XCS | Invitation</title>
         {invite ? (
           <>
             <meta
               property="og:title"
               content={"Invitation from " + invite.from?.name.first}
             />
+            <meta property="og:site_name" content="EVE XCS" />
             <meta
               property="og:url"
               content={`https://xcs.restrafes.co/invite/${invite.inviteCode}`}
@@ -63,6 +64,7 @@ export default function Invite({ invite }: any) {
                 invite.from?.name.first
               } to ${inviteTypeSwitch(invite.type)}.`}
             />
+            <meta property="og:type" content="website" />
             <meta
               property="og:image"
               content={"https://xcs.restrafes.co/images/logo-white.png"}
@@ -75,13 +77,13 @@ export default function Invite({ invite }: any) {
               property="og:url"
               content={`https://xcs.restrafes.co/`}
             />
+            <meta property="og:type" content="website" />
             <meta
               property="og:image"
               content={"https://xcs.restrafes.co/images/logo-white.png"}
             />
           </>
         )}
-        <meta property="og:type" content="website" />
       </Head>
       <Invitation invite={invite} />
     </>
