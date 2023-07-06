@@ -80,7 +80,7 @@ export default async function handler(
     delete body.id;
     delete body.apiKeys;
     if (body.members[uid] && organization.members[uid].role < 3) {
-      delete body.members[uid];
+      delete body.members;
     }
 
     // Character limits
