@@ -43,7 +43,7 @@ export default function Invitation({ invite }: { invite: any }) {
     if (invite.type === "organization") {
       push(`/platform/organizations/?invitation=${query.id}`);
     } else if (invite.type === "xcs") {
-      push(`/auth/signup/${query.id}`);
+      push(`/auth/activate/${query.id}`);
     }
   };
 
