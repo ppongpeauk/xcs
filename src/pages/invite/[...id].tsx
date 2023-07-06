@@ -74,12 +74,10 @@ export default function Invite({ invite }: any) {
   const { user, currentUser } = useAuthContext();
   const [loading, setLoading] = useState<boolean>(true);
 
+  let { id: queryId } = query;
+  const id = queryId?.length ? queryId[0] : null;
+
   useEffect(() => {
-    // if (!user) return;
-    // user.getIdToken().finally(() => {
-    //   console.log("User token refreshed.");
-    //   setLoading(false);
-    // });
     setLoading(false);
   }, [user]);
 
@@ -87,41 +85,6 @@ export default function Invite({ invite }: any) {
     setIsAcceptLoading(true);
     if (invite.type === "organization") {
       push(`/platform/organizations/?invitation=${query.id}`);
-      // await fetch(`/api/v1/invitations/${query.id}`, {
-      //   method: "POST",
-      // })
-      //   .then((res) => res.json())
-      //   .then((data) => {
-      //     if (data.success) {
-      //       toast({
-      //         title: "Invitation Accepted",
-      //         description: "You have successfully accepted the invite.",
-      //         status: "success",
-      //         duration: 5000,
-      //         isClosable: true,
-      //       });
-      //     } else {
-      //       toast({
-      //         title: "Invitation Error",
-      //         description: data.message,
-      //         status: "error",
-      //         duration: 5000,
-      //         isClosable: true,
-      //       });
-      //     }
-      //   })
-      //   .catch((err) => {
-      //     toast({
-      //       title: "Unable to accept invitation",
-      //       description: err.message,
-      //       status: "error",
-      //       duration: 5000,
-      //       isClosable: true,
-      //     });
-      //   })
-      //   .finally(() => {
-      //     setIsAcceptLoading(false);
-      //   });
     } else if (invite.type === "xcs") {
       push(`/register/${query.id}`);
     }
@@ -161,7 +124,10 @@ export default function Invite({ invite }: any) {
             />
           </>
         )}
-        <meta property="og:image" content={"https://xcs.restrafes.co/images/logo-white.png"} />
+        <meta
+          property="og:image"
+          content={"https://xcs.restrafes.co/images/logo-white.png"}
+        />
         <meta property="og:type" content="website" />
       </Head>
       <Container maxW={"container.lg"} h={"100vh"}>

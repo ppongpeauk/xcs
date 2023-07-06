@@ -10,10 +10,10 @@ export default async function handler(
   const { invitationId } = req.query as { invitationId: string };
 
   // Authorization Header
-  const authHeader = req.headers.authorization;
+  // const authHeader = req.headers.authorization;
 
   // Bearer Token
-  const token = authHeader?.split(" ")[1];
+  // const token = authHeader?.split(" ")[1];
 
   // Verify Token
   // const uid = await tokenToID(token as string);
