@@ -110,6 +110,7 @@ export default function Invite({ invite }: any) {
           </>
         )} */}
       </Head>
+      <Invitation invite={invite} />
     </>
   );
 }
