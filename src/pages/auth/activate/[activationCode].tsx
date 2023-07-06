@@ -76,7 +76,7 @@ export default function Activate() {
         <title>EVE XCS - Activate Account</title>
       </Head>
       <Nav />
-      <Box position={"relative"} h={"calc(100vh - 6rem)"}>
+      <Flex position={"relative"} minH={"calc(100vh - 6rem)"} align={"center"} justify={"center"}>
         <Flex
           position={"relative"}
           align={"center"}
@@ -355,7 +355,7 @@ export default function Activate() {
             </Flex>
           </Section>
         </Flex>
-      </Box>
+      </Flex>
       <Footer />
     </>
   );
