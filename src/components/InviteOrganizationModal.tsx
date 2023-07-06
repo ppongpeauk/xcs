@@ -100,7 +100,7 @@ export default function InviteOrganizationModal({
               });
               setInviteCode(data.inviteCode);
               setClipboardValue(
-                `${process.env.NEXT_PUBLIC_ROOT_URL}/invite/${data.inviteCode}`
+                `${process.env.NEXT_PUBLIC_ROOT_URL}/invitation/${data.inviteCode}`
               );
               actions.resetForm();
               onCreate(data.inviteCode);
@@ -158,7 +158,7 @@ export default function InviteOrganizationModal({
                           <FormLabel>Invitation Link</FormLabel>
                           <Input
                             variant={"filled"}
-                            value={`${process.env.NEXT_PUBLIC_ROOT_URL}/invite/${inviteCode}`}
+                            value={`${process.env.NEXT_PUBLIC_ROOT_URL}/invitation/${inviteCode}`}
                             isReadOnly={true}
                             onFocus={(e) => e.target.select()}
                           />

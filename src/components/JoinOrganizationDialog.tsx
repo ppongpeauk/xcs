@@ -45,7 +45,7 @@ export default function JoinOrganizationDialog({
         onSubmit={(values, actions) => {
           // Handle Links
           values.inviteCode = values.inviteCode.replace(
-            `${process.env.NEXT_PUBLIC_ROOT_URL}/invite/`,
+            `${process.env.NEXT_PUBLIC_ROOT_URL}/invitation/`,
             ""
           );
 

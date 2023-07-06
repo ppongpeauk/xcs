@@ -201,7 +201,7 @@ export default function Invitation({ invite }: { invite: any }) {
                         w={"full"}
                         my={2}
                         onClick={() =>
-                          push("/login?redirect=/invite/" + query.id)
+                          push("/login?redirect=/invitation/" + query.id)
                         }
                       >
                         Login to Accept
