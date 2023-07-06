@@ -22,7 +22,7 @@ export async function getServerSideProps({ query }: any) {
   }
 
   const user = await fetch(
-    `https://xcs.restrafes.co/api/v1/users/${query.username}`,
+    `${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/users/${query.username}`,
     {
       method: "GET",
       headers: {

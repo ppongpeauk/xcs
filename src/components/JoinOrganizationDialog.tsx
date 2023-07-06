@@ -26,10 +26,12 @@ export default function JoinOrganizationDialog({
   isOpen,
   onClose,
   onJoin,
+  initialValue=""
 }: {
   isOpen: boolean;
   onClose: () => void;
   onJoin: (organization: any) => void;
+  initialValue?: string;
 }) {
   const toast = useToast();
   const initialRef = useRef(null);
@@ -39,11 +41,11 @@ export default function JoinOrganizationDialog({
   return (
     <>
       <Formik
-        initialValues={{ inviteCode: "" }}
+        initialValues={{ inviteCode: initialValue }}
         onSubmit={(values, actions) => {
           // Handle Links
           values.inviteCode = values.inviteCode.replace(
-            `${process.env.NEXT_PUBLIC_ROOT_URL}/join/`,
+            `${process.env.NEXT_PUBLIC_ROOT_URL}/invite/`,
             ""
           );
 

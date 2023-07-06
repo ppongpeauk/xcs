@@ -53,8 +53,9 @@ export default async function handler(
     });
 
     await invitations.insertOne({
+      type: "organization",
       inviteCode: inviteCode,
-      creatorId: uid,
+      fromId: uid,
       organizationId: organization.id,
       role: role,
       createdAt: timestamp,

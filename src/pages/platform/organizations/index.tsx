@@ -29,12 +29,16 @@ import { useRouter } from "next/router";
 import { MdOutlineAddCircle, MdOutlineJoinRight } from "react-icons/md";
 
 export default function PlatformOrganizations() {
-  const { push } = useRouter();
+  const { push, query } = useRouter();
   const [organizations, setOrganizations] = useState<any>([]);
   const [organizationsLoading, setOrganizationsLoading] =
     useState<boolean>(true);
+  const [queryLoading, setQueryLoading] = useState<boolean>(true);
   const { user } = useAuthContext();
   const [idToken, setIdToken] = useState<string | null>(null);
+  const [initialInviteCodeValue, setInitialInviteCodeValue] = useState<
+    string | null
+  >(null);
   const toast = useToast();
 
   const {
@@ -77,6 +81,13 @@ export default function PlatformOrganizations() {
     });
   }, [idToken, toast]);
 
+  const joinOrganizationPrompt = (inviteCode: string) => {
+    setQueryLoading(true);
+    setInitialInviteCodeValue(inviteCode);
+    setQueryLoading(false);
+    onJoinOrganizationModalOpen();
+  };
+
   const onCreateOrganization = () => {
     onCreateOrganizationModalClose();
     toast({
@@ -87,6 +98,17 @@ export default function PlatformOrganizations() {
       isClosable: true,
     });
   };
+
+  useEffect(() => {
+    if (!query) return;
+    if (query.invitation) {
+      joinOrganizationPrompt(query.invitation as string);
+    } else {
+      setTimeout(() => {
+        setQueryLoading(false);
+      }, 100);
+    }
+  }, [query.invitation]);
 
   useEffect(() => {
     if (!user) return;
@@ -107,13 +129,16 @@ export default function PlatformOrganizations() {
           push(`/platform/organizations/${id}`);
         }}
       />
-      <JoinOrganizationDialog
-        isOpen={isJoinOrganizationModalOpen}
-        onClose={onJoinOrganizationModalClose}
-        onJoin={(id) => {
-          push(`/platform/organizations/${id}`);
-        }}
-      />
+      {!queryLoading && (
+        <JoinOrganizationDialog
+          isOpen={isJoinOrganizationModalOpen}
+          onClose={onJoinOrganizationModalClose}
+          onJoin={(id) => {
+            push(`/platform/organizations/${id}`);
+          }}
+          initialValue={initialInviteCodeValue || ""}
+        />
+      )}
       <Container maxW={"full"} p={8}>
         <Heading>Organizations</Heading>
         <HStack
