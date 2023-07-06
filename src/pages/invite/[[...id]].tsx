@@ -22,7 +22,7 @@ export async function getServerSideProps({ query }: any) {
   )
     .then((res) => res.json())
     .then((ret) => {
-      return ret?.invitation;
+      return ret?.invitation || null;
     });
   return {
     props: {

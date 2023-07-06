@@ -14,6 +14,8 @@ import {
   InputGroup,
   InputLeftElement,
   Link,
+  Skeleton,
+  SkeletonText,
   Text,
   useColorModeValue,
   useToast,
@@ -23,7 +25,7 @@ import { Field, Form, Formik } from "formik";
 import Head from "next/head";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { FaKey, FaSmileWink, FaUser } from "react-icons/fa";
 import { MdEmail, MdPin } from "react-icons/md";
 import { RiLockPasswordFill } from "react-icons/ri";
@@ -32,6 +34,7 @@ export default function Activate() {
   const toast = useToast();
   const router = useRouter();
   const { activationCode } = router.query;
+  const [loading, setLoading] = useState<boolean>(true);
 
   // Validate activation code
   useEffect(() => {
@@ -60,6 +63,9 @@ export default function Activate() {
             isClosable: true,
           });
           router.push("/auth/login");
+        })
+        .finally(() => {
+          setLoading(false);
         });
     }
   }, [activationCode]);
@@ -82,7 +88,6 @@ export default function Activate() {
               position={"relative"}
               p={8}
               pb={16}
-              bottom={[0, 16]}
               flexDir={"column"}
               align={"center"}
               outline={["0px solid", "1px solid"]}
@@ -98,7 +103,7 @@ export default function Activate() {
                   Activate Account
                 </Text>
                 <Text fontSize={"md"}>
-                  {/* TODO: Come up with a subtitle */}
+                  You are a few steps away from creating your account.
                 </Text>
               </Box>
               <br />
@@ -165,32 +170,38 @@ export default function Activate() {
                         <Field name="firstName">
                           {({ field, form }: any) => (
                             <FormControl isRequired={true}>
-                              <FormLabel>First Name</FormLabel>
-                              <InputGroup>
-                                <Input
-                                  {...field}
-                                  type="text"
-                                  placeholder="First Name"
-                                  variant={"filled"}
-                                  required={true}
-                                />
-                              </InputGroup>
+                              <Skeleton isLoaded={!loading}>
+                                <FormLabel>First Name</FormLabel>
+                              </Skeleton>
+                              <Skeleton isLoaded={!loading}>
+                                <InputGroup>
+                                  <Input
+                                    {...field}
+                                    type="text"
+                                    placeholder="First Name"
+                                    variant={"filled"}
+                                  />
+                                </InputGroup>
+                              </Skeleton>
                             </FormControl>
                           )}
                         </Field>
                         <Field name="lastName">
                           {({ field, form }: any) => (
                             <FormControl isRequired={true}>
-                              <FormLabel>Last Name</FormLabel>
-                              <InputGroup>
-                                <Input
-                                  {...field}
-                                  type="text"
-                                  placeholder="Last Name"
-                                  variant={"filled"}
-                                  required={true}
-                                />
-                              </InputGroup>
+                              <Skeleton isLoaded={!loading}>
+                                <FormLabel>Last Name</FormLabel>
+                              </Skeleton>
+                              <Skeleton isLoaded={!loading}>
+                                <InputGroup>
+                                  <Input
+                                    {...field}
+                                    type="text"
+                                    placeholder="Last Name"
+                                    variant={"filled"}
+                                  />
+                                </InputGroup>
+                              </Skeleton>
                             </FormControl>
                           )}
                         </Field>
@@ -198,89 +209,104 @@ export default function Activate() {
                       <Field name="email" isRequired={true}>
                         {({ field, form }: any) => (
                           <FormControl isRequired={true}>
-                            <FormLabel>Email</FormLabel>
-                            <InputGroup my={2}>
-                              <InputLeftElement pointerEvents="none">
-                                <MdEmail color="gray.300" />
-                              </InputLeftElement>
-                              <Input
-                                {...field}
-                                type="text"
-                                placeholder="Email"
-                                variant={"filled"}
-                                required={true}
-                              />
-                            </InputGroup>
+                            <Skeleton isLoaded={!loading}>
+                              <FormLabel>Email</FormLabel>
+                            </Skeleton>
+                            <Skeleton isLoaded={!loading}>
+                              <InputGroup my={2}>
+                                <InputLeftElement pointerEvents="none">
+                                  <MdEmail color="gray.300" />
+                                </InputLeftElement>
+                                <Input
+                                  {...field}
+                                  type="text"
+                                  placeholder="Email"
+                                  variant={"filled"}
+                                />
+                              </InputGroup>
+                            </Skeleton>
                           </FormControl>
                         )}
                       </Field>
                       <Field name="username" isRequired={true}>
                         {({ field, form }: any) => (
                           <FormControl isRequired={true}>
-                            <FormLabel>Username</FormLabel>
-                            <InputGroup my={2}>
-                              <InputLeftElement pointerEvents="none">
-                                <FaUser color="gray.300" />
-                              </InputLeftElement>
-                              <Input
-                                {...field}
-                                type="text"
-                                placeholder="Username"
-                                variant={"filled"}
-                                required={true}
-                              />
-                            </InputGroup>
+                            <Skeleton isLoaded={!loading}>
+                              <FormLabel>Username</FormLabel>
+                            </Skeleton>
+                            <Skeleton isLoaded={!loading}>
+                              <InputGroup my={2}>
+                                <InputLeftElement pointerEvents="none">
+                                  <FaUser color="gray.300" />
+                                </InputLeftElement>
+                                <Input
+                                  {...field}
+                                  type="text"
+                                  placeholder="Username"
+                                  variant={"filled"}
+                                />
+                              </InputGroup>
+                            </Skeleton>
                           </FormControl>
                         )}
                       </Field>
                       <Field name="password">
                         {({ field, form }: any) => (
                           <FormControl isRequired={true}>
-                            <FormLabel>Password</FormLabel>
-                            <InputGroup my={2}>
-                              <InputLeftElement pointerEvents="none">
-                                <RiLockPasswordFill color="gray.300" />
-                              </InputLeftElement>
-                              <Input
-                                {...field}
-                                type="password"
-                                placeholder="Password"
-                                variant={"filled"}
-                                required={true}
-                              />
-                            </InputGroup>
+                            <Skeleton isLoaded={!loading}>
+                              <FormLabel>Password</FormLabel>
+                            </Skeleton>
+                            <Skeleton isLoaded={!loading}>
+                              <InputGroup my={2}>
+                                <InputLeftElement pointerEvents="none">
+                                  <RiLockPasswordFill color="gray.300" />
+                                </InputLeftElement>
+                                <Input
+                                  {...field}
+                                  type="password"
+                                  placeholder="Password"
+                                  variant={"filled"}
+                                />
+                              </InputGroup>
+                            </Skeleton>
                           </FormControl>
                         )}
                       </Field>
                       <Field name="activationCode">
                         {({ field, form }: any) => (
                           <FormControl isRequired={true}>
-                            <FormLabel>Activation Code</FormLabel>
-                            <InputGroup my={2}>
-                              <InputLeftElement pointerEvents="none">
-                                <FaKey color="gray.300" />
-                              </InputLeftElement>
-                              <Input
-                                {...field}
-                                type="text"
-                                placeholder="Activation Code"
-                                variant={"filled"}
-                                required={true}
-                                isDisabled={true}
-                                value={activationCode}
-                              />
-                            </InputGroup>
+                            <Skeleton isLoaded={!loading}>
+                              <FormLabel>Activation Code</FormLabel>
+                            </Skeleton>
+                            <Skeleton isLoaded={!loading}>
+                              <InputGroup my={2}>
+                                <InputLeftElement pointerEvents="none">
+                                  <FaKey color="gray.300" />
+                                </InputLeftElement>
+                                <Input
+                                  {...field}
+                                  type="text"
+                                  placeholder="Activation Code"
+                                  variant={"filled"}
+                                  isDisabled={true}
+                                  value={activationCode}
+                                />
+                              </InputGroup>
+                            </Skeleton>
                           </FormControl>
                         )}
                       </Field>
-                      <Button
-                        my={2}
-                        w={"full"}
-                        isLoading={props.isSubmitting}
-                        type={"submit"}
-                      >
-                        Register
-                      </Button>
+                      <Skeleton isLoaded={!loading}>
+                        <Button
+                          my={2}
+                          w={"full"}
+                          isLoading={props.isSubmitting}
+                          type={"submit"}
+                        >
+                          Register
+                        </Button>
+                      </Skeleton>
+
                       <Text fontSize={"sm"} mb={2}>
                         By creating an account, you agree to our{" "}
                         <Text as={"span"}>

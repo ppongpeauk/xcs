@@ -52,7 +52,7 @@ export default function Invitation({ invite }: { invite: any }) {
       case "organization":
         return "join their organization";
       case "xcs":
-        return "register for an account";
+        return (<>register for an account on <Text as={"span"} fontWeight={"bold"} whiteSpace={"nowrap"}>EVE XCS</Text></>);
       default:
         return null;
     }
@@ -110,14 +110,18 @@ export default function Invitation({ invite }: { invite: any }) {
                   fontSize={"3xl"}
                   mb={2}
                   letterSpacing={"tighter"}
+                  w={"full"}
+                  textAlign={"center"}
                 >
                   {invite
-                    ? "You've recieved an invitation"
+                    ? invite.type === "organization"
+                      ? "You've recieved an invitation"
+                      : "You're invited! 🤩"
                     : "Invitation not found"}
                 </Heading>
               </Skeleton>
               <Skeleton isLoaded={!loading}>
-                <Text fontSize={"md"} mb={2}>
+                <Text fontSize={"lg"} mb={2}>
                   {invite ? (
                     <>
                       {invite?.from?.name.first} has invited you to{" "}
@@ -171,7 +175,7 @@ export default function Invitation({ invite }: { invite: any }) {
                         isLoading={isAcceptLoading}
                         onClick={acceptInvite}
                       >
-                        {invite.type === "xcs"
+                        {invite?.type === "xcs"
                           ? "Register & Accept"
                           : "Accept Invitation"}
                       </Button>
