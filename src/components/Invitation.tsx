@@ -52,7 +52,14 @@ export default function Invitation({ invite }: { invite: any }) {
       case "organization":
         return "join their organization";
       case "xcs":
-        return (<>create an account on <Text as={"span"} fontWeight={"bold"} whiteSpace={"nowrap"}>EVE XCS</Text></>);
+        return (
+          <>
+            create an account on{" "}
+            <Text as={"span"} fontWeight={"bold"} whiteSpace={"nowrap"}>
+              EVE XCS
+            </Text>
+          </>
+        );
       default:
         return null;
     }
@@ -155,16 +162,25 @@ export default function Invitation({ invite }: { invite: any }) {
                   w={"full"}
                   p={[4, 8]}
                 >
-                  <Avatar
-                    src={invite?.from?.avatar}
-                    w={"min-content"}
+                  <Skeleton
+                    display={"flex"}
+                    isLoaded={!loading}
+                    w={"100%"}
                     h={"100%"}
-                    maxH={"240px"}
-                    aspectRatio={1 / 1}
-                    outline={"1px solid"}
-                    outlineColor={useColorModeValue("gray.300", "gray.600")}
-                    fontSize={"3xl"}
-                  />
+                    objectFit={"contain"}
+                    justifyContent={"center"}
+                  >
+                    <Avatar
+                      src={invite?.from?.avatar}
+                      w={"full"}
+                      h={"auto"}
+                      maxW={"240px"}
+                      aspectRatio={1 / 1}
+                      outline={"1px solid"}
+                      outlineColor={useColorModeValue("gray.300", "gray.600")}
+                      fontSize={"3xl"}
+                    />
+                  </Skeleton>
                 </Flex>
                 <Box w={"full"}>
                   <Skeleton isLoaded={!loading}>
