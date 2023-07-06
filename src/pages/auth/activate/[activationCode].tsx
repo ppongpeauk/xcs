@@ -103,7 +103,7 @@ export default function Activate() {
                   Activate Account
                 </Text>
                 <Text fontSize={"md"}>
-                  You&apos;re  a few steps away from creating your account.
+                  You&apos;re just a few steps away from creating your account.
                 </Text>
               </Box>
               <br />
