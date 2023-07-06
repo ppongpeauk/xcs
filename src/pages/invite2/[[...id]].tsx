@@ -25,9 +25,10 @@ export async function getServerSideProps({ query }: any) {
     .then((ret) => {
       return ret.invitation || null;
     });
+
   return {
     props: {
-      invite,
+      invite: invite || null,
     },
   };
 }
@@ -51,18 +52,25 @@ export default function Invite({ invite }: any) {
       <Head>
         <title>EVE XCS - Invitation</title>
 
-        <meta name="og:site_name" content={"EVE XCS"} />
-        <meta name="og:title" content={"EVE XCS - Invitation"} />
-        <meta
-          name="og:url"
-          content={`https://xcs.restrafes.co/invite/${query.id}`}
-        />
-        <meta name="og:type" content="website" />
-        <meta name="og:image" content={invite.from.avatar} />
-        <meta
-          name="og:description"
-          content={`You've been invited by ${invite.from.name.first} to ${invite.type}.`}
-        />
+        {invite ? (
+          <>
+            <meta name="og:site_name" content={"EVE XCS"} />
+            <meta name="og:title" content={"EVE XCS - Invitation"} />
+            <meta
+              name="og:url"
+              content={`https://xcs.restrafes.co/invite/${query.id}`}
+            />
+            <meta name="og:type" content="website" />
+            <meta name="og:image" content={invite.from.avatar} />
+            <meta
+              name="og:description"
+              content={`You've been invited by ${invite.from.name.first} to ${
+                inviteTypeSwitch(invite.type) || "join their organization"
+              }.`}
+            />
+          </>
+        ) : null}
+
         {/* <meta name="twitter:card" content="summary_large_image" /> */}
         {/* {invite ? (
           <>
