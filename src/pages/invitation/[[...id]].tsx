@@ -41,7 +41,7 @@ export default function Invite({ invite }: any) {
       case "organization":
         return "join their organization";
       case "xcs":
-        return "register for an account";
+        return "create an account";
       default:
         return null;
     }
