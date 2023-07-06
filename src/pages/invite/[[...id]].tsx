@@ -70,6 +70,15 @@ export default function Invite({ invite }: any) {
           </>
         ) : (
           <>
+            <meta property="og:title" content={"Invitation"} />
+            <meta
+              property="og:url"
+              content={`https://xcs.restrafes.co/`}
+            />
+            <meta
+              property="og:image"
+              content={"https://xcs.restrafes.co/images/logo-white.png"}
+            />
           </>
         )}
         <meta property="og:type" content="website" />
