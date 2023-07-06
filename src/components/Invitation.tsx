@@ -52,7 +52,7 @@ export default function Invitation({ invite }: { invite: any }) {
       case "organization":
         return "join their organization";
       case "xcs":
-        return (<>register for an account on <Text as={"span"} fontWeight={"bold"} whiteSpace={"nowrap"}>EVE XCS</Text></>);
+        return (<>create an account on <Text as={"span"} fontWeight={"bold"} whiteSpace={"nowrap"}>EVE XCS</Text></>);
       default:
         return null;
     }
