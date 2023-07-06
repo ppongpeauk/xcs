@@ -1,4 +1,4 @@
-import { getApp, initializeApp } from "firebase/app";
+import { getApps, initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 
 // TODO: Replace the following with your app's Firebase project configuration
@@ -15,11 +15,13 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = () => {
-  if (!initializeApp.length) {
+  if (getApps().length < 1) {
+    console.log("Initializing Firebase");
     initializeApp(firebaseConfig);
   }
-  return getApp();
+  return getApps()[0];
 };
+
 const auth = getAuth(app());
 
 export default app;

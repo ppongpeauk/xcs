@@ -28,6 +28,8 @@ const app = () => {
   return admin.app();
 };
 
+app();
+
 export { admin, app };
 
 export async function tokenToID(token: string) {
