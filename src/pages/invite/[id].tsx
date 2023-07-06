@@ -161,7 +161,7 @@ export default function Invite({ invite }: any) {
             />
           </>
         )}
-        <meta property="og:image" content={"/images/logo-white.png"} />
+        <meta property="og:image" content={"https://xcs.restrafes.co/images/logo-white.png"} />
         <meta property="og:type" content="website" />
       </Head>
       <Container maxW={"container.lg"} h={"100vh"}>
