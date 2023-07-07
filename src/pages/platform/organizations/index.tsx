@@ -1,21 +1,21 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import Layout from "@/layouts/PlatformLayout";
 import {
-    Box,
-    Button,
-    Container,
-    Flex,
-    FormControl,
-    FormLabel,
-    HStack,
-    Heading,
-    Link,
-    Select,
-    Skeleton,
-    Stack,
-    Text,
-    useColorModeValue,
-    useDisclosure,
+  Box,
+  Button,
+  Container,
+  Flex,
+  FormControl,
+  FormLabel,
+  HStack,
+  Heading,
+  Link,
+  Select,
+  Skeleton,
+  Stack,
+  Text,
+  useColorModeValue,
+  useDisclosure,
 } from "@chakra-ui/react";
 import Head from "next/head";
 import { useEffect, useState } from "react";
@@ -121,6 +121,12 @@ export default function PlatformOrganizations() {
     <>
       <Head>
         <title>EVE XCS — Organizations</title>
+        <meta property="og:title" content="EVE XCS - Manage Organizations" />
+        <meta property="og:site_name" content="EVE XCS" />
+        <meta property="og:url" content="https://xcs.restrafes.co" />
+        <meta property="og:type" content="website" />
+        {/* <meta property="og:image" content="/images/hero3.jpg" />
+        <meta name="twitter:card" content="summary_large_image" /> */}
       </Head>
       <CreateOrganizationDialog
         isOpen={isCreateOrganizationModalOpen}

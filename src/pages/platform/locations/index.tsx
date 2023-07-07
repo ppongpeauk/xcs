@@ -129,6 +129,12 @@ export default function PlatformLocations() {
     <>
       <Head>
         <title>EVE XCS — Locations</title>
+        <meta property="og:title" content="EVE XCS - Manage Locations" />
+        <meta property="og:site_name" content="EVE XCS" />
+        <meta property="og:url" content="https://xcs.restrafes.co" />
+        <meta property="og:type" content="website" />
+        {/* <meta property="og:image" content="/images/hero3.jpg" />
+        <meta name="twitter:card" content="summary_large_image" /> */}
       </Head>
       <CreateLocationDialog
         isOpen={isCreateLocationModalOpen}
@@ -188,9 +194,7 @@ export default function PlatformLocations() {
               <Skeleton height={4} width={"50%"} />
             </Stack>
           ) : organizations.length === 0 ? (
-            <Text>
-              You are currently not a member of any organization.
-            </Text>
+            <Text>You are currently not a member of any organization.</Text>
           ) : (
             <Flex>
               {locations.length === 0 ? (

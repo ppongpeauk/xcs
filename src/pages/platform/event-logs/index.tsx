@@ -7,6 +7,12 @@ export default function PlatformEventLogs() {
     <>
       <Head>
         <title>EVE XCS — Event Logs</title>
+        <meta property="og:title" content="EVE XCS - Event Logs" />
+        <meta property="og:site_name" content="EVE XCS" />
+        <meta property="og:url" content="https://xcs.restrafes.co" />
+        <meta property="og:type" content="website" />
+        {/* <meta property="og:image" content="/images/hero3.jpg" />
+        <meta name="twitter:card" content="summary_large_image" /> */}
       </Head>
       <Container maxW={"full"} p={8}>
         <Heading pb={2}>Event Logs</Heading>

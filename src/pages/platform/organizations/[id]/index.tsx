@@ -205,6 +205,12 @@ export default function PlatformOrganization() {
     <>
       <Head>
         <title>EVE XCS — {organization?.name}</title>
+        <meta property="og:title" content="EVE XCS - Manage Organization" />
+        <meta property="og:site_name" content="EVE XCS" />
+        <meta property="og:url" content="https://xcs.restrafes.co" />
+        <meta property="og:type" content="website" />
+        {/* <meta property="og:image" content="/images/hero3.jpg" />
+        <meta name="twitter:card" content="summary_large_image" /> */}
       </Head>
       <DeleteDialog
         title="Delete Organization"
