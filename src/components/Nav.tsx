@@ -92,7 +92,7 @@ export default function Nav({ type }: { type?: string }) {
               alt={"EVE XCS"}
               objectFit={"contain"}
             />
-            <Code
+            {/* <Code
               ml={2}
               fontSize={"xs"}
               h={"fit-content"}
@@ -100,10 +100,9 @@ export default function Nav({ type }: { type?: string }) {
               fontWeight={"bold"}
               bg={useColorModeValue("gray.900", "white")}
               color={useColorModeValue("white", "gray.900")}
-              letterSpacing={"tighter"}
             >
               BETA
-            </Code>
+            </Code> */}
           </Flex>
           {/* <Text fontSize={"2xl"} fontWeight={"bold"} letterSpacing={"tighter"}>
           EVE XCS
