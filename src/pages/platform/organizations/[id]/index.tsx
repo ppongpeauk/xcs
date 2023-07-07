@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Container,
+  Divider,
   FormControl,
   FormLabel,
   HStack,
@@ -274,20 +275,7 @@ export default function PlatformOrganization() {
           </BreadcrumbItem>
         </Breadcrumb>
         <Heading>{organization?.name}</Heading>
-
-        {/* Create a form with a "Download Pack" button and a ROBLOX place id input box */}
-        {/* When the user clicks the "Download Pack" button, send a request to the API to create a new pack */}
-        {/* <InputGroup>
-            <InputLeftElement pointerEvents={"none"}>
-              <SiRoblox />
-            </InputLeftElement>
-            <Input
-              variant={"filled"}
-              type="text"
-              placeholder="Experience ID"
-              w={"fit-content"}
-            />
-          </InputGroup> */}
+        <Divider my={4} />
         {organization ? (
           <Box p={4} w={"fit-content"}>
             <Formik
@@ -404,16 +392,10 @@ export default function PlatformOrganization() {
                       </FormControl>
                     )}
                   </Field>
-                  <HStack spacing={4} py={4}>
+                  <HStack spacing={4} pt={2}>
                     <Button
                       mb={2}
-                      isLoading={props.isSubmitting}
-                      type={"submit"}
-                    >
-                      Update
-                    </Button>
-                    <Button
-                      mb={2}
+                      isDisabled={props.isSubmitting}
                       isLoading={props.isSubmitting}
                       onClick={roleModalOnOpen}
                       leftIcon={<FaUserShield />}
@@ -422,6 +404,7 @@ export default function PlatformOrganization() {
                     </Button>
                     <Button
                       mb={2}
+                      isDisabled={props.isSubmitting}
                       isLoading={props.isSubmitting}
                       onClick={memberModalOnOpen}
                       leftIcon={<FaIdBadge />}
@@ -430,16 +413,26 @@ export default function PlatformOrganization() {
                     </Button>
                     <Button
                       mb={2}
+                      isDisabled={props.isSubmitting}
                       isLoading={props.isSubmitting}
                       onClick={inviteModalOnOpen}
                       leftIcon={<RiMailAddFill />}
                     >
                       Invite Members
                     </Button>
+                  </HStack>
+                  <HStack spacing={4} pt={2}>
+                    <Button
+                      mb={2}
+                      isDisabled={props.isSubmitting}
+                      isLoading={props.isSubmitting}
+                      type={"submit"}
+                    >
+                      Update
+                    </Button>
                     <Button
                       as={NextLink}
                       mb={2}
-                      isLoading={props.isSubmitting}
                       href={`/platform/locations/?organization=${query.id}`}
                       leftIcon={<ImTree />}
                     >
@@ -449,6 +442,7 @@ export default function PlatformOrganization() {
                       <Button
                         colorScheme="red"
                         mb={2}
+                        isDisabled={props.isSubmitting}
                         onClick={onDeleteDialogOpen}
                         leftIcon={<IoIosRemoveCircle />}
                       >
