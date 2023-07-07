@@ -8,7 +8,7 @@ export default function HomePage() {
     <>
       <Head>
         <title>EVE XCS - Home</title>
-        <meta property="og:title" content="Home" />
+        <meta property="og:title" content="EVE XCS - Home" />
         <meta property="og:site_name" content="EVE XCS" />
         <meta property="og:url" content="https://xcs.restrafes.co" />
         <meta
