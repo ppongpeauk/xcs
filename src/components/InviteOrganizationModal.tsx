@@ -43,7 +43,7 @@ export default function InviteOrganizationModal({
   organizationId: string;
 }) {
   const toast = useToast();
-  const { idToken } = useAuthContext();
+  const { user } = useAuthContext();
   const [inviteCode, setInviteCode] = useState<string | null>(null);
   const {
     setValue: setClipboardValue,
@@ -71,53 +71,55 @@ export default function InviteOrganizationModal({
       <Formik
         initialValues={{ role: "1", singleUse: true }}
         onSubmit={(values, actions) => {
-          fetch(`/api/v1/organizations/${organizationId}/createInviteCode`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${idToken}`,
-            },
-            body: JSON.stringify({
-              singleUse: values.singleUse,
-              role: parseInt(values.role),
-            }),
-          })
-            .then((res) => {
-              if (res.status === 200) {
-                return res.json();
-              } else {
-                return res.json().then((json) => {
-                  throw new Error(json.message);
+          user.getIdToken().then((token: any) => {
+            fetch(`/api/v1/organizations/${organizationId}/createInviteCode`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({
+                singleUse: values.singleUse,
+                role: parseInt(values.role),
+              }),
+            })
+              .then((res) => {
+                if (res.status === 200) {
+                  return res.json();
+                } else {
+                  return res.json().then((json) => {
+                    throw new Error(json.message);
+                  });
+                }
+              })
+              .then((data) => {
+                toast({
+                  title: data.message,
+                  status: "success",
+                  duration: 9000,
+                  isClosable: true,
                 });
-              }
-            })
-            .then((data) => {
-              toast({
-                title: data.message,
-                status: "success",
-                duration: 9000,
-                isClosable: true,
+                setInviteCode(data.inviteCode);
+                setClipboardValue(
+                  `${process.env.NEXT_PUBLIC_ROOT_URL}/invitation/${data.inviteCode}`
+                );
+                actions.resetForm();
+                onCreate(data.inviteCode);
+                // onClose();
+              })
+              .catch((error) => {
+                toast({
+                  title: "There was an error creating the invitation.",
+                  description: error.message,
+                  status: "error",
+                  duration: 9000,
+                  isClosable: true,
+                });
+              })
+              .finally(() => {
+                actions.setSubmitting(false);
               });
-              setInviteCode(data.inviteCode);
-              setClipboardValue(
-                `${process.env.NEXT_PUBLIC_ROOT_URL}/invitation/${data.inviteCode}`
-              );
-              actions.resetForm();
-              onCreate(data.inviteCode);
-              // onClose();
-            })
-            .catch((error) => {
-              toast({
-                title: "There was an error creating the invitation.",
-                description: error.message,
-                status: "error",
-                duration: 9000,
-                isClosable: true,
-              });
-            })
-            .finally(() => {
-              actions.setSubmitting(false);
-            });
+          });
         }}
       >
         {(props) => (
@@ -145,7 +147,11 @@ export default function InviteOrganizationModal({
                         <Field name="singleUse" type={"checkbox"}>
                           {({ field, form }: any) => (
                             <FormControl>
-                              <Checkbox {...field} variant={"filled"} isChecked={field.value}>
+                              <Checkbox
+                                {...field}
+                                variant={"filled"}
+                                isChecked={field.value}
+                              >
                                 Single Use
                               </Checkbox>
                             </FormControl>

@@ -84,10 +84,10 @@ export default async function handler(
     // Character limits
     if (name !== undefined) {
       name = name.trim();
-      if (name.length > 32 || name.length < 3) {
+      if (name.length > 32 || name.length < 1) {
         return res
           .status(400)
-          .json({ message: "Name must be between 3-32 characters." });
+          .json({ message: "Name must be between 1-32 characters." });
       }
     }
 
@@ -104,6 +104,7 @@ export default async function handler(
       id: id,
       name: name,
       description: description,
+      organizationId: location.organizationId,
       locationId: locationId,
       configuration: {
         enabled: true,

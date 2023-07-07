@@ -36,54 +36,56 @@ export default function CreateOrganizationDialog({
   const toast = useToast();
   const initialRef = useRef(null);
   const finalRef = useRef(null);
-  const { idToken } = useAuthContext();
+  const { user } = useAuthContext();
 
   return (
     <>
       <Formik
         initialValues={{ name: "" }}
         onSubmit={(values, actions) => {
-          fetch("/api/v1/organizations", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${idToken}`,
-            },
-            body: JSON.stringify({
-              name: values.name,
-            }),
-          })
-            .then((res) => {
-              if (res.status === 200) {
-                return res.json();
-              } else {
-                return res.json().then((json) => {
-                  throw new Error(json.message);
+          user.getIdToken().then((token: any) => {
+            fetch("/api/v1/organizations", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({
+                name: values.name,
+              }),
+            })
+              .then((res) => {
+                if (res.status === 200) {
+                  return res.json();
+                } else {
+                  return res.json().then((json) => {
+                    throw new Error(json.message);
+                  });
+                }
+              })
+              .then((data) => {
+                toast({
+                  title: data.message,
+                  status: "success",
+                  duration: 9000,
+                  isClosable: true,
                 });
-              }
-            })
-            .then((data) => {
-              toast({
-                title: data.message,
-                status: "success",
-                duration: 9000,
-                isClosable: true,
+                onClose();
+                onCreate(data.organizationId);
+              })
+              .catch((error) => {
+                toast({
+                  title: "There was an error creating the organization.",
+                  description: error.message,
+                  status: "error",
+                  duration: 9000,
+                  isClosable: true,
+                });
+              })
+              .finally(() => {
+                actions.setSubmitting(false);
               });
-              onClose();
-              onCreate(data.organizationId);
-            })
-            .catch((error) => {
-              toast({
-                title: "There was an error creating the organization.",
-                description: error.message,
-                status: "error",
-                duration: 9000,
-                isClosable: true,
-              });
-            })
-            .finally(() => {
-              actions.setSubmitting(false);
-            });
+          });
         }}
       >
         {(props) => (

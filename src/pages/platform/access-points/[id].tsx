@@ -46,10 +46,10 @@ import { SiRoblox } from "react-icons/si";
 
 export default function PlatformAccessPoint() {
   const { query, push } = useRouter();
-  const { idToken } = useAuthContext();
+  const { user } = useAuthContext();
   const [accessPoint, setAccessPoint] = useState<any>(null);
   const toast = useToast();
-  
+
   const {
     isOpen: isDeleteDialogOpen,
     onOpen: onDeleteDialogOpen,
@@ -59,119 +59,82 @@ export default function PlatformAccessPoint() {
   const [packLoading, setPackLoading] = useState<boolean>(false);
 
   const onDelete = () => {
-    fetch(`/api/v1/locations/${query.id}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${idToken}` },
-    })
-      .then((res) => {
-        if (res.status === 200) {
-          return res.json();
-        } else {
-          return res.json().then((json: any) => {
-            throw new Error(json.message);
+    user.getIdToken().then((idToken: any) => {
+      fetch(`/api/v1/access-points/${query.id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${idToken}` },
+      })
+        .then((res) => {
+          if (res.status === 200) {
+            return res.json();
+          } else {
+            return res.json().then((json: any) => {
+              throw new Error(json.message);
+            });
+          }
+        })
+        .then((data) => {
+          toast({
+            title: data.message,
+            status: "success",
+            duration: 5000,
+            isClosable: true,
           });
-        }
-      })
-      .then((data) => {
-        toast({
-          title: data.message,
-          status: "success",
-          duration: 5000,
-          isClosable: true,
+          push(
+            `/platform/locations/${accessPoint?.location?.id}/access-points`
+          );
+        })
+        .catch((err) => {
+          toast({
+            title: "Error",
+            description: err.message,
+            status: "error",
+            duration: 9000,
+            isClosable: true,
+          });
+        })
+        .finally(() => {
+          onDeleteDialogClose();
         });
-        push("/platform/locations");
-      })
-      .catch((err) => {
-        toast({
-          title: "Error",
-          description: err.message,
-          status: "error",
-          duration: 9000,
-          isClosable: true,
-        });
-      })
-      .finally(() => {
-        onDeleteDialogClose();
-      });
+    });
   };
 
   let refreshData = () => {
     setAccessPoint(null);
-    fetch(`/api/v1/locations/${query.id}`, {
-      method: "GET",
-      headers: { Authorization: `Bearer ${idToken}` },
-    })
-      .then((res) => {
-        if (res.status === 200)
-          return res.json();
-        if (res.status === 404) {
-          return push("/404");
-        } else if (res.status === 403) {
-          return push("/403");
-        }
+    user.getIdToken().then((idToken: any) => {
+      fetch(`/api/v1/access-points/${query.id}`, {
+        method: "GET",
+        headers: { Authorization: `Bearer ${idToken}` },
       })
-      .then((data) => {
-        setAccessPoint(data.location);
-      });
-  };
-
-  let downloadStarterPack = () => {
-    setPackLoading(true);
-    fetch(`/api/v1/locations/${query.id}/starter-pack`, {
-      method: "GET",
-      headers: { Authorization: `Bearer ${idToken}` },
-    })
-      .then((res) => {
-        if (res.status === 200) {
-          return res.blob();
-        } else {
-          return res.json().then((json: any) => {
-            throw new Error(json.message);
+        .then((res) => {
+          if (res.status === 200) return res.json();
+          if (res.status === 404) {
+            return push("/404");
+          } else if (res.status === 403) {
+            return push("/403");
+          }
+        })
+        .then((data) => {
+          setAccessPoint(data.accessPoint);
+        })
+        .catch((err) => {
+          toast({
+            title: "Error",
+            description: err.message,
+            status: "error",
+            duration: 9000,
+            isClosable: true,
           });
-        }
-      })
-      .then((blob) => {
-        // Convert location name to kebab case for file name
-        const locationName = accessPoint.name
-          .replace(/\s+/g, "-")
-          .replace(".", "")
-          .toLowerCase();
-
-        const url = window.URL.createObjectURL(new Blob([blob]));
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute("download", `xcs-template-${locationName}.rbxmx`);
-        document.body.appendChild(link);
-        link.click();
-        link.parentNode?.removeChild(link);
-
-        toast({
-          title: "Downloading template...",
-          status: "success",
-          duration: 5000,
-          isClosable: true,
         });
-      })
-      .catch((err) => {
-        toast({
-          title: "Error",
-          description: err.message,
-          status: "error",
-          duration: 9000,
-          isClosable: true,
-        });
-      })
-      .finally(() => {
-        setPackLoading(false);
-      });
+    });
   };
 
   // Fetch location data
   useEffect(() => {
-    if (!idToken) return;
+    if (!user) return;
     if (!query.id) return;
     refreshData();
-  }, [query.id, idToken]);
+  }, [query.id]);
 
   return (
     <>
@@ -179,8 +142,8 @@ export default function PlatformAccessPoint() {
         <title>EVE XCS - {accessPoint?.name}</title>
       </Head>
       <DeleteDialog
-        title="Delete Location"
-        body="Are you sure you want to delete this location? This will revoke all API keys and delete all data associated with this location. This action cannot be undone."
+        title="Delete Access Point"
+        body="Are you sure you want to delete this access point? This action cannot be undone."
         isOpen={isDeleteDialogOpen}
         onClose={onDeleteDialogClose}
         onDelete={onDelete}
@@ -203,10 +166,19 @@ export default function PlatformAccessPoint() {
           <BreadcrumbItem>
             <BreadcrumbLink
               as={NextLink}
-              href={`./?organization=${accessPoint?.organizationId}`}
+              href={`/platform/locations/?organization=${accessPoint?.organizationId}`}
               textUnderlineOffset={4}
             >
               Locations
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbItem>
+            <BreadcrumbLink
+              as={NextLink}
+              href={`/platform/locations/${accessPoint?.location?.id}/access-points`}
+              textUnderlineOffset={4}
+            >
+              {accessPoint?.location?.name}
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbItem isCurrentPage>
@@ -222,59 +194,56 @@ export default function PlatformAccessPoint() {
               initialValues={{
                 name: accessPoint?.name,
                 description: accessPoint?.description,
-                enabled: accessPoint?.enabled,
-                placeId: accessPoint?.roblox?.placeId || "",
+                enabled: accessPoint?.configuration.enabled,
+                armed: accessPoint?.configuration.armed,
               }}
               onSubmit={(values, actions) => {
-                fetch(`/api/v1/locations/${query.id}`, {
-                  method: "PUT",
-                  headers: {
-                    Authorization: `Bearer ${idToken}`,
-                    "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify({
-                    name: values.name,
-                    description: values.description || "",
-                    enabled: values.enabled,
-                    roblox: {
-                      placeId:
-                        values.placeId.trim() == ""
-                          ? null
-                          : values.placeId.trim(),
+                user.getIdToken().then((token: any) => {
+                  fetch(`/api/v1/access-points/${query.id}`, {
+                    method: "PUT",
+                    headers: {
+                      Authorization: `Bearer ${token}`,
+                      "Content-Type": "application/json",
                     },
-                  }),
-                })
-                  .then((res: any) => {
-                    if (res.status === 200) {
-                      return res.json();
-                    } else {
-                      return res.json().then((json: any) => {
-                        throw new Error(json.message);
+                    body: JSON.stringify({
+                      name: values.name,
+                      description: values.description || "",
+                      enabled: values.enabled,
+                      armed: values.armed,
+                    }),
+                  })
+                    .then((res: any) => {
+                      if (res.status === 200) {
+                        return res.json();
+                      } else {
+                        return res.json().then((json: any) => {
+                          throw new Error(json.message);
+                        });
+                      }
+                    })
+                    .then((data) => {
+                      toast({
+                        title: data.message,
+                        status: "success",
+                        duration: 9000,
+                        isClosable: true,
                       });
-                    }
-                  })
-                  .then((data) => {
-                    toast({
-                      title: data.message,
-                      status: "success",
-                      duration: 9000,
-                      isClosable: true,
+                      actions.setSubmitting(false);
+                      refreshData();
+                    })
+                    .catch((error) => {
+                      toast({
+                        title: "There was an error updating the location.",
+                        description: error.message,
+                        status: "error",
+                        duration: 9000,
+                        isClosable: true,
+                      });
+                    })
+                    .finally(() => {
+                      actions.setSubmitting(false);
                     });
-                    actions.setSubmitting(false);
-                    refreshData();
-                  })
-                  .catch((error) => {
-                    toast({
-                      title: "There was an error updating the location.",
-                      description: error.message,
-                      status: "error",
-                      duration: 9000,
-                      isClosable: true,
-                    });
-                  })
-                  .finally(() => {
-                    actions.setSubmitting(false);
-                  });
+                });
               }}
             >
               {(props) => (
@@ -312,46 +281,43 @@ export default function PlatformAccessPoint() {
                       </FormControl>
                     )}
                   </Field>
-                  <Field name="placeId">
-                    {({ field, form }: any) => (
-                      <FormControl mb={2}>
-                        <FormLabel>Experience ID</FormLabel>
-                        <InputGroup mb={2}>
-                          <InputLeftElement pointerEvents="none">
-                            <IoBusiness />
-                          </InputLeftElement>
-                          <Input
-                            {...field}
-                            type="text"
-                            autoComplete="off"
-                            placeholder="Experience ID"
-                            variant={"filled"}
-                            // isDisabled={true}
-                            disabled={accessPoint?.roblox?.placeId !== null}
-                          />
-                        </InputGroup>
-                        <FormHelperText>
-                          This cannot be changed once set.
-                        </FormHelperText>
-                      </FormControl>
-                    )}
-                  </Field>
-                  <Field name="enabled">
-                    {({ field, form }: any) => (
-                      <FormControl>
-                        <FormLabel>Enabled</FormLabel>
-                        <InputGroup mb={2}>
-                          <Switch
-                            {...field}
-                            placeholder="Enabled"
-                            variant={"filled"}
-                            width={"fit-content"}
-                            defaultChecked={accessPoint?.enabled}
-                          />
-                        </InputGroup>
-                      </FormControl>
-                    )}
-                  </Field>
+                  <Stack direction={"row"} spacing={2} py={2}>
+                    <Field name="enabled">
+                      {({ field, form }: any) => (
+                        <FormControl>
+                          <FormLabel>Enabled</FormLabel>
+                          <InputGroup mb={2}>
+                            <Switch
+                              {...field}
+                              placeholder="Enabled"
+                              variant={"filled"}
+                              width={"fit-content"}
+                              defaultChecked={
+                                accessPoint?.configuration.enabled
+                              }
+                            />
+                          </InputGroup>
+                        </FormControl>
+                      )}
+                    </Field>
+                    <Field name="armed">
+                      {({ field, form }: any) => (
+                        <FormControl>
+                          <FormLabel>Armed</FormLabel>
+                          <InputGroup mb={2}>
+                            <Switch
+                              {...field}
+                              colorScheme="red"
+                              placeholder="Armed"
+                              variant={"filled"}
+                              width={"fit-content"}
+                              defaultChecked={accessPoint?.configuration.armed}
+                            />
+                          </InputGroup>
+                        </FormControl>
+                      )}
+                    </Field>
+                  </Stack>
                   <Stack direction={"row"} spacing={4} py={2}>
                     <Button
                       mb={2}
@@ -359,14 +325,6 @@ export default function PlatformAccessPoint() {
                       type={"submit"}
                     >
                       Update
-                    </Button>
-                    <Button
-                      mb={2}
-                      onClick={downloadStarterPack}
-                      isLoading={packLoading}
-                      leftIcon={<BsFillCloudDownloadFill />}
-                    >
-                      Download Template
                     </Button>
                     <Button
                       colorScheme="red"
@@ -377,22 +335,6 @@ export default function PlatformAccessPoint() {
                       Delete
                     </Button>
                   </Stack>
-                  <Text>
-                    Security clearances can be managed in the settings of{" "}
-                    <Link
-                      as={NextLink}
-                      href={`/platform/organizations/${accessPoint?.organizationId}`}
-                      textDecor={"underline"}
-                      textUnderlineOffset={4}
-                      whiteSpace={"nowrap"}
-                      _hover={{
-                        color: useColorModeValue("gray.600", "gray.400"),
-                      }}
-                    >
-                      the organization
-                    </Link>{" "}
-                    in which this location belongs to.
-                  </Text>
                 </Form>
               )}
             </Formik>

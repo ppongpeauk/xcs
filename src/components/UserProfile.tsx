@@ -60,50 +60,46 @@ export default function Profile({ username }: { username?: string }) {
   const router = useRouter();
   const { currentUser, user: authUser } = useAuthContext();
   const [user, setUser] = useState<any | undefined>(undefined);
-  const [idToken, setIdToken] = useState<string | null>(null);
   const toast = useToast();
 
   useEffect(() => {
-    if (!idToken || !currentUser) return;
+    if (!currentUser) return;
     if (!username) return;
     setUser(undefined);
-    fetch(`/api/v1/users/${username}`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${idToken}`,
-      },
-    })
-      .then((res) => {
-        if (res.status === 404) return router.push("/404");
-        return res.json();
+    authUser.getIdToken().then((token: any) => {
+      fetch(`/api/v1/users/${username}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
-      .then((res) => {
-        setUser(res.user);
-      })
-      .catch((err) => {
-        toast({
-          title: "User not found",
-          description: "Could not find user",
-          status: "error",
-          duration: 5000,
-          isClosable: true,
+        .then((res) => {
+          if (res.status === 404) return router.push("/404");
+          return res.json();
+        })
+        .then((res) => {
+          setUser(res.user);
+        })
+        .catch((err) => {
+          toast({
+            title: "User not found",
+            description: "Could not find user",
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+          });
         });
-      });
-  }, [idToken, username, currentUser, router, toast]);
-
-  useEffect(() => {
-    if (!authUser) return;
-    authUser.getIdToken().then((token: string) => {
-      setIdToken(token);
     });
-  }, [authUser]);
+  }, [username, currentUser, router, toast]);
 
   return (
     <>
       <Head>
-        {
-          user ? (<title>{`EVE XCS - ${user?.name?.first}'s Profile`}</title>) : (<title>{`EVE XCS - Profile`}</title>)
-        }
+        {user ? (
+          <title>{`EVE XCS - ${user?.name?.first}'s Profile`}</title>
+        ) : (
+          <title>{`EVE XCS - Profile`}</title>
+        )}
       </Head>
       <Container
         display={"flex"}

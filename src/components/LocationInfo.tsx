@@ -222,7 +222,7 @@ export default function LocationInfo({ location, query, idToken, refreshData }: 
               <Form>
                 <Field name="name">
                   {({ field, form }: any) => (
-                    <FormControl>
+                    <FormControl isRequired={true}>
                       <FormLabel>Name</FormLabel>
                       <InputGroup mb={2}>
                         <Input

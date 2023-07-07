@@ -20,6 +20,9 @@ import NextLink from "next/link";
 import { MdOutlineAddCircle } from "react-icons/md";
 import CreateAccessPointDialog from "./CreateAccessPointDialog";
 
+import { AiFillWarning } from "react-icons/ai";
+import { BiSolidLock } from "react-icons/bi";
+
 export default function LocationAccessPoints({
   idToken,
   location,
@@ -94,13 +97,17 @@ export default function LocationAccessPoints({
                   borderWidth={1}
                   borderRadius={"xl"}
                   borderColor={useColorModeValue("gray.200", "gray.700")}
-                  mr={4}
+                  mb={4}
                   aspectRatio={2 / 1}
                   align={"center"}
                   justify={"space-between"}
                   flexDir={"column"}
                 >
                   <Box w={"full"}>
+                    <HStack mb={2} align={"center"} justify={"flex-start"} fontSize={"xl"}>
+                      {!accessPoint.configuration.enabled && <AiFillWarning />}
+                      {accessPoint.configuration.armed && <BiSolidLock />}
+                    </HStack>
                     <Heading as={"h2"} size={"md"} mb={2}>
                       {accessPoint.name}
                     </Heading>

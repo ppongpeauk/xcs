@@ -17,8 +17,7 @@ export default function AuthProvider({
 }) {
   const [user, loading, error] = useAuthState(auth);
   const [currentUser, setCurrentUser] = useState<any>(null);
-  const [idToken, setIdToken] = useState<any>(null);
-
+  // const [idToken, setIdToken] = useState<any>(null);
   /*
   {
     name: {
@@ -35,19 +34,27 @@ export default function AuthProvider({
   }
   */
 
+  // const async getIdToken = () => {
+  //   if (user) {
+  //     const token = await user.getIdToken().then((token) => {
+  //       return token;
+  //     });
+  //     return token;
+  //   }
+  //   return null;
+  // };
+
   useEffect(() => {
     if (user) {
       user.getIdToken().then((token) => {
-        setIdToken(token);
-        // Fetch user metadata
-        fetch("/api/v1/me", { headers: { authorization: `Bearer ${token}` } })
+        fetch("/api/v1/me", {
+          headers: { authorization: `Bearer ${token}` },
+        })
           .then((res) => res.json())
           .then((data) => {
             setCurrentUser(data.user);
           });
       });
-    } else {
-      setIdToken(null);
     }
   }, [user]);
 
@@ -57,7 +64,6 @@ export default function AuthProvider({
 
   const values = {
     user,
-    idToken,
     currentUser,
     auth,
     getAuth,
