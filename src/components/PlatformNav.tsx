@@ -28,7 +28,7 @@ import {
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
 import { AiFillCrown, AiFillHome, AiFillInfoCircle } from "react-icons/ai";
-import { BiSolidExit } from "react-icons/bi";
+import { BiSolidExit, BiSolidTime } from "react-icons/bi";
 import { BsPersonBadgeFill } from "react-icons/bs";
 import { FaBuilding, FaIdBadge, FaUserAlt } from "react-icons/fa";
 import { ImTree } from "react-icons/im";
@@ -239,7 +239,7 @@ export default function PlatformNav({
             <NavLink
               href={"/platform/event-logs"}
               pathname={pathname}
-              leftIcon={<MdSensors />}
+              leftIcon={<BiSolidTime />}
             >
               Event Logs
             </NavLink>

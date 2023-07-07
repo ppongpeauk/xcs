@@ -170,7 +170,7 @@ export default function Login() {
                               break;
                             case "auth/user-disabled":
                               errorMessage =
-                                "The user corresponding to the given email has been disabled.";
+                                "This account has been disabled.";
                               break;
                             case "auth/user-not-found":
                               errorMessage =
@@ -184,7 +184,7 @@ export default function Login() {
                               errorMessage = "An unknown error occurred.";
                           }
                           toast({
-                            description: errorMessage,
+                            title: errorMessage,
                             status: "error",
                             duration: 5000,
                             isClosable: true,

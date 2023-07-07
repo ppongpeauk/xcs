@@ -35,21 +35,24 @@ export default async function handler(
   let organization = await organizations.findOne({
     id: location.organizationId,
   });
-  
+
   if (!organization) {
     return res.status(404).json({ message: "Organization not found" });
   }
 
-  if (!organization.members[uid as any]) {
+  let member = organization.members[uid as any];
+  if (!member) {
     return res.status(401).json({ message: "Unauthorized" });
   }
 
   // Append Organization Data to Location
   location.organization = organization;
   delete location.organization.invitations;
-  
+
   // Fetching Location Data
   if (req.method === "GET") {
+    // Get User Permissions
+    location.self = organization.members[uid as any];
     return res.status(200).json({ location: location });
   }
 
@@ -64,6 +67,9 @@ export default async function handler(
     // Character limits
     if (body.name !== undefined) {
       body.name = body.name.trim();
+      if (member.role <= 2 && body.name !== location.name) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
       if (body.name.length > 32 || body.name.length < 3) {
         return res
           .status(400)
@@ -73,6 +79,9 @@ export default async function handler(
 
     if (body.description) {
       body.description = body.description.trim();
+      if (member.role <= 2 && body.description !== location.description) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
       if (body.description.length > 256) {
         return res
           .status(400)
@@ -87,6 +96,13 @@ export default async function handler(
       return res
         .status(400)
         .json({ message: "You cannot change the experience ID once set." });
+    }
+
+    if (body.roblox.placeId) {
+      body.roblox.placeId = body.roblox.placeId.trim();
+      if (member.role <= 2 && body.roblox.placeId !== location.roblox.placeId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
     }
 
     const time = new Date();

@@ -22,15 +22,15 @@ import { Field, Form, Formik } from "formik";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { useRef } from "react";
 
-export default function CreateLocationDialog({
+export default function CreateAccessPointDialog({
   isOpen,
   onClose,
-  selectedOrganization,
+  location,
   onCreate,
 }: {
   isOpen: boolean;
   onClose: () => void;
-  selectedOrganization: any;
+  location: any;
   onCreate: (location: any) => void;
 }) {
   const toast = useToast();
@@ -43,8 +43,7 @@ export default function CreateLocationDialog({
       <Formik
         initialValues={{ name: "", description: "" }}
         onSubmit={(values, actions) => {
-          console.log(selectedOrganization.id);
-          fetch("/api/v1/locations", {
+          fetch(`/api/v1/locations/${location.id}/access-points`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -53,7 +52,7 @@ export default function CreateLocationDialog({
             body: JSON.stringify({
               name: values.name,
               description: values.description,
-              organizationId: selectedOrganization.id,
+              locationId: location.id,
             }),
           })
             .then((res) => {
@@ -73,11 +72,11 @@ export default function CreateLocationDialog({
                 isClosable: true,
               });
               onClose();
-              onCreate(data.locationId);
+              onCreate(data.accessPointId);
             })
             .catch((error) => {
               toast({
-                title: "There was an error creating the location.",
+                title: "There was an error creating the access point.",
                 description: error.message,
                 status: "error",
                 duration: 9000,
@@ -94,7 +93,7 @@ export default function CreateLocationDialog({
             <ModalOverlay />
             <Form>
               <ModalContent bg={useColorModeValue("white", "gray.800")}>
-                <ModalHeader pb={2}>Create Location</ModalHeader>
+                <ModalHeader pb={2}>Create Access Point</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody pb={4}>
                   <VStack spacing={2}>
@@ -105,7 +104,7 @@ export default function CreateLocationDialog({
                           <Input
                             {...field}
                             variant={"filled"}
-                            placeholder={"Location Name"}
+                            placeholder={"Access Point Name"}
                           />
                         </FormControl>
                       )}
@@ -130,7 +129,7 @@ export default function CreateLocationDialog({
                           <Textarea
                             {...field}
                             variant={"filled"}
-                            placeholder={"Location Description"}
+                            placeholder={"Access Point Description"}
                             maxH={"200px"}
                           />
                         </FormControl>
@@ -138,11 +137,11 @@ export default function CreateLocationDialog({
                     </Field>
                   </VStack>
                   <Text fontSize={"sm"} pt={2}>
-                    This location will be created under the{" "}
+                    This access point will be created under the{" "}
                     <Text as={"span"} fontWeight={"bold"}>
-                      {selectedOrganization?.name}
+                      {location?.name}
                     </Text>{" "}
-                    organization.
+                    location.
                   </Text>
                 </ModalBody>
 
