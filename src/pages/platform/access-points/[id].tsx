@@ -141,7 +141,7 @@ export default function PlatformAccessPoint() {
   return (
     <>
       <Head>
-        <title>EVE XCS — {accessPoint?.name}</title>
+        <title>EVE XCS – {accessPoint?.name}</title>
         <meta property="og:title" content="EVE XCS - Manage Access Point" />
         <meta property="og:site_name" content="EVE XCS" />
         <meta property="og:url" content="https://xcs.restrafes.co" />

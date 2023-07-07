@@ -77,7 +77,7 @@ export default function Login() {
     !user && (
       <>
         <Head>
-          <title>EVE XCS — Login</title>
+          <title>EVE XCS – Login</title>
           <meta name="description" content="EVE XCS - Login" />
           <link rel="icon" href="/favicon.ico" />
           <meta name="og:site_name" content="EVE XCS" />

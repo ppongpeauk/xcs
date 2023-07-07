@@ -128,7 +128,7 @@ export default function PlatformLocations() {
   return (
     <>
       <Head>
-        <title>EVE XCS — Locations</title>
+        <title>EVE XCS – Locations</title>
         <meta property="og:title" content="EVE XCS - Manage Locations" />
         <meta property="og:site_name" content="EVE XCS" />
         <meta property="og:url" content="https://xcs.restrafes.co" />

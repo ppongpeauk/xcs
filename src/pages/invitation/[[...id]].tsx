@@ -50,7 +50,7 @@ export default function Invite({ invite }: any) {
   return (
     <>
       <Head>
-        <title>EVE XCS — Invitation</title>
+        <title>EVE XCS – Invitation</title>
 
         {invite ? (
           <>

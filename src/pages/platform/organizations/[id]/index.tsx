@@ -204,7 +204,7 @@ export default function PlatformOrganization() {
   return (
     <>
       <Head>
-        <title>EVE XCS — {organization?.name}</title>
+        <title>EVE XCS – {organization?.name}</title>
         <meta property="og:title" content="EVE XCS - Manage Organization" />
         <meta property="og:site_name" content="EVE XCS" />
         <meta property="og:url" content="https://xcs.restrafes.co" />
