@@ -80,7 +80,6 @@ export default function Login() {
           <title>EVE XCS - Login</title>
           <meta name="description" content="EVE XCS - Login" />
           <link rel="icon" href="/favicon.ico" />
-          <meta name="theme-color" content="#ffffff" />
           <meta name="og:site_name" content="EVE XCS" />
           <meta name="og:title" content="EVE XCS - Login" />
           <meta name="og:description" content="Authenticate into EVE XCS." />

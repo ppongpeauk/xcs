@@ -76,7 +76,6 @@ export default function Activate() {
         <title>EVE XCS - Activate Account</title>
         <meta name="description" content="EVE XCS - Activate Account" />
         <link rel="icon" href="/favicon.ico" />
-        <meta name="theme-color" content="#ffffff" />
         <meta name="og:site_name" content="EVE XCS" />
         <meta name="og:title" content="EVE XCS - Activate Account" />
         <meta name="og:description" content="Activate your EVE XCS account." />

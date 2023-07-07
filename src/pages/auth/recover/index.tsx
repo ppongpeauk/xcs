@@ -39,7 +39,6 @@ export default function Recover() {
         <title>EVE XCS - Recover Account</title>
         <meta name="description" content="EVE XCS - Recover Account" />
         <link rel="icon" href="/favicon.ico" />
-        <meta name="theme-color" content="#ffffff" />
         <meta name="og:site_name" content="EVE XCS" />
         <meta name="og:title" content="EVE XCS - Recover Account" />
         <meta name="og:description" content="Recover your EVE XCS account." />
