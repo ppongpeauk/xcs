@@ -78,6 +78,17 @@ export default function Login() {
       <>
         <Head>
           <title>EVE XCS - Login</title>
+          <meta name="description" content="EVE XCS - Login" />
+          <link rel="icon" href="/favicon.ico" />
+          <meta name="theme-color" content="#ffffff" />
+          <meta name="og:site_name" content="EVE XCS" />
+          <meta name="og:title" content="EVE XCS - Login" />
+          <meta name="og:description" content="Authenticate into EVE XCS." />
+          <meta name="og:type" content="website" />
+          <meta name="og:url" content="https://xcs.restrafes.co/login" />
+          <meta name="og:image" content="/images/hero3.jpg" />
+          <meta name="og:locale" content="en_US" />
+          <meta name="twitter:card" content="summary_large_image" />
         </Head>
         <Nav />
         <Modal onClose={onClose} isOpen={isOpen} isCentered>
@@ -135,11 +146,8 @@ export default function Login() {
                 w={["full", "md"]}
               >
                 <Box w={"full"} px={8}>
-                  <Text
-                    fontSize={"3xl"}
-                    fontWeight={"bold"}
-                  >
-                    Login to XCS
+                  <Text fontSize={"3xl"} fontWeight={"bold"}>
+                    Log in to XCS
                   </Text>
                   <Text fontSize={"md"}>
                     Please present your credentials to continue.
@@ -148,7 +156,11 @@ export default function Login() {
                 <br />
                 <Box px={[0, 4]}>
                   <Formik
-                    initialValues={{ email: "", password: "", showPassword: false }}
+                    initialValues={{
+                      email: "",
+                      password: "",
+                      showPassword: false,
+                    }}
                     onSubmit={(values, actions) => {
                       signInWithEmailAndPassword(
                         auth,
@@ -166,15 +178,15 @@ export default function Login() {
                               errorMessage = "The email address is invalid.";
                               break;
                             case "auth/invalid-password":
-                              errorMessage = "The password is invalid.";
+                              errorMessage =
+                                "Invalid email or password. Please try again.";
                               break;
                             case "auth/user-disabled":
-                              errorMessage =
-                                "This account has been disabled.";
+                              errorMessage = "This account has been disabled.";
                               break;
                             case "auth/user-not-found":
                               errorMessage =
-                                "The user corresponding to the given email does not exist.";
+                                "Invalid email or password. Please try again.";
                               break;
                             case "auth/wrong-password":
                               errorMessage =
@@ -193,24 +205,13 @@ export default function Login() {
                         .finally(() => {
                           actions.setSubmitting(false);
                         });
-                      // setTimeout(() => {
-                      //   // alert(JSON.stringify(values, null, 2));
-                      //   toast({
-                      //     title: "Incorrect email or password.",
-                      //     description: "Please try again.",
-                      //     status: "error",
-                      //     duration: 5000,
-                      //     isClosable: true,
-                      //   });
-                      //   actions.setSubmitting(false);
-                      // }, 1000);
                     }}
                   >
                     {(props) => (
                       <Form>
                         <Field name="email">
                           {({ field, form }: any) => (
-                            <FormControl my={2}>
+                            <FormControl mt={2}>
                               <FormLabel>Email</FormLabel>
                               <InputGroup>
                                 <InputLeftElement pointerEvents="none">
@@ -236,7 +237,11 @@ export default function Login() {
                                 </InputLeftElement>
                                 <Input
                                   {...field}
-                                  type={props.values.showPassword ? "text" : "password"}
+                                  type={
+                                    props.values.showPassword
+                                      ? "text"
+                                      : "password"
+                                  }
                                   placeholder="Password"
                                   variant={"filled"}
                                 />
@@ -244,22 +249,20 @@ export default function Login() {
                             </FormControl>
                           )}
                         </Field>
-                        <Field name="showPassword">
+                        {/* <Field name="showPassword">
                           {({ field, form }: any) => (
-                            <FormControl my={2}>
-                              <Checkbox {...field}>
-                                Show password
-                              </Checkbox>
+                            <FormControl my={2} flexDir="row">
+                              <Checkbox {...field}>Show Password</Checkbox>
                             </FormControl>
                           )}
-                        </Field>
+                        </Field> */}
                         <Button
-                          mb={2}
+                          my={2}
                           w={"full"}
                           isLoading={props.isSubmitting}
                           type={"submit"}
                         >
-                          Login
+                          Log in
                         </Button>
                       </Form>
                     )}

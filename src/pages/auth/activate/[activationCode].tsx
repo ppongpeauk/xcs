@@ -74,9 +74,25 @@ export default function Activate() {
     <>
       <Head>
         <title>EVE XCS - Activate Account</title>
+        <meta name="description" content="EVE XCS - Activate Account" />
+        <link rel="icon" href="/favicon.ico" />
+        <meta name="theme-color" content="#ffffff" />
+        <meta name="og:site_name" content="EVE XCS" />
+        <meta name="og:title" content="EVE XCS - Activate Account" />
+        <meta name="og:description" content="Activate your EVE XCS account." />
+        <meta name="og:type" content="website" />
+        <meta name="og:url" content="https://xcs.restrafes.co" />
+        <meta name="og:image" content="/images/hero3.jpg" />
+        <meta name="og:locale" content="en_US" />
+        <meta name="twitter:card" content="summary_large_image" />
       </Head>
       <Nav />
-      <Flex position={"relative"} minH={"calc(100vh - 6rem)"} align={"center"} justify={"center"}>
+      <Flex
+        position={"relative"}
+        minH={"calc(100vh - 6rem)"}
+        align={"center"}
+        justify={"center"}
+      >
         <Flex
           position={"relative"}
           align={"center"}

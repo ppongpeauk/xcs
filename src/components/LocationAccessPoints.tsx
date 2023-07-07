@@ -49,7 +49,6 @@ export default function LocationAccessPoints({
         throw new Error(`Failed to fetch access points. (${res.status})`);
       })
       .then((data) => {
-        console.log(data);
         setAccessPoints(data);
       })
       .catch((err) => {
