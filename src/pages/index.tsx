@@ -17,6 +17,7 @@ export default function HomePage() {
         />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="/images/hero3.jpg" />
+        <meta name="twitter:card" content="summary_large_image" />
       </Head>
       <Nav />
       <Home />
