@@ -438,7 +438,7 @@ export default function PlatformOrganization() {
                     >
                       View Locations
                     </Button>
-                    {organization.user.role > 2 ? (
+                    {organization.user.role >= 3 ? (
                       <Button
                         colorScheme="red"
                         mb={2}
