@@ -36,13 +36,13 @@ export default function Recover() {
   return (
     <>
       <Head>
-        <title>EVE XCS - Activate Account</title>
-        <meta name="description" content="EVE XCS - Activate Account" />
+        <title>EVE XCS - Recover Account</title>
+        <meta name="description" content="EVE XCS - Recover Account" />
         <link rel="icon" href="/favicon.ico" />
         <meta name="theme-color" content="#ffffff" />
         <meta name="og:site_name" content="EVE XCS" />
-        <meta name="og:title" content="EVE XCS - Activate Account" />
-        <meta name="og:description" content="Activate your EVE XCS account." />
+        <meta name="og:title" content="EVE XCS - Recover Account" />
+        <meta name="og:description" content="Recover your EVE XCS account." />
         <meta name="og:type" content="website" />
         <meta name="og:url" content="https://xcs.restrafes.co" />
         <meta name="og:image" content="/images/hero3.jpg" />
