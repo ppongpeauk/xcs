@@ -8,7 +8,7 @@ export default function PlatformHome() {
   return (
     <>
       <Head>
-        <title>EVE XCS - Home</title>
+        <title>EVE XCS — Home</title>
       </Head>
       <Container maxW={"full"} p={8}>
         <Heading>Welcome to EVE XCS</Heading>

@@ -36,7 +36,7 @@ export default function Recover() {
   return (
     <>
       <Head>
-        <title>EVE XCS - Recover Account</title>
+        <title>EVE XCS — Recover Account</title>
         <meta name="description" content="EVE XCS - Recover Account" />
         <link rel="icon" href="/favicon.ico" />
         <meta name="og:site_name" content="EVE XCS" />

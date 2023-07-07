@@ -70,7 +70,7 @@ export default async function handler(
     // Character limits
     if (body.name !== undefined) {
       body.name = body.name.trim();
-      if (member.role <= 2 && body.name !== accessPoint.name) {
+      if (member.role <= 1 && body.name !== accessPoint.name) {
         return res.status(401).json({ message: "Unauthorized" });
       }
       if (body.name.length > 32 || body.name.length < 1) {
@@ -82,7 +82,7 @@ export default async function handler(
 
     if (body.description) {
       body.description = body.description.trim();
-      if (member.role <= 2 && body.description !== accessPoint.description) {
+      if (member.role <= 1 && body.description !== accessPoint.description) {
         return res.status(401).json({ message: "Unauthorized" });
       }
       if (body.description.length > 256) {
@@ -104,6 +104,8 @@ export default async function handler(
       configuration: {
         active: body.active,
         armed: body.armed,
+        timedAccess: body.timedAccess,
+        alwaysAllowed: body.alwaysAllowed,
       }
     } });
     await organizations.updateOne(

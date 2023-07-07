@@ -73,7 +73,7 @@ export default function Activate() {
   return (
     <>
       <Head>
-        <title>EVE XCS - Activate Account</title>
+        <title>EVE XCS — Activate Account</title>
         <meta name="description" content="EVE XCS - Activate Account" />
         <link rel="icon" href="/favicon.ico" />
         <meta name="og:site_name" content="EVE XCS" />

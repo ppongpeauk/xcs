@@ -6,7 +6,7 @@ export default function PlatformEventLogs() {
   return (
     <>
       <Head>
-        <title>EVE XCS - Event Logs</title>
+        <title>EVE XCS — Event Logs</title>
       </Head>
       <Container maxW={"full"} p={8}>
         <Heading pb={2}>Event Logs</Heading>

@@ -4,6 +4,7 @@ import {
   Box,
   Button,
   Container,
+  Divider,
   FormControl,
   FormHelperText,
   FormLabel,
@@ -140,7 +141,7 @@ export default function PlatformAccessPoint() {
   return (
     <>
       <Head>
-        <title>EVE XCS - {accessPoint?.name}</title>
+        <title>EVE XCS — {accessPoint?.name}</title>
       </Head>
       <DeleteDialog
         title="Delete Access Point"
@@ -149,7 +150,7 @@ export default function PlatformAccessPoint() {
         onClose={onDeleteDialogClose}
         onDelete={onDelete}
       />
-      <Container maxW={"full"} p={8}>
+      <Box maxW={"container.md"} p={8}>
         <Breadcrumb
           spacing="8px"
           mb={4}
@@ -189,7 +190,11 @@ export default function PlatformAccessPoint() {
           </BreadcrumbItem>
         </Breadcrumb>
         <Heading>{accessPoint?.name}</Heading>
-        <Box py={4} w={["100%", "384px"]}>
+        <Text fontSize={"lg"} color={"gray.500"}>
+          {accessPoint?.organization.name} - {accessPoint?.location.name}
+        </Text>
+        <Divider my={4} />
+        <Box py={4} minW={["100%", "fit-content"]}>
           <Skeleton isLoaded={accessPoint}>
             <Formik
               initialValues={{
@@ -197,8 +202,28 @@ export default function PlatformAccessPoint() {
                 description: accessPoint?.description,
                 active: accessPoint?.configuration.active,
                 armed: accessPoint?.configuration.armed,
+                timedAccess: JSON.stringify(
+                  accessPoint?.configuration.timedAccess
+                ),
+                alwaysAllowed: JSON.stringify(
+                  accessPoint?.configuration.alwaysAllowed
+                ),
               }}
               onSubmit={(values, actions) => {
+                try {
+                  JSON.parse(values.timedAccess);
+                  JSON.parse(values.alwaysAllowed);
+                } catch (err) {
+                  toast({
+                    title: "Error",
+                    description: "Invalid JSON.",
+                    status: "error",
+                    duration: 9000,
+                    isClosable: true,
+                  });
+                  actions.setSubmitting(false);
+                  return;
+                }
                 user.getIdToken().then((token: any) => {
                   fetch(`/api/v1/access-points/${query.id}`, {
                     method: "PUT",
@@ -211,6 +236,8 @@ export default function PlatformAccessPoint() {
                       description: values.description || "",
                       active: values.active,
                       armed: values.armed,
+                      timedAccess: JSON.parse(values.timedAccess),
+                      alwaysAllowed: JSON.parse(values.alwaysAllowed),
                     }),
                   })
                     .then((res: any) => {
@@ -234,7 +261,7 @@ export default function PlatformAccessPoint() {
                     })
                     .catch((error) => {
                       toast({
-                        title: "There was an error updating the location.",
+                        title: "There was an error updating the access point.",
                         description: error.message,
                         status: "error",
                         duration: 9000,
@@ -249,7 +276,7 @@ export default function PlatformAccessPoint() {
             >
               {(props) => (
                 <Form>
-                  <Field name="name">
+                  <Field name="name" w={"min-content"}>
                     {({ field, form }: any) => (
                       <FormControl>
                         <FormLabel>Name</FormLabel>
@@ -282,12 +309,83 @@ export default function PlatformAccessPoint() {
                       </FormControl>
                     )}
                   </Field>
-                  <Stack direction={"row"} spacing={2} py={2}>
+                  <Stack direction={"row"} spacing={2}>
+                    <Field name="timedAccess">
+                      {({ field, form }: any) => (
+                        <FormControl>
+                          <FormLabel>timedAccess</FormLabel>
+                          <InputGroup mb={2}>
+                            <Textarea
+                              {...field}
+                              type="text"
+                              autoComplete="off"
+                              placeholder={JSON.stringify({
+                                routines: [
+                                  {
+                                    name: "Morning Access",
+                                    start: "08:00",
+                                    end: "12:00",
+                                    days: [1, 2, 3, 4, 5],
+                                  },
+                                ],
+                                temporaryAccess: [
+                                  {
+                                    name: "Temporary Access",
+                                    allowed: {
+                                      open: false,
+                                      clearances: [
+                                        "2e73ec62-9f23-46b5-85e2-1e84c1278d11",
+                                      ],
+                                      users: [],
+                                    },
+                                    start: "2017-01-01T00:00:00.000Z",
+                                    end: "2017-01-02T00:00:00.000Z",
+                                  },
+                                ],
+                              })}
+                              variant={"filled"}
+                              maxH={"240px"}
+                            />
+                          </InputGroup>
+                        </FormControl>
+                      )}
+                    </Field>
+                    <Field name="alwaysAllowed">
+                      {({ field, form }: any) => (
+                        <FormControl>
+                          <FormLabel>alwaysAllowed</FormLabel>
+                          <InputGroup mb={2}>
+                            <Textarea
+                              {...field}
+                              type="text"
+                              autoComplete="off"
+                              placeholder={JSON.stringify({
+                                clearances: [
+                                  "2e73ec62-9f23-46b5-85e2-1e84c1278d11",
+                                ],
+                                users: [
+                                  {
+                                    robloxId: "32757211",
+                                    scanMetadata: {
+                                      floors: [1, 2, 3],
+                                    },
+                                  },
+                                ],
+                              })}
+                              variant={"filled"}
+                              maxH={"240px"}
+                            />
+                          </InputGroup>
+                        </FormControl>
+                      )}
+                    </Field>
+                  </Stack>
+                  <Stack direction={"row"} spacing={2} py={2} w={"fit-content"}>
                     <Field name="active">
                       {({ field, form }: any) => (
                         <FormControl>
                           <FormLabel>Active</FormLabel>
-                          <InputGroup mb={2}>
+                          <InputGroup>
                             <Switch
                               {...field}
                               placeholder="Active"
@@ -303,7 +401,7 @@ export default function PlatformAccessPoint() {
                       {({ field, form }: any) => (
                         <FormControl>
                           <FormLabel>Armed</FormLabel>
-                          <InputGroup mb={2}>
+                          <InputGroup>
                             <Switch
                               {...field}
                               colorScheme="red"
@@ -317,6 +415,14 @@ export default function PlatformAccessPoint() {
                       )}
                     </Field>
                   </Stack>
+                  <Box>
+                    <Text fontSize={"sm"}>
+                      Active - Card scans will be processed.
+                    </Text>
+                    <Text fontSize={"sm"}>
+                      Armed - Access point lock states will be enforced.
+                    </Text>
+                  </Box>
                   <Stack direction={"row"} spacing={4} py={2}>
                     <Button
                       mb={2}
@@ -339,7 +445,7 @@ export default function PlatformAccessPoint() {
             </Formik>
           </Skeleton>
         </Box>
-      </Container>
+      </Box>
     </>
   );
 }

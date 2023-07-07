@@ -128,7 +128,7 @@ export default function PlatformLocations() {
   return (
     <>
       <Head>
-        <title>EVE XCS - Locations</title>
+        <title>EVE XCS — Locations</title>
       </Head>
       <CreateLocationDialog
         isOpen={isCreateLocationModalOpen}

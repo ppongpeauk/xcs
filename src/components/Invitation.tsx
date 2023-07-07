@@ -69,7 +69,7 @@ export default function Invitation({ invite }: { invite: any }) {
   return (
     <>
       <Head>
-        <title>EVE XCS - Invitation</title>
+        <title>EVE XCS — Invitation</title>
       </Head>
       <Container maxW={"container.lg"} h={"100vh"}>
         <Flex

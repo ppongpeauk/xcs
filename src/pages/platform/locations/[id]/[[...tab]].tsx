@@ -154,7 +154,7 @@ export default function PlatformLocation() {
   return (
     <>
       <Head>
-        <title>EVE XCS - {location?.name}</title>
+        <title>EVE XCS — {location?.name}</title>
       </Head>
       <Container maxW={"full"} p={8}>
         <Breadcrumb

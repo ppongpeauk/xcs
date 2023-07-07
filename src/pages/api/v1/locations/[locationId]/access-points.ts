@@ -64,7 +64,7 @@ export default async function handler(
   }
 
   if (req.method === "POST") {
-    if (member.role <= 2) {
+    if (member.role <= 1) {
       return res.status(401).json({ message: "Unauthorized" });
     }
 

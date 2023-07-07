@@ -204,7 +204,7 @@ export default function PlatformOrganization() {
   return (
     <>
       <Head>
-        <title>EVE XCS - {organization?.name}</title>
+        <title>EVE XCS — {organization?.name}</title>
       </Head>
       <DeleteDialog
         title="Delete Organization"
