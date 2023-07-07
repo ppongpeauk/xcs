@@ -210,7 +210,7 @@ export default function PlatformOrganization() {
         <meta property="og:site_name" content="EVE XCS" />
         <meta property="og:url" content="https://xcs.restrafes.co" />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="/images/logo-square.png" />
+        <meta property="og:image" content="/images/logo-square.jpeg" />
       </Head>
       <DeleteDialog
         title="Delete Organization"

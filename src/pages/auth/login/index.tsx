@@ -85,7 +85,7 @@ export default function Login() {
           <meta name="og:description" content="Authenticate into EVE XCS." />
           <meta name="og:type" content="website" />
           <meta name="og:url" content="https://xcs.restrafes.co/login" />
-          <meta property="og:image" content="/images/logo-square.png" />
+          <meta property="og:image" content="/images/logo-square.jpeg" />
           <meta name="og:locale" content="en_US" />
         </Head>
         <Nav />
