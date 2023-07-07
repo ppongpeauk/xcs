@@ -103,11 +103,10 @@ export default function Recover() {
                         let errorMessage = error.message;
                         switch (errorCode) {
                           case "auth/invalid-email":
-                            errorMessage = "The email address is invalid.";
+                            errorMessage = "The email address you've entered is invalid. Please try again.";
                             break;
                           case "auth/user-not-found":
-                            errorMessage =
-                              "Invalid email or password. Please try again.";
+                            errorMessage = "The email address you've entered is invalid. Please try again.";
                             break;
                           default:
                             errorMessage = "An unknown error occurred.";
