@@ -21,7 +21,7 @@ import { MdOutlineAddCircle } from "react-icons/md";
 import CreateAccessPointDialog from "./CreateAccessPointDialog";
 
 import { AiFillWarning } from "react-icons/ai";
-import { BiSolidLock } from "react-icons/bi";
+import { BiSolidLock, BiSolidLockOpen } from "react-icons/bi";
 
 export default function LocationAccessPoints({
   idToken,
@@ -105,7 +105,7 @@ export default function LocationAccessPoints({
                   <Box w={"full"}>
                     <HStack mb={2} align={"center"} justify={"flex-start"} fontSize={"xl"}>
                       {!accessPoint.configuration.enabled && <AiFillWarning />}
-                      {accessPoint.configuration.armed && <BiSolidLock />}
+                      {accessPoint.configuration.armed ? <BiSolidLock /> : <BiSolidLockOpen />}
                     </HStack>
                     <Heading as={"h2"} size={"md"} mb={2}>
                       {accessPoint.name}
