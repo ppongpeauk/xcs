@@ -166,7 +166,6 @@ export default function Invitation({ invite }: { invite: any }) {
                   <Skeleton
                     display={"flex"}
                     isLoaded={!loading}
-                    h={"100%"}
                     objectFit={"contain"}
                     justifyContent={"center"}
                     rounded={"full"}
