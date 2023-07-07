@@ -44,9 +44,8 @@ export default function Recover() {
         <meta name="og:description" content="Recover your EVE XCS account." />
         <meta name="og:type" content="website" />
         <meta name="og:url" content="https://xcs.restrafes.co" />
-        <meta name="og:image" content="/images/hero3.jpg" />
+        <meta property="og:image" content="/images/logo-square.png" />
         <meta name="og:locale" content="en_US" />
-        <meta name="twitter:card" content="summary_large_image" />
       </Head>
       <Nav />
       <Box position={"relative"} h={"calc(100vh - 6rem)"}>

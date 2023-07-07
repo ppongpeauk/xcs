@@ -81,9 +81,8 @@ export default function Activate() {
         <meta name="og:description" content="Activate your EVE XCS account." />
         <meta name="og:type" content="website" />
         <meta name="og:url" content="https://xcs.restrafes.co" />
-        <meta name="og:image" content="/images/hero3.jpg" />
+        <meta property="og:image" content="/images/logo-square.png" />
         <meta name="og:locale" content="en_US" />
-        <meta name="twitter:card" content="summary_large_image" />
       </Head>
       <Nav />
       <Flex

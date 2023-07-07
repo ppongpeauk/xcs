@@ -133,8 +133,7 @@ export default function PlatformLocations() {
         <meta property="og:site_name" content="EVE XCS" />
         <meta property="og:url" content="https://xcs.restrafes.co" />
         <meta property="og:type" content="website" />
-        {/* <meta property="og:image" content="/images/hero3.jpg" />
-        <meta name="twitter:card" content="summary_large_image" /> */}
+        <meta property="og:image" content="/images/logo-square.png" />
       </Head>
       <CreateLocationDialog
         isOpen={isCreateLocationModalOpen}
