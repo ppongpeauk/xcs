@@ -200,9 +200,11 @@ export default function Invitation({ invite }: { invite: any }) {
                       <Button
                         w={"full"}
                         my={2}
-                        onClick={() =>
-                          push("/login?redirect=/invitation/" + query.id)
-                        }
+                        isLoading={isAcceptLoading}
+                        onClick={() => {
+                          setIsAcceptLoading(true);
+                          push("/login?redirect=/invitation/" + query.id);
+                        }}
                       >
                         Login to Accept
                       </Button>

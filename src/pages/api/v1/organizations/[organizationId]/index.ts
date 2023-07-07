@@ -26,6 +26,7 @@ export default async function handler(
   const organizations = db.collection("organizations");
   const locations = db.collection("locations");
   const invitations = db.collection("invitations");
+  const accessPoints = db.collection("accessPoints");
   let organization = (await organizations
     .find({ id: organizationId })
     .toArray()) as any;
@@ -140,6 +141,9 @@ export default async function handler(
 
     // Delete All Invitations in Organization
     await invitations.deleteMany({ organizationId: organizationId });
+
+    // Delete All Access Points in Organization
+    await accessPoints.deleteMany({ organizationId: organizationId });
 
     return res
       .status(200)

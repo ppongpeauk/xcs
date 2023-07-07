@@ -15,11 +15,11 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = () => {
-  if (getApps().length < 1) {
-    console.log("Initializing Firebase");
+  const apps = getApps();
+  if (apps.length < 1) {
     initializeApp(firebaseConfig);
   }
-  return getApps()[0];
+  return apps[0];
 };
 
 const auth = getAuth(app());

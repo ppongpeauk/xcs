@@ -103,13 +103,22 @@ export default function LocationAccessPoints({
                   flexDir={"column"}
                 >
                   <Box w={"full"}>
-                    <HStack mb={2} align={"center"} justify={"flex-start"} fontSize={"xl"}>
-                      {!accessPoint.configuration.enabled && <AiFillWarning />}
-                      {accessPoint.configuration.armed ? <BiSolidLock /> : <BiSolidLockOpen />}
-                    </HStack>
                     <Heading as={"h2"} size={"md"} mb={2}>
                       {accessPoint.name}
                     </Heading>
+                    <HStack
+                      mb={2}
+                      align={"center"}
+                      justify={"flex-start"}
+                      fontSize={"xl"}
+                    >
+                      {!accessPoint.configuration.active && <AiFillWarning title="Not active" />}
+                      {accessPoint.configuration.armed ? (
+                        <BiSolidLock title="Armed" />
+                      ) : (
+                        <BiSolidLockOpen title="Unarmed" />
+                      )}
+                    </HStack>
                     <Text>
                       {accessPoint.description || "No description available."}
                     </Text>

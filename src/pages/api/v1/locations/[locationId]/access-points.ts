@@ -1,6 +1,7 @@
 import clientPromise from "@/lib/mongodb";
 import { tokenToID } from "@/pages/api/firebase";
 import { NextApiRequest, NextApiResponse } from "next";
+import { generate as generateString } from "randomstring";
 import { v4 as uuidv4 } from "uuid";
 
 export default async function handler(
@@ -70,11 +71,11 @@ export default async function handler(
     // Create Access Point
     const time = new Date();
     const timestamp = time.getTime();
-    const id = uuidv4();
-    // const id = generateString({
-    //   length: 24,
-    //   charset: "alphanumeric",
-    // }).toLowerCase();
+    // const id = uuidv4();
+    const id = generateString({
+      length: 8,
+      charset: "alphanumeric",
+    });
 
     let { name, description } = req.body as {
       name: string;
@@ -107,7 +108,7 @@ export default async function handler(
       organizationId: location.organizationId,
       locationId: locationId,
       configuration: {
-        enabled: true,
+        active: true,
         armed: true,
         timedAccess: {
           routines: [],

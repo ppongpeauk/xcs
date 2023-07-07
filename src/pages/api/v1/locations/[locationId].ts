@@ -25,6 +25,7 @@ export default async function handler(
   const db = mongoClient.db(process.env.MONGODB_DB as string);
   const locations = db.collection("locations");
   const organizations = db.collection("organizations");
+  const accessPoints = db.collection("accessPoints");
 
   let location = (await locations.findOne({ id: locationId })) as any;
 
@@ -149,6 +150,9 @@ export default async function handler(
         );
       }
     }
+
+    // Delete Access Points
+    await accessPoints.deleteMany({ locationId: locationId });
 
     // Log Deletion
     await organizations.updateOne(

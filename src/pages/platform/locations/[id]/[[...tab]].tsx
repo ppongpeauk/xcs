@@ -46,7 +46,6 @@ function StyledTab({ children }: { children: React.ReactNode }) {
   return (
     <Tab
       fontSize={["sm", "md"]}
-      py={3}
       color={"unset"}
       justifyContent={"left"}
       border={"none"}

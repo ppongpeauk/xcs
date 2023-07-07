@@ -189,6 +189,9 @@ export default function InviteOrganizationModal({
                       )}
                     </Field> */}
                   </VStack>
+                  <Text fontSize={"sm"} pt={2}>
+                    All invitation links expire after 14 days.
+                  </Text>
                 </ModalBody>
 
                 <ModalFooter>

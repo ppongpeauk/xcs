@@ -13,6 +13,7 @@ import {
   InputLeftElement,
   Link,
   Skeleton,
+  SkeletonText,
   Stack,
   Switch,
   Text,
@@ -188,13 +189,13 @@ export default function PlatformAccessPoint() {
           </BreadcrumbItem>
         </Breadcrumb>
         <Heading>{accessPoint?.name}</Heading>
-        <Box p={4} w={"min-content"}>
-          {accessPoint ? (
+        <Box py={4} w={["100%", "384px"]}>
+          <Skeleton isLoaded={accessPoint}>
             <Formik
               initialValues={{
                 name: accessPoint?.name,
                 description: accessPoint?.description,
-                enabled: accessPoint?.configuration.enabled,
+                active: accessPoint?.configuration.active,
                 armed: accessPoint?.configuration.armed,
               }}
               onSubmit={(values, actions) => {
@@ -208,7 +209,7 @@ export default function PlatformAccessPoint() {
                     body: JSON.stringify({
                       name: values.name,
                       description: values.description || "",
-                      enabled: values.enabled,
+                      active: values.active,
                       armed: values.armed,
                     }),
                   })
@@ -257,7 +258,7 @@ export default function PlatformAccessPoint() {
                             {...field}
                             type="text"
                             autoComplete="off"
-                            placeholder="Location Name"
+                            placeholder="Access Point Name"
                             variant={"filled"}
                           />
                         </InputGroup>
@@ -273,7 +274,7 @@ export default function PlatformAccessPoint() {
                             {...field}
                             type="text"
                             autoComplete="off"
-                            placeholder="Location Description"
+                            placeholder="Access Point Description"
                             variant={"filled"}
                             maxH={"240px"}
                           />
@@ -282,19 +283,17 @@ export default function PlatformAccessPoint() {
                     )}
                   </Field>
                   <Stack direction={"row"} spacing={2} py={2}>
-                    <Field name="enabled">
+                    <Field name="active">
                       {({ field, form }: any) => (
                         <FormControl>
-                          <FormLabel>Enabled</FormLabel>
+                          <FormLabel>Active</FormLabel>
                           <InputGroup mb={2}>
                             <Switch
                               {...field}
-                              placeholder="Enabled"
+                              placeholder="Active"
                               variant={"filled"}
                               width={"fit-content"}
-                              defaultChecked={
-                                accessPoint?.configuration.enabled
-                              }
+                              defaultChecked={accessPoint?.configuration.active}
                             />
                           </InputGroup>
                         </FormControl>
@@ -338,9 +337,7 @@ export default function PlatformAccessPoint() {
                 </Form>
               )}
             </Formik>
-          ) : (
-            <Skeleton height="20px" />
-          )}
+          </Skeleton>
         </Box>
       </Container>
     </>

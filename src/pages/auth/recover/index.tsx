@@ -91,7 +91,7 @@ export default function Recover() {
                     sendPasswordResetEmail(auth, values.email)
                       .then(() => {
                         toast({
-                          title: "Password reset email sent.",
+                          title: "Password reset email sent. Please check your inbox.",
                           status: "success",
                           duration: 5000,
                           isClosable: true,
@@ -143,7 +143,6 @@ export default function Recover() {
                           </FormControl>
                         )}
                       </Field>
-
                       <Button
                         my={2}
                         w={"full"}
@@ -161,7 +160,7 @@ export default function Recover() {
                     href="/auth/login"
                     textUnderlineOffset={4}
                   >
-                    Back to login
+                    Return to login
                   </Link>
                 </Text>
               </Box>

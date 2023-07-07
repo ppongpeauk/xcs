@@ -102,7 +102,7 @@ export default async function handler(
       description: body.description,
       updatedAt: timestamp,
       configuration: {
-        enabled: body.enabled,
+        active: body.active,
         armed: body.armed,
       }
     } });

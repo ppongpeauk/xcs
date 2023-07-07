@@ -71,10 +71,10 @@ export default async function handler(
     // Character limits
     if (name !== undefined) {
       name = name.trim();
-      if (name.length > 32 || name.length < 3) {
+      if (name.length > 32 || name.length < 1) {
         return res
           .status(400)
-          .json({ message: "Name must be between 3-32 characters." });
+          .json({ message: "Name must be between 1-32 characters." });
       }
     }
 
@@ -90,11 +90,11 @@ export default async function handler(
     // Creating a new location
     const time = new Date();
     const timestamp = time.getTime();
-    const id = uuidv4();
-    // const id = generateString({
-    //   length: 24,
-    //   charset: "alphanumeric",
-    // }).toLowerCase();
+    // const id = uuidv4();
+    const id = generateString({
+      length: 16,
+      charset: "alphanumeric",
+    });
 
     await locations.insertOne({
       id: id,
