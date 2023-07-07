@@ -120,7 +120,6 @@ export default function Nav({ type }: { type?: string }) {
         // borderColor={useColorModeValue("gray.200", "gray.700")}
         spacing={2}
       >
-        <ThemeButton />
         {!user ? (
           <NavLink href={"/auth/login"} pathname={pathname}>
             Login
@@ -132,6 +131,7 @@ export default function Nav({ type }: { type?: string }) {
             </NavLink>
           </>
         )}
+        <ThemeButton />
         {/* <Avatar size={"md"} src="/images/avatar.jpg" mx={2} /> */}
       </HStack>
     </Flex>

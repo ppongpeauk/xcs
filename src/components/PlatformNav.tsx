@@ -317,7 +317,11 @@ export default function PlatformNav({
           >
             Help & Information
           </NavLink>
-          <NavLink href={"/auth/logout"} pathname={pathname} leftIcon={<BiSolidExit />}>
+          <NavLink
+            href={"/auth/logout"}
+            pathname={pathname}
+            leftIcon={<BiSolidExit />}
+          >
             Log Out
           </NavLink>
         </VStack>
@@ -341,12 +345,12 @@ export default function PlatformNav({
         >
           <Heading size={"lg"}>{currentRouteLabel}</Heading>
           <HStack align={"center"} justify={"flex-end"} spacing={4}>
-            <ThemeButton />
             <Button variant={"unstyled"} h={"full"} onClick={() => {}}>
               <SkeletonCircle isLoaded={!!currentUser} w={"auto"} h={"auto"}>
                 <Avatar src={currentUser?.avatar} size={"md"} />
               </SkeletonCircle>
             </Button>
+            <ThemeButton />
           </HStack>
         </Flex>
         {children}
