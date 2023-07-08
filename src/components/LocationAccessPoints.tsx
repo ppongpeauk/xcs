@@ -129,9 +129,9 @@ export default function LocationAccessPoints({
                         ID: <Code>{accessPoint.id}</Code>
                       </Text>
                       <Text>
-                        Created at{" "}
+                        Updated at:{" "}
                         <Code>
-                          {new Date(accessPoint.createdAt).toISOString()}
+                          {new Date(accessPoint.updatedAt).toISOString()}
                         </Code>
                       </Text>
                     </Box>

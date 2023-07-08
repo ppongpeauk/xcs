@@ -247,9 +247,9 @@ export default function PlatformLocations() {
                           ID: <Code>{location.id}</Code>
                         </Text>
                         <Text>
-                          Created at{" "}
+                          Updated at:{" "}
                           <Code>
-                            {new Date(location.createdAt).toISOString()}
+                            {new Date(location.updatedAt).toISOString()}
                           </Code>
                         </Text>
                       </Box>

@@ -205,9 +205,9 @@ export default function PlatformOrganizations() {
                       ID: <Code>{organization.id}</Code>
                     </Text>
                     <Text>
-                      Created at{" "}
+                      Updated at:{" "}
                       <Code>
-                        {new Date(organization.createdAt).toISOString()}
+                        {new Date(organization.updatedAt).toISOString()}
                       </Code>
                     </Text>
                   </Box>
