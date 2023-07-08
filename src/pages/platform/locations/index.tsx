@@ -239,7 +239,9 @@ export default function PlatformLocations() {
                       flexDir={"column"}
                     >
                       <Box p={2}>
-                        <Heading size={"lg"}>{location.name}</Heading>
+                        <Text fontSize={"2xl"} fontWeight={"bold"}>
+                          {location.name}
+                        </Text>
                         <Text>{location.description}</Text>
                         <Text>
                           ID: <Code>{location.id}</Code>

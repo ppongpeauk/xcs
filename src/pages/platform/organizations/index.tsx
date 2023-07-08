@@ -199,7 +199,7 @@ export default function PlatformOrganizations() {
                   mr={4}
                 >
                   <Box p={2}>
-                    <Heading size={"lg"}>{organization.name}</Heading>
+                    <Text fontSize={"2xl"} fontWeight={"bold"}>{organization.name}</Text>
                     <Text>{organization.description}</Text>
                     <Text>
                       ID: <Code>{organization.id}</Code>

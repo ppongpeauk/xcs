@@ -102,9 +102,9 @@ export default function LocationAccessPoints({
                   flexDir={"column"}
                 >
                   <Box w={"full"}>
-                    <Heading as={"h2"} size={"md"} mb={2}>
+                    <Text fontSize={"2xl"} fontWeight={"bold"} mb={2}>
                       {accessPoint.name}
-                    </Heading>
+                    </Text>
                     <HStack
                       mb={2}
                       align={"center"}
