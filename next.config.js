@@ -18,6 +18,11 @@ const nextConfig = {
         destination: "/auth/logout",
         permanent: true,
       },
+      {
+        source: "/platform",
+        destination: "/platform/home",
+        permanent: true,
+      }
     ]
   },
 }

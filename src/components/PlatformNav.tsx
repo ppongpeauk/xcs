@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 
 // React
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 // Components
 import ThemeButton from "@/components/ThemeButton";
@@ -25,6 +25,7 @@ import {
   VStack,
   useColorModeValue,
 } from "@chakra-ui/react";
+import NextImage from "next/image";
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
 import { AiFillCrown, AiFillHome, AiFillInfoCircle } from "react-icons/ai";
@@ -179,15 +180,17 @@ export default function PlatformNav({
               filter: useColorModeValue("opacity(0.5)", "brightness(0.5)"),
             }}
           >
-            <Flex>
-              <Image
+            <Flex position={"relative"} w={"128px"} h={"100%"}>
+              <NextImage
                 src={useColorModeValue(
                   "/images/logo-black.png",
                   "/images/logo-white.png"
                 )}
-                h={"24px"}
+                fill={true}
                 alt={"EVE XCS"}
-                objectFit={"contain"}
+                style={{
+                  objectFit: "contain",
+                }}
               />
               {/* <Code
                 ml={2}

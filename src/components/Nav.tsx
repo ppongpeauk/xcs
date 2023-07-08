@@ -14,11 +14,13 @@ import {
   Text,
   useColorModeValue,
 } from "@chakra-ui/react";
+import NextImage from "next/image";
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
 
 // Authentication
 import { useAuthContext } from "@/contexts/AuthContext";
+import { Suspense } from "react";
 
 function NavLink({
   href,
@@ -82,15 +84,21 @@ export default function Nav({ type }: { type?: string }) {
             filter: useColorModeValue("opacity(0.5)", "brightness(0.5)"),
           }}
         >
-          <Flex>
-            <Image
+          <Flex
+            position={"relative"}
+            w={"128px"}
+            h={"100%"}
+          >
+            <NextImage
               src={useColorModeValue(
                 "/images/logo-black.png",
                 "/images/logo-white.png"
               )}
-              h={"24px"}
+              fill={true}
               alt={"EVE XCS"}
-              objectFit={"contain"}
+              style={{
+                objectFit: "contain",
+              }}
             />
             {/* <Code
               ml={2}
@@ -126,7 +134,7 @@ export default function Nav({ type }: { type?: string }) {
         ) : (
           <>
             <NavLink href={"/platform/home"} pathname={pathname}>
-              Access Platform
+              Control Panel
             </NavLink>
           </>
         )}
