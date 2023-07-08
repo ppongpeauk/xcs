@@ -4,6 +4,7 @@ import {
   Container,
   Divider,
   Flex,
+  Heading,
   Image,
   Text,
   useColorModeValue,
@@ -46,7 +47,7 @@ export default function Home() {
           align={"center"}
           justify={"center"}
           py={8}
-          px={16}
+          px={[8, 16]}
           order={[1, 2]}
           // backdropFilter={"blur(2rem)"}
           // bg={useColorModeValue(
@@ -68,11 +69,38 @@ export default function Home() {
               Streamlined access control is here.
             </Text>
             <Text fontSize={"lg"}>
-              EVE XCS is a new way to manage your building&apos;s access
+              EVE XCS is a new and alternate way to manage your building&apos;s access
               control.
             </Text>
           </Section>
         </Flex>
+      </Flex>
+      <Flex
+        w={"100%"}
+        minH={"50vh"}
+        borderBottom={"1px solid"}
+        borderColor={useColorModeValue("gray.300", "gray.700")}
+        py={12}
+      >
+        <Box px={[8, 8, 32]} flexGrow={1} flexBasis={1} display={["none", "block"]}>
+          <Text fontSize={"4xl"} pb={2}>Qu&apos;est-ce que EVE XCS?</Text>
+        </Box>
+        <Box px={[8, 8, 32]} flexGrow={1} flexBasis={1}>
+          <Text fontSize={"4xl"} pb={2}>What is EVE XCS?</Text>
+          <Text fontSize={"xl"}>
+            EVE XCS is a powerful access control system designed to help you
+            manage access points for your building. With EVE XCS, you can easily
+            and securely control who has access to your property, including
+            employees and visitors. The system is highly
+            customizable, allowing you to set access levels and permissions for
+            different users, and offers a range of advanced features such as
+            real-time monitoring, reporting, and integration with other security
+            systems. Whether you&apos;re looking to enhance the security of your
+            business, school, or residential property, EVE XCS provides the
+            flexibility and reliability you need to manage access with
+            confidence.
+          </Text>
+        </Box>
       </Flex>
       <Flex position={"relative"}>
         <Flex
@@ -89,11 +117,7 @@ export default function Home() {
             direction={"left"}
             className={"overflow-hidden"}
           >
-            <Text
-              as={"h3"}
-              fontSize={"0.5em"}
-              fontWeight={"900"}
-            >
+            <Text as={"h3"} fontSize={"0.5em"} fontWeight={"900"}>
               EVE XCS<Box as={"span"} mx={8}></Box>
             </Text>
           </Marquee>
@@ -102,11 +126,7 @@ export default function Home() {
             direction={"right"}
             className={"overflow-hidden"}
           >
-            <Text
-              as={"h3"}
-              fontSize={"0.5em"}
-              fontWeight={"900"}
-            >
+            <Text as={"h3"} fontSize={"0.5em"} fontWeight={"900"}>
               EVE XCS<Box as={"span"} mx={8}></Box>
             </Text>
           </Marquee>
