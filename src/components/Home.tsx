@@ -9,9 +9,10 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 
-import { Manrope } from "next/font/google";
+// import { Familjen_Grotesk, Manrope } from "next/font/google";
+// const font1 = Familjen_Grotesk({ subsets: ["latin"] });
+
 import NextImage from "next/image";
-const font1 = Manrope({ subsets: ["latin"] });
 
 import Marquee from "react-fast-marquee";
 
@@ -79,7 +80,6 @@ export default function Home() {
           w={"full"}
           pos={"relative"}
           fontSize={["4em", "8em", "12em"]}
-          className={font1.className}
           lineHeight={1}
           justify={"center"}
           py={24}
@@ -93,7 +93,6 @@ export default function Home() {
               as={"h3"}
               fontSize={"0.5em"}
               fontWeight={"900"}
-              letterSpacing={"tighter"}
             >
               EVE XCS<Box as={"span"} mx={8}></Box>
             </Text>
@@ -107,7 +106,6 @@ export default function Home() {
               as={"h3"}
               fontSize={"0.5em"}
               fontWeight={"900"}
-              letterSpacing={"tighter"}
             >
               EVE XCS<Box as={"span"} mx={8}></Box>
             </Text>

@@ -15,8 +15,8 @@ import PageProgress from "@/components/PageProgress";
 import "@/styles/globals.css";
 import theme from "@/theme";
 import { NextPage } from "next";
-import { Exo, Roboto_Flex, Signika, Sora } from "next/font/google";
-const font = Roboto_Flex({ subsets: ["latin"] });
+import { Exo, Familjen_Grotesk, Roboto_Flex, Signika, Sora } from "next/font/google";
+const font = Familjen_Grotesk({ subsets: ["latin"] });
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: React.ReactElement) => React.ReactNode;
