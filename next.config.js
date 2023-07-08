@@ -22,6 +22,16 @@ const nextConfig = {
         source: "/platform",
         destination: "/platform/home",
         permanent: true,
+      },
+      {
+        source: "/AxesysAPI/:slug*",
+        destination: "/api/v1/axesys/:slug*",
+        permanent: false,
+      },
+      {
+        source: "/api/v1/AxesysAPI/:slug*",
+        destination: "/api/v1/axesys/:slug*",
+        permanent: false,
       }
     ]
   },
