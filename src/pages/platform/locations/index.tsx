@@ -3,6 +3,7 @@ import Layout from "@/layouts/PlatformLayout";
 import {
   Box,
   Button,
+  Code,
   Container,
   Flex,
   FormControl,
@@ -216,11 +217,15 @@ export default function PlatformLocations() {
                   to get started.
                 </Text>
               ) : (
-                <Stack direction={"row"}>
+                <Stack
+                  direction={{ base: "column", md: "row" }}
+                  w={"full"}
+                  spacing={4}
+                >
                   {locations?.map((location: any) => (
                     <Flex
                       key={location.id}
-                      w={"384px"}
+                      w={{ base: "full", md: "384px" }}
                       h={"auto"}
                       py={4}
                       px={8}
@@ -233,20 +238,17 @@ export default function PlatformLocations() {
                       justify={"space-between"}
                       flexDir={"column"}
                     >
-                      <Box mb={4} w={"full"}>
-                        <Heading size={"lg"} mb={2}>
-                          {location.name}
-                        </Heading>
-                        {/* <Image
-                        src={experienceToThumbnail(location?.roblox?.placeId)}
-                        alt={location.name}
-                      /> */}
-                        <Text fontSize={"sm"} mb={2}>
-                          {location.description}
+                      <Box p={2}>
+                        <Heading size={"lg"}>{location.name}</Heading>
+                        <Text>{location.description}</Text>
+                        <Text>
+                          ID: <Code>{location.id}</Code>
                         </Text>
-                        <Text fontSize={"xs"}>
-                          Updated at{" "}
-                          {new Date(location.updatedAt).toDateString()}
+                        <Text>
+                          Created at{" "}
+                          <Code>
+                            {new Date(location.createdAt).toISOString()}
+                          </Code>
                         </Text>
                       </Box>
                       <Stack w={"full"}>

@@ -36,7 +36,12 @@ import NextImage from "next/image";
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
 import { forwardRef } from "react";
-import { AiFillCrown, AiFillHome, AiFillInfoCircle } from "react-icons/ai";
+import {
+  AiFillCrown,
+  AiFillHome,
+  AiFillInfoCircle,
+  AiFillSetting,
+} from "react-icons/ai";
 import { BiSolidExit, BiSolidTime } from "react-icons/bi";
 import { BsPersonBadgeFill } from "react-icons/bs";
 import { FaBuilding, FaIdBadge, FaUserAlt } from "react-icons/fa";
@@ -348,9 +353,27 @@ export default function PlatformNav({
           zIndex={499}
         >
           {/* Route Label (inactive) */}
-          <Heading size={"lg"}>{currentRouteLabel}</Heading>
+          {/* <Heading size={"lg"}>EVE XCS</Heading> */}
+          <Flex
+            display={{ base: "flex", md: "none" }}
+            position={"relative"}
+            w={"128px"}
+            h={"100%"}
+          >
+            <NextImage
+              src={useColorModeValue(
+                "/images/logo-black.png",
+                "/images/logo-white.png"
+              )}
+              fill={true}
+              alt={"EVE XCS"}
+              style={{
+                objectFit: "contain",
+              }}
+            />
+          </Flex>
 
-          <HStack align={"center"} justify={"flex-end"} spacing={4}>
+          <HStack align={"center"} justify={"flex-end"} spacing={4} ml={"auto"}>
             {/* Avatar */}
             <Button variant={"unstyled"} h={"full"} onClick={() => {}}>
               <SkeletonCircle isLoaded={!!currentUser} w={"auto"} h={"auto"}>
@@ -359,10 +382,12 @@ export default function PlatformNav({
             </Button>
 
             {/* Theme Button */}
-            <ThemeButton />
+            <Box display={{ base: "none", md: "flex" }}>
+              <ThemeButton />
+            </Box>
 
             {/* Mobile Nav */}
-            <Box display={{ base: "flex", md: "flex" }}>
+            <Box display={{ base: "flex", md: "none" }}>
               <Menu>
                 <MenuButton
                   as={IconButton}
@@ -409,11 +434,19 @@ export default function PlatformNav({
                   <MenuDivider />
                   <MenuItem
                     as={MenuLink}
+                    icon={<AiFillSetting />}
+                    href="/platform/settings"
+                  >
+                    Settings
+                  </MenuItem>
+                  <MenuItem
+                    as={MenuLink}
                     icon={<AiFillInfoCircle />}
                     href="/platform/help"
                   >
                     Help & Information
                   </MenuItem>
+                  <ThemeButton menu={true} />
                   <MenuDivider />
                   <MenuItem
                     as={MenuLink}

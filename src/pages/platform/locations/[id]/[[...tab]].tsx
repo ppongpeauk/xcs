@@ -218,13 +218,11 @@ export default function PlatformLocation() {
         <Text fontSize={"lg"} color={"gray.500"}>
           {location?.organization.name}
         </Text>
-        <Divider my={4} />
-        <Box display={{ base: "block", md: "none" }}>
+        <Box display={{ base: "block", md: "none" }} pt={4}>
           <Menu>
             <MenuButton
               as={IconButton}
               icon={<HamburgerIcon />}
-              mb={4}
               aria-label={"Menu"}
               w={"full"}
             />
@@ -260,6 +258,7 @@ export default function PlatformLocation() {
             </MenuList>
           </Menu>
         </Box>
+        <Divider my={4} />
         <Tabs
           py={4}
           orientation={"vertical"}
@@ -302,15 +301,14 @@ export default function PlatformLocation() {
               />
             </TabPanel>
             <TabPanel p={0}>
-              <LocationEventLogs
-              // idToken={idToken}
-              // query={query}
-              // location={location}
-              // refreshData={refreshData}
-              />
+              <LocationEventLogs />
+              {/* <Text>Event Logs</Text> */}
             </TabPanel>
             <TabPanel p={0}>
-              <p>three!</p>
+              <Heading size={"lg"}>
+                Members
+              </Heading>
+              <Text>Members</Text>
             </TabPanel>
             <TabPanel p={0}>
               <LocationAccessPoints

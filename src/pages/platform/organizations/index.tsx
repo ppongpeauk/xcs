@@ -3,6 +3,7 @@ import Layout from "@/layouts/PlatformLayout";
 import {
   Box,
   Button,
+  Code,
   Container,
   Flex,
   FormControl,
@@ -180,11 +181,15 @@ export default function PlatformOrganizations() {
               <Skeleton height={4} width={"50%"} />
             </Stack>
           ) : organizations.length !== 0 ? (
-            <Stack direction={"row"}>
+            <Stack
+              direction={{ base: "column", md: "row" }}
+              w={"full"}
+              spacing={4}
+            >
               {organizations.map((organization: any) => (
                 <Box
                   key={organization.id}
-                  w={"384px"}
+                  w={{ base: "full", md: "384px" }}
                   h={"max-content"}
                   py={4}
                   px={8}
@@ -194,9 +199,17 @@ export default function PlatformOrganizations() {
                   mr={4}
                 >
                   <Box p={2}>
-                    <Heading size={"md"}>{organization.name}</Heading>
-                    <Text>ID: {organization.id}</Text>
-                    <Text>Created at {organization.createdAt}</Text>
+                    <Heading size={"lg"}>{organization.name}</Heading>
+                    <Text>{organization.description}</Text>
+                    <Text>
+                      ID: <Code>{organization.id}</Code>
+                    </Text>
+                    <Text>
+                      Created at{" "}
+                      <Code>
+                        {new Date(organization.createdAt).toISOString()}
+                      </Code>
+                    </Text>
                   </Box>
                   <Stack p={2}>
                     <Button
