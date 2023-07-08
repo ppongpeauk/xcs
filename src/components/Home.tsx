@@ -40,14 +40,13 @@ export default function Home() {
           />
         </Flex>
         <Flex
-          pos={"absolute"}
-          right={0}
+          pos={"relative"}
           flexBasis={1}
           flexGrow={1}
           align={"center"}
           justify={"center"}
           py={8}
-          px={[8, 16]}
+          px={[8, 8, 24]}
           order={[1, 2]}
           // backdropFilter={"blur(2rem)"}
           // bg={useColorModeValue(
@@ -55,8 +54,8 @@ export default function Home() {
           //   "rgba(26, 32, 44, 0.5)"
           // )}
           bg={useColorModeValue("white", "gray.800")}
+          minW={["unset", "50%"]}
           w={["full", "full", "50%"]}
-          minW={["unset", "480px"]}
           h={"full"}
         >
           <Section>
@@ -68,8 +67,8 @@ export default function Home() {
             >
               Streamlined access control is here.
             </Text>
-            <Text fontSize={"lg"}>
-              EVE XCS is a new and alternate way to manage your building&apos;s access
+            <Text fontSize={"xl"}>
+              EVE XCS is a new way to manage your building&apos;s access
               control.
             </Text>
           </Section>
@@ -82,23 +81,31 @@ export default function Home() {
         borderColor={useColorModeValue("gray.300", "gray.700")}
         py={12}
       >
-        <Box px={[8, 8, 32]} flexGrow={1} flexBasis={1} display={["none", "block"]}>
-          <Text fontSize={"4xl"} pb={2}>Qu&apos;est-ce que EVE XCS?</Text>
+        <Box
+          px={[8, 8, 32]}
+          flexGrow={1}
+          flexBasis={1}
+          display={["none", "block"]}
+        >
+          <Text fontSize={"4xl"} pb={2}>
+            Qu&apos;est-ce que EVE XCS?
+          </Text>
         </Box>
         <Box px={[8, 8, 32]} flexGrow={1} flexBasis={1}>
-          <Text fontSize={"4xl"} pb={2}>What is EVE XCS?</Text>
+          <Text fontSize={"4xl"} pb={2}>
+            What is EVE XCS?
+          </Text>
           <Text fontSize={"xl"}>
             EVE XCS is a powerful access control system designed to help you
             manage access points for your building. With EVE XCS, you can easily
             and securely control who has access to your property, including
-            employees and visitors. The system is highly
-            customizable, allowing you to set access levels and permissions for
-            different users, and offers a range of advanced features such as
-            real-time monitoring, reporting, and integration with other security
-            systems. Whether you&apos;re looking to enhance the security of your
-            business, school, or residential property, EVE XCS provides the
-            flexibility and reliability you need to manage access with
-            confidence.
+            employees and visitors. The system is highly customizable, allowing
+            you to set access levels and permissions for different users, and
+            offers a range of advanced features such as real-time monitoring,
+            reporting, and integration with other security systems. Whether
+            you&apos;re looking to enhance the security of your business,
+            school, or residential property, EVE XCS provides the flexibility
+            and reliability you need to manage access with confidence.
           </Text>
         </Box>
       </Flex>
