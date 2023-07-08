@@ -94,6 +94,7 @@ export default function Nav({ type }: { type?: string }) {
                 "/images/logo-black.png",
                 "/images/logo-white.png"
               )}
+              priority={true}
               fill={true}
               alt={"EVE XCS"}
               style={{

@@ -205,6 +205,7 @@ export default function PlatformNav({
                   "/images/logo-black.png",
                   "/images/logo-white.png"
                 )}
+                priority={true}
                 fill={true}
                 alt={"EVE XCS"}
                 style={{
@@ -365,6 +366,7 @@ export default function PlatformNav({
                 "/images/logo-black.png",
                 "/images/logo-white.png"
               )}
+              priority={true}
               fill={true}
               alt={"EVE XCS"}
               style={{
