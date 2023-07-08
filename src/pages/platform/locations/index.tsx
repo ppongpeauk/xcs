@@ -253,7 +253,7 @@ export default function PlatformLocations() {
                           </Code>
                         </Text>
                       </Box>
-                      <Stack w={"full"}>
+                      <Stack pb={2} w={"full"}>
                         <Button
                           as={NextLink}
                           href={`/platform/locations/${location.id}`}

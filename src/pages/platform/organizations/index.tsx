@@ -211,7 +211,7 @@ export default function PlatformOrganizations() {
                       </Code>
                     </Text>
                   </Box>
-                  <Stack p={2}>
+                  <Stack pb={2}>
                     <Button
                       as={NextLink}
                       href={`/platform/organizations/${organization.id}`}
