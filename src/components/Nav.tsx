@@ -53,7 +53,7 @@ export default function Nav({ type }: { type?: string }) {
       as="nav"
       position={"sticky"}
       top={0}
-      w={"100vw"}
+      // w={"100vw"}
       h={"6rem"}
       align={"center"}
       bg={useColorModeValue("white", "gray.800")}

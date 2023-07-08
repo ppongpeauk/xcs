@@ -73,7 +73,7 @@ export default function LocationAccessPoints({
       <Heading as="h1" size="lg" mb={4}>
         Access Points
       </Heading>
-      <HStack mb={4}>
+      <Stack mb={4} direction={{ base: "column", md: "row" }}>
         <Button
           leftIcon={<MdOutlineAddCircle />}
           onClick={onCreateAccessPointModalOpen}
@@ -81,19 +81,19 @@ export default function LocationAccessPoints({
         >
           Create
         </Button>
-      </HStack>
+      </Stack>
       <Flex w={"full"} h={"full"}>
-        <Skeleton isLoaded={!!accessPoints}>
+        <Skeleton isLoaded={!!accessPoints} w={"full"}>
           {accessPoints?.accessPoints?.length > 0 ? (
-            <Box w={"full"}>
+            <Stack direction={{ base: "row", md: "column" }}>
               {accessPoints?.accessPoints?.map((accessPoint: any) => (
                 <Flex
                   key={accessPoint.id}
-                  w={"384px"}
+                  w={{ base: "full", md: "384px" }}
                   h={"auto"}
                   p={6}
                   borderWidth={1}
-                  borderRadius={"xl"}
+                  borderRadius={"lg"}
                   borderColor={useColorModeValue("gray.200", "gray.700")}
                   mb={4}
                   aspectRatio={2 / 1}
@@ -111,7 +111,9 @@ export default function LocationAccessPoints({
                       justify={"flex-start"}
                       fontSize={"xl"}
                     >
-                      {!accessPoint.configuration.active && <AiFillWarning title="Not active" />}
+                      {!accessPoint.configuration.active && (
+                        <AiFillWarning title="Not active" />
+                      )}
                       {accessPoint.configuration.armed ? (
                         <BiSolidLock title="Armed" />
                       ) : (
@@ -134,7 +136,7 @@ export default function LocationAccessPoints({
                   </Stack>
                 </Flex>
               ))}
-            </Box>
+            </Stack>
           ) : (
             <Text>
               This location does not have any access points yet.{" "}

@@ -1,17 +1,28 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import Layout from "@/layouts/PlatformLayout";
-import { Container, Divider, useColorModeValue } from "@chakra-ui/react";
+import {
+  Container,
+  Divider,
+  MenuList,
+  useColorModeValue,
+} from "@chakra-ui/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { Suspense, useEffect, useState } from "react";
 
 import { ChevronRightIcon, DeleteIcon } from "@chakra-ui/icons";
 import {
+  Box,
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbSeparator,
   Heading,
+  IconButton,
+  Menu,
+  MenuButton,
+  MenuDivider,
+  MenuItem,
   Tab,
   TabList,
   TabPanel,
@@ -28,6 +39,7 @@ import DeleteDialog from "@/components/DeleteDialog";
 import LocationAccessPoints from "@/components/LocationAccessPoints";
 import LocationEventLogs from "@/components/LocationEventLogs";
 import LocationInfo from "@/components/LocationInfo";
+import { HamburgerIcon } from "@chakra-ui/icons";
 import { useToast } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
 import { AiFillTag } from "react-icons/ai";
@@ -45,6 +57,7 @@ import { SiRoblox } from "react-icons/si";
 function StyledTab({ children }: { children: React.ReactNode }) {
   return (
     <Tab
+      w={"200px"}
       fontSize={["sm", "md"]}
       color={"unset"}
       justifyContent={"left"}
@@ -161,9 +174,9 @@ export default function PlatformLocation() {
         <meta property="og:type" content="website" />
         <meta property="og:image" content="/images/logo-square.jpeg" />
       </Head>
-      <Container maxW={"full"} p={8}>
+      <Container maxW={"full"} px={{ base: 4, md: 8 }} py={8}>
         <Breadcrumb
-          display={["none", "flex"]}
+          display={{ base: "none", md: "flex" }}
           spacing="8px"
           mb={4}
           separator={<ChevronRightIcon color="gray.500" />}
@@ -206,16 +219,61 @@ export default function PlatformLocation() {
           {location?.organization.name}
         </Text>
         <Divider my={4} />
+        <Box display={{ base: "block", md: "none" }}>
+          <Menu>
+            <MenuButton
+              as={IconButton}
+              icon={<HamburgerIcon />}
+              mb={4}
+              aria-label={"Menu"}
+              w={"full"}
+            />
+            <MenuList>
+              <MenuItem
+                as={NextLink}
+                href={`/platform/locations/${query.id}/general`}
+                icon={<IoBusiness />}
+              >
+                General
+              </MenuItem>
+              <MenuItem
+                as={NextLink}
+                href={`/platform/locations/${query.id}/event-logs`}
+                icon={<BiSolidTime />}
+              >
+                Event Logs
+              </MenuItem>
+              <MenuItem
+                as={NextLink}
+                href={`/platform/locations/${query.id}/members`}
+                icon={<BiSolidGroup />}
+              >
+                Members
+              </MenuItem>
+              <MenuItem
+                as={NextLink}
+                href={`/platform/locations/${query.id}/access-points`}
+                icon={<MdSensors />}
+              >
+                Access Points
+              </MenuItem>
+            </MenuList>
+          </Menu>
+        </Box>
         <Tabs
           py={4}
-          orientation="vertical"
+          orientation={"vertical"}
           variant={"line"}
           isLazy={true}
           index={tabIndex}
           onChange={(index) => onTabChange(index)}
           h={"100%"}
         >
-          <TabList w={"240px"} h={"100%"} border={"none"}>
+          <TabList
+            display={{ base: "none", md: "block" }}
+            h={"100%"}
+            border={"none"}
+          >
             <StyledTab>
               <IoBusiness />
               <Text ml={2}>General</Text>
@@ -234,7 +292,7 @@ export default function PlatformLocation() {
             </StyledTab>
           </TabList>
 
-          <TabPanels px={8}>
+          <TabPanels px={{ base: 0, md: 8 }}>
             <TabPanel p={0}>
               <LocationInfo
                 idToken={idToken}

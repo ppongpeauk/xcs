@@ -15,7 +15,13 @@ import PageProgress from "@/components/PageProgress";
 import "@/styles/globals.css";
 import theme from "@/theme";
 import { NextPage } from "next";
-import { Exo, Familjen_Grotesk, Roboto_Flex, Signika, Sora } from "next/font/google";
+import {
+  Exo,
+  Familjen_Grotesk,
+  Roboto_Flex,
+  Signika,
+  Sora,
+} from "next/font/google";
 const font = Familjen_Grotesk({ subsets: ["latin"] });
 
 type NextPageWithLayout = NextPage & {
@@ -31,9 +37,7 @@ export default function App({ Component, pageProps }: any) {
       <AuthProvider>
         <ChakraProvider>
           <PageProgress />
-          <div className={font.className} style={{
-            width: "full"
-          }}>
+          <div className={font.className} style={{}}>
             {getLayout(<Component {...pageProps} />)}
           </div>
         </ChakraProvider>

@@ -4,8 +4,9 @@
 import { Suspense, useEffect, useState } from "react";
 
 // Components
+import Footer from "@/components/Footer";
 import ThemeButton from "@/components/ThemeButton";
-import { ChevronRightIcon } from "@chakra-ui/icons";
+import { ChevronRightIcon, HamburgerIcon } from "@chakra-ui/icons";
 import {
   AbsoluteCenter,
   Avatar,
@@ -17,8 +18,14 @@ import {
   Flex,
   HStack,
   Heading,
+  IconButton,
   Image,
   Link,
+  Menu,
+  MenuButton,
+  MenuDivider,
+  MenuItem,
+  MenuList,
   SkeletonCircle,
   Spacer,
   Text,
@@ -28,6 +35,7 @@ import {
 import NextImage from "next/image";
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
+import { forwardRef } from "react";
 import { AiFillCrown, AiFillHome, AiFillInfoCircle } from "react-icons/ai";
 import { BiSolidExit, BiSolidTime } from "react-icons/bi";
 import { BsPersonBadgeFill } from "react-icons/bs";
@@ -37,6 +45,11 @@ import { MdSensors } from "react-icons/md";
 
 // Authentication
 import { useAuthContext } from "@/contexts/AuthContext";
+
+// eslint-disable-next-line react/display-name
+const MenuLink = forwardRef((props: any, ref: any) => (
+  <Link _hover={{ textDecor: "unset" }} as={NextLink} ref={ref} {...props} />
+));
 
 function NavLink({
   href,
@@ -144,9 +157,10 @@ export default function PlatformNav({
   return (
     <>
       <Flex
+        id="platform-nav"
         as="nav"
         display={["none", "flex"]}
-        position={"sticky"}
+        position={"fixed"}
         top={0}
         h={"100vh"}
         w={"240px"}
@@ -208,19 +222,6 @@ export default function PlatformNav({
         </Flex>
 
         <Box w={"full"}>
-          {/* Divider */}
-          {/* <Box position={"relative"} px={8} py={6} w={"full"}>
-            <Divider />
-            <AbsoluteCenter
-              bg={useColorModeValue("white", "gray.800")}
-              px={2}
-              textTransform={"uppercase"}
-              fontSize={"sm"}
-            >
-              Main Menu
-            </AbsoluteCenter>
-          </Box> */}
-
           {/* Links */}
           <VStack
             flexDir={"column"}
@@ -328,35 +329,116 @@ export default function PlatformNav({
           </NavLink>
         </VStack>
       </Flex>
-      <Flex flexDir={"column"} w={"full"}>
+
+      <Flex flexDir={"column"} id="platform-nav-horizontal">
         {/* Horizontal Bar */}
         <Flex
           as={"header"}
-          position={"sticky"}
+          position={"fixed"}
           top={0}
-          w={"full"}
+          w={"100vw"}
           h={"6rem"}
           align={"center"}
           justify={"space-between"}
           px={8}
           bg={useColorModeValue("white", "gray.800")}
           borderY={"1px solid"}
-          borderRight={"1px solid"}
+          borderX={"1px solid"}
           borderColor={useColorModeValue("gray.300", "gray.700")}
-          zIndex={500}
+          zIndex={499}
         >
+          {/* Route Label (inactive) */}
           <Heading size={"lg"}>{currentRouteLabel}</Heading>
+
           <HStack align={"center"} justify={"flex-end"} spacing={4}>
+            {/* Avatar */}
             <Button variant={"unstyled"} h={"full"} onClick={() => {}}>
               <SkeletonCircle isLoaded={!!currentUser} w={"auto"} h={"auto"}>
                 <Avatar src={currentUser?.avatar} size={"md"} />
               </SkeletonCircle>
             </Button>
+
+            {/* Theme Button */}
             <ThemeButton />
+
+            {/* Mobile Nav */}
+            <Box display={{ base: "flex", md: "flex" }}>
+              <Menu>
+                <MenuButton
+                  as={IconButton}
+                  icon={<HamburgerIcon />}
+                  variant={"solid"}
+                  aria-label="Options"
+                />
+                <MenuList>
+                  <MenuItem
+                    as={MenuLink}
+                    icon={<AiFillHome />}
+                    href="/platform/home"
+                  >
+                    Home
+                  </MenuItem>
+                  <MenuItem
+                    as={MenuLink}
+                    icon={<BiSolidTime />}
+                    href="/platform/event-logs"
+                  >
+                    Event Logs
+                  </MenuItem>
+                  <MenuItem
+                    as={MenuLink}
+                    icon={<FaIdBadge />}
+                    href="/platform/profile"
+                  >
+                    Profile
+                  </MenuItem>
+                  <MenuItem
+                    as={MenuLink}
+                    icon={<FaBuilding />}
+                    href="/platform/organizations"
+                  >
+                    Organizations
+                  </MenuItem>
+                  <MenuItem
+                    as={MenuLink}
+                    icon={<ImTree />}
+                    href="/platform/locations"
+                  >
+                    Locations
+                  </MenuItem>
+                  <MenuDivider />
+                  <MenuItem
+                    as={MenuLink}
+                    icon={<AiFillInfoCircle />}
+                    href="/platform/help"
+                  >
+                    Help & Information
+                  </MenuItem>
+                  <MenuDivider />
+                  <MenuItem
+                    as={MenuLink}
+                    icon={<BiSolidExit />}
+                    href="/auth/logout"
+                  >
+                    Log Out
+                  </MenuItem>
+                </MenuList>
+              </Menu>
+            </Box>
           </HStack>
         </Flex>
-        {children}
       </Flex>
+      <Box
+        id="platform-content"
+        position={"relative"}
+        top={"6rem"}
+        left={{ base: 0, md: "240px" }}
+        w={{ base: "100vw", md: "calc(100% - 240px)" }}
+        h={"100vh"}
+        overflow={"auto"}
+      >
+        {children}
+      </Box>
     </>
   );
 }

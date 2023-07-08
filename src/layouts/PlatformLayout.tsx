@@ -27,7 +27,8 @@ import { sendEmailVerification } from "firebase/auth";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { user, currentUser } = useAuthContext();
-  const [sendVerificationEmailLoading, setSendVerificationEmailLoading] = useState<boolean>(false);
+  const [sendVerificationEmailLoading, setSendVerificationEmailLoading] =
+    useState<boolean>(false);
   const { push } = useRouter();
 
   // Wait for the router to be ready before checking
@@ -40,7 +41,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }
 
   useEffect(() => {
-    
     async function checkUser() {
       // Wait for auth to initialize before checking if the user is logged in
       await waitForAuthInit().then(async () => {
@@ -55,11 +55,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   // Return nothing if the user is not logged in
   return (
     <>
-      <Flex w={"100vw"} flexDir={"row"}>
+      <Flex flexDir={"row"}>
         <PlatformNav
           children={
-            <Box width={"full"}>
-              <Box as="main" minH={"calc(100vh - 6rem)"}>
+            <Box w={"full"}>
+              <Box as="main">
                 {/* Alerts */}
                 <Stack
                   id={"alerts"}
@@ -70,32 +70,29 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   spacing={0}
                 >
                   {/* Email not verified */}
-                  {
-                    (currentUser && !user?.emailVerified) && (
-                      <PlatformAlert
-                        title={"Email not verified"}
-                        description={
-                          "Please verify your email address to continue using EVE XCS."
-                        }
-                        isClosable={true}
-                        button={{
-                          text: "Resend verification email",
-                          isLoading: sendVerificationEmailLoading,
-                          onClick: async () => {
-                            setSendVerificationEmailLoading(true);
-                            await sendEmailVerification(user).finally(() => {
-                              setSendVerificationEmailLoading(false);
-                            });
-                          }
-                        }}
-                      />
-                    )
-                  }
+                  {currentUser && !user?.emailVerified && (
+                    <PlatformAlert
+                      title={"Email not verified"}
+                      description={
+                        "Please verify your email address to continue using EVE XCS."
+                      }
+                      isClosable={true}
+                      button={{
+                        text: "Resend verification email",
+                        isLoading: sendVerificationEmailLoading,
+                        onClick: async () => {
+                          setSendVerificationEmailLoading(true);
+                          await sendEmailVerification(user).finally(() => {
+                            setSendVerificationEmailLoading(false);
+                          });
+                        },
+                      }}
+                    />
+                  )}
                 </Stack>
                 {/* Children */}
                 {children}
               </Box>
-              <Footer />
             </Box>
           }
         />

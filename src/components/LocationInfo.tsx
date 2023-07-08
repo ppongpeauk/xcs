@@ -44,7 +44,12 @@ import { IoIosRemoveCircle } from "react-icons/io";
 import { IoBusiness } from "react-icons/io5";
 import { SiRoblox } from "react-icons/si";
 
-export default function LocationInfo({ location, query, idToken, refreshData }: any) {
+export default function LocationInfo({
+  location,
+  query,
+  idToken,
+  refreshData,
+}: any) {
   const { push } = useRouter();
   const { user } = useAuthContext();
   const toast = useToast();
@@ -155,7 +160,7 @@ export default function LocationInfo({ location, query, idToken, refreshData }: 
         onDelete={onDelete}
       />
       {location ? (
-        <Box w={"min-content"}>
+        <Box w={"fit-content"}>
           <Heading as="h1" size="lg" mb={2}>
             General Settings
           </Heading>
@@ -270,7 +275,10 @@ export default function LocationInfo({ location, query, idToken, refreshData }: 
                           placeholder="Experience ID"
                           variant={"filled"}
                           // isDisabled={true}
-                          isDisabled={location?.self.role <= 2 || location?.roblox?.placeId !== null}
+                          isDisabled={
+                            location?.self.role <= 2 ||
+                            location?.roblox?.placeId !== null
+                          }
                         />
                       </InputGroup>
                       <FormHelperText>
@@ -296,8 +304,17 @@ export default function LocationInfo({ location, query, idToken, refreshData }: 
                     </FormControl>
                   )}
                 </Field>
-                <Stack direction={"row"} spacing={4} pt={2}>
-                  <Button mb={2} isLoading={props.isSubmitting} type={"submit"} isDisabled={location?.self.role <= 2}>
+                <Stack
+                  direction={{ base: "column", md: "row" }}
+                  spacing={{ base: 2, md: 4 }}
+                  pt={2}
+                >
+                  <Button
+                    mb={2}
+                    isLoading={props.isSubmitting}
+                    type={"submit"}
+                    isDisabled={location?.self.role <= 2}
+                  >
                     Update
                   </Button>
                   <Button
