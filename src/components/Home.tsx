@@ -110,14 +110,14 @@ export default function Home() {
           fontSize={["4em", "8em", "12em"]}
           lineHeight={1}
           justify={"center"}
-          py={24}
+          py={16}
         >
           <Marquee
             autoFill={true}
             direction={"left"}
             className={"overflow-hidden"}
           >
-            <Text as={"h3"} fontSize={"0.5em"} fontWeight={"900"}>
+            <Text as={"h3"} fontSize={"0.25em"}>
               EVE XCS<Box as={"span"} mx={8}></Box>
             </Text>
           </Marquee>
@@ -126,7 +126,7 @@ export default function Home() {
             direction={"right"}
             className={"overflow-hidden"}
           >
-            <Text as={"h3"} fontSize={"0.5em"} fontWeight={"900"}>
+            <Text as={"h3"} fontSize={"0.25em"} fontWeight={"900"}>
               EVE XCS<Box as={"span"} mx={8}></Box>
             </Text>
           </Marquee>
