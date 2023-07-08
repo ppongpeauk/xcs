@@ -436,6 +436,7 @@ export default function PlatformNav({
         w={{ base: "100vw", md: "calc(100% - 240px)" }}
         h={"100vh"}
         overflow={"auto"}
+        pb={{ base: "6rem", md: 0 }}
       >
         {children}
       </Box>
