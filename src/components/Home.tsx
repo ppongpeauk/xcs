@@ -10,6 +10,7 @@ import {
 } from "@chakra-ui/react";
 
 import { Manrope } from "next/font/google";
+import NextImage from "next/image";
 const font1 = Manrope({ subsets: ["latin"] });
 
 import Marquee from "react-fast-marquee";
@@ -22,13 +23,18 @@ export default function Home() {
         position={"relative"}
         flexDir={["column", "row"]}
         h={"calc(100vh - 6rem)"}
+        borderBottom={"1px solid"}
+        borderColor={useColorModeValue("gray.300", "gray.700")}
       >
         <Flex flexBasis={1} flexGrow={2} order={[2, 1]} w={"full"}>
-          <Image
+          <NextImage
             src={"/images/hero3.jpg"}
-            objectFit={"cover"}
             alt={"Home Image"}
-            w={"full"}
+            fill={true}
+            style={{
+              objectFit: "cover",
+              objectPosition: "right center",
+            }}
           />
         </Flex>
         <Flex
@@ -41,11 +47,12 @@ export default function Home() {
           py={8}
           px={16}
           order={[1, 2]}
-          backdropFilter={"blur(8rem)"}
-          bg={useColorModeValue(
-            "rgba(255, 255, 255, 0.25)",
-            "rgba(26, 32, 44, 0.5)"
-          )}
+          // backdropFilter={"blur(2rem)"}
+          // bg={useColorModeValue(
+          //   "rgba(255, 255, 255, 0.25)",
+          //   "rgba(26, 32, 44, 0.5)"
+          // )}
+          bg={useColorModeValue("white", "gray.800")}
           w={["full", "full", "50%"]}
           minW={["unset", "480px"]}
           h={"full"}
@@ -66,9 +73,7 @@ export default function Home() {
           </Section>
         </Flex>
       </Flex>
-      <Flex
-        position={"relative"}
-      >
+      <Flex position={"relative"}>
         <Flex
           flexDir={"column"}
           w={"full"}
@@ -77,15 +82,20 @@ export default function Home() {
           className={font1.className}
           lineHeight={1}
           justify={"center"}
-          py={16}
+          py={24}
         >
           <Marquee
             autoFill={true}
             direction={"left"}
             className={"overflow-hidden"}
           >
-            <Text as={"h3"} fontSize={"0.25em"} fontWeight={"900"} letterSpacing={"tighter"}>
-              RESTRAFES & CO.<Box as={"span"} mx={8}>–</Box>
+            <Text
+              as={"h3"}
+              fontSize={"0.5em"}
+              fontWeight={"900"}
+              letterSpacing={"tighter"}
+            >
+              EVE XCS<Box as={"span"} mx={8}></Box>
             </Text>
           </Marquee>
           <Marquee
@@ -93,8 +103,13 @@ export default function Home() {
             direction={"right"}
             className={"overflow-hidden"}
           >
-            <Text as={"h3"} fontSize={"0.5em"} fontWeight={"900"} letterSpacing={"tighter"}>
-              EVE XCS<Box as={"span"} mx={8}>–</Box>
+            <Text
+              as={"h3"}
+              fontSize={"0.5em"}
+              fontWeight={"900"}
+              letterSpacing={"tighter"}
+            >
+              EVE XCS<Box as={"span"} mx={8}></Box>
             </Text>
           </Marquee>
         </Flex>
