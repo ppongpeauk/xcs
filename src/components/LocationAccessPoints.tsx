@@ -2,6 +2,7 @@
 import {
   Box,
   Button,
+  Code,
   Container,
   Flex,
   HStack,
@@ -106,7 +107,6 @@ export default function LocationAccessPoints({
                       {accessPoint.name}
                     </Text>
                     <HStack
-                      mb={2}
                       align={"center"}
                       justify={"flex-start"}
                       fontSize={"xl"}
@@ -120,9 +120,21 @@ export default function LocationAccessPoints({
                         <BiSolidLockOpen title="Unarmed" />
                       )}
                     </HStack>
-                    <Text mb={4}>
-                      {accessPoint.description || "No description available."}
-                    </Text>
+
+                    <Box py={4}>
+                      <Text>
+                        {accessPoint.description || "No description available."}
+                      </Text>
+                      <Text>
+                        ID: <Code>{accessPoint.id}</Code>
+                      </Text>
+                      <Text>
+                        Created at{" "}
+                        <Code>
+                          {new Date(accessPoint.createdAt).toISOString()}
+                        </Code>
+                      </Text>
+                    </Box>
                   </Box>
                   <Stack w={"full"}>
                     <Button
