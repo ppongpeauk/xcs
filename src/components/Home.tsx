@@ -124,7 +124,7 @@ export default function Home() {
             direction={"left"}
             className={"overflow-hidden"}
           >
-            <Text as={"h3"} fontSize={"0.25em"}>
+            <Text as={"h3"} fontSize={["0.5em", "0.25em"]}>
               EVE XCS<Box as={"span"} mx={8}></Box>
             </Text>
           </Marquee>
@@ -133,7 +133,7 @@ export default function Home() {
             direction={"right"}
             className={"overflow-hidden"}
           >
-            <Text as={"h3"} fontSize={"0.25em"} fontWeight={"900"}>
+            <Text as={"h3"} fontSize={["0.5em", "0.25em"]} fontWeight={"900"}>
               EVE XCS<Box as={"span"} mx={8}></Box>
             </Text>
           </Marquee>
