@@ -115,8 +115,8 @@ export default async function handler(
           temporaryAccess: [],
         },
         alwaysAllowed: {
-          clearances: [],
-          users: [],
+          clearances: {},
+          users: {},
         },
       },
       createdAt: timestamp,

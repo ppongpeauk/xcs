@@ -196,7 +196,7 @@ export default function PlatformAccessPoint() {
         </Breadcrumb>
         <Heading>{accessPoint?.name}</Heading>
         <Text fontSize={"lg"} color={"gray.500"}>
-          {accessPoint?.organization.name} - {accessPoint?.location.name}
+          {accessPoint?.organization.name} – {accessPoint?.location.name}
         </Text>
         <Divider my={4} />
         <Box py={4} minW={["100%", "fit-content"]}>
@@ -324,30 +324,8 @@ export default function PlatformAccessPoint() {
                               {...field}
                               type="text"
                               autoComplete="off"
-                              placeholder={JSON.stringify({
-                                routines: [
-                                  {
-                                    name: "Morning Access",
-                                    start: "08:00",
-                                    end: "12:00",
-                                    days: [1, 2, 3, 4, 5],
-                                  },
-                                ],
-                                temporaryAccess: [
-                                  {
-                                    name: "Temporary Access",
-                                    allowed: {
-                                      open: false,
-                                      clearances: [
-                                        "2e73ec62-9f23-46b5-85e2-1e84c1278d11",
-                                      ],
-                                      users: [],
-                                    },
-                                    start: "2017-01-01T00:00:00.000Z",
-                                    end: "2017-01-02T00:00:00.000Z",
-                                  },
-                                ],
-                              })}
+                              spellCheck={false}
+                              placeholder={"timedAccess JSON"}
                               variant={"filled"}
                               maxH={"240px"}
                             />
@@ -364,21 +342,9 @@ export default function PlatformAccessPoint() {
                               {...field}
                               type="text"
                               autoComplete="off"
-                              placeholder={JSON.stringify({
-                                clearances: [
-                                  "2e73ec62-9f23-46b5-85e2-1e84c1278d11",
-                                ],
-                                users: [
-                                  {
-                                    robloxId: "32757211",
-                                    scanMetadata: {
-                                      floors: [1, 2, 3],
-                                    },
-                                  },
-                                ],
-                              })}
+                              spellCheck={false}
                               variant={"filled"}
-                              maxH={"240px"}
+                              placeholder={"alwaysAllowed JSON"}
                             />
                           </InputGroup>
                         </FormControl>

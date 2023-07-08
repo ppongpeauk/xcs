@@ -27,6 +27,7 @@ export default async function handler(
   const locations = db.collection("locations");
   const invitations = db.collection("invitations");
   const accessPoints = db.collection("accessPoints");
+  const users = db.collection("users");
   let organization = (await organizations
     .find({ id: organizationId })
     .toArray()) as any;
@@ -43,6 +44,16 @@ export default async function handler(
 
   if (req.method === "GET") {
     organization.user = organization.members[uid];
+
+    // Find owner of organization
+    for (const [key, value ] of Object.entries(organization.members) as any) {
+      if (value.role === 3) {
+        let owner = await users.findOne({ id: key });
+        organization.owner = owner;
+        break;
+      }
+    }
+
 
     return res.status(200).json({
       organization: organization,

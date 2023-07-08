@@ -91,8 +91,7 @@ export default function LocationAccessPoints({
                   key={accessPoint.id}
                   w={"384px"}
                   h={"auto"}
-                  py={4}
-                  px={8}
+                  p={6}
                   borderWidth={1}
                   borderRadius={"xl"}
                   borderColor={useColorModeValue("gray.200", "gray.700")}
@@ -119,7 +118,7 @@ export default function LocationAccessPoints({
                         <BiSolidLockOpen title="Unarmed" />
                       )}
                     </HStack>
-                    <Text>
+                    <Text mb={4}>
                       {accessPoint.description || "No description available."}
                     </Text>
                   </Box>

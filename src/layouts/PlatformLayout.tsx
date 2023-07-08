@@ -71,7 +71,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 >
                   {/* Email not verified */}
                   {
-                    (currentUser && !user.emailVerified) && (
+                    (currentUser && !user?.emailVerified) && (
                       <PlatformAlert
                         title={"Email not verified"}
                         description={

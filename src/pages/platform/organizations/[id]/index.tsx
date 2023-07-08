@@ -274,7 +274,13 @@ export default function PlatformOrganization() {
           </BreadcrumbItem>
         </Breadcrumb>
         <Heading>{organization?.name}</Heading>
+        <Text fontSize={"lg"} color={"gray.500"}>
+          Owned by {organization?.owner.name.first} {organization?.owner.name.last}
+        </Text>
         <Divider my={4} />
+        <Heading as="h1" size="lg" mb={2}>
+          General Settings
+        </Heading>
         {organization ? (
           <Box p={4} w={"fit-content"}>
             <Formik

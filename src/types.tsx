@@ -28,3 +28,18 @@ export interface Organization {
   invitations: [],
   logs: {}
 }
+
+export interface Location {
+  id: string,
+  name: string,
+  description?: string,
+  tags: [],
+  organizationId: string,
+  avatar?: string,
+  roblox: {
+    placeId?: string,
+  },
+  enabled: true,
+  createdAt: string,
+  updatedAt: string,
+}
