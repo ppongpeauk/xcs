@@ -21,8 +21,8 @@ export default async function handler(
 
   console.log(`[AXESYS] /api/v1/axesys/syncdoorspremium/: ${data}`);
 
-  let apiKey = data[1];
-  let locationId = data[2];
+  let apiKey = data[0];
+  let locationId = data[1];
 
   // create a connection to the database
   const mongoClient = await clientPromise;

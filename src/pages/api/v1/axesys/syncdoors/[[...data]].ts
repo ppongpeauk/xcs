@@ -21,8 +21,8 @@ export default async function handler(
 
   console.log(`[AXESYS] /api/v1/axesys/syncdoors/: ${data}`);
 
-  let apiKey = data[1];
-  let locationId = data[2];
+  let apiKey = data[0];
+  let locationId = data[1];
 
   // create a connection to the database
   const mongoClient = await clientPromise;
@@ -35,6 +35,8 @@ export default async function handler(
   let location = (await locations.findOne({
     id: locationId,
   })) as Location | null;
+
+  console.log(location);
 
   if (!location) {
     return res.status(404).json({ error: "Location not found" });
