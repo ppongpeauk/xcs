@@ -111,6 +111,7 @@ export default async function handler(
       isPersonal: false,
       name: name,
       description: "",
+      avatar: "",
       members: {
         [uid]: {
           role: 3,
