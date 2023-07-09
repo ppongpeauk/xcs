@@ -178,7 +178,7 @@ export default function Profile({ username }: { username?: string }) {
                   fontWeight={"900"}
                   textAlign={"center"}
                 >
-                  {user?.name?.first || "First"} {user?.name?.last || "Last"}
+                  {user?.name?.first} {user?.name?.last}
                 </Text>
               </Skeleton>
               <Skeleton isLoaded={!!user}>
