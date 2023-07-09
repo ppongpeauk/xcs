@@ -28,9 +28,9 @@ import { useCallback, useEffect, useState } from "react";
 
 import CreateLocationDialog from "@/components/CreateLocationDialog";
 import { useAuthContext } from "@/contexts/AuthContext";
+import moment from "moment";
 import { FaBuilding, FaUserAlt } from "react-icons/fa";
 import { MdOutlineAddCircle } from "react-icons/md";
-
 export default function PlatformLocations() {
   const { query, push } = useRouter();
 
@@ -236,29 +236,33 @@ export default function PlatformLocations() {
                       borderRadius={"xl"}
                       borderColor={useColorModeValue("gray.200", "gray.700")}
                       mr={4}
-                      aspectRatio={2 / 1}
                       align={"center"}
                       justify={"space-between"}
                       flexDir={"column"}
                     >
-                      <Flex p={2}>
+                      <HStack p={2} w={"full"}>
                         <Box flexGrow={1}>
                           <Text fontSize={"2xl"} fontWeight={"bold"}>
                             {location.name}
                           </Text>
-                          <Text>{location.description}</Text>
+                          {location.description ? (
+                            <Text>{location.description}</Text>
+                          ) : (
+                            <Text color={"gray.500"}>
+                              No description available.
+                            </Text>
+                          )}
                           <Text>
                             ID: <Code>{location.id}</Code>
                           </Text>
                           <Text>
                             Updated at:{" "}
-                            <Code>
-                              {new Date(location.updatedAt).toISOString()}
-                            </Code>
+                            <Code>{moment(location.updatedAt).fromNow()}</Code>
                           </Text>
                         </Box>
                         {location.roblox?.place && (
                           <Avatar
+                            alignSelf={"flex-start"}
                             name={location.roblox.place.name}
                             src={location.roblox.place.thumbnail}
                             aspectRatio={1 / 1}
@@ -267,7 +271,7 @@ export default function PlatformLocations() {
                             objectFit={"cover"}
                           />
                         )}
-                      </Flex>
+                      </HStack>
 
                       <Stack pb={2} w={"full"}>
                         <Button
