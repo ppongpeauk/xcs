@@ -90,34 +90,7 @@ export default function Verify() {
             <Stack spacing={2} pt={8}>
               <Button
                 colorScheme={"blue"}
-                onClick={() => setActiveStep(activeStep + 1)}
-              >
-                Start Verification
-              </Button>
-            </Stack>
-          </Flex>
-        </Center>
-        <Center>
-          <Flex
-            maxW={"500px"}
-            border={"1px solid"}
-            borderColor={useColorModeValue("gray.300", "gray.700")}
-            rounded={"xl"}
-            p={8}
-            m={2}
-            flexDir={"column"}
-          >
-            <Text as={"h2"} fontSize={"3xl"} fontWeight={"900"}>
-              Verify Your Roblox Account
-            </Text>
-            <Text>
-              Join the following game. You will need to provide the verification code below:
-            </Text>
-            <Spacer />
-            <Stack spacing={2} pt={8}>
-              <Button
-                colorScheme={"blue"}
-                onClick={() => setActiveStep(activeStep + 1)}
+                // onClick={() => setActiveStep(activeStep + 1)}
               >
                 Start Verification
               </Button>
