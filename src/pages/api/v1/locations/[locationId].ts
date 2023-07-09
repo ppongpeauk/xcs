@@ -121,6 +121,15 @@ export default async function handler(
     const place = robloxResponse[0];
     body.roblox.place = place;
 
+    // check if another location is using the same universe
+    const otherLocation = await locations.findOne({
+      "roblox.universe.id": place.universeId,
+    }, { projection: { id: 1 } });
+
+    if (otherLocation && otherLocation.id !== location.id) {
+      return res.status(400).json({ message: "Universe ID already in use." });
+    }
+
     const thumbnailResponse = await fetch(
       `${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/roblox/thumbnails/v1/games/icons?universeIds=${body.roblox.universe.id || location.roblox.universe.id}&returnPolicy=PlaceHolder&size=256x256&format=Jpeg&isCircular=false`
     ).then((res) => res.json()).then((res) => res.data);
