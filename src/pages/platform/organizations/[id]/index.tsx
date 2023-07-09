@@ -275,7 +275,7 @@ export default function PlatformOrganization() {
             </BreadcrumbLink>
           </BreadcrumbItem>
         </Breadcrumb>
-        <Heading>{organization?.name}</Heading>
+        <Text as={"h1"} fontSize={"4xl"} fontWeight={"900"}>{organization?.name}</Text>
         <Text fontSize={"lg"} color={"gray.500"}>
           Owned by {organization?.owner.name.first}{" "}
           {organization?.owner.name.last}
@@ -304,9 +304,9 @@ export default function PlatformOrganization() {
           )}
         </AvatarGroup>
         <Divider my={4} />
-        <Heading as="h1" size="lg" mb={2}>
+        <Text as={"h2"} fontSize={"3xl"} fontWeight={"900"}>
           General Settings
-        </Heading>
+        </Text>
         {organization ? (
           <Box p={4} w={"fit-content"}>
             <Formik
@@ -469,7 +469,7 @@ export default function PlatformOrganization() {
                     >
                       View Locations
                     </Button>
-                    {organization.user.role >= 3 ? (
+                    {organization?.user.role >= 3 ? (
                       <Button
                         colorScheme="red"
                         mb={2}
