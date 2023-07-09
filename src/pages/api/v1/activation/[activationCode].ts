@@ -77,7 +77,7 @@ export default async function handler(
     // Check body for missing fields and character length
     if (
       !firstName ||
-      !lastName ||
+      // !lastName ||
       !email ||
       !username ||
       !password ||

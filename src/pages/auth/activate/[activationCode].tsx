@@ -202,7 +202,7 @@ export default function Activate() {
                         </Field>
                         <Field name="lastName">
                           {({ field, form }: any) => (
-                            <FormControl isRequired={true}>
+                            <FormControl isRequired={false}>
                               <Skeleton isLoaded={!loading}>
                                 <FormLabel>Last Name</FormLabel>
                               </Skeleton>
