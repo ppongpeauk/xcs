@@ -142,7 +142,7 @@ export default async function handler(
         .then((res) => res.json())
         .then((res) => res.data);
 
-      if (robloxResponse.length === 0) {
+      if (!robloxResponse || robloxResponse.length === 0) {
         return res.status(400).json({ message: "Invalid universe ID." });
       }
 
