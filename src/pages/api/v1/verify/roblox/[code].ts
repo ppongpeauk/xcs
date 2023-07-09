@@ -8,9 +8,12 @@ export default async function handler(
   res: NextApiResponse
 ) {
   // roblox-side
+  console.log(req.method);
   if (req.method === "POST") {
     const { code } = req.query; // verification code from website
     const { robloxId } = req.body; // roblox id from roblox
+
+    console.log(code, robloxId);
 
     const mongoClient = await clientPromise;
     const db = mongoClient.db(process.env.MONGODB_DB as string);

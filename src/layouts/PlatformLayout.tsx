@@ -72,24 +72,45 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             h={"full"}
           >
             {/* Email not verified */}
-            {currentUser && !user?.emailVerified && (
-              <PlatformAlert
-                title={"Email not verified"}
-                description={
-                  "Please verify your email address to continue using EVE XCS."
-                }
-                isClosable={true}
-                button={{
-                  text: "Resend verification email",
-                  isLoading: sendVerificationEmailLoading,
-                  onClick: async () => {
-                    setSendVerificationEmailLoading(true);
-                    await sendEmailVerification(user).finally(() => {
-                      setSendVerificationEmailLoading(false);
-                    });
-                  },
-                }}
-              />
+            {currentUser && (
+              <>
+                {/* Email not verified */}
+                {!user?.emailVerified && (
+                  <PlatformAlert
+                    title={"Email not verified"}
+                    description={
+                      "Please verify your email address to continue using EVE XCS."
+                    }
+                    isClosable={true}
+                    button={{
+                      text: "Resend verification email",
+                      isLoading: sendVerificationEmailLoading,
+                      onClick: async () => {
+                        setSendVerificationEmailLoading(true);
+                        await sendEmailVerification(user).finally(() => {
+                          setSendVerificationEmailLoading(false);
+                        });
+                      },
+                    }}
+                  />
+                )}
+                {/* Roblox account not verified */}
+                {!currentUser?.roblox.verified && (
+                  <PlatformAlert
+                    title={"Roblox account not verified"}
+                    description={
+                      "Please verify your Roblox account to continue using EVE XCS."
+                    }
+                    isClosable={true}
+                    button={{
+                      text: "Verify Roblox account",
+                      onClick: async () => {
+                        push("/platform/verify");
+                      },
+                    }}
+                  />
+                )}
+              </>
             )}
           </Stack>
         </Flex>
