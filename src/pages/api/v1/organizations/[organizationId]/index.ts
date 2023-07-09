@@ -54,6 +54,22 @@ export default async function handler(
       }
     }
 
+    // Get all members
+    let members = [];
+    for (const [key, value] of Object.entries(organization.members) as any) {
+      let member = await users.findOne({ id: key }, { projection: { name: 1, username: 1, avatar: 1 }});
+      members.push({
+        id: key,
+        name: member?.name,
+        username: member?.username,
+        avatar: member?.avatar,
+        ...value,
+      });
+      if (members.length > 99) break;
+    }
+
+    organization.members = members;
+
     return res.status(200).json({
       organization: organization,
     });

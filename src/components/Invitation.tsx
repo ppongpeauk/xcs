@@ -117,7 +117,6 @@ export default function Invitation({ invite }: { invite: any }) {
                   as={"h2"}
                   fontSize={"3xl"}
                   fontWeight={"900"}
-                  mb={2}
                   letterSpacing={"tighter"}
                   w={"full"}
                   textAlign={"center"}
@@ -125,7 +124,7 @@ export default function Invitation({ invite }: { invite: any }) {
                   {invite
                     ? invite.type === "organization"
                       ? "You've recieved an invitation"
-                      : "You're invited! 🤩"
+                      : "You're invited!"
                     : "Invitation not found"}
                 </Text>
               </Skeleton>
@@ -209,10 +208,7 @@ export default function Invitation({ invite }: { invite: any }) {
                   <Skeleton isLoaded={!loading}>
                     <Text fontSize={"sm"} my={2}>
                       By accepting this invitation, you agree to the{" "}
-                      <Text
-                        as={"span"}
-                        fontWeight={"bold"}
-                      >
+                      <Text as={"span"} fontWeight={"bold"}>
                         EVE XCS
                       </Text>{" "}
                       <Text

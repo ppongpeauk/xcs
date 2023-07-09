@@ -62,6 +62,13 @@ export default async function handler(
           .json({ valid: false, message: "Organization not found" });
       }
       invitation.organization = organization;
+    } else if (invitation?.type === "xcs") {
+      if (invitation.uses >= invitation.maxUses) {
+        return res.status(404).json({
+          valid: false,
+          message: "This invitation has reached its maximum uses",
+        });
+      }
     }
     return res.status(200).json({ invitation: invitation });
   }

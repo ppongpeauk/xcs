@@ -1,5 +1,7 @@
 import Layout from "@/layouts/PlatformLayout";
 import {
+  Avatar,
+  AvatarGroup,
   Box,
   Button,
   Container,
@@ -275,8 +277,25 @@ export default function PlatformOrganization() {
         </Breadcrumb>
         <Heading>{organization?.name}</Heading>
         <Text fontSize={"lg"} color={"gray.500"}>
-          Owned by {organization?.owner.name.first} {organization?.owner.name.last}
+          Owned by {organization?.owner.name.first}{" "}
+          {organization?.owner.name.last}
         </Text>
+        <AvatarGroup size="md" max={4} my={2}>
+          <Avatar
+            name={organization?.owner.name.first}
+            src={organization?.owner.avatar}
+          />
+          {organization?.members.map(
+            (member: any) =>
+              member.id !== organization?.owner.id && (
+                <Avatar
+                  name={member?.name.first}
+                  src={member?.avatar}
+                  key={member?.id}
+                />
+              )
+          )}
+        </AvatarGroup>
         <Divider my={4} />
         <Heading as="h1" size="lg" mb={2}>
           General Settings
