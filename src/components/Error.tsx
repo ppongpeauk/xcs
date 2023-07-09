@@ -11,18 +11,18 @@ import NextLink from "next/link";
 
 export default function Error() {
   return (
-    <Container maxW={"container.md"} py={16}>
-      <Heading as={"h1"} size={"xl"} mb={2}>
+    <Container maxW={"container.sm"} py={16}>
+      <Text as={"h1"} fontSize={"4xl"} fontWeight={"900"} mb={2}>
         Looks like you&apos;ve hit a snag.
-      </Heading>
+      </Text>
       <Text fontSize={"lg"} mb={4}>
         This could be because the page you&apos;re looking for does not exist or
         you do not have permission to view it.
       </Text>
       <Flex flexDir={"row"}>
         <Link as={NextLink} href={"/"} _hover={{ textDecoration: "none" }}>
-          <Button colorScheme={"blue"} mr={2}>
-            Go Home
+          <Button>
+            Return Home
           </Button>
         </Link>
       </Flex>

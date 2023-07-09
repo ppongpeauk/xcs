@@ -186,7 +186,7 @@ export default function Profile({ username }: { username?: string }) {
                         textAlign={"center"}
                         zIndex={1}
                       >
-                        Staff
+                        Staff Member
                       </Text>
                     </Flex>
                   )}

@@ -1,5 +1,6 @@
 // Components
 import ThemeButton from "@/components/ThemeButton";
+import { HamburgerIcon } from "@chakra-ui/icons";
 import {
   Avatar,
   Box,
@@ -8,8 +9,14 @@ import {
   Container,
   Flex,
   HStack,
+  IconButton,
   Image,
   Link,
+  Menu,
+  MenuButton,
+  MenuDivider,
+  MenuItem,
+  MenuList,
   Spacer,
   Text,
   useColorModeValue,
@@ -17,10 +24,18 @@ import {
 import NextImage from "next/image";
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
+import { AiFillHome } from "react-icons/ai";
+import { BiSolidLogIn } from "react-icons/bi";
+import { IoCube } from "react-icons/io5";
 
 // Authentication
 import { useAuthContext } from "@/contexts/AuthContext";
-import { Suspense } from "react";
+import { Suspense, forwardRef } from "react";
+
+// eslint-disable-next-line react/display-name
+const MenuLink = forwardRef((props: any, ref: any) => (
+  <Link _hover={{ textDecor: "unset" }} as={NextLink} ref={ref} {...props} />
+));
 
 function NavLink({
   href,
@@ -84,11 +99,7 @@ export default function Nav({ type }: { type?: string }) {
             filter: useColorModeValue("opacity(0.5)", "brightness(0.5)"),
           }}
         >
-          <Flex
-            position={"relative"}
-            w={"128px"}
-            h={"100%"}
-          >
+          <Flex position={"relative"} w={"128px"} h={"100%"}>
             <NextImage
               src={useColorModeValue(
                 "/images/logo-black.png",
@@ -128,18 +139,52 @@ export default function Nav({ type }: { type?: string }) {
         // borderColor={useColorModeValue("gray.200", "gray.700")}
         spacing={2}
       >
-        {!user ? (
-          <NavLink href={"/auth/login"} pathname={pathname}>
-            Login
-          </NavLink>
-        ) : (
-          <>
-            <NavLink href={"/platform/home"} pathname={pathname}>
-              Control Panel
+        <Box display={{ base: "none", md: "flex" }}>
+          {!user ? (
+            <NavLink href={"/auth/login"} pathname={pathname}>
+              Login
             </NavLink>
-          </>
-        )}
-        <ThemeButton />
+          ) : (
+            <>
+              <NavLink href={"/platform/home"} pathname={pathname}>
+                Control Panel
+              </NavLink>
+            </>
+          )}
+        </Box>
+
+        {/* Theme Button */}
+        <Box display={{ base: "none", md: "flex" }}>
+          <ThemeButton />
+        </Box>
+
+        {/* Mobile Nav */}
+        <Box display={{ base: "flex", md: "none" }}>
+          <Menu>
+            <MenuButton
+              as={IconButton}
+              icon={<HamburgerIcon />}
+              variant={"solid"}
+              aria-label="Options"
+            />
+            <MenuList>
+              <MenuItem as={MenuLink} icon={<AiFillHome />} href="/">
+                Home
+              </MenuItem>
+              {user ? (
+                <MenuItem as={MenuLink} icon={<IoCube />} href="/platform/home">
+                  Control Panel
+                </MenuItem>
+              ) : (
+                <MenuItem as={MenuLink} icon={<BiSolidLogIn />} href="/auth/login">
+                  Login
+                </MenuItem>
+              )}
+              <MenuDivider />
+              <ThemeButton menu={true} />
+            </MenuList>
+          </Menu>
+        </Box>
         {/* <Avatar size={"md"} src="/images/avatar.jpg" mx={2} /> */}
       </HStack>
     </Flex>
