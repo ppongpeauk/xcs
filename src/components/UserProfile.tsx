@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import {
   Avatar,
+  AvatarBadge,
   Box,
   Button,
   Center,
@@ -36,7 +37,7 @@ import { useAuthContext } from "@/contexts/AuthContext";
 
 function OrganizationItem({ organization }: { organization: any }) {
   return (
-    <StackItem p={1}>
+    <StackItem p={2}>
       <Link
         as={NextLink}
         href={`/platform/organizations/${organization.id}`}
@@ -55,7 +56,13 @@ function OrganizationItem({ organization }: { organization: any }) {
           aspectRatio={1 / 1}
           rounded={"md"}
           borderRadius={"md"}
-        />
+        >
+          {organization?.verified && (
+            <AvatarBadge boxSize="1.05em">
+              <Icon as={VscVerifiedFilled} color={"gold"} h={"1em"} />
+            </AvatarBadge>
+          )}
+        </Avatar>
       </Link>
     </StackItem>
   );
@@ -224,12 +231,14 @@ export default function Profile({ username }: { username?: string }) {
               <Text as={"h1"} fontSize={"2xl"} fontWeight={"900"}>
                 Organizations
               </Text>
-              <Box w={"full"} h={"full"} p={2}>
+              <Box w={"full"} h={"full"}>
                 <Skeleton isLoaded={!!user}>
                   {user?.organizations?.length ? (
-                    user?.organizations?.map((org: any) => (
-                      <OrganizationItem key={org.id} organization={org} />
-                    ))
+                    <Box py={2}>
+                      {user?.organizations?.map((org: any) => (
+                        <OrganizationItem key={org.id} organization={org} />
+                      ))}
+                    </Box>
                   ) : (
                     <Text as={"h2"} size={"md"}>
                       This user is not in any organizations.
