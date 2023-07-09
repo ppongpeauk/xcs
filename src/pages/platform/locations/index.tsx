@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import Layout from "@/layouts/PlatformLayout";
 import {
+  Avatar,
   Box,
   Button,
   Code,
@@ -240,21 +241,34 @@ export default function PlatformLocations() {
                       justify={"space-between"}
                       flexDir={"column"}
                     >
-                      <Box p={2}>
-                        <Text fontSize={"2xl"} fontWeight={"bold"}>
-                          {location.name}
-                        </Text>
-                        <Text>{location.description}</Text>
-                        <Text>
-                          ID: <Code>{location.id}</Code>
-                        </Text>
-                        <Text>
-                          Updated at:{" "}
-                          <Code>
-                            {new Date(location.updatedAt).toISOString()}
-                          </Code>
-                        </Text>
-                      </Box>
+                      <Flex p={2}>
+                        <Box flexGrow={1}>
+                          <Text fontSize={"2xl"} fontWeight={"bold"}>
+                            {location.name}
+                          </Text>
+                          <Text>{location.description}</Text>
+                          <Text>
+                            ID: <Code>{location.id}</Code>
+                          </Text>
+                          <Text>
+                            Updated at:{" "}
+                            <Code>
+                              {new Date(location.updatedAt).toISOString()}
+                            </Code>
+                          </Text>
+                        </Box>
+                        {location.roblox?.place && (
+                          <Avatar
+                            name={location.roblox.place.name}
+                            src={location.roblox.place.thumbnail}
+                            aspectRatio={1 / 1}
+                            borderRadius={"md"}
+                            overflow={"hidden"}
+                            objectFit={"cover"}
+                          />
+                        )}
+                      </Flex>
+
                       <Stack pb={2} w={"full"}>
                         <Button
                           as={NextLink}

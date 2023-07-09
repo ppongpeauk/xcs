@@ -36,7 +36,7 @@ export async function getServerSideProps({ query }: any) {
     });
   return {
     props: {
-      user,
+      user: user ? user : null,
     },
   };
 }

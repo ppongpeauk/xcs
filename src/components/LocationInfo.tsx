@@ -169,7 +169,9 @@ export default function LocationInfo({
               name: location?.name,
               description: location?.description,
               enabled: location?.enabled,
-              placeId: location?.roblox?.placeId || "",
+              universeId: location?.roblox?.universe?.id
+                ? `${location?.roblox?.universe?.id} (${location?.roblox.place?.name})`
+                : "",
             }}
             onSubmit={(values, actions) => {
               fetch(`/api/v1/locations/${query.id}`, {
@@ -183,10 +185,13 @@ export default function LocationInfo({
                   description: values.description || "",
                   enabled: values.enabled,
                   roblox: {
-                    placeId:
-                      values.placeId.trim() == ""
-                        ? null
-                        : values.placeId.trim(),
+                    universe: {
+                      id: location?.roblox?.universe?.id
+                        ? location?.roblox?.universe?.id
+                        : values.universeId.trim() == ""
+                        ? ""
+                        : values.universeId.trim(),
+                    },
                   },
                 }),
               })
@@ -260,10 +265,10 @@ export default function LocationInfo({
                     </FormControl>
                   )}
                 </Field>
-                <Field name="placeId">
+                <Field name="universeId">
                   {({ field, form }: any) => (
-                    <FormControl mb={2} w={"fit-content"}>
-                      <FormLabel>Experience ID</FormLabel>
+                    <FormControl mb={2}>
+                      <FormLabel>Universe ID</FormLabel>
                       <InputGroup mb={2}>
                         <InputLeftElement pointerEvents="none">
                           <IoBusiness />
@@ -272,12 +277,12 @@ export default function LocationInfo({
                           {...field}
                           type="text"
                           autoComplete="off"
-                          placeholder="Experience ID"
+                          placeholder="Universe ID"
                           variant={"outline"}
                           // isDisabled={true}
                           isDisabled={
                             location?.self.role <= 2 ||
-                            location?.roblox?.placeId !== null
+                            location?.roblox?.universe?.id !== null
                           }
                         />
                       </InputGroup>

@@ -6,6 +6,14 @@ const nextConfig = {
       {
         source: "/api/v1/roblox/users/:slug*",
         destination: "https://users.roblox.com/:slug*",
+      },
+      {
+        source: "/api/v1/roblox/games/:slug*",
+        destination: "https://games.roblox.com/:slug*",
+      },
+      {
+        source: "/api/v1/roblox/thumbnails/:slug*",
+        destination: "https://thumbnails.roblox.com/:slug*",
       }
     ]
   },
@@ -30,6 +38,11 @@ const nextConfig = {
         source: "/platform",
         destination: "/platform/home",
         permanent: true,
+      },
+      {
+        source: "/@:username*",
+        destination: "/platform/profile/:username*",
+        permanent: false,
       },
       {
         source: "/AxesysAPI/:slug*",

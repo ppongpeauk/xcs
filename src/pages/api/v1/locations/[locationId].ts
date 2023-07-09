@@ -91,19 +91,44 @@ export default async function handler(
     }
 
     if (
-      location.roblox.placeId !== null &&
-      location.roblox.placeId != body.roblox.placeId
+      location.roblox.universe.id !== null &&
+      location.roblox.universe.id != body.roblox.universe.id
     ) {
       return res
         .status(400)
-        .json({ message: "You cannot change the experience ID once set." });
+        .json({ message: "You cannot change the universe ID once set." });
     }
 
-    if (body.roblox.placeId) {
-      body.roblox.placeId = body.roblox.placeId.trim();
-      if (member.role <= 2 && body.roblox.placeId !== location.roblox.placeId) {
+    if (body.roblox.universe.id) {
+      body.roblox.universe.id = body.roblox.universe.id.trim();
+      if (
+        member.role <= 2 &&
+        body.roblox.universe.id !== location.roblox.universe.id
+      ) {
         return res.status(401).json({ message: "Unauthorized" });
       }
+    }
+
+    // fetch experience details
+    const robloxResponse = await fetch(
+      `${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/roblox/games/v1/games?universeIds=${body.roblox.universe.id || location.roblox.universe.id}`
+    ).then((res) => res.json()).then((res) => res.data);
+
+    if (robloxResponse.length === 0) {
+      return res.status(400).json({ message: "Invalid universe ID." });
+    }
+
+    const place = robloxResponse[0];
+    body.roblox.place = place;
+
+    const thumbnailResponse = await fetch(
+      `${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/roblox/thumbnails/v1/games/icons?universeIds=${body.roblox.universe.id || location.roblox.universe.id}&returnPolicy=PlaceHolder&size=256x256&format=Jpeg&isCircular=false`
+    ).then((res) => res.json()).then((res) => res.data);
+
+    if (thumbnailResponse.length === 0) {
+      body.roblox.place.thumbnail = null;
+    } else {
+      body.roblox.place.thumbnail = thumbnailResponse[0].imageUrl;
     }
 
     const time = new Date();

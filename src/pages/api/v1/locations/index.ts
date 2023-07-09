@@ -104,7 +104,11 @@ export default async function handler(
       organizationId: organizationId,
       avatar: null,
       roblox: {
-        placeId: null,
+        universe: {
+          id: null,
+          name: null,
+          thumbnail: null,
+        }
       },
       enabled: true,
       createdAt: timestamp,
