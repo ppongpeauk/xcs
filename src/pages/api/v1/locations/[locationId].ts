@@ -109,8 +109,8 @@ export default async function handler(
       }
     }
 
-    // check if another location is using the same universe
     if (body.roblox.universe.id) {
+      // check if another location is using the same universe
       const otherLocation = await locations.findOne(
         {
           "roblox.universe.id": body.roblox.universeId,
@@ -121,40 +121,40 @@ export default async function handler(
       if (otherLocation && otherLocation.id !== location.id) {
         return res.status(400).json({ message: "Universe ID already in use." });
       }
-    }
 
-    // fetch experience details
-    const robloxResponse = await fetch(
-      `${
-        process.env.NEXT_PUBLIC_ROOT_URL
-      }/api/v1/roblox/games/v1/games?universeIds=${
-        body.roblox.universe.id || location.roblox.universe.id
-      }`
-    )
-      .then((res) => res.json())
-      .then((res) => res.data);
+      // fetch experience details
+      const robloxResponse = await fetch(
+        `${
+          process.env.NEXT_PUBLIC_ROOT_URL
+        }/api/v1/roblox/games/v1/games?universeIds=${
+          body.roblox.universe.id || location.roblox.universe.id
+        }`
+      )
+        .then((res) => res.json())
+        .then((res) => res.data);
 
-    if (robloxResponse.length === 0) {
-      return res.status(400).json({ message: "Invalid universe ID." });
-    }
+      if (robloxResponse.length === 0) {
+        return res.status(400).json({ message: "Invalid universe ID." });
+      }
 
-    const place = robloxResponse[0];
-    body.roblox.place = place;
+      const place = robloxResponse[0];
+      body.roblox.place = place;
 
-    const thumbnailResponse = await fetch(
-      `${
-        process.env.NEXT_PUBLIC_ROOT_URL
-      }/api/v1/roblox/thumbnails/v1/games/icons?universeIds=${
-        body.roblox.universe.id || location.roblox.universe.id
-      }&returnPolicy=PlaceHolder&size=256x256&format=Jpeg&isCircular=false`
-    )
-      .then((res) => res.json())
-      .then((res) => res.data);
+      const thumbnailResponse = await fetch(
+        `${
+          process.env.NEXT_PUBLIC_ROOT_URL
+        }/api/v1/roblox/thumbnails/v1/games/icons?universeIds=${
+          body.roblox.universe.id || location.roblox.universe.id
+        }&returnPolicy=PlaceHolder&size=256x256&format=Jpeg&isCircular=false`
+      )
+        .then((res) => res.json())
+        .then((res) => res.data);
 
-    if (thumbnailResponse.length === 0) {
-      body.roblox.place.thumbnail = null;
-    } else {
-      body.roblox.place.thumbnail = thumbnailResponse[0].imageUrl;
+      if (thumbnailResponse.length === 0) {
+        body.roblox.place.thumbnail = null;
+      } else {
+        body.roblox.place.thumbnail = thumbnailResponse[0].imageUrl;
+      }
     }
 
     const time = new Date();
