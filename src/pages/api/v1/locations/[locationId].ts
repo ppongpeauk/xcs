@@ -110,15 +110,17 @@ export default async function handler(
     }
 
     // check if another location is using the same universe
-    const otherLocation = await locations.findOne(
-      {
-        "roblox.universe.id": body.roblox.universeId,
-      },
-      { projection: { id: 1 } }
-    );
+    if (body.roblox.universe.id) {
+      const otherLocation = await locations.findOne(
+        {
+          "roblox.universe.id": body.roblox.universeId,
+        },
+        { projection: { id: 1 } }
+      );
 
-    if (otherLocation && otherLocation.id !== location.id) {
-      return res.status(400).json({ message: "Universe ID already in use." });
+      if (otherLocation && otherLocation.id !== location.id) {
+        return res.status(400).json({ message: "Universe ID already in use." });
+      }
     }
 
     // fetch experience details
