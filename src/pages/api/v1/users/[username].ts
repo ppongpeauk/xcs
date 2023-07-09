@@ -37,7 +37,7 @@ export default async function handler(
     let userOrgs = await organizations
       .find(
         { [`members.${user.id}`]: { $exists: true } },
-        { projection: { id: 1, name: 1, [`members.${user.id}`]: 1 } }
+        { projection: { id: 1, name: 1, description: 1, avatar: 1, [`members.${user.id}`]: 1 } }
       )
       .toArray();
 
