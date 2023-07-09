@@ -3,16 +3,11 @@ import { tokenToID } from "@/pages/api/firebase";
 import { NextApiRequest, NextApiResponse } from "next";
 import { generate as generateString } from "randomstring";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  // server-side, validate code from the website.
-  if (req.method === "POST") {
-    const { code } = req.query; // verification code from website
-    const authHeader = req.headers.authorization;
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  // roblox-side, generate a code for the user.
+  if (req.method === "GET") {
 
-    // bearer token
+    const authHeader = req.headers.authorization;
     const token = authHeader?.split(" ")[1];
 
     // verify token
@@ -24,60 +19,22 @@ export default async function handler(
     const mongoClient = await clientPromise;
     const db = mongoClient.db(process.env.MONGODB_DB as string);
     const codes = db.collection("verificationCodes");
-    const users = db.collection("users");
 
-    const fetchCode = await codes.findOne(
-      { code: code },
-      { projection: { robloxId: 1 } }
-    );
+    const fetchCode = await codes.findOne({ id: uid }, { projection: { code: 1 } });
+    
+    // if a code already exists, return it
     if (fetchCode) {
-      // fetch user's roblox username
-      const username = await fetch(
-        `${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/roblox/users/v1/users/${fetchCode.robloxId}`
-      )
-        .then((res) => res.json())
-        .then((json) => json.name);
-
-      // locate any users that have the same roblox id and revoke their verification
-      await users.updateMany(
-        { "roblox.id": fetchCode.robloxId },
-        {
-          $set: {
-            roblox: {
-              username: "",
-              id: "",
-              verified: false,
-            },
-          },
-        }
-      );
-
-      // update user's verification
-      await users.updateOne(
-        { id: uid },
-        {
-          $set: {
-            roblox: {
-              username: username,
-              id: fetchCode.robloxId,
-              verified: true,
-            },
-          },
-        }
-      );
-
-      // revoke code
-      await codes.deleteOne({ code: code });
-      return res
-        .status(200)
-        .json({ success: true, message: "Successfully verified." });
+      return res.status(200).json({ success: true, code: fetchCode.code });
     } else {
-      return res
-        .status(404)
-        .json({ success: false, message: "Code not found." });
+      // create a new code if one doesn't already exist, and make sure it's unique
+      let new_code = null;
+      do {
+        new_code = await generateString({ length: 6, readable: true, charset: "alphanumeric", capitalization: "uppercase" });
+      } while (await codes.findOne({ code: new_code }, { projection: { _id: 1 } }));
+
+      await codes.insertOne({ id: uid, code: new_code, createdAt: new Date().getTime() });
+      res.status(200).json({ success: true, code: new_code });
     }
-  } else if (req.method === "GET") {
-    res.status(200).json({ response: "ok" });
   } else {
     res.status(405).json({ message: "Method not allowed." });
   }
