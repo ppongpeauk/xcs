@@ -94,7 +94,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </Stack>
         </Flex>
         <Box minH={"calc(100vh - 6rem)"}>{children}</Box>
-        {/* <Box as={"footer"} pos={"sticky"} top={0}>
+        {/* <Box as={"footer"} pos={"sticky"} top={0} w={{ base: "100vw", md: "calc(100vw - 240px)" }}>
           <Footer />
         </Box> */}
       </Box>
