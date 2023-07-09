@@ -125,10 +125,12 @@ function NavLink({
 export default function PlatformNav({
   type,
   title,
+  alerts,
   children,
 }: {
   type?: string;
   title?: string | null | undefined;
+  alerts?: any;
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
@@ -161,6 +163,7 @@ export default function PlatformNav({
 
   return (
     <>
+      {/* {alerts} */}
       <Flex
         id="platform-nav"
         as="nav"

@@ -57,39 +57,40 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <>
       <Flex flexDir={"row"}>
         <PlatformNav
+          alerts={
+            <Stack
+              id={"alerts"}
+              pos={"relative"}
+              top={"6rem"}
+              zIndex={500}
+              backdropFilter={"blur(24px)"}
+              spacing={0}
+            >
+              {/* Email not verified */}
+              {currentUser && user?.emailVerified && (
+                <PlatformAlert
+                  title={"Email not verified"}
+                  description={
+                    "Please verify your email address to continue using EVE XCS."
+                  }
+                  isClosable={true}
+                  button={{
+                    text: "Resend verification email",
+                    isLoading: sendVerificationEmailLoading,
+                    onClick: async () => {
+                      setSendVerificationEmailLoading(true);
+                      await sendEmailVerification(user).finally(() => {
+                        setSendVerificationEmailLoading(false);
+                      });
+                    },
+                  }}
+                />
+              )}
+            </Stack>
+          }
           children={
             <Box w={"full"}>
-              <Box as="main">
-                {/* Alerts */}
-                <Stack
-                  id={"alerts"}
-                  pos={"sticky"}
-                  top={"6rem"}
-                  zIndex={500}
-                  backdropFilter={"blur(24px)"}
-                  spacing={0}
-                >
-                  {/* Email not verified */}
-                  {currentUser && !user?.emailVerified && (
-                    <PlatformAlert
-                      title={"Email not verified"}
-                      description={
-                        "Please verify your email address to continue using EVE XCS."
-                      }
-                      isClosable={true}
-                      button={{
-                        text: "Resend verification email",
-                        isLoading: sendVerificationEmailLoading,
-                        onClick: async () => {
-                          setSendVerificationEmailLoading(true);
-                          await sendEmailVerification(user).finally(() => {
-                            setSendVerificationEmailLoading(false);
-                          });
-                        },
-                      }}
-                    />
-                  )}
-                </Stack>
+              <Box as="main" w={"full"}>
                 {/* Children */}
                 {children}
               </Box>

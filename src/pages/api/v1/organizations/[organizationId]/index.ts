@@ -57,7 +57,10 @@ export default async function handler(
     // Get all members
     let members = [];
     for (const [key, value] of Object.entries(organization.members) as any) {
-      let member = await users.findOne({ id: key }, { projection: { name: 1, username: 1, avatar: 1 }});
+      let member = await users.findOne(
+        { id: key },
+        { projection: { name: 1, username: 1, avatar: 1 } }
+      );
       members.push({
         id: key,
         name: member?.name,
@@ -106,9 +109,10 @@ export default async function handler(
     delete body.logs;
     delete body.id;
     delete body.apiKeys;
-    if (body.members[uid] && organization.members[uid].role < 3) {
-      delete body.members;
-    }
+    delete body.members;
+    // if (body.members[uid] && organization.members[uid].role < 3) {
+    //   delete body.members;
+    // }
 
     // Character limits
     if (body.name) {
@@ -133,12 +137,14 @@ export default async function handler(
     if (body.name) {
       const checkName = await organizations.findOne(
         {
-          name: { $regex: new RegExp(`^${name}$`, "i") },
+          name: { $regex: new RegExp(`^${body.name}$`, "i") },
         },
-        { projection: { _id: 1 } }
+        { projection: { id: 1 } }
       );
-      if (checkName && checkName.id !== organizationId) {
-        return res.status(400).json({ message: "This name is taken. Please choose another." });
+      if (checkName && checkName.id !== organization.id) {
+        return res
+          .status(400)
+          .json({ message: "This name is taken. Please choose another." });
       }
     }
 

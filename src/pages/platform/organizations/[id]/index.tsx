@@ -281,18 +281,25 @@ export default function PlatformOrganization() {
           {organization?.owner.name.last}
         </Text>
         <AvatarGroup size="md" max={4} my={2}>
-          <Avatar
-            name={organization?.owner.name.first}
-            src={organization?.owner.avatar}
-          />
+          <Link
+            as={NextLink}
+            href={`/platform/profile/${organization?.owner.username}`}
+          >
+            <Avatar
+              name={organization?.owner.name.first}
+              src={organization?.owner.avatar}
+            />
+          </Link>
           {organization?.members.map(
             (member: any) =>
               member.id !== organization?.owner.id && (
-                <Avatar
-                  name={member?.name.first}
-                  src={member?.avatar}
+                <Link
                   key={member?.id}
-                />
+                  as={NextLink}
+                  href={`/platform/profile/${member.username}`}
+                >
+                  <Avatar name={member?.name.first} src={member?.avatar} />
+                </Link>
               )
           )}
         </AvatarGroup>

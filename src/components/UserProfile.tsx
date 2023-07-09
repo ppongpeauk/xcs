@@ -3,10 +3,12 @@ import {
   Avatar,
   Box,
   Button,
+  Center,
   Container,
   Flex,
   Grid,
   Heading,
+  Icon,
   Image,
   Link,
   Skeleton,
@@ -19,8 +21,11 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import Head from "next/head";
+import NextLink from "next/link";
 import { useRouter } from "next/router";
 import { Suspense, useEffect, useState } from "react";
+import { IoSparkles } from "react-icons/io5";
+import { VscVerifiedFilled } from "react-icons/vsc";
 import Tilt from "react-parallax-tilt";
 
 // Types
@@ -29,11 +34,12 @@ import { User } from "@/types";
 // Authentication
 import { useAuthContext } from "@/contexts/AuthContext";
 
-function OrganizationItem() {
+function OrganizationItem({ organization }: { organization: any }) {
   return (
     <StackItem p={1}>
       <Link
-        href={"/platform/organizations/fellers"}
+        as={NextLink}
+        href={`/platform/organizations/${organization.id}`}
         w={"auto"}
         h={"auto"}
         transition={"filter 0.2s ease-in-out"}
@@ -41,13 +47,9 @@ function OrganizationItem() {
           filter: useColorModeValue("opacity(0.75)", "brightness(0.75)"),
         }}
       >
-        <Image
-          src={
-            "https://cdn.discordapp.com/attachments/829363883277287494/1127380351451410432/logo1.png"
-          }
-          alt={"EVE XCS"}
-          w={12}
-          h={"auto"}
+        <Avatar
+          name={organization?.name}
+          src={organization?.avatar}
           objectFit={"cover"}
           aspectRatio={1 / 1}
           rounded={"md"}
@@ -171,9 +173,25 @@ export default function Profile({ username }: { username?: string }) {
                 </Text>
               </Skeleton>
               <Skeleton isLoaded={!!user}>
-                <Text as={"h2"} size={"md"} textAlign={"center"} zIndex={1}>
-                  @{user?.username || "username"}
-                </Text>
+                <Flex flexDir={"column"} align={"center"} justify={"center"}>
+                  <Text as={"h2"} size={"md"} textAlign={"center"} zIndex={1}>
+                    @{user?.username || "username"}
+                  </Text>
+                  {user?.platform.staff && (
+                    <Flex align={"center"}>
+                      <Icon as={IoSparkles} size={"xl"} mr={1} />
+                      <Text
+                        as={"h2"}
+                        fontWeight={"900"}
+                        textAlign={"center"}
+                        zIndex={1}
+                      >
+                        Staff
+                      </Text>
+                    </Flex>
+                  )}
+                  {/* <Icon as={VscVerifiedFilled} ml={1} h={"100%"} /> */}
+                </Flex>
               </Skeleton>
             </Box>
           </Flex>
@@ -206,14 +224,15 @@ export default function Profile({ username }: { username?: string }) {
               </Text>
               <Box w={"full"} h={"full"} p={2}>
                 <Skeleton isLoaded={!!user}>
-                  <OrganizationItem />
-                  <OrganizationItem />
-                  <OrganizationItem />
-                  <OrganizationItem />
-                  <OrganizationItem />
-                  <OrganizationItem />
-                  <OrganizationItem />
-                  <OrganizationItem />
+                  {user?.organizations?.length ? (
+                    user?.organizations?.map((org: any) => (
+                      <OrganizationItem key={org.id} organization={org} />
+                    ))
+                  ) : (
+                    <Text as={"h2"} size={"md"}>
+                      This user is not in any organizations.
+                    </Text>
+                  )}
                 </Skeleton>
               </Box>
             </Flex>
