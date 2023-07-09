@@ -270,31 +270,31 @@ export default function PlatformOrganization() {
             </BreadcrumbLink>
           </BreadcrumbItem>
         </Breadcrumb>
-        <Text as={"h1"} fontSize={"4xl"} fontWeight={"900"}>{organization?.name}</Text>
+        <Text as={"h1"} fontSize={"4xl"} fontWeight={"900"}>
+          {organization?.name}
+        </Text>
         <Text fontSize={"lg"} color={"gray.500"}>
           Owned by {organization?.owner.name.first}{" "}
           {organization?.owner.name.last}
         </Text>
         <AvatarGroup size="md" max={4} my={2}>
-          <Link
+          <Avatar
             as={NextLink}
+            key={organization?.owner.id}
             href={`/platform/profile/${organization?.owner.username}`}
-          >
-            <Avatar
-              name={organization?.owner.name.first}
-              src={organization?.owner.avatar}
-            />
-          </Link>
+            name={organization?.owner.name.first}
+            src={organization?.owner.avatar}
+          />
           {organization?.members.map(
             (member: any) =>
               member.id !== organization?.owner.id && (
-                <Link
-                  key={member?.id}
+                <Avatar
                   as={NextLink}
+                  key={member?.id}
                   href={`/platform/profile/${member.username}`}
-                >
-                  <Avatar name={member?.name.first} src={member?.avatar} />
-                </Link>
+                  name={member?.name.first}
+                  src={member?.avatar}
+                />
               )
           )}
         </AvatarGroup>
