@@ -1,5 +1,5 @@
 import Layout from "@/layouts/PlatformLayout";
-import { Container, Heading } from "@chakra-ui/react";
+import { Container, Heading, Text } from "@chakra-ui/react";
 import Head from "next/head";
 export default function PlatformHome() {
   return (
@@ -13,7 +13,7 @@ export default function PlatformHome() {
         <meta property="og:image" content="/images/logo-square.jpeg" />
       </Head>
       <Container maxW={"full"} p={8}>
-        <Heading>Welcome to EVE XCS</Heading>
+        <Text fontSize={"4xl"} fontWeight={"900"}>Welcome to EVE XCS.</Text>
       </Container>
     </>
   );

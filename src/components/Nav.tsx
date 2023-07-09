@@ -82,8 +82,8 @@ export default function Nav({ type }: { type?: string }) {
         justify={"center"}
         w={"240px"}
         h={"full"}
-        borderRight={"1px solid"}
-        borderColor={useColorModeValue("gray.300", "gray.700")}
+        // borderRight={"1px solid"}
+        // borderColor={useColorModeValue("gray.300", "gray.700")}
       >
         <Flex
           as={NextLink}
@@ -112,21 +112,7 @@ export default function Nav({ type }: { type?: string }) {
                 objectFit: "contain",
               }}
             />
-            {/* <Code
-              ml={2}
-              fontSize={"xs"}
-              h={"fit-content"}
-              px={"4px"}
-              fontWeight={"bold"}
-              bg={useColorModeValue("gray.900", "white")}
-              color={useColorModeValue("white", "gray.900")}
-            >
-              BETA
-            </Code> */}
           </Flex>
-          {/* <Text fontSize={"2xl"} fontWeight={"bold"} letterSpacing={"tighter"}>
-          EVE XCS
-        </Text> */}
         </Flex>
       </Flex>
       <Spacer />
@@ -185,7 +171,6 @@ export default function Nav({ type }: { type?: string }) {
             </MenuList>
           </Menu>
         </Box>
-        {/* <Avatar size={"md"} src="/images/avatar.jpg" mx={2} /> */}
       </HStack>
     </Flex>
   );

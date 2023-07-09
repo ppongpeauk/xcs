@@ -420,7 +420,7 @@ export default function PlatformAccessPoint() {
                       onClick={async () => {
                         clipboardOnCopy();
                         toast({
-                          title: "Access point ID copied!",
+                          title: "Copied access point ID to clipboard.",
                           status: "success",
                           duration: 9000,
                           isClosable: true,

@@ -55,49 +55,49 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   // Return nothing if the user is not logged in
   return (
     <>
-      <Flex flexDir={"row"}>
-        <PlatformNav
-          alerts={
-            <Stack
-              id={"alerts"}
-              pos={"relative"}
-              top={"6rem"}
-              zIndex={500}
-              backdropFilter={"blur(24px)"}
-              spacing={0}
-            >
-              {/* Email not verified */}
-              {currentUser && user?.emailVerified && (
-                <PlatformAlert
-                  title={"Email not verified"}
-                  description={
-                    "Please verify your email address to continue using EVE XCS."
-                  }
-                  isClosable={true}
-                  button={{
-                    text: "Resend verification email",
-                    isLoading: sendVerificationEmailLoading,
-                    onClick: async () => {
-                      setSendVerificationEmailLoading(true);
-                      await sendEmailVerification(user).finally(() => {
-                        setSendVerificationEmailLoading(false);
-                      });
-                    },
-                  }}
-                />
-              )}
-            </Stack>
-          }
-          children={
-            <Box w={"full"}>
-              <Box as="main" w={"full"}>
-                {/* Children */}
-                {children}
-              </Box>
-            </Box>
-          }
-        />
-      </Flex>
+      <PlatformNav />
+      <Box
+        as={"main"}
+        pos={"relative"}
+        left={{ base: 0, md: "240px" }}
+        w={{ base: "100vw", md: "calc(100vw - 240px)" }}
+        flexGrow={1}
+      >
+        <Flex pos={"sticky"} top={"6rem"} flexGrow={1} zIndex={500}>
+          <Stack
+            id={"alerts"}
+            backdropFilter={"blur(24px)"}
+            spacing={0}
+            w={"full"}
+            h={"full"}
+          >
+            {/* Email not verified */}
+            {currentUser && !user?.emailVerified && (
+              <PlatformAlert
+                title={"Email not verified"}
+                description={
+                  "Please verify your email address to continue using EVE XCS."
+                }
+                isClosable={true}
+                button={{
+                  text: "Resend verification email",
+                  isLoading: sendVerificationEmailLoading,
+                  onClick: async () => {
+                    setSendVerificationEmailLoading(true);
+                    await sendEmailVerification(user).finally(() => {
+                      setSendVerificationEmailLoading(false);
+                    });
+                  },
+                }}
+              />
+            )}
+          </Stack>
+        </Flex>
+        <Box minH={"calc(100vh - 6rem)"}>{children}</Box>
+        <Box as={"footer"} pos={"sticky"} top={0}>
+          <Footer />
+        </Box>
+      </Box>
     </>
   );
 }

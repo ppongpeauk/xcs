@@ -125,45 +125,16 @@ function NavLink({
 export default function PlatformNav({
   type,
   title,
-  alerts,
-  children,
 }: {
   type?: string;
   title?: string | null | undefined;
-  alerts?: any;
-  children: React.ReactNode;
 }) {
   const pathname = usePathname();
   const [currentRouteLabel, setCurrentRouteLabel] = useState<string | null>("");
   const { currentUser } = useAuthContext();
 
-  useEffect(() => {
-    if (!title) {
-      switch (pathname) {
-        // case "/platform/home":
-        //   setCurrentRouteLabel("Home");
-        //   break;
-        // case "/platform/event-logs":
-        //   setCurrentRouteLabel("Event Logs");
-        //   break;
-        // case "/platform/organizations":
-        //   setCurrentRouteLabel("Organizations");
-        //   break;
-        // case "/platform/organizations/[id]":
-        //   setCurrentRouteLabel("Organization");
-        //   break;
-        // case "/platform/locations":
-        //   setCurrentRouteLabel("Locations");
-        //   break;
-        default:
-          setCurrentRouteLabel("");
-      }
-    }
-  }, [pathname]);
-
   return (
     <>
-      {/* {alerts} */}
       <Flex
         id="platform-nav"
         as="nav"
@@ -215,17 +186,6 @@ export default function PlatformNav({
                   objectFit: "contain",
                 }}
               />
-              {/* <Code
-                ml={2}
-                fontSize={"xs"}
-                h={"fit-content"}
-                px={"4px"}
-                fontWeight={"bold"}
-                bg={useColorModeValue("gray.900", "white")}
-                color={useColorModeValue("white", "gray.900")}
-              >
-                BETA
-              </Code> */}
             </Flex>
           </Flex>
         </Flex>
@@ -278,40 +238,6 @@ export default function PlatformNav({
             </NavLink>
           </VStack>
         </Box>
-
-        {/* Upgrade Prompt */}
-        {/* <Box w={"full"}>
-          <Flex
-            flexDir={"column"}
-            align={"flex-start"}
-            justify={"flex-start"}
-            bg={useColorModeValue("gray.100", "gray.700")}
-            mx={4}
-            p={4}
-            rounded={"xl"}
-            border={"1px solid"}
-            borderColor={useColorModeValue("gray.300", "gray.700")}
-          >
-            <Heading size={"sm"} mb={2}>
-              Upgrade to XCS PRO
-            </Heading>
-            <Text alignSelf={"center"} fontSize={"sm"} pb={4}>
-              Upgrade to unlock more features and functionality.
-            </Text>
-            <Button
-              as={NextLink}
-              href={"/platform/upgrade"}
-              variant={"solid"}
-              colorScheme={"blue"}
-              size={"sm"}
-              alignSelf={"center"}
-              px={8}
-            >
-              Upgrade
-            </Button>
-          </Flex>
-        </Box> */}
-
         <VStack
           flexDir={"column"}
           align={"flex-start"}
@@ -339,12 +265,16 @@ export default function PlatformNav({
         </VStack>
       </Flex>
 
-      <Flex flexDir={"column"} id="platform-nav-horizontal">
+      <Flex
+        flexDir={"row"}
+        id="platform-nav-horizontal"
+        position={"sticky"}
+        top={0}
+        zIndex={499}
+      >
         {/* Horizontal Bar */}
         <Flex
           as={"header"}
-          position={"fixed"}
-          top={0}
           w={"100vw"}
           h={"6rem"}
           align={"center"}
@@ -354,10 +284,7 @@ export default function PlatformNav({
           borderY={"1px solid"}
           borderX={"1px solid"}
           borderColor={useColorModeValue("gray.300", "gray.700")}
-          zIndex={499}
         >
-          {/* Route Label (inactive) */}
-          {/* <Heading size={"lg"}>EVE XCS</Heading> */}
           <Flex
             as={NextLink}
             href={"/platform/home"}
@@ -468,18 +395,6 @@ export default function PlatformNav({
           </HStack>
         </Flex>
       </Flex>
-      <Box
-        id="platform-content"
-        position={"relative"}
-        top={"6rem"}
-        left={{ base: 0, md: "240px" }}
-        w={{ base: "100vw", md: "calc(100% - 240px)" }}
-        h={"100vh"}
-        overflow={"auto"}
-        pb={{ base: "6rem", md: 0 }}
-      >
-        {children}
-      </Box>
     </>
   );
 }

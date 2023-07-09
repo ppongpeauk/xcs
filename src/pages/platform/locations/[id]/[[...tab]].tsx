@@ -227,6 +227,7 @@ export default function PlatformLocation() {
               icon={<HamburgerIcon />}
               aria-label={"Menu"}
               w={"full"}
+              zIndex={1}
             />
             <MenuList>
               <MenuItem

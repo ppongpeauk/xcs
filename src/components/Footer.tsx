@@ -22,9 +22,8 @@ export default function Footer() {
         flexDir={"column"}
         w={"100%"}
         h={"6rem"}
-        borderTop={"1px solid"}
-        borderBottom={"1px solid"}
-        borderRight={"1px solid"}
+        border={"1px solid"}
+        borderLeft={{ base: "1px solid", md: "unset" }}
         borderColor={useColorModeValue("gray.300", "gray.700")}
         p={4}
         zIndex={50}
@@ -38,7 +37,8 @@ export default function Footer() {
           All rights reserved.
         </Text>
         <Text color={"gray.400"} fontSize={"xs"} letterSpacing={"tighter"}>
-          Commit: {process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA || "dev"} ({process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF || "dev"})
+          Commit: {process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA || "dev"} (
+          {process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF || "dev"})
         </Text>
       </Flex>
     </>

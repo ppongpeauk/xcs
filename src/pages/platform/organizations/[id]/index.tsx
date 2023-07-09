@@ -303,7 +303,7 @@ export default function PlatformOrganization() {
           General Settings
         </Text>
         {organization ? (
-          <Box p={4} w={"fit-content"}>
+          <Box p={4} w={"full"}>
             <Formik
               initialValues={{
                 name: organization?.name,
@@ -418,7 +418,7 @@ export default function PlatformOrganization() {
                       </FormControl>
                     )}
                   </Field>
-                  <HStack spacing={4} pt={2}>
+                  <Stack direction={{ base: "column", md: "row" }} spacing={2} pt={2}>
                     <Button
                       mb={2}
                       isDisabled={props.isSubmitting}
@@ -446,8 +446,8 @@ export default function PlatformOrganization() {
                     >
                       Invite Members
                     </Button>
-                  </HStack>
-                  <HStack spacing={4} pt={2}>
+                  </Stack>
+                  <Stack direction={{ base: "column", md: "row" }} spacing={2} pt={2}>
                     <Button
                       mb={2}
                       isDisabled={props.isSubmitting}
@@ -484,7 +484,7 @@ export default function PlatformOrganization() {
                         Leave Organization
                       </Button>
                     )}
-                  </HStack>
+                  </Stack>
                 </Form>
               )}
             </Formik>

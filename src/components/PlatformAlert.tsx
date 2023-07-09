@@ -35,7 +35,7 @@ export default function PlatformAlert({
   return (
     isVisible && (
       <>
-        <Alert status={"error"} zIndex={500} backdropFilter={"blur(24px)"}>
+        <Alert status={"error"} backdropFilter={"blur(24px)"}>
           <AlertIcon />
           <Stack
             direction={["column", "row"]}
