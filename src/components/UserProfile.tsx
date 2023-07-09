@@ -48,11 +48,13 @@ function OrganizationItem({ organization }: { organization: any }) {
         }}
       >
         <Avatar
+          title={organization?.name}
           name={organization?.name}
           src={organization?.avatar}
           objectFit={"cover"}
           aspectRatio={1 / 1}
           rounded={"md"}
+          borderRadius={"md"}
         />
       </Link>
     </StackItem>
