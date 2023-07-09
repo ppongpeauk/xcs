@@ -1,6 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  async rewrites() {
+    return [
+      {
+        source: "/api/v1/roblox/users/:slug*",
+        destination: "https://users.roblox.com/:slug*",
+      }
+    ]
+  },
   async redirects() {
     return [
       {
