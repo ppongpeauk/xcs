@@ -146,7 +146,9 @@ export default function PlatformOrganizations() {
         />
       )}
       <Container maxW={"full"} p={8}>
-        <Heading>Organizations</Heading>
+        <Text as={"h1"} fontSize={"4xl"} fontWeight={"900"}>
+          Organizations
+        </Text>
         <HStack
           display={"flex"}
           py={4}
@@ -199,7 +201,9 @@ export default function PlatformOrganizations() {
                   mr={4}
                 >
                   <Box p={2}>
-                    <Text fontSize={"2xl"} fontWeight={"bold"}>{organization.name}</Text>
+                    <Text fontSize={"2xl"} fontWeight={"bold"}>
+                      {organization.name}
+                    </Text>
                     <Text>{organization.description}</Text>
                     <Text>
                       ID: <Code>{organization.id}</Code>

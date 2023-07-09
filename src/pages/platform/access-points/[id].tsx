@@ -19,6 +19,7 @@ import {
   Switch,
   Text,
   Textarea,
+  useClipboard,
   useColorModeValue,
 } from "@chakra-ui/react";
 import Head from "next/head";
@@ -43,7 +44,7 @@ import { Field, Form, Formik } from "formik";
 import { AiFillTag } from "react-icons/ai";
 import { BsFillCloudDownloadFill } from "react-icons/bs";
 import { IoIosRemoveCircle } from "react-icons/io";
-import { IoBusiness } from "react-icons/io5";
+import { IoBusiness, IoClipboard, IoSave, IoTime } from "react-icons/io5";
 import { SiRoblox } from "react-icons/si";
 
 export default function PlatformAccessPoint() {
@@ -51,6 +52,12 @@ export default function PlatformAccessPoint() {
   const { user } = useAuthContext();
   const [accessPoint, setAccessPoint] = useState<any>(null);
   const toast = useToast();
+  const {
+    hasCopied: clipboardHasCopied,
+    setValue: clipboardSetValue,
+    value: clipboardValue,
+    onCopy: clipboardOnCopy,
+  } = useClipboard("");
 
   const {
     isOpen: isDeleteDialogOpen,
@@ -118,6 +125,9 @@ export default function PlatformAccessPoint() {
         })
         .then((data) => {
           setAccessPoint(data.accessPoint);
+          if (clipboardValue === "") {
+            clipboardSetValue(data.accessPoint?.id);
+          }
         })
         .catch((err) => {
           toast({
@@ -195,7 +205,9 @@ export default function PlatformAccessPoint() {
             </BreadcrumbLink>
           </BreadcrumbItem>
         </Breadcrumb>
-        <Heading>{accessPoint?.name}</Heading>
+        <Text as={"h1"} fontSize={"4xl"} fontWeight={"900"}>
+          {accessPoint?.name}
+        </Text>
         <Text fontSize={"lg"} color={"gray.500"}>
           {accessPoint?.organization.name} – {accessPoint?.location.name}
         </Text>
@@ -292,7 +304,7 @@ export default function PlatformAccessPoint() {
                             type="text"
                             autoComplete="off"
                             placeholder="Access Point Name"
-                            variant={"filled"}
+                            variant={"outline"}
                           />
                         </InputGroup>
                       </FormControl>
@@ -308,7 +320,7 @@ export default function PlatformAccessPoint() {
                             type="text"
                             autoComplete="off"
                             placeholder="Access Point Description"
-                            variant={"filled"}
+                            variant={"outline"}
                             maxH={"240px"}
                           />
                         </InputGroup>
@@ -327,7 +339,7 @@ export default function PlatformAccessPoint() {
                               autoComplete="off"
                               spellCheck={false}
                               placeholder={"timedAccess JSON"}
-                              variant={"filled"}
+                              variant={"outline"}
                               maxH={"240px"}
                             />
                           </InputGroup>
@@ -344,7 +356,7 @@ export default function PlatformAccessPoint() {
                               type="text"
                               autoComplete="off"
                               spellCheck={false}
-                              variant={"filled"}
+                              variant={"outline"}
                               placeholder={"alwaysAllowed JSON"}
                             />
                           </InputGroup>
@@ -360,8 +372,9 @@ export default function PlatformAccessPoint() {
                           <InputGroup>
                             <Switch
                               {...field}
+                              colorScheme="blue"
                               placeholder="Active"
-                              variant={"filled"}
+                              variant={"outline"}
                               width={"fit-content"}
                               defaultChecked={accessPoint?.configuration.active}
                             />
@@ -378,7 +391,7 @@ export default function PlatformAccessPoint() {
                               {...field}
                               colorScheme="red"
                               placeholder="Armed"
-                              variant={"filled"}
+                              variant={"outline"}
                               width={"fit-content"}
                               defaultChecked={accessPoint?.configuration.armed}
                             />
@@ -387,21 +400,51 @@ export default function PlatformAccessPoint() {
                       )}
                     </Field>
                   </Stack>
-                  <Box>
+                  <Box my={2}>
                     <Text fontSize={"sm"}>
                       Active - Card scans will be processed.
                     </Text>
                     <Text fontSize={"sm"}>
-                      Armed - Access point lock states will be enforced.
+                      Armed - Turning this off will no longer require a card to
+                      grant access.
                     </Text>
                   </Box>
-                  <Stack direction={"row"} spacing={4} py={2}>
+                  <Stack
+                    direction={{ base: "column", md: "row" }}
+                    spacing={2}
+                    pt={2}
+                  >
                     <Button
                       mb={2}
+                      leftIcon={<IoClipboard />}
+                      onClick={async () => {
+                        clipboardOnCopy();
+                        toast({
+                          title: "Access point ID copied!",
+                          status: "success",
+                          duration: 9000,
+                          isClosable: true,
+                        });
+                      }}
+                    >
+                      {clipboardHasCopied ? "Copied!" : "Copy ID"}
+                    </Button>
+                  </Stack>
+                  <Stack
+                    direction={{ base: "column", md: "row" }}
+                    spacing={2}
+                    py={2}
+                  >
+                    <Button
+                      mb={2}
+                      leftIcon={<IoSave />}
                       isLoading={props.isSubmitting}
                       type={"submit"}
                     >
-                      Update
+                      Save Changes
+                    </Button>
+                    <Button mb={2} leftIcon={<IoTime />}>
+                      Setup Timed Access
                     </Button>
                     <Button
                       colorScheme="red"

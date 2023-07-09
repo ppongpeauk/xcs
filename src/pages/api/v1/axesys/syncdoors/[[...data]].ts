@@ -12,14 +12,14 @@ export default async function handler(
   }
 
   // query parameters
-  // /api/v1/axesys/syncdoors/{apiKey}/{locationId}
+  // /api/v1/axesys/syncdoorspremium/{apiKey}/{locationId}
   const { data } = req.query;
 
   if (!data) {
     return res.status(400).json({ error: "Missing data" });
   }
 
-  console.log(`[AXESYS] /api/v1/axesys/syncdoors/: ${data}`);
+  console.log(`[AXESYS] /api/v1/axesys/syncdoorspremium/: ${data}`);
 
   let apiKey = data[0];
   let locationId = data[1];
@@ -32,21 +32,23 @@ export default async function handler(
   const accessPoints = db.collection("accessPoints");
 
   // fetch location data
-  let location = (await locations.findOne({
-    id: locationId,
-  })) as Location | null;
+  let location = (await locations.findOne(
+    {
+      id: locationId,
+    },
+    { projection: { id: 1, organizationId: 1 } }
+  )) as Location | null;
 
   console.log(location);
-
   if (!location) {
     return res.status(404).json({ error: "Location not found" });
   }
 
   // check if the API key is valid
-  let organization = await organizations.findOne({
-    id: location.organizationId,
-    [`apiKeys.${apiKey}`]: { $exists: true },
-  });
+  let organization = await organizations.findOne(
+    { id: location.organizationId, [`apiKeys.${apiKey}`]: { $exists: true } },
+    { projection: { id: 1 } }
+  );
   if (!organization) {
     return res.status(401).json({ error: "Invalid API key" });
   }
@@ -71,55 +73,16 @@ export default async function handler(
       AuthorizedGroups: {},
     };
     for (let user of accessPoint.configuration.alwaysAllowed.users) {
-      legacyResponse[accessPoint.id].AuthorizedUsers[user.robloxId] = user.robloxUsername;
+      legacyResponse[accessPoint.id].AuthorizedUsers[user.robloxId] =
+        user.robloxUsername;
     }
+    // TODO: add group support
   }
 
   console.log(legacyResponse);
 
   return res.status(200).json({
-    query: {
-      apiKey,
-      locationId,
-    },
+    response: "ok",
     data: legacyResponse,
   });
 }
-
-
-// import { NextApiRequest, NextApiResponse } from "next";
-
-// export default async function handler(
-//   req: NextApiRequest,
-//   res: NextApiResponse
-// ) {
-//   const { data } = req.query;
-
-//   if (!data) {
-//     return res.status(400).json({ error: "Missing data" });
-//   }
-
-//   let apiKey = data[0];
-//   let locationId = data[1];
-
-//   return res.status(200).json({
-//     query: {
-//       apiKey,
-//       locationId,
-//     },
-//     data: {
-//       // access point id
-//       "Lau38N0F": { 
-//         "DoorSettings": {
-//           "DoorName": "Door 1",
-//           "Active": "1",
-//           "Locked": "1",
-//           "Timer": 8,
-//         },
-//         "AuthorizedUsers": {
-//           32757211: "restrafes"
-//         }
-//       }
-//     },
-//   });
-// }

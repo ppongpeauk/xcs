@@ -105,7 +105,7 @@ export default function CreateLocationDialog({
                           <FormLabel>Name</FormLabel>
                           <Input
                             {...field}
-                            variant={"filled"}
+                            variant={"outline"}
                             placeholder={"Location Name"}
                           />
                         </FormControl>
@@ -117,7 +117,7 @@ export default function CreateLocationDialog({
                           <FormLabel>Organization</FormLabel>
                           <Input
                             {...field}
-                            variant={"filled"}
+                            variant={"outline"}
                             value={selectedOrganization.name}
                             isDisabled={true}
                           />
@@ -130,7 +130,7 @@ export default function CreateLocationDialog({
                           <FormLabel>Description</FormLabel>
                           <Textarea
                             {...field}
-                            variant={"filled"}
+                            variant={"outline"}
                             placeholder={"Location Description"}
                             maxH={"200px"}
                           />

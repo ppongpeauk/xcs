@@ -46,14 +46,13 @@ export default async function handler(
     organization.user = organization.members[uid];
 
     // Find owner of organization
-    for (const [key, value ] of Object.entries(organization.members) as any) {
+    for (const [key, value] of Object.entries(organization.members) as any) {
       if (value.role === 3) {
         let owner = await users.findOne({ id: key });
         organization.owner = owner;
         break;
       }
     }
-
 
     return res.status(200).json({
       organization: organization,
@@ -111,6 +110,19 @@ export default async function handler(
         return res.status(400).json({
           message: "Description must be less than or equal to 256 characters.",
         });
+      }
+    }
+
+    // Check if name is taken
+    if (body.name) {
+      const checkName = await organizations.findOne(
+        {
+          name: { $regex: new RegExp(`^${name}$`, "i") },
+        },
+        { projection: { _id: 1 } }
+      );
+      if (checkName && checkName.id !== organizationId) {
+        return res.status(400).json({ message: "This name is taken. Please choose another." });
       }
     }
 

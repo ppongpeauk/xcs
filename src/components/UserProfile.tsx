@@ -21,6 +21,7 @@ import {
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { Suspense, useEffect, useState } from "react";
+import Tilt from "react-parallax-tilt";
 
 // Types
 import { User } from "@/types";
@@ -32,7 +33,7 @@ function OrganizationItem() {
   return (
     <StackItem p={1}>
       <Link
-        href={"/organization/fellers"}
+        href={"/platform/organizations/fellers"}
         w={"auto"}
         h={"auto"}
         transition={"filter 0.2s ease-in-out"}
@@ -42,14 +43,14 @@ function OrganizationItem() {
       >
         <Image
           src={
-            "https://cdn.discordapp.com/attachments/813308393208414219/1123233338392584263/Screenshot_20230623-114505_Instagram.png"
+            "https://cdn.discordapp.com/attachments/829363883277287494/1127380351451410432/logo1.png"
           }
           alt={"EVE XCS"}
           w={12}
           h={"auto"}
           objectFit={"cover"}
           aspectRatio={1 / 1}
-          rounded={"lg"}
+          rounded={"md"}
         />
       </Link>
     </StackItem>
@@ -108,10 +109,10 @@ export default function Profile({ username }: { username?: string }) {
         pt={8}
         flexDir={"column"}
       >
-        <Box pos={"relative"} width={["full", "min-content"]}>
+        <Box pos={"relative"} width={{ base: "full", md: "min-content" }}>
           {/* Badge */}
           <Flex
-            w={["100%", "300px"]}
+            w={{ base: "300px", md: "300px" }}
             h={"auto"}
             aspectRatio={1 / 1.6}
             rounded={"xl"}
@@ -137,7 +138,7 @@ export default function Profile({ username }: { username?: string }) {
             />
             {/* Avatar */}
             <Box
-              w={["90%", "75%"]}
+              w={{ base: "90%", md: "75%" }}
               h={"auto"}
               objectFit={"cover"}
               justifySelf={"center"}
@@ -160,15 +161,14 @@ export default function Profile({ username }: { username?: string }) {
             {/* Name */}
             <Box mb={8} w={"full"}>
               <Skeleton isLoaded={!!user}>
-                <Heading
+                <Text
                   as={"h1"}
-                  size={"lg"}
+                  fontSize={"3xl"}
+                  fontWeight={"900"}
                   textAlign={"center"}
-                  zIndex={1}
-                  mb={2}
                 >
                   {user?.name?.first || "First"} {user?.name?.last || "Last"}
-                </Heading>
+                </Text>
               </Skeleton>
               <Skeleton isLoaded={!!user}>
                 <Text as={"h2"} size={"md"} textAlign={"center"} zIndex={1}>
@@ -178,12 +178,12 @@ export default function Profile({ username }: { username?: string }) {
             </Box>
           </Flex>
         </Box>
-        <Box mt={4}>
-          <Box my={4} w={["full", "300px"]} rounded={"lg"}>
-            <Heading as={"h2"} size={"md"} mb={2}>
+        <Box my={8}>
+          <Box w={{ base: "full", md: "384px" }} rounded={"lg"}>
+            <Text as={"h1"} fontSize={"2xl"} fontWeight={"900"}>
               About Me
-            </Heading>
-            <Text as={"h2"} size={"md"} mb={4}>
+            </Text>
+            <Text as={"h2"} size={"md"}>
               <Skeleton isLoaded={!!user}>
                 {user?.bio || "This user has not set a bio yet."}
               </Skeleton>
@@ -201,10 +201,10 @@ export default function Profile({ username }: { username?: string }) {
               justify={"flex-start"}
               flexGrow={1}
             >
-              <Heading as={"h2"} size={"md"} mb={2}>
+              <Text as={"h1"} fontSize={"2xl"} fontWeight={"900"}>
                 Organizations
-              </Heading>
-              <Box w={"full"} h={"full"}>
+              </Text>
+              <Box w={"full"} h={"full"} p={2}>
                 <Skeleton isLoaded={!!user}>
                   <OrganizationItem />
                   <OrganizationItem />
@@ -215,32 +215,6 @@ export default function Profile({ username }: { username?: string }) {
                   <OrganizationItem />
                   <OrganizationItem />
                 </Skeleton>
-              </Box>
-            </Flex>
-          </Box>
-          <Box py={4} w={"full"}>
-            <Flex
-              w={"fit-content"}
-              h={"fit-content"}
-              flexDir={"column"}
-              align={"flex-start"}
-              justify={"flex-start"}
-              flexGrow={1}
-            >
-              <Heading as={"h2"} size={"md"} mb={2}>
-                Connected Experiences
-              </Heading>
-              <Box w={"full"} h={"full"}>
-                <Text
-                  as={"h2"}
-                  size={"md"}
-                  mb={2}
-                  color={useColorModeValue("gray.500", "gray.400")}
-                >
-                  <Skeleton isLoaded={!!user}>
-                    No connected experiences yet.
-                  </Skeleton>
-                </Text>
               </Box>
             </Flex>
           </Box>

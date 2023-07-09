@@ -105,7 +105,7 @@ export default function CreateAccessPointDialog({
                           <FormLabel>Name</FormLabel>
                           <Input
                             {...field}
-                            variant={"filled"}
+                            variant={"outline"}
                             placeholder={"Access Point Name"}
                           />
                         </FormControl>
@@ -117,7 +117,7 @@ export default function CreateAccessPointDialog({
                           <FormLabel>Organization</FormLabel>
                           <Input
                             {...field}
-                            variant={"filled"}
+                            variant={"outline"}
                             value={selectedOrganization.name}
                             isDisabled={true}
                           />
@@ -130,7 +130,7 @@ export default function CreateAccessPointDialog({
                           <FormLabel>Description</FormLabel>
                           <Textarea
                             {...field}
-                            variant={"filled"}
+                            variant={"outline"}
                             placeholder={"Access Point Description"}
                             maxH={"200px"}
                           />

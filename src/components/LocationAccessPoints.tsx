@@ -21,6 +21,7 @@ import NextLink from "next/link";
 import { MdOutlineAddCircle } from "react-icons/md";
 import CreateAccessPointDialog from "./CreateAccessPointDialog";
 
+import moment from "moment";
 import { AiFillWarning } from "react-icons/ai";
 import { BiSolidLock, BiSolidLockOpen } from "react-icons/bi";
 
@@ -71,9 +72,9 @@ export default function LocationAccessPoints({
         location={location}
         onCreate={refreshData}
       />
-      <Heading as="h1" size="lg" mb={4}>
+      <Text as={"h1"} fontSize={"4xl"} fontWeight={"900"} mb={2}>
         Access Points
-      </Heading>
+      </Text>
       <Stack mb={4} direction={{ base: "column", md: "row" }}>
         <Button
           leftIcon={<MdOutlineAddCircle />}
@@ -97,7 +98,6 @@ export default function LocationAccessPoints({
                   borderRadius={"lg"}
                   borderColor={useColorModeValue("gray.200", "gray.700")}
                   mb={4}
-                  aspectRatio={2 / 1}
                   align={"center"}
                   justify={"space-between"}
                   flexDir={"column"}
@@ -131,7 +131,7 @@ export default function LocationAccessPoints({
                       <Text>
                         Updated at:{" "}
                         <Code>
-                          {new Date(accessPoint.updatedAt).toISOString()}
+                          {moment(accessPoint.updatedAt).fromNow()}
                         </Code>
                       </Text>
                     </Box>

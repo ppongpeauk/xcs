@@ -214,7 +214,9 @@ export default function PlatformLocation() {
             </BreadcrumbLink>
           </BreadcrumbItem>
         </Breadcrumb>
-        <Heading>{location?.name}</Heading>
+        <Text as={"h1"} fontSize={"4xl"} fontWeight={"900"}>
+          {location?.name}
+        </Text>
         <Text fontSize={"lg"} color={"gray.500"}>
           {location?.organization.name}
         </Text>
@@ -305,9 +307,6 @@ export default function PlatformLocation() {
               {/* <Text>Event Logs</Text> */}
             </TabPanel>
             <TabPanel p={0}>
-              <Heading size={"lg"}>
-                Members
-              </Heading>
               <Text>Members</Text>
             </TabPanel>
             <TabPanel p={0}>

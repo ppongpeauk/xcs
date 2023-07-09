@@ -38,10 +38,10 @@ import { useAuthContext } from "@/contexts/AuthContext";
 import DeleteDialog from "@/components/DeleteDialog";
 import { useToast } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
-import { AiFillTag } from "react-icons/ai";
+import { AiFillCheckCircle, AiFillTag } from "react-icons/ai";
 import { BsFillCloudDownloadFill } from "react-icons/bs";
 import { IoIosRemoveCircle } from "react-icons/io";
-import { IoBusiness } from "react-icons/io5";
+import { IoBusiness, IoSave } from "react-icons/io5";
 import { SiRoblox } from "react-icons/si";
 
 export default function LocationInfo({
@@ -130,7 +130,7 @@ export default function LocationInfo({
         link.parentNode?.removeChild(link);
 
         toast({
-          title: "Downloading template...",
+          title: "Your download should start shortly.",
           status: "success",
           duration: 5000,
           isClosable: true,
@@ -161,9 +161,9 @@ export default function LocationInfo({
       />
       {location ? (
         <Box w={"fit-content"}>
-          <Heading as="h1" size="lg" mb={2}>
+          <Text as={"h1"} fontSize={"4xl"} fontWeight={"900"} mb={2}>
             General Settings
-          </Heading>
+          </Text>
           <Formik
             initialValues={{
               name: location?.name,
@@ -227,7 +227,7 @@ export default function LocationInfo({
               <Form>
                 <Field name="name">
                   {({ field, form }: any) => (
-                    <FormControl isRequired={true}>
+                    <FormControl isRequired={true} w={"fit-content"}>
                       <FormLabel>Name</FormLabel>
                       <InputGroup mb={2}>
                         <Input
@@ -235,7 +235,7 @@ export default function LocationInfo({
                           type="text"
                           autoComplete="off"
                           placeholder="Location Name"
-                          variant={"filled"}
+                          variant={"outline"}
                           isDisabled={location?.self.role <= 2}
                         />
                       </InputGroup>
@@ -252,7 +252,7 @@ export default function LocationInfo({
                           type="text"
                           autoComplete="off"
                           placeholder="Location Description"
-                          variant={"filled"}
+                          variant={"outline"}
                           isDisabled={location?.self.role <= 2}
                           maxH={"240px"}
                         />
@@ -262,7 +262,7 @@ export default function LocationInfo({
                 </Field>
                 <Field name="placeId">
                   {({ field, form }: any) => (
-                    <FormControl mb={2}>
+                    <FormControl mb={2} w={"fit-content"}>
                       <FormLabel>Experience ID</FormLabel>
                       <InputGroup mb={2}>
                         <InputLeftElement pointerEvents="none">
@@ -273,7 +273,7 @@ export default function LocationInfo({
                           type="text"
                           autoComplete="off"
                           placeholder="Experience ID"
-                          variant={"filled"}
+                          variant={"outline"}
                           // isDisabled={true}
                           isDisabled={
                             location?.self.role <= 2 ||
@@ -289,14 +289,13 @@ export default function LocationInfo({
                 </Field>
                 <Field name="enabled">
                   {({ field, form }: any) => (
-                    <FormControl>
+                    <FormControl width={"fit-content"}>
                       <FormLabel>Enabled</FormLabel>
                       <InputGroup mb={2}>
                         <Switch
                           {...field}
                           placeholder="Enabled"
-                          variant={"filled"}
-                          width={"fit-content"}
+                          variant={"outline"}
                           defaultChecked={location?.enabled}
                           isDisabled={location?.self.role <= 2}
                         />
@@ -312,10 +311,11 @@ export default function LocationInfo({
                   <Button
                     mb={2}
                     isLoading={props.isSubmitting}
+                    leftIcon={<IoSave />}
                     type={"submit"}
                     isDisabled={location?.self.role <= 2}
                   >
-                    Update
+                    Save Changes
                   </Button>
                   <Button
                     mb={2}
@@ -328,6 +328,7 @@ export default function LocationInfo({
                   </Button>
                   <Button
                     colorScheme="red"
+                    ml={"auto"}
                     mb={2}
                     onClick={onDeleteDialogOpen}
                     leftIcon={<IoIosRemoveCircle />}

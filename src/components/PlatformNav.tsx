@@ -164,7 +164,7 @@ export default function PlatformNav({
       <Flex
         id="platform-nav"
         as="nav"
-        display={["none", "flex"]}
+        display={{ base: "none", md: "flex" }}
         position={"fixed"}
         top={0}
         h={"100vh"}
@@ -320,7 +320,7 @@ export default function PlatformNav({
           mt={"auto"}
         >
           <NavLink
-            href={"/platform/help"}
+            href={"https://discord.gg/983DXK26"}
             pathname={pathname}
             leftIcon={<AiFillInfoCircle />}
           >
@@ -356,6 +356,8 @@ export default function PlatformNav({
           {/* Route Label (inactive) */}
           {/* <Heading size={"lg"}>EVE XCS</Heading> */}
           <Flex
+            as={NextLink}
+            href={"/platform/home"}
             display={{ base: "flex", md: "none" }}
             position={"relative"}
             w={"128px"}
@@ -444,7 +446,7 @@ export default function PlatformNav({
                   <MenuItem
                     as={MenuLink}
                     icon={<AiFillInfoCircle />}
-                    href="/platform/help"
+                    href="https://discord.gg/983DXK26"
                   >
                     Help & Information
                   </MenuItem>

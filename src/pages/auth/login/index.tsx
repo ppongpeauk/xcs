@@ -219,7 +219,7 @@ export default function Login() {
                                   {...field}
                                   type="text"
                                   placeholder="Email"
-                                  variant={"filled"}
+                                  variant={"outline"}
                                 />
                               </InputGroup>
                             </FormControl>
@@ -241,7 +241,7 @@ export default function Login() {
                                       : "password"
                                   }
                                   placeholder="Password"
-                                  variant={"filled"}
+                                  variant={"outline"}
                                 />
                               </InputGroup>
                             </FormControl>

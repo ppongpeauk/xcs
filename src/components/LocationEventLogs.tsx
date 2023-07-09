@@ -116,7 +116,10 @@ const columns: ColumnDef<EventLog>[] = [
               <BsThreeDots />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="rounded-xl overflow-hidden">
+          <DropdownMenuContent
+            align="end"
+            className="rounded-xl overflow-hidden"
+          >
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
               className="cursor-pointer"
@@ -125,8 +128,12 @@ const columns: ColumnDef<EventLog>[] = [
               Copy Event ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="cursor-pointer">View user</DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer">View event details</DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">
+              View user
+            </DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">
+              View event details
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
@@ -137,9 +144,9 @@ const columns: ColumnDef<EventLog>[] = [
 export default function LocationEventLogs() {
   return (
     <Box h={"100%"}>
-      <Heading as="h1" size="lg" mb={4}>
+      <Text as={"h1"} fontSize={"4xl"} fontWeight={"900"} mb={2}>
         Event Logs
-      </Heading>
+      </Text>
       <Flex
         w={"full"}
         h={"max-content"}

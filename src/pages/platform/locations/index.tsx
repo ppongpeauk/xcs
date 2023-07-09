@@ -145,7 +145,9 @@ export default function PlatformLocations() {
         }}
       />
       <Container maxW={"full"} p={8}>
-        <Heading>Locations</Heading>
+        <Text as={"h1"} fontSize={"4xl"} fontWeight={"900"}>
+          Locations
+        </Text>
         <HStack
           display={"flex"}
           py={4}

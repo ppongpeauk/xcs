@@ -103,7 +103,7 @@ export default function CreateOrganizationDialog({
                           <FormLabel>Name</FormLabel>
                           <Input
                             {...field}
-                            variant={"filled"}
+                            variant={"outline"}
                             placeholder={"Organization Name"}
                           />
                         </FormControl>
@@ -115,7 +115,7 @@ export default function CreateOrganizationDialog({
                           <FormLabel>Organization</FormLabel>
                           <Input
                             {...field}
-                            variant={"filled"}
+                            variant={"outline"}
                             value={selectedOrganization.name}
                             isDisabled={true}
                           />

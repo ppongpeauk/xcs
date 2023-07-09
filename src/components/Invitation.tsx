@@ -113,9 +113,10 @@ export default function Invitation({ invite }: { invite: any }) {
           >
             <Box w={"full"}>
               <Skeleton isLoaded={!loading}>
-                <Heading
+                <Text
                   as={"h2"}
                   fontSize={"3xl"}
+                  fontWeight={"900"}
                   mb={2}
                   letterSpacing={"tighter"}
                   w={"full"}
@@ -126,7 +127,7 @@ export default function Invitation({ invite }: { invite: any }) {
                       ? "You've recieved an invitation"
                       : "You're invited! 🤩"
                     : "Invitation not found"}
-                </Heading>
+                </Text>
               </Skeleton>
               <Skeleton isLoaded={!loading}>
                 <Text fontSize={"lg"} mb={2}>
@@ -135,11 +136,7 @@ export default function Invitation({ invite }: { invite: any }) {
                       {invite?.from?.name.first} has invited you to{" "}
                       {inviteTypeSwitch(invite?.type)}.
                       {invite?.type === "organization" ? (
-                        <Text
-                          as={"span"}
-                          fontWeight={"bold"}
-                          whiteSpace={"nowrap"}
-                        >
+                        <Text as={"span"} fontWeight={"bold"}>
                           {" "}
                           ({invite.organization.name})
                         </Text>
@@ -215,7 +212,6 @@ export default function Invitation({ invite }: { invite: any }) {
                       <Text
                         as={"span"}
                         fontWeight={"bold"}
-                        whiteSpace={"nowrap"}
                       >
                         EVE XCS
                       </Text>{" "}

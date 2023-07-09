@@ -137,7 +137,7 @@ export default function InviteOrganizationModal({
                           {({ field, form }: any) => (
                             <FormControl>
                               <FormLabel>Role</FormLabel>
-                              <Select {...field} variant={"filled"}>
+                              <Select {...field} variant={"outline"}>
                                 <option value={"1"}>Member</option>
                                 <option value={"2"}>Admin</option>
                               </Select>
@@ -149,7 +149,7 @@ export default function InviteOrganizationModal({
                             <FormControl>
                               <Checkbox
                                 {...field}
-                                variant={"filled"}
+                                variant={"outline"}
                                 isChecked={field.value}
                               >
                                 Single Use
@@ -163,7 +163,7 @@ export default function InviteOrganizationModal({
                         <FormControl>
                           <FormLabel>Invitation Link</FormLabel>
                           <Input
-                            variant={"filled"}
+                            variant={"outline"}
                             value={`${process.env.NEXT_PUBLIC_ROOT_URL}/invitation/${inviteCode}`}
                             isReadOnly={true}
                             onFocus={(e) => e.target.select()}
@@ -181,7 +181,7 @@ export default function InviteOrganizationModal({
                           <FormLabel>Organization</FormLabel>
                           <Input
                             {...field}
-                            variant={"filled"}
+                            variant={"outline"}
                             value={selectedOrganization.name}
                             isDisabled={true}
                           />

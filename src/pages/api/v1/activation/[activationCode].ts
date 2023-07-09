@@ -59,7 +59,7 @@ export default async function handler(
     let invitation = await invitations.findOne({
       type: "xcs",
       inviteCode: activationCode,
-    });
+    }, { projection: { _id: 0, uses: 1, maxUses: 1 } });
 
     if (!invitation) {
       return res.status(404).json({
@@ -193,7 +193,7 @@ export default async function handler(
           privacyLevel: 2,
           verified: false,
         },
-        username,
+        username: username.toLowerCase(),
         notifications: {
           email: {
             enabled: true,

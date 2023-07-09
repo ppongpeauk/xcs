@@ -23,7 +23,10 @@ export default async function handler(
   const mongoClient = await clientPromise;
   const db = mongoClient.db(process.env.MONGODB_DB as string);
   const users = db.collection("users");
-  let user = (await users.findOne({ username: username })) as any;
+  let user = (await users.findOne(
+    { username: username },
+    { projection: { email: 0, notifications: 0, alerts: 0, payment: 0 } }
+  )) as any;
 
   if (!user) {
     return res.status(404).json({ message: "User not found" });

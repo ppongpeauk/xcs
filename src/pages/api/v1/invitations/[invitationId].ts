@@ -36,23 +36,26 @@ export default async function handler(
       .json({ valid: false, message: "Invitation not found" });
   }
 
-  let creator = (await users.findOne({ id: invitation.fromId })) as any;
+  let creator = (await users.findOne(
+    { id: invitation.fromId },
+    {
+      projection: { id: 1, username: 1, name: 1, avatar: 1 },
+    }
+  )) as any;
   if (!creator) {
     return res.status(404).json({ valid: false, message: "Creator not found" });
   }
 
   // Fetching Location Data
   if (req.method === "GET") {
-    invitation.from = {
-      id: creator.id,
-      username: creator.username,
-      name: creator.name,
-      avatar: creator.avatar,
-    };
+    invitation.from = creator;
     if (invitation?.type === "organization") {
-      let organization = (await organizations.findOne({
-        id: invitation.organizationId,
-      })) as any;
+      let organization = (await organizations.findOne(
+        {
+          id: invitation.organizationId,
+        },
+        { projection: { id: 1, name: 1 } }
+      )) as any;
       if (!organization) {
         return res
           .status(404)

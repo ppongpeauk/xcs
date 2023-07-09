@@ -28,6 +28,15 @@ export default async function handler(
     const mongoClient = await clientPromise;
     const db = mongoClient.db(process.env.MONGODB_DB as string);
     const organizations = db.collection("organizations");
+    const users = db.collection("users");
+    const user = await users.findOne(
+      { id: uid },
+      { projection: { id: 1, platform: 1 } }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
     // Check if user has less than 1 organization owned
     const ownedOrganizations = await organizations
@@ -36,13 +45,33 @@ export default async function handler(
       })
       .toArray();
 
-    if (ownedOrganizations.length >= 2) {
-      return res
-        .status(403)
-        .json({
-          message:
-            "You have reached the maximum amount of organizations you can own. Upgrade your account to create more organizations.",
-        });
+    const capError = () => {
+      return res.status(403).json({
+        message:
+          "You have reached the maximum amount of organizations you can own. Upgrade your account to create more organizations.",
+      });
+    };
+
+    let organizationLimit = 1;
+    switch (user.platform.membership) {
+      case 0:
+        organizationLimit = 1;
+        break;
+      case 1:
+        organizationLimit = 8;
+        break;
+      case 2:
+        organizationLimit = 24;
+        break;
+      case 3:
+        organizationLimit = -1;
+        break;
+      default:
+        organizationLimit = 1;
+    }
+
+    if (ownedOrganizations.length >= organizationLimit) {
+      return capError();
     }
 
     // Character limits
@@ -52,6 +81,19 @@ export default async function handler(
         return res
           .status(400)
           .json({ message: "Name must be between 3-32 characters." });
+      }
+    }
+
+    // Check if name is taken
+    if (name) {
+      const checkName = await organizations.findOne(
+        {
+          name: { $regex: new RegExp(`^${name}$`, "i") },
+        },
+        { projection: { _id: 1 } }
+      );
+      if (checkName) {
+        return res.status(400).json({ message: "This name is taken. Please choose another." });
       }
     }
 

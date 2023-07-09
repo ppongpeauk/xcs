@@ -109,7 +109,7 @@ export default function JoinOrganizationDialog({
                           <FormLabel>Invite Code</FormLabel>
                           <Input
                             {...field}
-                            variant={"filled"}
+                            variant={"outline"}
                             placeholder={"Invite Code"}
                           />
                         </FormControl>

@@ -135,7 +135,7 @@ export default function Recover() {
                                 {...field}
                                 type="text"
                                 placeholder="Email"
-                                variant={"filled"}
+                                variant={"outline"}
                               />
                             </InputGroup>
                           </FormControl>

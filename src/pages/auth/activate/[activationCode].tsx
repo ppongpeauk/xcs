@@ -193,7 +193,7 @@ export default function Activate() {
                                     {...field}
                                     type="text"
                                     placeholder="First Name"
-                                    variant={"filled"}
+                                    variant={"outline"}
                                   />
                                 </InputGroup>
                               </Skeleton>
@@ -212,7 +212,7 @@ export default function Activate() {
                                     {...field}
                                     type="text"
                                     placeholder="Last Name"
-                                    variant={"filled"}
+                                    variant={"outline"}
                                   />
                                 </InputGroup>
                               </Skeleton>
@@ -235,7 +235,7 @@ export default function Activate() {
                                   {...field}
                                   type="text"
                                   placeholder="Email"
-                                  variant={"filled"}
+                                  variant={"outline"}
                                 />
                               </InputGroup>
                             </Skeleton>
@@ -257,7 +257,7 @@ export default function Activate() {
                                   {...field}
                                   type="text"
                                   placeholder="Username"
-                                  variant={"filled"}
+                                  variant={"outline"}
                                 />
                               </InputGroup>
                             </Skeleton>
@@ -279,7 +279,7 @@ export default function Activate() {
                                   {...field}
                                   type="password"
                                   placeholder="Password"
-                                  variant={"filled"}
+                                  variant={"outline"}
                                 />
                               </InputGroup>
                             </Skeleton>
@@ -301,7 +301,7 @@ export default function Activate() {
                                   {...field}
                                   type="text"
                                   placeholder="Activation Code"
-                                  variant={"filled"}
+                                  variant={"outline"}
                                   isDisabled={true}
                                   value={activationCode}
                                 />

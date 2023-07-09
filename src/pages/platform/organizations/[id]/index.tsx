@@ -360,7 +360,7 @@ export default function PlatformOrganization() {
                             {...field}
                             type="text"
                             placeholder="Organization Name"
-                            variant={"filled"}
+                            variant={"outline"}
                             width={"fit-content"}
                           />
                         </InputGroup>
@@ -376,7 +376,7 @@ export default function PlatformOrganization() {
                             {...field}
                             type="text"
                             placeholder="Members (JSON)"
-                            variant={"filled"}
+                            variant={"outline"}
                           />
                         </InputGroup>
                       </FormControl>
@@ -391,7 +391,7 @@ export default function PlatformOrganization() {
                             {...field}
                             type="text"
                             placeholder="Clearances (JSON)"
-                            variant={"filled"}
+                            variant={"outline"}
                           />
                         </InputGroup>
                       </FormControl>

@@ -33,9 +33,16 @@ export default async function handler(
     return res.status(404).json({ message: "Access point not found." });
   }
 
-  let organization = await organizations.findOne({
-    id: accessPoint.organizationId,
-  });
+  let organization = await organizations.findOne(
+    {
+      id: accessPoint.organizationId,
+    },
+    { projection: {
+      id: 1,
+      name: 1,
+      members: 1,
+    } }
+  );
 
   if (!organization) {
     return res.status(404).json({ message: "Organization not found." });
@@ -45,16 +52,18 @@ export default async function handler(
   if (!member) {
     return res.status(401).json({ message: "Unauthorized" });
   }
-  
+
   // Fetching Access Point Data
   if (req.method === "GET") {
     // Get User Permissions
     let out = {
       accessPoint: accessPoint,
-    }
+    };
     out.accessPoint.organization = organization;
     delete out.accessPoint.organization.invitations;
-    out.accessPoint.location = await locations.findOne({ id: accessPoint.locationId });
+    out.accessPoint.location = await locations.findOne({
+      id: accessPoint.locationId,
+    });
     out.accessPoint.self = organization.members[uid as any];
     return res.status(200).json(out);
   }
@@ -97,17 +106,22 @@ export default async function handler(
 
     body.updatedAt = timestamp;
 
-    await accessPoints.updateOne({ id: accessPoint.id }, { $set: {
-      name: body.name,
-      description: body.description,
-      updatedAt: timestamp,
-      configuration: {
-        active: body.active,
-        armed: body.armed,
-        timedAccess: body.timedAccess,
-        alwaysAllowed: body.alwaysAllowed,
+    await accessPoints.updateOne(
+      { id: accessPoint.id },
+      {
+        $set: {
+          name: body.name,
+          description: body.description,
+          updatedAt: timestamp,
+          configuration: {
+            active: body.active,
+            armed: body.armed,
+            timedAccess: body.timedAccess,
+            alwaysAllowed: body.alwaysAllowed,
+          },
+        },
       }
-    } });
+    );
     await organizations.updateOne(
       { id: organization.id },
       {
