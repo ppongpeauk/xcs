@@ -169,12 +169,7 @@ export default function PlatformOrganization() {
     })
       .then((res) => {
         if (res.status === 200) return res.json();
-
-        if (res.status === 404) {
-          push("/404");
-        } else if (res.status === 403) {
-          push("/403");
-        }
+        return push(`${res.status}`);
       })
       .then((data) => {
         setOrganization(data.organization);
