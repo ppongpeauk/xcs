@@ -88,7 +88,7 @@ export default function Verify() {
   return (
     <>
       <Head>
-        <title>EVE XCS - Verification</title>
+        <title>EVE XCS – Verification</title>
       </Head>
       <Container maxW={"container.lg"} p={8}>
         <Text as={"h1"} fontSize={"4xl"} fontWeight={"900"}>
