@@ -76,7 +76,7 @@ function NavLink({
       href={href}
       leftIcon={
         leftIcon ? (
-          <Box mr={2} fontSize={"xl"}>
+          <Box mr={2} fontSize={"2xl"}>
             {leftIcon}
           </Box>
         ) : (
@@ -89,6 +89,7 @@ function NavLink({
       px={4}
       py={6}
       rounded={"xl"}
+      // fontSize={"lg"}
       color={
         pathname === href
           ? useColorModeValue("gray.100", "gray.900")
