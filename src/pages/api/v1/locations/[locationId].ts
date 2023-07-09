@@ -90,6 +90,12 @@ export default async function handler(
       }
     }
 
+    // nullify empty universe id
+    if (body.roblox.universe.id === "") {
+      body.roblox.universe.id = null;
+    }
+
+    // prevent changing universe id if already set on the server
     if (
       location.roblox.universe.id !== null &&
       location.roblox.universe.id != body.roblox.universe.id
@@ -101,19 +107,19 @@ export default async function handler(
 
     if (body.roblox.universe.id) {
       body.roblox.universe.id = body.roblox.universe.id.trim();
+
+      // check if user has organization permissions to change universe id
       if (
         member.role <= 2 &&
         body.roblox.universe.id !== location.roblox.universe.id
       ) {
         return res.status(401).json({ message: "Unauthorized" });
       }
-    }
 
-    if (body.roblox.universe.id) {
       // check if another location is using the same universe
       const otherLocation = await locations.findOne(
         {
-          "roblox.universe.id": body.roblox.universeId,
+          "roblox.universe.id": body.roblox.universe.id,
         },
         { projection: { id: 1 } }
       );
@@ -121,7 +127,10 @@ export default async function handler(
       if (otherLocation && otherLocation.id !== location.id) {
         return res.status(400).json({ message: "Universe ID already in use." });
       }
+    }
 
+    // fetch experience details if universe id is set by either user or server
+    if (body.roblox.universe.id || location.roblox.universe.id) {
       // fetch experience details
       const robloxResponse = await fetch(
         `${
