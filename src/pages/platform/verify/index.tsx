@@ -49,7 +49,52 @@ export default function Verify() {
     count: steps.length,
   });
   const [robloxCode, setRobloxCode] = useState(null);
+  const [isLoading, setLoading] = useState(false);
   const toast = useToast();
+
+  const checkRobloxVerification = () => {
+    if (!user) return;
+    setLoading(true);
+    user.getIdToken().then((token: any) => {
+      fetch("/api/v1/me", {
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((res) => {
+          if (res.status === 200) {
+            return res.json();
+          } else {
+            return res.json().then((json) => {
+              throw new Error(json.message);
+            });
+          }
+        })
+        .then((data) => {
+          if (data.user.roblox.verified) {
+            setActiveStep(2);
+          } else {
+            toast({
+              title: "Unable to verify your account with Roblox.",
+              description: "Ensure that you've joined the game and provided the correct verification code.",
+              status: "error",
+              duration: 9000,
+              isClosable: true,
+            });
+          }
+        })
+        .catch((error) => {
+          toast({
+            title: "There was an error checking your verification status.",
+            description: error.message,
+            status: "error",
+            duration: 9000,
+            isClosable: true,
+          });
+        }).finally(() => {
+          setLoading(false);
+        });
+    });
+  };
 
   const robloxGenerateCode = () => {
     if (!user) return;
@@ -175,8 +220,12 @@ export default function Verify() {
                 </Text>
                 <Spacer />
                 <Stack spacing={2} pt={8}>
-                  <Button colorScheme={"blue"} onClick={() => setActiveStep(2)}>
-                    I&apos;ve entered the code
+                  <Button
+                    colorScheme={"blue"}
+                    isLoading={isLoading}
+                    onClick={() => checkRobloxVerification()}
+                  >
+                    I&apos;ve entered the code provided
                   </Button>
                 </Stack>
               </>
@@ -188,7 +237,10 @@ export default function Verify() {
                 </Text>
                 <Spacer />
                 <Stack spacing={2} pt={8}>
-                  <Button colorScheme={"blue"} onClick={() => push("/")}>
+                  <Button
+                    colorScheme={"blue"}
+                    onClick={() => push("/platform/home")}
+                  >
                     Go Home
                   </Button>
                 </Stack>

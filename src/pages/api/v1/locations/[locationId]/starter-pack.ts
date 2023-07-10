@@ -77,7 +77,7 @@ export default async function handler(
         .replace("{{apiKey}}", apiKey)
     );
 
-    const timestamp = new Date().getTime();
+    const timestamp = new Date();
 
     // Add API Key to database
     await organizations.updateOne(

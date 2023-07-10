@@ -44,8 +44,7 @@ export default async function handler(
 
   // Create Invite Code
   if (req.method === "POST") {
-    const time = new Date();
-    const timestamp = time.getTime();
+    const timestamp = new Date();
 
     const inviteCode = generateString({
       length: 8,

@@ -148,8 +148,7 @@ export default async function handler(
       }
     }
 
-    const time = new Date();
-    const timestamp = time.getTime();
+    const timestamp = new Date();
 
     body.updatedAt = timestamp;
 
@@ -175,8 +174,7 @@ export default async function handler(
 
   // Deleting Organization Data
   if (req.method === "DELETE") {
-    const time = new Date();
-    const timestamp = time.getTime();
+    const timestamp = new Date();
 
     // Delete Organization
     await organizations.deleteOne({ id: organizationId });

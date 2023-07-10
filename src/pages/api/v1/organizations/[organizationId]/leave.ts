@@ -39,8 +39,7 @@ export default async function handler(
 
   // Leave Organization
   if (req.method === "DELETE") {
-    const time = new Date();
-    const timestamp = time.getTime();
+    const timestamp = new Date();
 
     // Reject if user is the manager
     if (organization.members[uid].role >= 3) {

@@ -98,8 +98,7 @@ export default async function handler(
     }
 
     // Creating a new organization
-    const time = new Date();
-    const timestamp = time.getTime();
+    const timestamp = new Date();
     // const id = uuidv4();
     const id = generateString({
       length: 16,

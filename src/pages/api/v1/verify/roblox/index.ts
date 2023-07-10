@@ -32,7 +32,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         new_code = await generateString({ length: 6, readable: true, charset: "alphanumeric", capitalization: "uppercase" });
       } while (await codes.findOne({ code: new_code }, { projection: { _id: 1 } }));
 
-      await codes.insertOne({ id: uid, code: new_code, createdAt: new Date().getTime() });
+      await codes.insertOne({ id: uid, code: new_code, createdAt: new Date() });
       res.status(200).json({ success: true, code: new_code });
     }
   } else {

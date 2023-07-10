@@ -67,8 +67,7 @@ export default async function handler(
       });
     }
 
-    const time = new Date();
-    const timestamp = time.getTime();
+    const timestamp = new Date();
 
     // Log the user joining
     await organizations.updateOne(
