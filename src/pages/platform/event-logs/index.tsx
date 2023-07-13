@@ -14,8 +14,12 @@ export default function PlatformEventLogs() {
         <meta property="og:image" content="/images/logo-square.jpeg" />
       </Head>
       <Container maxW={"full"} p={8}>
-        <Heading pb={2}>Event Logs</Heading>
-        <Text>Check back later.</Text>
+        <Text fontSize={"4xl"} fontWeight={"900"}>
+          Event Logs
+        </Text>
+        <Text fontSize={"xl"} fontWeight={"500"}>
+          Check back later.
+        </Text>
       </Container>
     </>
   );

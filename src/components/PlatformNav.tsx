@@ -26,6 +26,15 @@ import {
   MenuDivider,
   MenuItem,
   MenuList,
+  Popover,
+  PopoverAnchor,
+  PopoverArrow,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverFooter,
+  PopoverHeader,
+  PopoverTrigger,
   SkeletonCircle,
   Spacer,
   Text,
@@ -42,10 +51,11 @@ import {
   AiFillInfoCircle,
   AiFillSetting,
 } from "react-icons/ai";
-import { BiSolidExit, BiSolidTime } from "react-icons/bi";
+import { BiNotification, BiSolidExit, BiSolidTime } from "react-icons/bi";
 import { BsPersonBadgeFill } from "react-icons/bs";
 import { FaBuilding, FaIdBadge, FaUserAlt } from "react-icons/fa";
 import { ImTree } from "react-icons/im";
+import { IoNotifications } from "react-icons/io5";
 import { MdSensors } from "react-icons/md";
 
 // Authentication
@@ -306,8 +316,32 @@ export default function PlatformNav({
               }}
             />
           </Flex>
+          <Spacer />
 
-          <HStack align={"center"} justify={"flex-end"} spacing={4} ml={"auto"}>
+          <HStack align={"center"} justify={"flex-end"} spacing={4}>
+            {/* Notifications */}
+            <Popover>
+              <PopoverTrigger>
+                <IconButton
+                  icon={<BiNotification size={"24px"} />}
+                  variant={"ghost"}
+                  rounded={"full"}
+                  onClick={() => {}}
+                  aria-label="Notifications"
+                />
+              </PopoverTrigger>
+              <PopoverContent m={4} zIndex={2}>
+                <PopoverArrow />
+                <PopoverCloseButton />
+                <PopoverHeader>
+                  <Text fontWeight={"900"}>Notifications</Text>
+                </PopoverHeader>
+                <PopoverBody>
+                  <Text fontSize={"md"}>The service is unavailable.</Text>
+                </PopoverBody>
+              </PopoverContent>
+            </Popover>
+
             {/* Avatar */}
             <Button variant={"unstyled"} h={"full"} onClick={() => {}}>
               <SkeletonCircle isLoaded={!!currentUser} w={"auto"} h={"auto"}>
@@ -316,9 +350,9 @@ export default function PlatformNav({
             </Button>
 
             {/* Theme Button */}
-            <Box display={{ base: "none", md: "flex" }}>
+            {/* <Box display={{ base: "none", md: "flex" }}>
               <ThemeButton />
-            </Box>
+            </Box> */}
 
             {/* Mobile Nav */}
             <Box display={{ base: "flex", md: "none" }} zIndex={512}>
