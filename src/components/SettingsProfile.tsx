@@ -25,7 +25,6 @@ import { Field, Form, Formik } from "formik";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AiOutlineUser } from "react-icons/ai";
 import { IoSave } from "react-icons/io5";
-import smartcrop from "smartcrop";
 
 export default function SettingsProfile() {
   const { currentUser, refreshCurrentUser, user, isAuthLoaded } =
