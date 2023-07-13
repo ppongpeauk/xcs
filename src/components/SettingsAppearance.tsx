@@ -26,12 +26,13 @@ export default function SettingsAppearance() {
     <>
       <FormControl>
         <FormLabel>Color Mode</FormLabel>
-        <Stack direction={{ base: "column", md: "row" }} spacing={4}>
+        <Stack direction={{ base: "column", md: "row" }} spacing={4} h={"max-content"}>
           <Button
             variant={"unstyled"}
             onClick={() => {
               setColorMode("light");
             }}
+            h={"fit-content"}
           >
             <div
               className={`items-center rounded-lg border-2 p-1 ${
@@ -62,6 +63,7 @@ export default function SettingsAppearance() {
             onClick={() => {
               setColorMode("dark");
             }}
+            h={"fit-content"}
           >
             <div
               className={`items-center rounded-lg border-2 bg-popover p-1 ${
