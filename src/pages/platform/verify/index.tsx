@@ -43,7 +43,7 @@ const steps = [
 ];
 export default function Verify() {
   const { push } = useRouter();
-  const { user } = useAuthContext();
+  const { user, refreshCurrentUser} = useAuthContext();
   const { activeStep, setActiveStep } = useSteps({
     index: 0,
     count: steps.length,
@@ -72,6 +72,13 @@ export default function Verify() {
         .then((data) => {
           if (data.user.roblox.verified) {
             setActiveStep(2);
+            refreshCurrentUser();
+            toast({
+              title: "Your account has been verified.",
+              status: "success",
+              duration: 9000,
+              isClosable: true,
+            });
           } else {
             toast({
               title: "Unable to verify your account with Roblox.",
