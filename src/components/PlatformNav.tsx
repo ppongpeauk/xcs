@@ -449,9 +449,9 @@ export default function PlatformNav({
             <AvatarPopover currentUser={currentUser} />
 
             {/* Theme Button */}
-            <Box display={{ base: "none", md: "flex" }}>
+            {/* <Box display={{ base: "none", md: "flex" }}>
               <ThemeButton />
-            </Box>
+            </Box> */}
 
             {/* Mobile Nav */}
             <Box display={{ base: "flex", md: "none" }} zIndex={512}>
