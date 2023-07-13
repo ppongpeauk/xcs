@@ -1,7 +1,15 @@
 // Components
 import {
   Avatar,
+  Box,
+  Button,
   Container,
+  Divider,
+  IconButton,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
   Tab,
   TabList,
   TabPanel,
@@ -9,6 +17,7 @@ import {
   Tabs,
   Text,
   useColorModeValue,
+  useDisclosure,
 } from "@chakra-ui/react";
 
 // Layouts
@@ -18,10 +27,12 @@ import Layout from "@/layouts/PlatformLayout";
 import { useAuthContext } from "@/contexts/AuthContext";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
+import SettingsAppearance from "@/components/SettingsAppearance";
 import SettingsLinkedAccounts from "@/components/SettingsLinkedAccounts";
 import SettingsProfile from "@/components/SettingsProfile";
+import { HamburgerIcon } from "@chakra-ui/icons";
 import { FaIdBadge, FaLink } from "react-icons/fa";
 
 function StyledTab({ children }: { children: React.ReactNode }) {
@@ -54,6 +65,7 @@ function StyledTab({ children }: { children: React.ReactNode }) {
 export default function Settings() {
   const { query, push } = useRouter();
   const { currentUser, user } = useAuthContext();
+  const [index, setIndex] = useState(0);
 
   return (
     <>
@@ -67,6 +79,39 @@ export default function Settings() {
         <Text fontSize={"4xl"} fontWeight={"900"}>
           Settings
         </Text>
+        <Box display={{ base: "block", md: "none" }} pt={4}>
+          <Menu>
+            <MenuButton
+              as={IconButton}
+              icon={<HamburgerIcon />}
+              aria-label={"Menu"}
+              w={"full"}
+            />
+            <MenuList>
+              <MenuItem
+                onClick={() => {
+                  setIndex(0);
+                }}
+              >
+                Profile
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  setIndex(1);
+                }}
+              >
+                Appearance
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  setIndex(2);
+                }}
+              >
+                Linked Accounts
+              </MenuItem>
+            </MenuList>
+          </Menu>
+        </Box>
         <Tabs
           py={4}
           orientation={"vertical"}
@@ -74,6 +119,8 @@ export default function Settings() {
           isLazy={true}
           maxW={"full"}
           h={"100%"}
+          index={index}
+          onChange={setIndex}
         >
           <TabList
             display={{ base: "none", md: "block" }}
@@ -81,24 +128,46 @@ export default function Settings() {
             border={"none"}
           >
             <StyledTab>
-              <FaIdBadge />
-              <Text ml={2}>Profile</Text>
+              <Text>Profile</Text>
             </StyledTab>
             <StyledTab>
-              <FaLink />
-              <Text ml={2}>Linked Accounts</Text>
+              <Text>Appearance</Text>
+            </StyledTab>
+            <StyledTab>
+              <Text>Linked Accounts</Text>
             </StyledTab>
           </TabList>
 
           <TabPanels px={{ base: 0, md: 8 }}>
             <TabPanel p={0}>
+              <Text fontSize={"3xl"} fontWeight={"bold"}>
+                Profile
+              </Text>
+              <Text fontSize={"md"} color={"gray.500"}>
+                This is how you appear to other users.
+              </Text>
+              <Divider mt={4} mb={8} />
               <SettingsProfile />
             </TabPanel>
             <TabPanel p={0}>
-              <SettingsLinkedAccounts />
+              <Text fontSize={"3xl"} fontWeight={"bold"}>
+                Appearance
+              </Text>
+              <Text fontSize={"md"} color={"gray.500"}>
+                Customize the appearance of the app.
+              </Text>
+              <Divider mt={4} mb={8} />
+              <SettingsAppearance />
             </TabPanel>
             <TabPanel p={0}>
-              <Text>Members</Text>
+              <Text fontSize={"3xl"} fontWeight={"bold"}>
+                Linked Accounts
+              </Text>
+              <Text fontSize={"md"} color={"gray.500"}>
+                Link your accounts to verify your identity.
+              </Text>
+              <Divider mt={4} mb={8} />
+              <SettingsLinkedAccounts />
             </TabPanel>
             <TabPanel p={0}></TabPanel>
           </TabPanels>
