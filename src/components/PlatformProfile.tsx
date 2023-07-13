@@ -188,7 +188,7 @@ export default function Profile({ username }: { username?: string }) {
                     as={"h2"}
                     size={"md"}
                     textAlign={"center"}
-                    className={codeFont.className}
+                    // className={codeFont.className}
                   >
                     @{user?.username || "username"}
                   </Text>
