@@ -31,10 +31,11 @@ export default function AuthProvider({
             setCurrentUser(data.user);
           });
       });
+      setIsAuthLoaded(true);
     } else {
       setCurrentUser(null);
+      setIsAuthLoaded(true);
     }
-    setIsAuthLoaded(true);
   }
 
   async function waitForAuthInit() {
