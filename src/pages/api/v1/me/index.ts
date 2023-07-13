@@ -44,7 +44,7 @@ export default async function handler(
 
     // Character limits
 
-    if (body.displayName) {
+    if (body.displayName !== null) {
       body.displayName = body.displayName.trim();
       if (body.displayName.length > 32 || body.displayName.length < 3) {
         return res
