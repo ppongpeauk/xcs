@@ -156,7 +156,6 @@ export default function Profile({ username }: { username?: string }) {
               objectFit={"cover"}
               justifySelf={"center"}
               rounded={"lg"}
-              zIndex={1}
               overflow={"hidden"}
               border={"2px solid"}
               borderColor={useColorModeValue("gray.300", "gray.600")}
@@ -180,7 +179,9 @@ export default function Profile({ username }: { username?: string }) {
                   fontWeight={"900"}
                   textAlign={"center"}
                 >
-                  {user?.name?.first} {user?.name?.last}
+                  {user?.displayName
+                    ? user?.displayName
+                    : `${user?.name?.first} ${user?.name?.last}`}
                 </Text>
               </Skeleton>
               <Skeleton isLoaded={!!user}>
@@ -189,7 +190,6 @@ export default function Profile({ username }: { username?: string }) {
                     as={"h2"}
                     size={"md"}
                     textAlign={"center"}
-                    zIndex={1}
                     className={codeFont.className}
                   >
                     @{user?.username || "username"}

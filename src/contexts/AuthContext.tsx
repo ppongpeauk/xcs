@@ -17,6 +17,26 @@ export default function AuthProvider({
 }) {
   const [user, loading, error] = useAuthState(auth);
   const [currentUser, setCurrentUser] = useState<any>(null);
+  const [isAuthLoaded, setIsAuthLoaded] = useState<boolean>(false);
+
+  async function waitForAuthInit() {
+    let unsubscribe = null;
+    await new Promise<void>((resolve) => {
+      unsubscribe = auth.onAuthStateChanged((_) => resolve());
+    });
+    (await unsubscribe!)();
+  }
+
+  useEffect(() => {
+    setIsAuthLoaded(false);
+    async function checkUser() {
+      // Wait for auth to initialize before checking if the user is logged in
+      await waitForAuthInit().then(async () => {
+        setIsAuthLoaded(true);
+      });
+    }
+    checkUser();
+  }, [user]);
 
   useEffect(() => {
     if (user) {
@@ -29,6 +49,8 @@ export default function AuthProvider({
             setCurrentUser(data.user);
           });
       });
+    } else {
+      setCurrentUser(null);
     }
   }, [user]);
 
@@ -44,6 +66,7 @@ export default function AuthProvider({
     logOut,
     signOut,
     signInWithEmailAndPassword,
+    isAuthLoaded,
   } as any;
 
   return (

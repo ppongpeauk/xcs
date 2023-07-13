@@ -17,6 +17,7 @@ import {
   MenuDivider,
   MenuItem,
   MenuList,
+  Skeleton,
   Spacer,
   Text,
   useColorModeValue,
@@ -60,118 +61,128 @@ function NavLink({
 }
 
 export default function Nav({ type }: { type?: string }) {
-  const { user, logout } = useAuthContext();
+  const { currentUser, isAuthLoaded } = useAuthContext();
   const pathname = usePathname();
 
   return (
-    <Flex
-      as="nav"
-      position={"sticky"}
-      top={0}
-      // w={"100vw"}
-      h={"6rem"}
-      align={"center"}
-      bg={useColorModeValue("white", "gray.800")}
-      border={"1px solid"}
-      borderColor={useColorModeValue("gray.300", "gray.700")}
-      zIndex={50}
-    >
-      {/* Title */}
+    <Suspense>
       <Flex
+        as="nav"
+        position={"sticky"}
+        top={0}
+        // w={"100vw"}
+        h={"6rem"}
         align={"center"}
-        justify={"center"}
-        w={"240px"}
-        h={"full"}
-        // borderRight={"1px solid"}
-        // borderColor={useColorModeValue("gray.300", "gray.700")}
+        bg={useColorModeValue("white", "gray.800")}
+        border={"1px solid"}
+        borderColor={useColorModeValue("gray.300", "gray.700")}
+        zIndex={50}
       >
+        {/* Title */}
         <Flex
-          as={NextLink}
-          href={"/"}
           align={"center"}
           justify={"center"}
-          h={"100%"}
-          transition={"filter 0.2s ease"}
-          _hover={{
-            filter: useColorModeValue("opacity(0.75)", "brightness(0.75)"),
-          }}
-          _active={{
-            filter: useColorModeValue("opacity(0.5)", "brightness(0.5)"),
-          }}
+          w={"240px"}
+          h={"full"}
+          // borderRight={"1px solid"}
+          // borderColor={useColorModeValue("gray.300", "gray.700")}
         >
-          <Flex position={"relative"} w={"128px"} h={"100%"}>
-            <NextImage
-              src={useColorModeValue(
-                "/images/logo-black.png",
-                "/images/logo-white.png"
-              )}
-              priority={true}
-              fill={true}
-              alt={"EVE XCS"}
-              style={{
-                objectFit: "contain",
-              }}
-            />
+          <Flex
+            as={NextLink}
+            href={"/"}
+            align={"center"}
+            justify={"center"}
+            h={"100%"}
+            transition={"filter 0.2s ease"}
+            _hover={{
+              filter: useColorModeValue("opacity(0.75)", "brightness(0.75)"),
+            }}
+            _active={{
+              filter: useColorModeValue("opacity(0.5)", "brightness(0.5)"),
+            }}
+          >
+            <Flex position={"relative"} w={"128px"} h={"100%"}>
+              <NextImage
+                src={useColorModeValue(
+                  "/images/logo-black.png",
+                  "/images/logo-white.png"
+                )}
+                priority={true}
+                fill={true}
+                alt={"EVE XCS"}
+                style={{
+                  objectFit: "contain",
+                }}
+              />
+            </Flex>
           </Flex>
         </Flex>
-      </Flex>
-      <Spacer />
-      {/* Links */}
-      <HStack
-        align={"center"}
-        h={"100%"}
-        px={[4, 8]}
-        // borderLeft={"1px solid"}
-        // borderColor={useColorModeValue("gray.200", "gray.700")}
-        spacing={2}
-      >
-        <Box display={{ base: "none", md: "flex" }}>
-          {!user ? (
-            <NavLink href={"/auth/login"} pathname={pathname}>
-              Login
-            </NavLink>
-          ) : (
-            <>
-              <NavLink href={"/platform/home"} pathname={pathname}>
-                Control Panel
-              </NavLink>
-            </>
-          )}
-        </Box>
-
-        {/* Theme Button */}
-        <Box display={{ base: "none", md: "flex" }}>
-          <ThemeButton />
-        </Box>
-
-        {/* Mobile Nav */}
-        <Box display={{ base: "flex", md: "none" }}>
-          <Menu>
-            <MenuButton
-              as={IconButton}
-              icon={<HamburgerIcon />}
-              variant={"solid"}
-              aria-label="Options"
-            />
-            <MenuList>
-              <MenuItem as={MenuLink} icon={<AiFillHome />} href="/">
-                Home
-              </MenuItem>
-              {user ? (
-                <MenuItem as={MenuLink} icon={<IoCube />} href="/platform/home">
+        <Spacer />
+        {/* Links */}
+        <HStack
+          align={"center"}
+          h={"100%"}
+          px={[4, 8]}
+          // borderLeft={"1px solid"}
+          // borderColor={useColorModeValue("gray.200", "gray.700")}
+          spacing={2}
+        >
+          <Box display={{ base: "none", md: "flex" }}>
+            <Skeleton isLoaded={isAuthLoaded}>
+              {currentUser ? (
+                <NavLink href={"/platform/home"} pathname={pathname}>
                   Control Panel
-                </MenuItem>
+                </NavLink>
               ) : (
-                <MenuItem as={MenuLink} icon={<BiSolidLogIn />} href="/auth/login">
+                <NavLink href={"/auth/login"} pathname={pathname}>
                   Login
-                </MenuItem>
+                </NavLink>
               )}
-              <MenuDivider />
-              <ThemeButton menu={true} />
-            </MenuList>
-          </Menu>
-        </Box>
-      </HStack>
-    </Flex>
+            </Skeleton>
+          </Box>
+
+          {/* Theme Button */}
+          <Box display={{ base: "none", md: "flex" }}>
+            <ThemeButton />
+          </Box>
+
+          {/* Mobile Nav */}
+          <Box display={{ base: "flex", md: "none" }}>
+            <Menu>
+              <MenuButton
+                as={IconButton}
+                icon={<HamburgerIcon />}
+                variant={"solid"}
+                aria-label="Options"
+              />
+              <MenuList>
+                <MenuItem as={MenuLink} icon={<AiFillHome />} href="/">
+                  Home
+                </MenuItem>
+                {currentUser ? (
+                  <MenuItem
+                    as={MenuLink}
+                    icon={<IoCube />}
+                    href="/platform/home"
+                  >
+                    Control Panel
+                  </MenuItem>
+                ) : (
+                  <MenuItem
+                    as={MenuLink}
+                    icon={<BiSolidLogIn />}
+                    href="/auth/login"
+                  >
+                    Login
+                  </MenuItem>
+                )}
+                <MenuDivider />
+                <ThemeButton menu={true} />
+              </MenuList>
+            </Menu>
+          </Box>
+        </HStack>
+      </Flex>
+    </Suspense>
   );
 }

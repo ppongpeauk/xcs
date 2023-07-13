@@ -38,6 +38,7 @@ export default function PlatformAlert({
         <Alert status={"error"} backdropFilter={"blur(24px)"}>
           <AlertIcon />
           <Stack
+            pl={{ base: 0, md: 2 }}
             direction={["column", "row"]}
             align={"center"}
             justify={"space-between"}

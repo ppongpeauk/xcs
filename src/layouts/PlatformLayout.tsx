@@ -77,7 +77,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 {/* Email not verified */}
                 {!user?.emailVerified && (
                   <PlatformAlert
-                    title={"Email not verified"}
+                    title={"Action needed"}
                     description={
                       "Please verify your email address to continue using EVE XCS."
                     }
@@ -97,7 +97,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 {/* Roblox account not verified */}
                 {!currentUser?.roblox.verified && (
                   <PlatformAlert
-                    title={"Roblox account not verified"}
+                    title={"Action needed"}
                     description={
                       "Please verify your Roblox account to continue using EVE XCS."
                     }

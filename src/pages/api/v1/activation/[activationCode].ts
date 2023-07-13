@@ -43,9 +43,8 @@ export default async function handler(
   if (req.method === "POST") {
     let { activationCode } = req.query as { activationCode: string };
 
-    let { firstName, lastName, email, username, password } = req.body as {
-      firstName: string;
-      lastName: string;
+    let { displayName, email, username, password } = req.body as {
+      displayName: string;
       email: string;
       username: string;
       password: string;
@@ -56,10 +55,13 @@ export default async function handler(
     const invitations = db.collection("invitations");
     const users = db.collection("users");
 
-    let invitation = await invitations.findOne({
-      type: "xcs",
-      inviteCode: activationCode,
-    }, { projection: { _id: 0, uses: 1, maxUses: 1 } });
+    let invitation = await invitations.findOne(
+      {
+        type: "xcs",
+        inviteCode: activationCode,
+      },
+      { projection: { _id: 0, uses: 1, maxUses: 1 } }
+    );
 
     if (!invitation) {
       return res.status(404).json({
@@ -76,8 +78,9 @@ export default async function handler(
 
     // Check body for missing fields and character length
     if (
-      !firstName ||
+      // !firstName ||
       // !lastName ||
+      !displayName ||
       !email ||
       !username ||
       !password ||
@@ -88,17 +91,23 @@ export default async function handler(
       });
     }
 
-    if (firstName.length > 32) {
+    if (displayName.length > 32) {
       return res.status(400).json({
-        message: "First name must be less than 32 characters.",
+        message: "Display name must be less than 32 characters.",
       });
     }
 
-    if (lastName.length > 32) {
-      return res.status(400).json({
-        message: "Last name must be less than 32 characters.",
-      });
-    }
+    // if (firstName.length > 32) {
+    //   return res.status(400).json({
+    //     message: "First name must be less than 32 characters.",
+    //   });
+    // }
+
+    // if (lastName.length > 32) {
+    //   return res.status(400).json({
+    //     message: "Last name must be less than 32 characters.",
+    //   });
+    // }
 
     if (username.length > 32) {
       return res.status(400).json({
@@ -183,11 +192,12 @@ export default async function handler(
 
     const createMongoUser = await users
       .insertOne({
-        name: {
-          first: firstName,
-          last: lastName,
-          privacyLevel: 2,
-        },
+        // name: {
+        //   first: firstName,
+        //   last: lastName,
+        //   privacyLevel: 2,
+        // },
+        displayName: displayName,
         email: {
           address: email,
           privacyLevel: 2,
@@ -238,7 +248,8 @@ export default async function handler(
             { $inc: { uses: 1 } }
           );
         }
-      }).catch((error) => {
+      })
+      .catch((error) => {
         console.log(error);
         throw error;
       });

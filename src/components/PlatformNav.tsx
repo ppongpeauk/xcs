@@ -45,6 +45,7 @@ import {
   Stack,
   Text,
   VStack,
+  useColorMode,
   useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
@@ -71,6 +72,7 @@ import { useRouter } from "next/router";
 
 function AvatarPopover({ currentUser }: { currentUser?: any }) {
   const { push } = useRouter();
+  const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
@@ -80,7 +82,7 @@ function AvatarPopover({ currentUser }: { currentUser?: any }) {
           <Button variant={"unstyled"} h={"full"} onClick={() => {}}>
             <SkeletonCircle isLoaded={!!currentUser} w={"auto"} h={"auto"}>
               <Avatar
-                name={currentUser?.displayName}
+                // name={currentUser?.displayName}
                 src={currentUser?.avatar}
                 size={"md"}
               />
@@ -93,8 +95,8 @@ function AvatarPopover({ currentUser }: { currentUser?: any }) {
           mx={{ base: 0, md: 2 }}
           zIndex={2}
           w={{ base: "100vw", md: "384px" }}
-          bg={useColorModeValue("white", "none")}
-          backdropFilter={"blur(2em)"}
+          // bg={useColorModeValue("white", "none")}
+          // backdropFilter={"blur(2em)"}
           rounded={"xl"}
         >
           <PopoverBody>
@@ -124,7 +126,7 @@ function AvatarPopover({ currentUser }: { currentUser?: any }) {
                 </Flex>
                 <SkeletonCircle isLoaded={!!currentUser} w={"auto"} h={"auto"}>
                   <Avatar
-                    name={currentUser?.displayName}
+                    // name={currentUser?.displayName}
                     src={currentUser?.avatar}
                     size={"lg"}
                   />

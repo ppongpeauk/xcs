@@ -274,15 +274,13 @@ export default function PlatformOrganization() {
           {organization?.name}
         </Text>
         <Text fontSize={"lg"} color={"gray.500"}>
-          Owned by {organization?.owner.name.first}{" "}
-          {organization?.owner.name.last}
+          Owned by {organization?.owner.displayName}
         </Text>
         <AvatarGroup size="md" max={4} my={2}>
           <Avatar
             as={NextLink}
             key={organization?.owner.id}
             href={`/platform/profile/${organization?.owner.username}`}
-            name={organization?.owner.name.first}
             src={organization?.owner.avatar}
           />
           {organization?.members.map(
@@ -292,7 +290,6 @@ export default function PlatformOrganization() {
                   as={NextLink}
                   key={member?.id}
                   href={`/platform/profile/${member.username}`}
-                  name={member?.name.first}
                   src={member?.avatar}
                 />
               )
