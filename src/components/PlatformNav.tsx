@@ -131,7 +131,6 @@ export default function PlatformNav({
   title?: string | null | undefined;
 }) {
   const pathname = usePathname();
-  const [currentRouteLabel, setCurrentRouteLabel] = useState<string | null>("");
   const { currentUser } = useAuthContext();
 
   return (
@@ -322,7 +321,7 @@ export default function PlatformNav({
             </Box>
 
             {/* Mobile Nav */}
-            <Box display={{ base: "flex", md: "none" }}>
+            <Box display={{ base: "flex", md: "none" }} zIndex={512}>
               <Menu>
                 <MenuButton
                   as={IconButton}
