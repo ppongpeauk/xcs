@@ -26,6 +26,7 @@ import Head from "next/head";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { BsDisplayFill } from "react-icons/bs";
 import { FaKey, FaSmileWink, FaUser } from "react-icons/fa";
 import { MdEmail, MdPin } from "react-icons/md";
 import { RiLockPasswordFill } from "react-icons/ri";
@@ -112,20 +113,16 @@ export default function Activate() {
               rounded={"xl"}
               w={["full", "md"]}
             >
-              <Box w={"full"} px={8}>
+              <Box w={"full"} px={[0, 8]}>
                 <Text fontSize={"3xl"} fontWeight={"bold"}>
                   Activate Account
-                </Text>
-                <Text fontSize={"md"}>
-                  You&apos;re just a few steps away from creating your account.
                 </Text>
               </Box>
               <br />
               <Box px={[0, 8]}>
                 <Formik
                   initialValues={{
-                    firstName: "",
-                    lastName: "",
+                    displayName: "",
                     email: "",
                     username: "",
                     password: "",
@@ -137,8 +134,7 @@ export default function Activate() {
                         "Content-Type": "application/json",
                       },
                       body: JSON.stringify({
-                        firstName: values.firstName,
-                        lastName: values.lastName,
+                        displayName: values.displayName,
                         email: values.email,
                         username: values.username,
                         password: values.password,
@@ -181,18 +177,21 @@ export default function Activate() {
                   {(props) => (
                     <Form>
                       <HStack my={2} spacing={2}>
-                        <Field name="firstName">
+                        <Field name="displayName">
                           {({ field, form }: any) => (
                             <FormControl isRequired={true}>
                               <Skeleton isLoaded={!loading}>
-                                <FormLabel>First Name</FormLabel>
+                                <FormLabel>Display Name</FormLabel>
                               </Skeleton>
                               <Skeleton isLoaded={!loading}>
                                 <InputGroup>
+                                  <InputLeftElement pointerEvents="none">
+                                    <BsDisplayFill color="gray.300" />
+                                  </InputLeftElement>
                                   <Input
                                     {...field}
                                     type="text"
-                                    placeholder="First Name"
+                                    placeholder="Display Name"
                                     variant={"outline"}
                                   />
                                 </InputGroup>
@@ -200,18 +199,21 @@ export default function Activate() {
                             </FormControl>
                           )}
                         </Field>
-                        <Field name="lastName">
+                        <Field name="username" isRequired={true}>
                           {({ field, form }: any) => (
-                            <FormControl isRequired={false}>
+                            <FormControl isRequired={true}>
                               <Skeleton isLoaded={!loading}>
-                                <FormLabel>Last Name</FormLabel>
+                                <FormLabel>Username</FormLabel>
                               </Skeleton>
                               <Skeleton isLoaded={!loading}>
                                 <InputGroup>
+                                  <InputLeftElement pointerEvents="none">
+                                    <FaUser color="gray.300" />
+                                  </InputLeftElement>
                                   <Input
                                     {...field}
                                     type="text"
-                                    placeholder="Last Name"
+                                    placeholder="Username"
                                     variant={"outline"}
                                   />
                                 </InputGroup>
@@ -235,28 +237,6 @@ export default function Activate() {
                                   {...field}
                                   type="text"
                                   placeholder="Email"
-                                  variant={"outline"}
-                                />
-                              </InputGroup>
-                            </Skeleton>
-                          </FormControl>
-                        )}
-                      </Field>
-                      <Field name="username" isRequired={true}>
-                        {({ field, form }: any) => (
-                          <FormControl isRequired={true}>
-                            <Skeleton isLoaded={!loading}>
-                              <FormLabel>Username</FormLabel>
-                            </Skeleton>
-                            <Skeleton isLoaded={!loading}>
-                              <InputGroup my={2}>
-                                <InputLeftElement pointerEvents="none">
-                                  <FaUser color="gray.300" />
-                                </InputLeftElement>
-                                <Input
-                                  {...field}
-                                  type="text"
-                                  placeholder="Username"
                                   variant={"outline"}
                                 />
                               </InputGroup>

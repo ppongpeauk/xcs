@@ -55,12 +55,10 @@ export default async function handler(
   }
 
   if (req.method === "GET") {
-    return res
-      .status(200)
-      .json({
-        accessPoints: accessPointsData,
-        self: organization.members[uid as any],
-      });
+    return res.status(200).json({
+      accessPoints: accessPointsData,
+      self: organization.members[uid as any],
+    });
   }
 
   if (req.method === "POST") {
@@ -71,10 +69,13 @@ export default async function handler(
     // Create Access Point
     const timestamp = new Date();
     // const id = uuidv4();
-    const id = generateString({
-      length: 8,
-      charset: "alphanumeric",
-    });
+    let id = "";
+    do {
+      id = generateString({
+        length: 8,
+        charset: "alphanumeric",
+      });
+    } while (await accessPoints.findOne({ id: id }));
 
     let { name, description } = req.body as {
       name: string;
@@ -125,12 +126,10 @@ export default async function handler(
 
     await accessPoints.insertOne(accessPoint);
 
-    return res
-      .status(200)
-      .json({
-        message: "Access point created successfully!",
-        accessPointId: id,
-      });
+    return res.status(200).json({
+      message: "Access point created successfully!",
+      accessPointId: id,
+    });
   }
 
   return res.status(500).json({ message: "An unknown error has occurred." });

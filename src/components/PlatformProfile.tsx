@@ -28,8 +28,8 @@ import { useEffect, useState } from "react";
 import { IoSparkles } from "react-icons/io5";
 import { VscVerifiedFilled } from "react-icons/vsc";
 
-import { Roboto_Mono } from "next/font/google";
-const codeFont = Roboto_Mono({ subsets: ["latin"] });
+import { Noto_Sans_Mono } from "next/font/google";
+const codeFont = Noto_Sans_Mono({ subsets: ["latin"] });
 
 // Types
 import { User } from "@/types";
@@ -185,7 +185,13 @@ export default function Profile({ username }: { username?: string }) {
               </Skeleton>
               <Skeleton isLoaded={!!user}>
                 <Flex flexDir={"column"} align={"center"} justify={"center"}>
-                  <Text as={"h2"} size={"md"} textAlign={"center"} zIndex={1} className={codeFont.className}>
+                  <Text
+                    as={"h2"}
+                    size={"md"}
+                    textAlign={"center"}
+                    zIndex={1}
+                    className={codeFont.className}
+                  >
                     @{user?.username || "username"}
                   </Text>
                   {user?.platform.staff && (
@@ -197,9 +203,7 @@ export default function Profile({ username }: { username?: string }) {
                         textAlign={"center"}
                         zIndex={1}
                       >
-                        {
-                          user?.platform.staffTitle || "Staff Member"
-                        }
+                        {user?.platform.staffTitle || "Staff Member"}
                       </Text>
                     </Flex>
                   )}

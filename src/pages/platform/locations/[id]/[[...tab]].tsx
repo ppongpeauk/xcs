@@ -269,6 +269,7 @@ export default function PlatformLocation() {
           isLazy={true}
           index={tabIndex}
           onChange={(index) => onTabChange(index)}
+          maxW={"full"}
           h={"100%"}
         >
           <TabList

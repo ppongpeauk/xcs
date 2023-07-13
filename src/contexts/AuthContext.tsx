@@ -17,32 +17,6 @@ export default function AuthProvider({
 }) {
   const [user, loading, error] = useAuthState(auth);
   const [currentUser, setCurrentUser] = useState<any>(null);
-  // const [idToken, setIdToken] = useState<any>(null);
-  /*
-  {
-    name: {
-      first: "Pete",
-      last: "Pongpeauk",
-    },
-    username: "restrafes",
-    id: "FF0gCiIJYUPfmA4CTfqXTyPcHQb2",
-    email: "kurtsiberg@gmail.com",
-    avatar: "https://cdn.discordapp.com/attachments/998830838999421029/1106249233901834381/slouch3.png",
-    bio: "hello! i'm pete, a software engineer and designer. i'm currently a student at GMU, and i'm working on a few projects.",
-    location: "New York, NY",
-    website: "https://ppngpkl.dev",
-  }
-  */
-
-  // const async getIdToken = () => {
-  //   if (user) {
-  //     const token = await user.getIdToken().then((token) => {
-  //       return token;
-  //     });
-  //     return token;
-  //   }
-  //   return null;
-  // };
 
   useEffect(() => {
     if (user) {

@@ -5,8 +5,11 @@ import {
   Code,
   Container,
   Flex,
+  Grid,
+  GridItem,
   HStack,
   Heading,
+  SimpleGrid,
   Skeleton,
   SkeletonText,
   Stack,
@@ -84,20 +87,21 @@ export default function LocationAccessPoints({
           Create
         </Button>
       </Stack>
-      <Flex w={"full"} h={"full"}>
+      <Flex h={"full"} overflow={"auto"} flexWrap={"wrap"}>
         <Skeleton isLoaded={!!accessPoints} w={"full"}>
           {accessPoints?.accessPoints?.length > 0 ? (
-            <Stack direction={{ base: "row", md: "column" }}>
+            <Flex flexWrap={"wrap"}>
               {accessPoints?.accessPoints?.map((accessPoint: any) => (
                 <Flex
                   key={accessPoint.id}
                   w={{ base: "full", md: "384px" }}
                   h={"auto"}
                   p={6}
+                  m={2}
+                  aspectRatio={2 / 1}
                   borderWidth={1}
                   borderRadius={"lg"}
                   borderColor={useColorModeValue("gray.200", "gray.700")}
-                  mb={4}
                   align={"center"}
                   justify={"space-between"}
                   flexDir={"column"}
@@ -130,9 +134,7 @@ export default function LocationAccessPoints({
                       </Text>
                       <Text>
                         Updated at:{" "}
-                        <Code>
-                          {moment(accessPoint.updatedAt).fromNow()}
-                        </Code>
+                        <Code>{moment(accessPoint.updatedAt).fromNow()}</Code>
                       </Text>
                     </Box>
                   </Box>
@@ -148,7 +150,7 @@ export default function LocationAccessPoints({
                   </Stack>
                 </Flex>
               ))}
-            </Stack>
+            </Flex>
           ) : (
             <Text>
               This location does not have any access points yet.{" "}

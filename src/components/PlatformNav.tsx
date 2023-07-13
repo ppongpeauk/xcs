@@ -6,12 +6,17 @@ import { Suspense, useEffect, useState } from "react";
 // Components
 import Footer from "@/components/Footer";
 import ThemeButton from "@/components/ThemeButton";
-import { ChevronRightIcon, HamburgerIcon } from "@chakra-ui/icons";
+import {
+  ChevronRightIcon,
+  HamburgerIcon,
+  SettingsIcon,
+} from "@chakra-ui/icons";
 import {
   AbsoluteCenter,
   Avatar,
   Box,
   Button,
+  ButtonGroup,
   Code,
   Container,
   Divider,
@@ -37,15 +42,18 @@ import {
   PopoverTrigger,
   SkeletonCircle,
   Spacer,
+  Stack,
   Text,
   VStack,
   useColorModeValue,
+  useDisclosure,
 } from "@chakra-ui/react";
 import NextImage from "next/image";
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
 import { forwardRef } from "react";
 import {
+  AiFillBell,
   AiFillCrown,
   AiFillHome,
   AiFillInfoCircle,
@@ -55,11 +63,104 @@ import { BiNotification, BiSolidExit, BiSolidTime } from "react-icons/bi";
 import { BsPersonBadgeFill } from "react-icons/bs";
 import { FaBuilding, FaIdBadge, FaUserAlt } from "react-icons/fa";
 import { ImTree } from "react-icons/im";
-import { IoNotifications } from "react-icons/io5";
 import { MdSensors } from "react-icons/md";
 
 // Authentication
 import { useAuthContext } from "@/contexts/AuthContext";
+import { useRouter } from "next/router";
+
+function AvatarPopover({ currentUser }: { currentUser?: any }) {
+  const { push } = useRouter();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  return (
+    <>
+      <Popover isOpen={isOpen} onOpen={onOpen} onClose={onClose}>
+        <PopoverTrigger>
+          <Button variant={"unstyled"} h={"full"} onClick={() => {}}>
+            <SkeletonCircle isLoaded={!!currentUser} w={"auto"} h={"auto"}>
+              <Avatar
+                name={currentUser?.displayName}
+                src={currentUser?.avatar}
+                size={"md"}
+              />
+            </SkeletonCircle>
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent
+          m={0}
+          my={{ base: 4, md: 6 }}
+          mx={{ base: 0, md: 2 }}
+          zIndex={2}
+          w={{ base: "100vw", md: "384px" }}
+          bg={useColorModeValue("white", "none")}
+          backdropFilter={"blur(2em)"}
+          rounded={"xl"}
+        >
+          <PopoverBody>
+            <Stack>
+              <Flex
+                as={Button}
+                onClick={() => {
+                  push("/platform/profile");
+                  onClose();
+                }}
+                variant={"ghost"}
+                w={"full"}
+                h={"auto"}
+                align={"center"}
+                justify={"space-between"}
+                rounded={"lg"}
+                p={4}
+                m={0}
+              >
+                <Flex flexDir={"column"} align={"flex-start"}>
+                  <Text fontSize={"xl"} fontWeight={"900"}>
+                    {currentUser?.displayName || currentUser?.username}
+                  </Text>
+                  <Text fontSize={"md"} color={"gray.500"}>
+                    @{currentUser?.username}
+                  </Text>
+                </Flex>
+                <SkeletonCircle isLoaded={!!currentUser} w={"auto"} h={"auto"}>
+                  <Avatar
+                    name={currentUser?.displayName}
+                    src={currentUser?.avatar}
+                    size={"lg"}
+                  />
+                </SkeletonCircle>
+              </Flex>
+              <Button
+                as={NextLink}
+                href={"/platform/settings"}
+                variant={"outline"}
+                size={"md"}
+                leftIcon={<AiFillSetting />}
+                onClick={() => {
+                  onClose();
+                }}
+              >
+                Settings
+              </Button>
+              <Button
+                as={NextLink}
+                href={"/auth/logout"}
+                variant={"outline"}
+                size={"md"}
+                leftIcon={<BiSolidExit />}
+                onClick={() => {
+                  onClose();
+                }}
+              >
+                Log Out
+              </Button>
+            </Stack>
+          </PopoverBody>
+        </PopoverContent>
+      </Popover>
+    </>
+  );
+}
 
 // eslint-disable-next-line react/display-name
 const MenuLink = forwardRef((props: any, ref: any) => (
@@ -323,7 +424,7 @@ export default function PlatformNav({
             <Popover>
               <PopoverTrigger>
                 <IconButton
-                  icon={<BiNotification size={"24px"} />}
+                  icon={<AiFillBell size={"24px"} />}
                   variant={"ghost"}
                   rounded={"full"}
                   onClick={() => {}}
@@ -331,7 +432,6 @@ export default function PlatformNav({
                 />
               </PopoverTrigger>
               <PopoverContent m={4} zIndex={2}>
-                <PopoverArrow />
                 <PopoverCloseButton />
                 <PopoverHeader>
                   <Text fontWeight={"900"}>Notifications</Text>
@@ -343,11 +443,7 @@ export default function PlatformNav({
             </Popover>
 
             {/* Avatar */}
-            <Button variant={"unstyled"} h={"full"} onClick={() => {}}>
-              <SkeletonCircle isLoaded={!!currentUser} w={"auto"} h={"auto"}>
-                <Avatar src={currentUser?.avatar} size={"md"} />
-              </SkeletonCircle>
-            </Button>
+            <AvatarPopover currentUser={currentUser} />
 
             {/* Theme Button */}
             {/* <Box display={{ base: "none", md: "flex" }}>
