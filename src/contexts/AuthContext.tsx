@@ -20,6 +20,7 @@ export default function AuthProvider({
   const [isAuthLoaded, setIsAuthLoaded] = useState<boolean>(false);
 
   async function refreshCurrentUser() {
+    setIsAuthLoaded(false);
     if (user) {
       user.getIdToken().then((token) => {
         fetch("/api/v1/me", {
@@ -33,6 +34,7 @@ export default function AuthProvider({
     } else {
       setCurrentUser(null);
     }
+    setIsAuthLoaded(true);
   }
 
   async function waitForAuthInit() {
