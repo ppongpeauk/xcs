@@ -87,7 +87,7 @@ export default function SettingsLinkedAccounts() {
               <Text as={"span"} fontWeight={"900"}>
                 {currentUser?.roblox.username}
               </Text>{" "}
-              on {moment(new Date()).toLocaleString()}.
+              on {moment(currentUser?.roblox.verifiedAt).format("MMMM Do YYYY, h:mm:ss a.")}
             </Text>
             <ButtonGroup mt={4}>
               <Button

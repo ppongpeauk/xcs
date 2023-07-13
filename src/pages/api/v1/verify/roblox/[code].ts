@@ -50,6 +50,7 @@ export default async function handler(
       );
 
       // update user's verification
+      const timestamp = new Date();
       await users.updateOne(
         { id: fetchCode.id },
         {
@@ -58,6 +59,7 @@ export default async function handler(
               username: username,
               id: robloxId,
               verified: true,
+              verifiedAt: timestamp,
             },
           },
         }
