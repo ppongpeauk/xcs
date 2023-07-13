@@ -31,7 +31,7 @@ function StyledTab({ children }: { children: React.ReactNode }) {
       color={"unset"}
       justifyContent={"left"}
       border={"none"}
-      rounded={"xl"}
+      rounded={"lg"}
       fontWeight={"bold"}
       _hover={{
         bg: useColorModeValue("gray.100", "gray.700"),
