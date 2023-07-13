@@ -2,7 +2,7 @@
 import { Container, Heading } from "@chakra-ui/react";
 
 // Layouts
-import UserProfile from "@/components/UserProfile";
+import UserProfile from "@/components/PlatformProfile";
 import Layout from "@/layouts/PlatformLayout";
 
 // Authentication

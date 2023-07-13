@@ -1,7 +1,11 @@
+import { useAuthContext } from "@/contexts/AuthContext";
 import Layout from "@/layouts/PlatformLayout";
-import { Container, Heading, Text } from "@chakra-ui/react";
+import { Box, Card, CardHeader, Container, Heading, Text } from "@chakra-ui/react";
 import Head from "next/head";
+import { Suspense } from "react";
 export default function PlatformHome() {
+  const { currentUser } = useAuthContext();
+
   return (
     <>
       <Head>
@@ -13,7 +17,16 @@ export default function PlatformHome() {
         <meta property="og:image" content="/images/logo-square.jpeg" />
       </Head>
       <Container maxW={"full"} p={8}>
-        <Text fontSize={"4xl"} fontWeight={"900"}>Welcome to EVE XCS.</Text>
+        {/* Greeting */}
+        <Box id={"greeting"}>
+          <Text fontSize={"4xl"} fontWeight={"900"}>
+            Good {new Date().getHours() < 12 ? "morning" : "afternoon"},{" "}
+            {currentUser?.displayName || currentUser?.username}!
+          </Text>
+          <Text fontSize={"xl"} fontWeight={"500"}>
+            This page is still under construction.
+          </Text>
+        </Box>
       </Container>
     </>
   );

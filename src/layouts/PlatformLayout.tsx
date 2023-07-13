@@ -63,7 +63,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         w={{ base: "100vw", md: "calc(100vw - 240px)" }}
         flexGrow={1}
       >
-        <Flex pos={"sticky"} top={"6rem"} flexGrow={1} zIndex={500}>
+        <Flex pos={"sticky"} top={"6rem"} flexGrow={1} zIndex={1}>
           <Stack
             id={"alerts"}
             backdropFilter={"blur(24px)"}
@@ -115,9 +115,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </Stack>
         </Flex>
         <Box minH={"calc(100vh - 6rem)"}>{children}</Box>
-        {/* <Box as={"footer"} pos={"sticky"} top={0} w={{ base: "100vw", md: "calc(100vw - 240px)" }}>
-          <Footer />
-        </Box> */}
       </Box>
     </>
   );

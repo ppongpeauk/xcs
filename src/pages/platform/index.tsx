@@ -1,8 +1,10 @@
+import { useAuthContext } from "@/contexts/AuthContext";
 import Layout from "@/layouts/PlatformLayout";
 import { Container, Heading } from "@chakra-ui/react";
 import Head from "next/head";
-
 export default function PlatformIndex() {
+  const { currentUser } = useAuthContext();
+
   return (
     <>
       <Head>
@@ -10,7 +12,7 @@ export default function PlatformIndex() {
       </Head>
       <Container maxW={"full"} p={8}>
         <Heading>
-          Welcome to EVE XCS
+          Welcome to EVE XCS, {currentUser?.name.first}!
         </Heading>
       </Container>
     </>

@@ -24,10 +24,12 @@ import {
 import Head from "next/head";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { IoSparkles } from "react-icons/io5";
 import { VscVerifiedFilled } from "react-icons/vsc";
-import Tilt from "react-parallax-tilt";
+
+import { Roboto_Mono } from "next/font/google";
+const codeFont = Roboto_Mono({ subsets: ["latin"] });
 
 // Types
 import { User } from "@/types";
@@ -183,7 +185,7 @@ export default function Profile({ username }: { username?: string }) {
               </Skeleton>
               <Skeleton isLoaded={!!user}>
                 <Flex flexDir={"column"} align={"center"} justify={"center"}>
-                  <Text as={"h2"} size={"md"} textAlign={"center"} zIndex={1}>
+                  <Text as={"h2"} size={"md"} textAlign={"center"} zIndex={1} className={codeFont.className}>
                     @{user?.username || "username"}
                   </Text>
                   {user?.platform.staff && (
