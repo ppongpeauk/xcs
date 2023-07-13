@@ -26,31 +26,18 @@ import firebase from "firebase/app";
 import { sendEmailVerification } from "firebase/auth";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  const { user, currentUser } = useAuthContext();
+  const { user, currentUser, isAuthLoaded } = useAuthContext();
   const [sendVerificationEmailLoading, setSendVerificationEmailLoading] =
     useState<boolean>(false);
   const { push } = useRouter();
 
-  // Wait for the router to be ready before checking
-  async function waitForAuthInit() {
-    let unsubscribe = null;
-    await new Promise<void>((resolve) => {
-      unsubscribe = auth.onAuthStateChanged((_) => resolve());
-    });
-    (await unsubscribe!)();
-  }
-
+  // Wait for the router to be ready before checking if the user is logged in
   useEffect(() => {
-    async function checkUser() {
-      // Wait for auth to initialize before checking if the user is logged in
-      await waitForAuthInit().then(async () => {
-        if (!user) {
-          await push("/auth/login?redirect=" + window.location.pathname);
-        }
-      });
+    if (!isAuthLoaded) return;
+    if (!user) {
+      push("/auth/login?redirect=" + window.location.pathname);
     }
-    checkUser();
-  }, [user, push]);
+  }, [isAuthLoaded, user, push]);
 
   // Return nothing if the user is not logged in
   return (

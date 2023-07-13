@@ -19,6 +19,22 @@ export default function AuthProvider({
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [isAuthLoaded, setIsAuthLoaded] = useState<boolean>(false);
 
+  async function refreshCurrentUser() {
+    if (user) {
+      user.getIdToken().then((token) => {
+        fetch("/api/v1/me", {
+          headers: { authorization: `Bearer ${token}` },
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            setCurrentUser(data.user);
+          });
+      });
+    } else {
+      setCurrentUser(null);
+    }
+  }
+
   async function waitForAuthInit() {
     let unsubscribe = null;
     await new Promise<void>((resolve) => {
@@ -39,19 +55,7 @@ export default function AuthProvider({
   }, [user]);
 
   useEffect(() => {
-    if (user) {
-      user.getIdToken().then((token) => {
-        fetch("/api/v1/me", {
-          headers: { authorization: `Bearer ${token}` },
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            setCurrentUser(data.user);
-          });
-      });
-    } else {
-      setCurrentUser(null);
-    }
+    refreshCurrentUser();
   }, [user]);
 
   function logOut() {
@@ -61,6 +65,7 @@ export default function AuthProvider({
   const values = {
     user,
     currentUser,
+    refreshCurrentUser,
     auth,
     getAuth,
     logOut,

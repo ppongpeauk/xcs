@@ -94,7 +94,7 @@ function AvatarPopover({ currentUser }: { currentUser?: any }) {
           my={{ base: 4, md: 6 }}
           mx={{ base: 0, md: 2 }}
           zIndex={2}
-          w={{ base: "100vw", md: "384px" }}
+          minW={{ base: "100vw", md: "320px" }}
           // bg={useColorModeValue("white", "none")}
           // backdropFilter={"blur(2em)"}
           rounded={"xl"}

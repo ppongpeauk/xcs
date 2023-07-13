@@ -13,14 +13,14 @@ import { TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons";
 import { ColumnDef } from "@tanstack/react-table";
 import * as React from "react";
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+// import {
+//   DropdownMenu,
+//   DropdownMenuContent,
+//   DropdownMenuItem,
+//   DropdownMenuLabel,
+//   DropdownMenuSeparator,
+//   DropdownMenuTrigger,
+// } from "@/components/ui/dropdown-menu";
 
 import { BsThreeDots } from "react-icons/bs";
 
@@ -109,33 +109,35 @@ const columns: ColumnDef<EventLog>[] = [
       const payment = row.original;
 
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <BsThreeDots />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            align="end"
-            className="rounded-xl overflow-hidden"
-          >
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              className="cursor-pointer"
-              onClick={() => navigator.clipboard.writeText(payment.id)}
-            >
-              Copy Event ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="cursor-pointer">
-              View user
-            </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer">
-              View event details
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <>
+        </>
+        // <DropdownMenu>
+        //   <DropdownMenuTrigger asChild>
+        //     <Button variant="ghost" className="h-8 w-8 p-0">
+        //       <span className="sr-only">Open menu</span>
+        //       <BsThreeDots />
+        //     </Button>
+        //   </DropdownMenuTrigger>
+        //   <DropdownMenuContent
+        //     align="end"
+        //     className="rounded-xl overflow-hidden"
+        //   >
+        //     <DropdownMenuLabel>Actions</DropdownMenuLabel>
+        //     <DropdownMenuItem
+        //       className="cursor-pointer"
+        //       onClick={() => navigator.clipboard.writeText(payment.id)}
+        //     >
+        //       Copy Event ID
+        //     </DropdownMenuItem>
+        //     <DropdownMenuSeparator />
+        //     <DropdownMenuItem className="cursor-pointer">
+        //       View user
+        //     </DropdownMenuItem>
+        //     <DropdownMenuItem className="cursor-pointer">
+        //       View event details
+        //     </DropdownMenuItem>
+        //   </DropdownMenuContent>
+        // </DropdownMenu>
       );
     },
   },

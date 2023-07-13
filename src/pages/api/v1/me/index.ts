@@ -33,8 +33,8 @@ export default async function handler(
     });
   }
 
-  // Updating Location Data
-  if (req.method === "PUT") {
+  // Updating User Data
+  if (req.method === "PATCH") {
     if (!req.body) {
       return res.status(400).json({ message: "No body provided" });
     }
@@ -44,12 +44,12 @@ export default async function handler(
 
     // Character limits
 
-    if (body.name) {
-      body.name = body.name.trim();
-      if (body.name.length > 32 || body.name.length < 3) {
+    if (body.displayName) {
+      body.displayName = body.displayName.trim();
+      if (body.displayName.length > 32 || body.displayName.length < 3) {
         return res
           .status(400)
-          .json({ message: "Name must be between 3-32 characters." });
+          .json({ message: "Display name must be between 3-32 characters." });
       }
     }
 
@@ -57,7 +57,7 @@ export default async function handler(
       body.bio = body.bio.trim();
       if (body.bio.length >= 256) {
         return res.status(400).json({
-          message: "Biography must be less than or equal to 256 characters.",
+          message: "Bio must be less than or equal to 256 characters.",
         });
       }
     }
@@ -83,8 +83,8 @@ export default async function handler(
 
     return res
       .status(200)
-      .json({ message: "successfully updated", success: true });
+      .json({ message: "Successfully updated profile!", success: true });
   }
 
-  return res.status(500).json({ message: "something went really wrong" });
+  return res.status(500).json({ message: "Something went really wrong." });
 }

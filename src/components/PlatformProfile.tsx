@@ -218,11 +218,22 @@ export default function Profile({ username }: { username?: string }) {
             <Text as={"h1"} fontSize={"2xl"} fontWeight={"900"}>
               About Me
             </Text>
-            <Text as={"h2"} size={"md"}>
-              <Skeleton isLoaded={!!user}>
-                {user?.bio || "This user has not set a bio yet."}
-              </Skeleton>
-            </Text>
+            <Skeleton isLoaded={!!user}>
+              {
+                !user?.bio ? (
+                  <Text as={"h2"} size={"md"}>
+                    This user has not set a bio yet.
+                  </Text>
+                ) : (
+                  // multi-line support
+                  user?.bio.split("\n").map((line: string, i: number) => (
+                    <Text as={"h2"} size={"md"} key={i}>
+                      {line}
+                    </Text>
+                  ))
+                )
+              }
+            </Skeleton>
           </Box>
         </Box>
         <Flex flexDir={["column", "row"]}>
