@@ -171,17 +171,15 @@ export default function Profile({ username }: { username?: string }) {
               </Skeleton>
             </Box>
             {/* Name */}
-            <Box mb={8} w={"full"}>
+            <Box mb={4} w={"full"}>
               <Skeleton isLoaded={!!user}>
                 <Text
                   as={"h1"}
-                  fontSize={"3xl"}
+                  fontSize={user?.displayName.length > 20 ? "2xl" : "3xl"}
                   fontWeight={"900"}
                   textAlign={"center"}
                 >
-                  {user?.displayName
-                    ? user?.displayName
-                    : `${user?.name?.first} ${user?.name?.last}`}
+                  {user?.displayName}
                 </Text>
               </Skeleton>
               <Skeleton isLoaded={!!user}>

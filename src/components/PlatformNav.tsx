@@ -81,11 +81,7 @@ function AvatarPopover({ currentUser }: { currentUser?: any }) {
         <PopoverTrigger>
           <Button variant={"unstyled"} h={"full"} onClick={() => {}}>
             <SkeletonCircle isLoaded={!!currentUser} w={"auto"} h={"auto"}>
-              <Avatar
-                // name={currentUser?.displayName}
-                src={currentUser?.avatar}
-                size={"md"}
-              />
+              <Avatar src={currentUser?.avatar} size={"md"} />
             </SkeletonCircle>
           </Button>
         </PopoverTrigger>
@@ -95,6 +91,7 @@ function AvatarPopover({ currentUser }: { currentUser?: any }) {
           mx={{ base: 0, md: 2 }}
           zIndex={2}
           minW={{ base: "100vw", md: "320px" }}
+          w={{ base: "100vw", md: "auto" }}
           // bg={useColorModeValue("white", "none")}
           // backdropFilter={"blur(2em)"}
           rounded={"xl"}
@@ -108,23 +105,27 @@ function AvatarPopover({ currentUser }: { currentUser?: any }) {
                   onClose();
                 }}
                 variant={"ghost"}
-                w={"full"}
+                w={"100%"}
                 h={"auto"}
                 align={"center"}
-                justify={"space-between"}
                 rounded={"lg"}
                 p={4}
                 m={0}
               >
-                <Flex flexDir={"column"} align={"flex-start"}>
-                  <Text fontSize={"xl"} fontWeight={"900"}>
-                    {currentUser?.displayName || currentUser?.username}
+                <Flex flexDir={"column"} align={"flex-start"} w={"min-content"}>
+                  <Text
+                    fontSize={"xl"}
+                    fontWeight={"900"}
+                    textOverflow={"ellipsis"}
+                  >
+                    {currentUser?.displayName}
                   </Text>
                   <Text fontSize={"md"} color={"gray.500"}>
                     @{currentUser?.username}
                   </Text>
                 </Flex>
-                <SkeletonCircle isLoaded={!!currentUser} w={"auto"} h={"auto"}>
+                <Spacer />
+                <SkeletonCircle isLoaded={!!currentUser} w={"auto"} h={"auto"} pl={4}>
                   <Avatar
                     // name={currentUser?.displayName}
                     src={currentUser?.avatar}
@@ -448,9 +449,9 @@ export default function PlatformNav({
             <AvatarPopover currentUser={currentUser} />
 
             {/* Theme Button */}
-            {/* <Box display={{ base: "none", md: "flex" }}>
+            <Box display={{ base: "none", md: "flex" }}>
               <ThemeButton />
-            </Box> */}
+            </Box>
 
             {/* Mobile Nav */}
             <Box display={{ base: "flex", md: "none" }} zIndex={512}>

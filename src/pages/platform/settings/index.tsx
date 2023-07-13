@@ -20,8 +20,9 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
+import SettingsLinkedAccounts from "@/components/SettingsLinkedAccounts";
 import SettingsProfile from "@/components/SettingsProfile";
-import { FaIdBadge } from "react-icons/fa";
+import { FaIdBadge, FaLink } from "react-icons/fa";
 
 function StyledTab({ children }: { children: React.ReactNode }) {
   return (
@@ -57,8 +58,10 @@ export default function Settings() {
   return (
     <>
       <Head>
+        <title>EVE XCS – Settings</title>
         <meta property="og:site_name" content="EVE XCS" />
         <meta property="og:type" content="website" />
+        <meta property="og:title" content="Settings" />
       </Head>
       <Container maxW={"full"} p={8}>
         <Text fontSize={"4xl"} fontWeight={"900"}>
@@ -81,6 +84,10 @@ export default function Settings() {
               <FaIdBadge />
               <Text ml={2}>Profile</Text>
             </StyledTab>
+            <StyledTab>
+              <FaLink />
+              <Text ml={2}>Linked Accounts</Text>
+            </StyledTab>
           </TabList>
 
           <TabPanels px={{ base: 0, md: 8 }}>
@@ -88,12 +95,12 @@ export default function Settings() {
               <SettingsProfile />
             </TabPanel>
             <TabPanel p={0}>
+              <SettingsLinkedAccounts />
             </TabPanel>
             <TabPanel p={0}>
               <Text>Members</Text>
             </TabPanel>
-            <TabPanel p={0}>
-            </TabPanel>
+            <TabPanel p={0}></TabPanel>
           </TabPanels>
         </Tabs>
       </Container>
