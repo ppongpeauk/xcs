@@ -228,7 +228,7 @@ export default function Profile({ username }: { username?: string }) {
         </Box>
         {/* User Linked Accounts */}
         <Box my={4}>
-          <Box rounded={"lg"}>
+          <Box rounded={"lg"} w={{ base: "full", md: "384px" }}>
             <Text as={"h1"} fontSize={"2xl"} fontWeight={"900"}>
               Connected Accounts
             </Text>
