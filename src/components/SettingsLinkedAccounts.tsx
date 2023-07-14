@@ -154,7 +154,7 @@ export default function SettingsLinkedAccounts() {
                   {currentUser?.roblox.username} ({currentUser?.roblox.id})
                 </Text>
               </Text>
-              <ButtonGroup mt={4}>
+              <ButtonGroup mt={2}>
                 <Button
                   colorScheme={"red"}
                   onClick={() => {
@@ -199,7 +199,7 @@ export default function SettingsLinkedAccounts() {
                   "MMMM Do YYYY (h:mm a.)"
                 )}
               </Text>
-              <ButtonGroup mt={4}>
+              <ButtonGroup mt={2}>
                 <Button
                   colorScheme={"red"}
                   onClick={() => {
