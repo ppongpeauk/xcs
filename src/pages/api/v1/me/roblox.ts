@@ -39,7 +39,7 @@ export default async function handler(
       { id: uid },
       {
         $set: {
-          lastUpdatedDate: timestamp,
+          lastUpdatedAt: timestamp,
           roblox: {
             verified: false,
             id: null,

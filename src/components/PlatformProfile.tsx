@@ -196,7 +196,6 @@ export default function Profile({ username }: { username?: string }) {
                     <Flex align={"center"}>
                       <Icon as={IoSparkles} size={"xl"} mr={1} />
                       <Text
-                        as={"h2"}
                         fontWeight={"900"}
                         textAlign={"center"}
                         zIndex={1}
@@ -205,7 +204,6 @@ export default function Profile({ username }: { username?: string }) {
                       </Text>
                     </Flex>
                   )}
-                  {/* <Icon as={VscVerifiedFilled} ml={1} h={"100%"} /> */}
                 </Flex>
               </Skeleton>
             </Box>
@@ -219,13 +217,13 @@ export default function Profile({ username }: { username?: string }) {
             <Skeleton isLoaded={!!user}>
               {
                 !user?.bio ? (
-                  <Text as={"h2"} size={"md"}>
+                  <Text size={"md"}>
                     This user has not set a bio yet.
                   </Text>
                 ) : (
                   // multi-line support
                   user?.bio.split("\n").map((line: string, i: number) => (
-                    <Text as={"h2"} size={"md"} key={i}>
+                    <Text size={"md"} key={i}>
                       {line}
                     </Text>
                   ))

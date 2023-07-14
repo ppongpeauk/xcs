@@ -18,6 +18,7 @@ import {
   Text,
   useColorModeValue,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 
 // Layouts
@@ -35,7 +36,9 @@ import SettingsProfile from "@/components/SettingsProfile";
 import { HamburgerIcon } from "@chakra-ui/icons";
 import { FaIdBadge, FaLink } from "react-icons/fa";
 
-function StyledTab({ children }: { children: React.ReactNode }) {
+function StyledTab({ children, index }: { children: React.ReactNode, index: number }) {
+  const { push } = useRouter();
+
   return (
     <Tab
       w={"200px"}
@@ -56,6 +59,9 @@ function StyledTab({ children }: { children: React.ReactNode }) {
         bg: useColorModeValue("gray.200", "gray.300"),
         color: useColorModeValue("gray.900", "gray.900"),
       }}
+      onClick={() => {
+        push(`/platform/settings/${index + 1}`)
+      }}
     >
       {children}
     </Tab>
@@ -64,8 +70,32 @@ function StyledTab({ children }: { children: React.ReactNode }) {
 
 export default function Settings() {
   const { query, push } = useRouter();
+  const toast = useToast();
   const { currentUser, user } = useAuthContext();
   const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    query.section && setIndex(parseInt(query.section as string) - 1);
+  }, [query]);
+
+  useEffect(() => {
+    if (!query.discordLinked) return;
+    if (query.discordLinked === "true") {
+      toast({
+        title: "Successfully linked your Discord account.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+    } else {
+      toast({
+        title: "There was an error while linking your Discord account.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  }, [query]);
 
   return (
     <>
@@ -121,19 +151,20 @@ export default function Settings() {
           h={"100%"}
           index={index}
           onChange={setIndex}
+          isManual={true}
         >
           <TabList
             display={{ base: "none", md: "block" }}
             h={"100%"}
             border={"none"}
           >
-            <StyledTab>
+            <StyledTab index={0}>
               <Text>Profile</Text>
             </StyledTab>
-            <StyledTab>
+            <StyledTab index={1}>
               <Text>Appearance</Text>
             </StyledTab>
-            <StyledTab>
+            <StyledTab index={2}>
               <Text>Linked Accounts</Text>
             </StyledTab>
           </TabList>

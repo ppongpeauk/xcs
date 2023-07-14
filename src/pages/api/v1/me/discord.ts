@@ -1,0 +1,150 @@
+import clientPromise from "@/lib/mongodb";
+import { tokenToID } from "@/pages/api/firebase";
+import { NextApiRequest, NextApiResponse } from "next";
+
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  // Authorization Header
+  const authHeader = req.headers.authorization;
+
+  // Bearer Token
+  const token = authHeader?.split(" ")[1];
+
+  // Verify Token
+  const uid = await tokenToID(token as string);
+  if (!uid) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  const mongoClient = await clientPromise;
+  const db = mongoClient.db(process.env.MONGODB_DB as string);
+  const users = db.collection("users");
+  const user = await users.findOne({ id: uid });
+
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  // compatibility
+  if (!user.discord) {
+    await users.updateOne(
+      { id: uid },
+      {
+        $set: {
+          discord: {
+            verified: false,
+            id: null,
+            username: null,
+          },
+        },
+      }
+    );
+  }
+
+  const timestamp = new Date();
+
+  if (req.method === "POST") {
+    const { code } = req.body;
+    console.log(code);
+
+    // generate token using code
+    // see: https://discord.com/developers/docs/topics/oauth2
+    const tokenResponse = await fetch("https://discord.com/api/oauth2/token", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams({
+        client_id: process.env.DISCORD_CLIENT_ID as string,
+        client_secret: process.env.DISCORD_CLIENT_SECRET as string,
+        grant_type: "client_credentials",
+        scope: "identify",
+        code: code
+      }).toString(),
+    }).then((res) => res.json());
+
+    if (tokenResponse.error) {
+      console.log(tokenResponse);
+      return res.status(400).json({ message: tokenResponse.error_description });
+    }
+
+    // get user info using token
+    const userResponse = await fetch("https://discord.com/api/oauth2/@me", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${tokenResponse.access_token}`,
+      },
+    }).then((res) => res.json());
+
+    if (userResponse.error) {
+      console.log(userResponse);
+      return res.status(400).json({ message: userResponse.error_description });
+    }
+
+    // update user using discord info
+    await users.updateOne(
+      { id: uid },
+      {
+        $set: {
+          lastUpdatedAt: timestamp,
+          discord: {
+            verified: true,
+            verifiedAt: timestamp,
+            id: userResponse.user.id,
+            username: userResponse.user.username,
+          },
+        },
+      }
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "You've successfully linked your Discord account.",
+    });
+  }
+
+  if (req.method === "DELETE") {
+    if (!user.discord.verified) {
+      return res.status(400).json({
+        message: "You are not linked.",
+      });
+    }
+
+    await users.updateOne(
+      { id: uid },
+      {
+        $set: {
+          lastUpdatedAt: timestamp,
+          discord: {
+            verified: false,
+            id: null,
+            username: null,
+          },
+        },
+      }
+    );
+
+    await users.updateOne(
+      { id: uid },
+      {
+        $push: {
+          logs: {
+            type: "account_unlink",
+            performer: uid,
+            timestamp: timestamp,
+            data: "discord",
+          },
+        },
+      }
+    );
+
+    return res.status(200).json({
+      message: "You've successfully unlinked your Discord account.",
+      success: true,
+    });
+  }
+
+  return res.status(500).json({ message: "Something went really wrong." });
+}
