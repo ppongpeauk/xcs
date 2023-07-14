@@ -132,7 +132,7 @@ export default function Invitation({ invite }: { invite: any }) {
                 <Text fontSize={"lg"} mb={2}>
                   {invite ? (
                     <>
-                      {invite?.from?.name.first} has invited you to{" "}
+                      {invite?.from?.displayName || invite?.from?.name.first} has invited you to{" "}
                       {inviteTypeSwitch(invite?.type)}.
                       {invite?.type === "organization" ? (
                         <Text as={"span"} fontWeight={"bold"}>

@@ -56,7 +56,7 @@ export default function UserProfileNS({ user }: any) {
           <>
             <meta
               property="og:title"
-              content={`${user.name.first}'s Profile`}
+              content={`${user?.displayName || user.name.first}'s Profile`}
             />
             <meta
               property="og:url"
@@ -64,7 +64,7 @@ export default function UserProfileNS({ user }: any) {
             />
             <meta
               property="og:description"
-              content={`Join ${user.name.first} and a community of architects in managing access points effortlessly on EVE XCS.`}
+              content={`Join ${user?.displayName || user.name.first} and a community of architects in managing access points effortlessly on EVE XCS.`}
             />
             <meta property="og:image" content={user.avatar} />
           </>

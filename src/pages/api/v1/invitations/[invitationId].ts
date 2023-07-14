@@ -39,7 +39,7 @@ export default async function handler(
   let creator = (await users.findOne(
     { id: invitation.fromId },
     {
-      projection: { id: 1, username: 1, name: 1, avatar: 1 },
+      projection: { id: 1, username: 1, name: 1, avatar: 1, displayName: 1 },
     }
   )) as any;
   if (!creator) {

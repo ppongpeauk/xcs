@@ -64,7 +64,7 @@ export default function Invite({ invite }: any) {
             <meta name="og:image" content={invite.from.avatar} />
             <meta
               name="og:description"
-              content={`You've been invited by ${invite.from.name.first} to ${
+              content={`You've been invited by ${invite?.from.displayName || invite.from.name.first} to ${
                 inviteTypeSwitch(invite.type) || "join their organization"
               }.`}
             />

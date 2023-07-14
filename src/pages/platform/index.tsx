@@ -11,9 +11,7 @@ export default function PlatformIndex() {
         <title>EVE XCS – Platform Index</title>
       </Head>
       <Container maxW={"full"} p={8}>
-        <Heading>
-          Welcome to EVE XCS, {currentUser?.name.first}!
-        </Heading>
+
       </Container>
     </>
   );
