@@ -229,7 +229,15 @@ export default async function handler(
         },
         roblox: {
           id: null,
+          username: null,
           verified: false,
+          verifiedAt: null,
+        },
+        discord: {
+          id: null,
+          username: null,
+          verified: false,
+          verifiedAt: null,
         },
         avatar: null,
         bio: null,
