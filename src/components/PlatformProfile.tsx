@@ -110,7 +110,7 @@ export default function Profile({ username }: { username?: string }) {
     <>
       <Head>
         {user ? (
-          <title>{`EVE XCS – ${user?.name?.first}'s Profile`}</title>
+          <title>{`EVE XCS – ${user?.displayName || user?.name?.first}'s Profile`}</title>
         ) : (
           <title>{`EVE XCS – Profile`}</title>
         )}
