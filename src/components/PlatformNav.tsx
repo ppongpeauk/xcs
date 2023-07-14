@@ -62,7 +62,7 @@ import {
 } from "react-icons/ai";
 import { BiNotification, BiSolidExit, BiSolidTime } from "react-icons/bi";
 import { BsPersonBadgeFill } from "react-icons/bs";
-import { FaBuilding, FaIdBadge, FaUserAlt } from "react-icons/fa";
+import { FaBell, FaBuilding, FaIdBadge, FaUserAlt } from "react-icons/fa";
 import { ImTree } from "react-icons/im";
 import { MdSensors } from "react-icons/md";
 
@@ -92,8 +92,8 @@ function AvatarPopover({ currentUser }: { currentUser?: any }) {
           zIndex={2}
           minW={{ base: "100vw", md: "320px" }}
           w={{ base: "100vw", md: "auto" }}
-          // bg={useColorModeValue("white", "none")}
-          // backdropFilter={"blur(2em)"}
+          bg={useColorModeValue("white", "none")}
+          backdropFilter={"blur(2em)"}
           rounded={"xl"}
         >
           <PopoverBody>
@@ -125,7 +125,12 @@ function AvatarPopover({ currentUser }: { currentUser?: any }) {
                   </Text>
                 </Flex>
                 <Spacer />
-                <SkeletonCircle isLoaded={!!currentUser} w={"auto"} h={"auto"} pl={4}>
+                <SkeletonCircle
+                  isLoaded={!!currentUser}
+                  w={"auto"}
+                  h={"auto"}
+                  pl={4}
+                >
                   <Avatar
                     // name={currentUser?.displayName}
                     src={currentUser?.avatar}
@@ -426,15 +431,25 @@ export default function PlatformNav({
             {/* Notifications */}
             <Popover>
               <PopoverTrigger>
-                <IconButton
-                  icon={<AiFillBell size={"24px"} />}
-                  variant={"ghost"}
+                <Button
+                  variant={"unstyled"}
                   rounded={"full"}
                   onClick={() => {}}
                   aria-label="Notifications"
-                />
+                >
+                  {<FaBell size={24} />}
+                </Button>
               </PopoverTrigger>
-              <PopoverContent m={4} zIndex={2}>
+              <PopoverContent
+                 m={0}
+                 my={{ base: 5, md: 7 }}
+                 mx={{ base: 0, md: 2 }}
+                 zIndex={2}
+                 minW={{ base: "100vw", md: "320px" }}
+                 bg={useColorModeValue("white", "none")}
+                 backdropFilter={"blur(2em)"}
+                 rounded={"xl"}
+              >
                 <PopoverCloseButton />
                 <PopoverHeader>
                   <Text fontWeight={"900"}>Notifications</Text>
