@@ -229,7 +229,9 @@ export default function Profile({ username }: { username?: string }) {
                 >
                   <Icon as={BsDiscord} size={"xl"} mr={2} />
                   <Text size={"md"} fontWeight={"900"}>
-                    {user?.discord.username}
+                    @{user?.discord.username}
+                    {user?.discord.discriminator &&
+                      `#${user?.discord.discriminator}`}
                   </Text>
                 </Button>
               )}

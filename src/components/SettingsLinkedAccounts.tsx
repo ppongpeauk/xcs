@@ -192,7 +192,7 @@ export default function SettingsLinkedAccounts() {
               <Text fontSize={"lg"}>
                 You&apos;ve linked your Discord account using{" "}
                 <Text as={"span"} fontWeight={"900"}>
-                  @{currentUser?.discord.username}
+                  @{currentUser?.discord.username}{currentUser?.discord.discriminator && `#${currentUser?.discord.discriminator}`}
                 </Text>{" "}
                 on{" "}
                 {moment(currentUser?.discord.verifiedAt).format(

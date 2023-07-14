@@ -58,9 +58,10 @@ export default async function handler(
       body: new URLSearchParams({
         client_id: process.env.DISCORD_CLIENT_ID as string,
         client_secret: process.env.DISCORD_CLIENT_SECRET as string,
-        grant_type: "client_credentials",
+        grant_type: "authorization_code",
         scope: "identify",
         code: code,
+        redirect_uri: `${process.env.NEXT_PUBLIC_ROOT_URL}/platform/settings/discord`,
       }).toString(),
     }).then((res) => res.json());
 
@@ -92,6 +93,7 @@ export default async function handler(
             verified: false,
             id: null,
             username: null,
+            discriminator: null,
           },
         },
       }
@@ -108,6 +110,10 @@ export default async function handler(
             verifiedAt: timestamp,
             id: userResponse.user.id,
             username: userResponse.user.username,
+            discriminator:
+              userResponse.user.discriminator !== 0
+                ? userResponse.user.discriminator
+                : null,
           },
         },
       }
