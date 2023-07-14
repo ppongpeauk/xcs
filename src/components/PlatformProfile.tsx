@@ -28,8 +28,8 @@ import { useEffect, useState } from "react";
 import { IoSparkles } from "react-icons/io5";
 import { VscVerifiedFilled } from "react-icons/vsc";
 
-import { Noto_Sans_Mono } from "next/font/google";
-const codeFont = Noto_Sans_Mono({ subsets: ["latin"] });
+import { BsDiscord } from "react-icons/bs";
+import { SiRoblox } from "react-icons/si";
 
 // Types
 import { User } from "@/types";
@@ -151,7 +151,7 @@ export default function Profile({ username }: { username?: string }) {
             />
             {/* Avatar */}
             <Box
-              w={{ base: "90%", md: "75%" }}
+              w={{ base: "75%", md: "75%" }}
               h={"auto"}
               objectFit={"cover"}
               justifySelf={"center"}
@@ -184,21 +184,13 @@ export default function Profile({ username }: { username?: string }) {
               </Skeleton>
               <Skeleton isLoaded={!!user}>
                 <Flex flexDir={"column"} align={"center"} justify={"center"}>
-                  <Text
-                    as={"h2"}
-                    size={"md"}
-                    textAlign={"center"}
-                  >
+                  <Text as={"h2"} size={"md"} textAlign={"center"}>
                     @{user?.username || "username"}
                   </Text>
                   {user?.platform.staff && (
                     <Flex align={"center"}>
                       <Icon as={IoSparkles} size={"xl"} mr={1} />
-                      <Text
-                        fontWeight={"900"}
-                        textAlign={"center"}
-                        zIndex={1}
-                      >
+                      <Text fontWeight={"900"} textAlign={"center"} zIndex={1}>
                         {user?.platform.staffTitle || "Staff Member"}
                       </Text>
                     </Flex>
@@ -214,21 +206,48 @@ export default function Profile({ username }: { username?: string }) {
               About Me
             </Text>
             <Skeleton isLoaded={!!user}>
-              {
-                !user?.bio ? (
-                  <Text size={"md"}>
-                    This user has not set a bio yet.
+              {!user?.bio ? (
+                <Text size={"md"}>This user has not set a bio yet.</Text>
+              ) : (
+                // multi-line support
+                user?.bio.split("\n").map((line: string, i: number) => (
+                  <Text size={"md"} key={i}>
+                    {line}
                   </Text>
-                ) : (
-                  // multi-line support
-                  user?.bio.split("\n").map((line: string, i: number) => (
-                    <Text size={"md"} key={i}>
-                      {line}
-                    </Text>
-                  ))
-                )
-              }
+                ))
+              )}
             </Skeleton>
+            {/* User Linked Accounts */}
+            <Flex flexDir={"row"} py={2} gap={0} w={"fit-content"}>
+              {user?.discord.verified && (
+                <Button
+                  as={NextLink}
+                  href={`https://discord.com/users/${user?.discord.id}`}
+                  target="_blank"
+                  size={"sm"}
+                  variant={"ghost"}
+                >
+                  <Icon as={BsDiscord} size={"xl"} mr={2} />
+                  <Text size={"md"} fontWeight={"900"}>
+                    {user?.discord.username}
+                  </Text>
+                </Button>
+              )}
+              {user?.roblox.verified && (
+                <Button
+                  as={NextLink}
+                  href={`https://roblox.com/users/${user?.roblox.id}/profile`}
+                  target="_blank"
+                  size={"sm"}
+                  variant={"ghost"}
+                >
+                  <Icon as={SiRoblox} size={"xl"} mr={2} />
+                  <Text size={"md"} fontWeight={"900"}>
+                    {user?.roblox.username}
+                  </Text>
+                </Button>
+              )}
+            </Flex>
           </Box>
         </Box>
         <Flex flexDir={["column", "row"]}>
