@@ -125,7 +125,7 @@ export default function Profile({ username }: { username?: string }) {
         <Box
           pos={"relative"}
           width={{ base: "full", md: "min-content" }}
-          pb={8}
+          pb={6}
         >
           {/* Badge */}
           <Flex
@@ -205,7 +205,7 @@ export default function Profile({ username }: { username?: string }) {
           </Flex>
         </Box>
         {/* User Bio */}
-        <Box my={4}>
+        <Box my={2}>
           <Box w={{ base: "full", md: "384px" }} rounded={"lg"}>
             <Text as={"h1"} fontSize={"2xl"} fontWeight={"900"}>
               About Me
@@ -244,7 +244,7 @@ export default function Profile({ username }: { username?: string }) {
                     as={NextLink}
                     href={`https://discord.com/users/${user?.discord.id}`}
                     target="_blank"
-                    size={"md"}
+                    size={"sm"}
                     variant={"ghost"}
                   >
                     <Icon as={BsDiscord} size={"xl"} mr={2} />
@@ -260,7 +260,7 @@ export default function Profile({ username }: { username?: string }) {
                     as={NextLink}
                     href={`https://roblox.com/users/${user?.roblox.id}/profile`}
                     target="_blank"
-                    size={"md"}
+                    size={"sm"}
                     variant={"ghost"}
                   >
                     <Icon as={SiRoblox} size={"xl"} mr={2} />
