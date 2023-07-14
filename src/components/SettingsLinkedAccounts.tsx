@@ -166,9 +166,20 @@ export default function SettingsLinkedAccounts() {
               </ButtonGroup>
             </>
           ) : (
-            <Text fontSize={"lg"}>
-              You are not verified. Please verify your account to use EVE XCS.
-            </Text>
+            <>
+              <Text fontSize={"lg"} pb={2}>
+                You have not linked your Roblox account. Please link one to use
+                EVE XCS.
+              </Text>
+              <Button
+                colorScheme={"blue"}
+                onClick={() => {
+                  push("/platform/verify");
+                }}
+              >
+                Link Roblox Account
+              </Button>
+            </>
           )}
         </Box>
 
@@ -212,18 +223,18 @@ export default function SettingsLinkedAccounts() {
           ) : (
             <>
               <Text fontSize={"lg"} pb={2}>
-                You are not verified. Please verify your account to use EVE XCS.
+                You have not linked your Discord account.
               </Text>
               <Button
-                  colorScheme={"blue"}
-                  onClick={() => {
-                    push(
-                      `https://discord.com/api/oauth2/authorize?client_id=1127492928995078215&redirect_uri=${process.env.NEXT_PUBLIC_ROOT_URL}/platform/settings/discord&response_type=code&scope=identify`
-                    );
-                  }}
-                >
-                  Link Discord Account
-                </Button>
+                colorScheme={"blue"}
+                onClick={() => {
+                  push(
+                    `https://discord.com/api/oauth2/authorize?client_id=1127492928995078215&redirect_uri=${process.env.NEXT_PUBLIC_ROOT_URL}/platform/settings/discord&response_type=code&scope=identify`
+                  );
+                }}
+              >
+                Link Discord Account
+              </Button>
             </>
           )}
         </Box>
