@@ -143,7 +143,7 @@ export default function SettingsLinkedAccounts() {
           {currentUser?.roblox?.verified ? (
             <>
               <Text fontSize={"lg"}>
-                You&apos;ve verified your Roblox account on{" "}
+                You&apos;ve linked your Roblox account on{" "}
                 {moment(currentUser?.roblox.verifiedAt).format(
                   "MMMM Do YYYY (h:mm a.)"
                 )}
@@ -190,7 +190,7 @@ export default function SettingsLinkedAccounts() {
           {currentUser?.discord.verified ? (
             <>
               <Text fontSize={"lg"}>
-                You&apos;ve verified your Discord account with{" "}
+                You&apos;ve linked your Discord account using{" "}
                 <Text as={"span"} fontWeight={"900"}>
                   @{currentUser?.discord.username}
                 </Text>{" "}
