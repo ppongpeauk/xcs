@@ -47,7 +47,6 @@ export default async function handler(
 
   if (req.method === "POST") {
     const { code } = req.body;
-    console.log(code);
 
     // generate token using code
     // see: https://discord.com/developers/docs/topics/oauth2
@@ -61,7 +60,7 @@ export default async function handler(
         client_secret: process.env.DISCORD_CLIENT_SECRET as string,
         grant_type: "client_credentials",
         scope: "identify",
-        code: code
+        code: code,
       }).toString(),
     }).then((res) => res.json());
 
@@ -82,6 +81,21 @@ export default async function handler(
       console.log(userResponse);
       return res.status(400).json({ message: userResponse.error_description });
     }
+
+    // unlink accounts using discord id
+    await users.updateMany(
+      { "discord.id": userResponse.user.id },
+      {
+        $set: {
+          lastUpdatedAt: timestamp,
+          discord: {
+            verified: false,
+            id: null,
+            username: null,
+          },
+        },
+      }
+    );
 
     // update user using discord info
     await users.updateOne(

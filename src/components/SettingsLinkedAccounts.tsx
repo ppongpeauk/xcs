@@ -143,14 +143,16 @@ export default function SettingsLinkedAccounts() {
           {currentUser?.roblox?.verified ? (
             <>
               <Text fontSize={"lg"}>
-                You&apos;ve verified your Roblox account with{" "}
-                <Text as={"span"} fontWeight={"900"}>
-                  {currentUser?.roblox.username}
-                </Text>{" "}
-                on{" "}
+                You&apos;ve verified your Roblox account on{" "}
                 {moment(currentUser?.roblox.verifiedAt).format(
                   "MMMM Do YYYY (h:mm a.)"
                 )}
+              </Text>
+              <Text fontSize={"lg"}>
+                Your Roblox username:{" "}
+                <Text as={"span"} fontWeight={"900"}>
+                  {currentUser?.roblox.username} ({currentUser?.roblox.id})
+                </Text>
               </Text>
               <ButtonGroup mt={4}>
                 <Button
