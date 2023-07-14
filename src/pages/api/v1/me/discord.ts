@@ -111,7 +111,7 @@ export default async function handler(
             id: userResponse.user.id,
             username: userResponse.user.username,
             discriminator:
-              userResponse.user.discriminator !== 0
+              userResponse.user.discriminator !== "0"
                 ? userResponse.user.discriminator
                 : null,
           },
