@@ -175,7 +175,7 @@ export default function Profile({ username }: { username?: string }) {
               </Skeleton>
             </Box>
             {/* Name */}
-            <Box mb={8} w={"full"}>
+            <Box mb={user?.platform.staff ? 4 : 8} w={"full"}>
               <Skeleton isLoaded={!!user}>
                 <Text
                   as={"h1"}
