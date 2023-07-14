@@ -122,7 +122,11 @@ export default function Profile({ username }: { username?: string }) {
         pt={8}
         flexDir={"column"}
       >
-        <Box pos={"relative"} width={{ base: "full", md: "min-content" }}>
+        <Box
+          pos={"relative"}
+          width={{ base: "full", md: "min-content" }}
+          pb={8}
+        >
           {/* Badge */}
           <Flex
             w={{ base: "300px", md: "300px" }}
@@ -200,16 +204,19 @@ export default function Profile({ username }: { username?: string }) {
             </Box>
           </Flex>
         </Box>
-        <Box my={8}>
+        {/* User Bio */}
+        <Box my={4}>
           <Box w={{ base: "full", md: "384px" }} rounded={"lg"}>
             <Text as={"h1"} fontSize={"2xl"} fontWeight={"900"}>
               About Me
             </Text>
             <Skeleton isLoaded={!!user}>
               {!user?.bio ? (
-                <Text size={"md"}>This user has not set a bio yet.</Text>
+                <Text size={"md"} color={"gray.500"}>
+                  This user has not set a bio yet.
+                </Text>
               ) : (
-                // multi-line support
+                // Multi-line support
                 user?.bio.split("\n").map((line: string, i: number) => (
                   <Text size={"md"} key={i}>
                     {line}
@@ -217,44 +224,58 @@ export default function Profile({ username }: { username?: string }) {
                 ))
               )}
             </Skeleton>
-            {/* User Linked Accounts */}
-            <Flex flexDir={"row"} py={2} gap={0} w={"fit-content"}>
-              {user?.discord.verified && (
-                <Button
-                  as={NextLink}
-                  href={`https://discord.com/users/${user?.discord.id}`}
-                  target="_blank"
-                  size={"sm"}
-                  variant={"ghost"}
-                >
-                  <Icon as={BsDiscord} size={"xl"} mr={2} />
-                  <Text size={"md"} fontWeight={"900"}>
-                    @{user?.discord.username}
-                    {user?.discord.discriminator &&
-                      `#${user?.discord.discriminator}`}
+          </Box>
+        </Box>
+        {/* User Linked Accounts */}
+        <Box my={4}>
+          <Box rounded={"lg"}>
+            <Text as={"h1"} fontSize={"2xl"} fontWeight={"900"}>
+              Connected Accounts
+            </Text>
+            <Skeleton isLoaded={!!user}>
+              <Flex flexDir={"row"} gap={0} w={"fit-content"}>
+                {!user?.discord.verified && !user?.roblox.verified && (
+                  <Text size={"md"} color={"gray.500"}>
+                    This user has not linked any accounts.
                   </Text>
-                </Button>
-              )}
-              {user?.roblox.verified && (
-                <Button
-                  as={NextLink}
-                  href={`https://roblox.com/users/${user?.roblox.id}/profile`}
-                  target="_blank"
-                  size={"sm"}
-                  variant={"ghost"}
-                >
-                  <Icon as={SiRoblox} size={"xl"} mr={2} />
-                  <Text size={"md"} fontWeight={"900"}>
-                    {user?.roblox.username}
-                  </Text>
-                </Button>
-              )}
-            </Flex>
+                )}
+                {user?.discord.verified && (
+                  <Button
+                    as={NextLink}
+                    href={`https://discord.com/users/${user?.discord.id}`}
+                    target="_blank"
+                    size={"md"}
+                    variant={"ghost"}
+                  >
+                    <Icon as={BsDiscord} size={"xl"} mr={2} />
+                    <Text size={"md"} fontWeight={"900"}>
+                      @{user?.discord.username}
+                      {user?.discord.discriminator &&
+                        `#${user?.discord.discriminator}`}
+                    </Text>
+                  </Button>
+                )}
+                {user?.roblox.verified && (
+                  <Button
+                    as={NextLink}
+                    href={`https://roblox.com/users/${user?.roblox.id}/profile`}
+                    target="_blank"
+                    size={"md"}
+                    variant={"ghost"}
+                  >
+                    <Icon as={SiRoblox} size={"xl"} mr={2} />
+                    <Text size={"md"} fontWeight={"900"}>
+                      {user?.roblox.username}
+                    </Text>
+                  </Button>
+                )}
+              </Flex>
+            </Skeleton>
           </Box>
         </Box>
         <Flex flexDir={["column", "row"]}>
           {/* Organizations */}
-          <Box py={4} w={["full", "300px"]} mr={[0, 16]}>
+          <Box py={2} w={["full", "300px"]} mr={[0, 16]}>
             <Flex
               w={"full"}
               h={"fit-content"}
@@ -269,13 +290,13 @@ export default function Profile({ username }: { username?: string }) {
               <Box w={"full"} h={"full"}>
                 <Skeleton isLoaded={!!user}>
                   {user?.organizations?.length ? (
-                    <Box py={2}>
+                    <Box>
                       {user?.organizations?.map((org: any) => (
                         <OrganizationItem key={org.id} organization={org} />
                       ))}
                     </Box>
                   ) : (
-                    <Text as={"h2"} size={"md"}>
+                    <Text size={"md"} color={"gray.500"}>
                       This user is not in any organizations.
                     </Text>
                   )}
