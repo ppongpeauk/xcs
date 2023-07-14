@@ -171,7 +171,7 @@ export default function Profile({ username }: { username?: string }) {
               </Skeleton>
             </Box>
             {/* Name */}
-            <Box mb={4} w={"full"}>
+            <Box mb={8} w={"full"}>
               <Skeleton isLoaded={!!user}>
                 <Text
                   as={"h1"}
@@ -188,7 +188,6 @@ export default function Profile({ username }: { username?: string }) {
                     as={"h2"}
                     size={"md"}
                     textAlign={"center"}
-                    // className={codeFont.className}
                   >
                     @{user?.username || "username"}
                   </Text>
