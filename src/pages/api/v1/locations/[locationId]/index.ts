@@ -71,10 +71,10 @@ export default async function handler(
       if (member.role <= 2 && body.name !== location.name) {
         return res.status(401).json({ message: "Unauthorized" });
       }
-      if (body.name.length > 32 || body.name.length < 3) {
+      if (body.name.length > 32 || body.name.length < 1) {
         return res
           .status(400)
-          .json({ message: "Name must be between 3-32 characters." });
+          .json({ message: "Name must be between 1-32 characters." });
       }
     }
 

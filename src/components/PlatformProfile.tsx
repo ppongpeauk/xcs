@@ -189,7 +189,7 @@ export default function Profile({ username }: { username?: string }) {
               <Skeleton isLoaded={!!user}>
                 <Flex flexDir={"column"} align={"center"} justify={"center"}>
                   <Text as={"h2"} size={"md"} textAlign={"center"}>
-                    @{user?.username || "username"}
+                    @{user?.username || "useame"}
                   </Text>
                   {user?.platform.staff && (
                     <Flex align={"center"}>
