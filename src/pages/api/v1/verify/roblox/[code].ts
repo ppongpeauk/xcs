@@ -5,15 +5,15 @@ async function checkBlacklist(robloxId: string) {
   // temp
   // type 0 = user, type 1 = group
   const blacklist = [
-    {
-      type: 0,
-      id: 32757211,
-    },
-    {
-      type: 1,
-      id: 1,
-    },
-  ]
+    // {
+    //   type: 0,
+    //   id: 32757211,
+    // },
+    // {
+    //   type: 1,
+    //   id: 1,
+    // },
+  ] as { type: number; id: number }[];
 
   // check if user is in any of the blacklisted users
   const user = blacklist.find((user) => user.type === 0 && user.id === Number(robloxId));
