@@ -30,11 +30,18 @@ export default async function handler(
     const users = db.collection("users");
     const user = await users.findOne(
       { id: uid },
-      { projection: { id: 1, platform: 1 } }
+      { projection: { id: 1, platform: 1, roblox: 1 } }
     );
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
+    }
+
+    if (!user.roblox.verified) {
+      return res.status(403).json({
+        message:
+          "You must link your Roblox account before creating an organization.",
+      });
     }
 
     // Check if user has less than 1 organization owned

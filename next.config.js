@@ -8,6 +8,10 @@ const nextConfig = {
         destination: "https://users.roblox.com/:slug*",
       },
       {
+        source: "/api/v1/roblox/groups/:slug*",
+        destination: "https://groups.roblox.com/:slug*",
+      },
+      {
         source: "/api/v1/roblox/games/:slug*",
         destination: "https://games.roblox.com/:slug*",
       },

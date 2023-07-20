@@ -91,7 +91,7 @@ export default async function handler(
           [`members.${uid}`]: {
             role: inviteCodeData.role || 1,
             clearances: [],
-            joined: new Date().getTime(),
+            joinedAt: new Date().getTime(),
           },
         },
       }

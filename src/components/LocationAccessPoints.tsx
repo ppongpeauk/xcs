@@ -118,10 +118,10 @@ export default function LocationAccessPoints({
                       fontSize={"xl"}
                       py={2}
                     >
-                      {!accessPoint.configuration.active && (
+                      {!accessPoint?.config?.active && (
                         <AiFillWarning title="Not active" />
                       )}
-                      {accessPoint.configuration.armed ? (
+                      {accessPoint?.config?.armed ? (
                         <BiSolidLock title="Armed" />
                       ) : (
                         <BiSolidLockOpen title="Unarmed" />

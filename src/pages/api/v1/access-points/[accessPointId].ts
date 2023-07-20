@@ -112,12 +112,7 @@ export default async function handler(
           name: body.name,
           description: body.description,
           updatedAt: timestamp,
-          configuration: {
-            active: body.active,
-            armed: body.armed,
-            timedAccess: body.timedAccess,
-            alwaysAllowed: body.alwaysAllowed,
-          },
+          config: body.config,
         },
       }
     );

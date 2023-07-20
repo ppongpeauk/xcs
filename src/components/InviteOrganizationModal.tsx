@@ -139,7 +139,7 @@ export default function InviteOrganizationModal({
                               <FormLabel>Role</FormLabel>
                               <Select {...field} variant={"outline"}>
                                 <option value={"1"}>Member</option>
-                                <option value={"2"}>Admin</option>
+                                <option value={"2"}>Manager</option>
                               </Select>
                             </FormControl>
                           )}

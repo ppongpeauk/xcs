@@ -31,6 +31,22 @@ export default async function handler(
     const db = mongoClient.db(process.env.MONGODB_DB as string);
     const locations = db.collection("locations");
     const organizations = db.collection("organizations");
+    const users = db.collection("users");
+
+    const user = await users.findOne({
+      id: uid,
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (!user.roblox.verified) {
+      return res.status(403).json({
+        message:
+          "You must link your Roblox account before creating a location.",
+      });
+    }
 
     let organization = await organizations.findOne({
       id: organizationId,

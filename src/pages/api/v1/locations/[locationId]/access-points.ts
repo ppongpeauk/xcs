@@ -105,23 +105,47 @@ export default async function handler(
       id: id,
       name: name,
       description: description,
+
       organizationId: location.organizationId,
       locationId: locationId,
-      configuration: {
+
+      createdAt: timestamp,
+      updatedAt: timestamp,
+      createdBy: uid,
+
+      config: {
         active: true,
         armed: true,
-        timedAccess: {
-          routines: [],
-          temporaryAccess: [],
-        },
+
+        schedules: [],
+        temporaryAccess: [],
+
         alwaysAllowed: {
           clearances: [],
           users: [],
         },
+
+        colors: {
+          idle: "#ff0000",
+          scanning: "#00ff00",
+
+          granted: "#0000ff",
+          denied: "#ffff00",
+        },
       },
-      createdAt: timestamp,
-      updatedAt: timestamp,
-      createdBy: uid,
+
+      // configuration: {
+      //   active: true,
+      //   armed: true,
+      //   timedAccess: {
+      //     routines: [],
+      //     temporaryAccess: [],
+      //   },
+      //   alwaysAllowed: {
+      //     clearances: [],
+      //     users: [],
+      //   },
+      // },
     };
 
     await accessPoints.insertOne(accessPoint);

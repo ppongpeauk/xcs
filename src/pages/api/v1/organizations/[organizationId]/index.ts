@@ -59,10 +59,11 @@ export default async function handler(
     for (const [key, value] of Object.entries(organization.members) as any) {
       let member = await users.findOne(
         { id: key },
-        { projection: { name: 1, username: 1, avatar: 1 } }
+        { projection: { name: 1, displayName: 1, username: 1, avatar: 1 } }
       );
       members.push({
         id: key,
+        displayName: member?.displayName,
         name: member?.name,
         username: member?.username,
         avatar: member?.avatar,

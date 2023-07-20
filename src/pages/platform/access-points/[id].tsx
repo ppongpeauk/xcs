@@ -214,19 +214,15 @@ export default function PlatformAccessPoint() {
               initialValues={{
                 name: accessPoint?.name,
                 description: accessPoint?.description,
-                active: accessPoint?.configuration.active,
-                armed: accessPoint?.configuration.armed,
-                timedAccess: JSON.stringify(
-                  accessPoint?.configuration.timedAccess
-                ),
-                alwaysAllowed: JSON.stringify(
-                  accessPoint?.configuration.alwaysAllowed
+                active: accessPoint?.config?.active,
+                armed: accessPoint?.config?.armed,
+                alwaysAllowedUsers: JSON.stringify(
+                  accessPoint?.config?.alwaysAllowed?.users
                 ),
               }}
               onSubmit={(values, actions) => {
                 try {
-                  JSON.parse(values.timedAccess);
-                  JSON.parse(values.alwaysAllowed);
+                  JSON.parse(values.alwaysAllowedUsers);
                 } catch (err) {
                   toast({
                     title: "Error",
@@ -248,10 +244,15 @@ export default function PlatformAccessPoint() {
                     body: JSON.stringify({
                       name: values.name,
                       description: values.description || "",
-                      active: values.active,
-                      armed: values.armed,
-                      timedAccess: JSON.parse(values.timedAccess),
-                      alwaysAllowed: JSON.parse(values.alwaysAllowed),
+
+                      config: {
+                        active: values.active,
+                        armed: values.armed,
+
+                        alwaysAllowed: {
+                          users: JSON.parse(values.alwaysAllowedUsers),
+                        }
+                      },
                     }),
                   })
                     .then((res: any) => {
@@ -323,8 +324,8 @@ export default function PlatformAccessPoint() {
                       </FormControl>
                     )}
                   </Field>
-                  {/* <Stack direction={"row"} spacing={2}>
-                    <Field name="timedAccess">
+                  <Stack direction={"row"} spacing={2}>
+                    {/* <Field name="timedAccess">
                       {({ field, form }: any) => (
                         <FormControl>
                           <FormLabel>timedAccess</FormLabel>
@@ -341,11 +342,11 @@ export default function PlatformAccessPoint() {
                           </InputGroup>
                         </FormControl>
                       )}
-                    </Field>
-                    <Field name="alwaysAllowed">
+                    </Field> */}
+                    <Field name="alwaysAllowedUsers">
                       {({ field, form }: any) => (
                         <FormControl>
-                          <FormLabel>alwaysAllowed</FormLabel>
+                          <FormLabel>alwaysAllowedUsers</FormLabel>
                           <InputGroup mb={2}>
                             <Textarea
                               {...field}
@@ -353,13 +354,23 @@ export default function PlatformAccessPoint() {
                               autoComplete="off"
                               spellCheck={false}
                               variant={"outline"}
-                              placeholder={"alwaysAllowed JSON"}
+                              placeholder={JSON.stringify(
+                                {
+                                  1168193517: {
+                                    scanData: {
+                                      allowedFloors: [-1],
+                                    },
+                                  },
+                                },
+                                null,
+                                0
+                              )}
                             />
                           </InputGroup>
                         </FormControl>
                       )}
                     </Field>
-                  </Stack> */}
+                  </Stack>
                   <Stack direction={"row"} spacing={2} py={2} w={"fit-content"}>
                     <Field name="active">
                       {({ field, form }: any) => (
@@ -372,7 +383,7 @@ export default function PlatformAccessPoint() {
                               placeholder="Active"
                               variant={"outline"}
                               width={"fit-content"}
-                              defaultChecked={accessPoint?.configuration.active}
+                              defaultChecked={accessPoint?.config?.active}
                             />
                           </InputGroup>
                         </FormControl>
@@ -389,7 +400,7 @@ export default function PlatformAccessPoint() {
                               placeholder="Armed"
                               variant={"outline"}
                               width={"fit-content"}
-                              defaultChecked={accessPoint?.configuration.armed}
+                              defaultChecked={accessPoint?.config?.armed}
                             />
                           </InputGroup>
                         </FormControl>

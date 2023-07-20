@@ -185,6 +185,40 @@ export default function PlatformOrganization() {
       });
   };
 
+  const onMemberRemove = (member: any) => {
+    fetch(`/api/v1/organizations/${query.id}/members/${member.id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${idToken}` },
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          return res.json();
+        } else {
+          return res.json().then((json: any) => {
+            throw new Error(json.message);
+          });
+        }
+      })
+      .then((data) => {
+        toast({
+          title: data.message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+        refreshData();
+      })
+      .catch((err) => {
+        toast({
+          title: "Error",
+          description: err.message,
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
+      });
+  };
+
   // Fetch organization data
   useEffect(() => {
     if (!idToken) return;
@@ -235,6 +269,13 @@ export default function PlatformOrganization() {
         isOpen={memberModalOpen}
         onOpen={memberModalOnOpen}
         onClose={memberModalOnClose}
+        onRefresh={refreshData}
+        members={organization?.members}
+        organization={organization}
+        clientMember={organization?.members.find(
+          (member: any) => member.id === user?.uid
+        )}
+        onMemberRemove={onMemberRemove}
       />
       <InviteOrganizationModal
         isOpen={inviteModalOpen}
@@ -300,7 +341,7 @@ export default function PlatformOrganization() {
           General Settings
         </Text>
         {organization ? (
-          <Box p={4} w={"full"}>
+          <Box p={4}>
             <Formik
               initialValues={{
                 name: organization?.name,
@@ -415,7 +456,11 @@ export default function PlatformOrganization() {
                       </FormControl>
                     )}
                   </Field>
-                  <Stack direction={{ base: "column", md: "row" }} spacing={2} pt={2}>
+                  <Stack
+                    direction={{ base: "column", md: "row" }}
+                    spacing={2}
+                    pt={2}
+                  >
                     <Button
                       mb={2}
                       isDisabled={props.isSubmitting}
@@ -444,7 +489,11 @@ export default function PlatformOrganization() {
                       Invite Members
                     </Button>
                   </Stack>
-                  <Stack direction={{ base: "column", md: "row" }} spacing={2} pt={2}>
+                  <Stack
+                    direction={{ base: "column", md: "row" }}
+                    spacing={2}
+                    pt={2}
+                  >
                     <Button
                       mb={2}
                       isDisabled={props.isSubmitting}

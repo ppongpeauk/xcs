@@ -1,6 +1,37 @@
 import clientPromise from "@/lib/mongodb";
 import { NextApiRequest, NextApiResponse } from "next";
 
+async function checkBlacklist(robloxId: string) {
+  // temp
+  // type 0 = user, type 1 = group
+  const blacklist = [
+    {
+      type: 0,
+      id: 32757211,
+    },
+    {
+      type: 1,
+      id: 1,
+    },
+  ]
+
+  // check if user is in any of the blacklisted users
+  const user = blacklist.find((user) => user.type === 0 && user.id === Number(robloxId));
+  if (user) return true;
+
+  const groups = await fetch(
+    `${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/roblox/groups/v2/users/${robloxId}/groups/roles`
+  )
+    .then((res) => res.json())
+    .then((json) => json?.data);
+
+  // check if user is in any of the blacklisted groups
+  const group = blacklist.find((group) => group.type === 1 && groups?.find((g: any) => g.group.id === group.id));
+  if (group) return true;
+
+  return false;
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -34,6 +65,15 @@ export default async function handler(
           message: "Roblox user not found.",
         });
       }
+
+      // check if user is blacklisted
+      const isBlacklisted = await checkBlacklist(robloxId);
+      if (isBlacklisted) {
+        return res.status(403).json({
+          success: false,
+          message: "You are not authorized to use this service.",
+        });
+      }      
 
       // locate any users that have the same roblox id and revoke their verification
       await users.updateMany(

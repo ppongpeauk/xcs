@@ -179,7 +179,7 @@ export default function Profile({ username }: { username?: string }) {
               <Skeleton isLoaded={!!user}>
                 <Text
                   as={"h1"}
-                  fontSize={user?.displayName.length > 20 ? "2xl" : "3xl"}
+                  fontSize={user?.displayName?.length > 20 ? "2xl" : "3xl"}
                   fontWeight={"900"}
                   textAlign={"center"}
                 >
