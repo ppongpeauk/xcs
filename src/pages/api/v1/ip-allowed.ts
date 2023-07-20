@@ -1,5 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 const requestIP = require("request-ip");
+const ispWhitelist = [
+  "Roblox",
+]
 
 const handler = async (
   req: NextApiRequest,
@@ -13,6 +16,7 @@ const handler = async (
   if (geoInfoJson.status === "fail") {
     return res.status(500).json({
       success: false,
+      allowed: false,
       ip: ip,
       message: "Failed to get IP address",
     });
@@ -20,6 +24,7 @@ const handler = async (
 
   return res.status(200).json({
     success: true,
+    allowed: ispWhitelist.includes(geoInfoJson.isp),
     ip: ip,
     isp: geoInfoJson.isp,
   });
