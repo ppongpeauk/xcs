@@ -98,7 +98,7 @@ export default function LocationAccessPoints({
                   h={"auto"}
                   p={6}
                   m={2}
-                  aspectRatio={2 / 1}
+                  aspectRatio={1.5 / 1}
                   borderWidth={1}
                   borderRadius={"lg"}
                   borderColor={useColorModeValue("gray.200", "gray.700")}
@@ -107,13 +107,16 @@ export default function LocationAccessPoints({
                   flexDir={"column"}
                 >
                   <Box w={"full"}>
-                    <Text fontSize={"2xl"} fontWeight={"bold"} mb={2}>
+                    <Text fontSize={"2xl"} fontWeight={"bold"}>
                       {accessPoint.name}
                     </Text>
+                    <Code>{accessPoint.id}</Code>{" "}
+                    <Code ml={2}>Updated {moment(accessPoint.updatedAt).fromNow()}</Code>
                     <HStack
                       align={"center"}
                       justify={"flex-start"}
                       fontSize={"xl"}
+                      py={2}
                     >
                       {!accessPoint.configuration.active && (
                         <AiFillWarning title="Not active" />
@@ -124,17 +127,9 @@ export default function LocationAccessPoints({
                         <BiSolidLockOpen title="Unarmed" />
                       )}
                     </HStack>
-
-                    <Box py={4}>
+                    <Box>
                       <Text>
                         {accessPoint.description || "No description available."}
-                      </Text>
-                      <Text>
-                        ID: <Code>{accessPoint.id}</Code>
-                      </Text>
-                      <Text>
-                        Updated at:{" "}
-                        <Code>{moment(accessPoint.updatedAt).fromNow()}</Code>
                       </Text>
                     </Box>
                   </Box>

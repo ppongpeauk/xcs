@@ -262,6 +262,8 @@ export default function PlatformLocations() {
                         </Box>
                         {location.roblox?.place && (
                           <Avatar
+                            as={NextLink}
+                            href={`https://www.roblox.com/games/${location.roblox.place.rootPlaceId}/${location.roblox.place.name}`}
                             alignSelf={"flex-start"}
                             name={location.roblox.place.name}
                             src={location.roblox.place.thumbnail}
