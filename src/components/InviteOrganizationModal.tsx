@@ -23,9 +23,11 @@ import {
   useColorModeValue,
   useToast,
 } from "@chakra-ui/react";
+import { MultiSelect } from "chakra-multiselect";
 import { Field, Form, Formik } from "formik";
 
 import { useAuthContext } from "@/contexts/AuthContext";
+import { textToRole } from "@/lib/utils";
 import NextLink from "next/link";
 import { useRef, useState } from "react";
 
@@ -69,7 +71,7 @@ export default function InviteOrganizationModal({
   return (
     <>
       <Formik
-        initialValues={{ role: "1", singleUse: true }}
+        initialValues={{ role: "Member", singleUse: true }}
         onSubmit={(values, actions) => {
           user.getIdToken().then((token: any) => {
             fetch(`/api/v1/organizations/${organizationId}/createInviteCode`, {
@@ -80,7 +82,7 @@ export default function InviteOrganizationModal({
               },
               body: JSON.stringify({
                 singleUse: values.singleUse,
-                role: parseInt(values.role),
+                role: textToRole(values.role),
               }),
             })
               .then((res) => {
@@ -136,11 +138,25 @@ export default function InviteOrganizationModal({
                         <Field name="role">
                           {({ field, form }: any) => (
                             <FormControl>
-                              <FormLabel>Role</FormLabel>
+                              {/* <FormLabel>Role</FormLabel>
                               <Select {...field} variant={"outline"}>
                                 <option value={"1"}>Member</option>
                                 <option value={"2"}>Manager</option>
-                              </Select>
+                              </Select> */}
+                              <MultiSelect
+                                {...field}
+                                label="Role"
+                                options={[
+                                  { label: "Member", value: "Member" },
+                                  { label: "Manager", value: "Manager" },
+                                ]}
+                                onChange={(value) => {
+                                  form.setFieldValue("role", value as string);
+                                }}
+                                value={form.values.role}
+                                placeholder="Select a role..."
+                                single={true}
+                              />
                             </FormControl>
                           )}
                         </Field>
@@ -175,19 +191,6 @@ export default function InviteOrganizationModal({
                         </Text>
                       </>
                     )}
-                    {/* <Field name="organization">
-                      {({ field, form }: any) => (
-                        <FormControl>
-                          <FormLabel>Organization</FormLabel>
-                          <Input
-                            {...field}
-                            variant={"outline"}
-                            value={selectedOrganization.name}
-                            isDisabled={true}
-                          />
-                        </FormControl>
-                      )}
-                    </Field> */}
                   </VStack>
                   <Text fontSize={"sm"} pt={2}>
                     All invitation links expire after 14 days.

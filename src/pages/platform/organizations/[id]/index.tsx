@@ -45,6 +45,7 @@ import { BiSolidExit } from "react-icons/bi";
 import { FaIdBadge, FaUserShield } from "react-icons/fa";
 import { ImTree } from "react-icons/im";
 import { IoIosRemoveCircle } from "react-icons/io";
+import { IoSave } from "react-icons/io5";
 import { RiMailAddFill } from "react-icons/ri";
 import { SiRoblox } from "react-icons/si";
 
@@ -79,12 +80,6 @@ export default function PlatformOrganization() {
     isOpen: memberModalOpen,
     onOpen: memberModalOnOpen,
     onClose: memberModalOnClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: inviteModalOpen,
-    onOpen: inviteModalOnOpen,
-    onClose: inviteModalOnClose,
   } = useDisclosure();
 
   const onLeave = () => {
@@ -277,14 +272,6 @@ export default function PlatformOrganization() {
         )}
         onMemberRemove={onMemberRemove}
       />
-      <InviteOrganizationModal
-        isOpen={inviteModalOpen}
-        onOpen={inviteModalOnOpen}
-        onClose={inviteModalOnClose}
-        onCreate={() => {}}
-        organizationId={organization?.id}
-      />
-
       <Container maxW={"full"} p={8}>
         <Breadcrumb
           spacing="8px"
@@ -362,50 +349,51 @@ export default function PlatformOrganization() {
                   });
                   return actions.setSubmitting(false);
                 }
-
-                fetch(`/api/v1/organizations/${query.id}`, {
-                  method: "PUT",
-                  headers: {
-                    Authorization: `Bearer ${idToken}`,
-                    "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify({
-                    name: values.name,
-                    members: JSON.parse(values.members),
-                    clearances: JSON.parse(values.clearances),
-                  }),
-                })
-                  .then((res: any) => {
-                    if (res.status === 200) {
-                      return res.json();
-                    } else {
-                      return res.json().then((json: any) => {
-                        throw new Error(json.message);
+                user.getIdToken().then((token: string) => {
+                  fetch(`/api/v1/organizations/${query.id}`, {
+                    method: "PUT",
+                    headers: {
+                      Authorization: `Bearer ${token}`,
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      name: values.name,
+                      members: JSON.parse(values.members),
+                      clearances: JSON.parse(values.clearances),
+                    }),
+                  })
+                    .then((res: any) => {
+                      if (res.status === 200) {
+                        return res.json();
+                      } else {
+                        return res.json().then((json: any) => {
+                          throw new Error(json.message);
+                        });
+                      }
+                    })
+                    .then((data) => {
+                      toast({
+                        title: data.message,
+                        status: "success",
+                        duration: 9000,
+                        isClosable: true,
                       });
-                    }
-                  })
-                  .then((data) => {
-                    toast({
-                      title: data.message,
-                      status: "success",
-                      duration: 9000,
-                      isClosable: true,
+                      actions.setSubmitting(false);
+                      refreshData();
+                    })
+                    .catch((error) => {
+                      toast({
+                        title: "There was an error updating the organization.",
+                        description: error.message,
+                        status: "error",
+                        duration: 9000,
+                        isClosable: true,
+                      });
+                    })
+                    .finally(() => {
+                      actions.setSubmitting(false);
                     });
-                    actions.setSubmitting(false);
-                    refreshData();
-                  })
-                  .catch((error) => {
-                    toast({
-                      title: "There was an error updating the organization.",
-                      description: error.message,
-                      status: "error",
-                      duration: 9000,
-                      isClosable: true,
-                    });
-                  })
-                  .finally(() => {
-                    actions.setSubmitting(false);
-                  });
+                });
               }}
             >
               {(props) => (
@@ -426,7 +414,7 @@ export default function PlatformOrganization() {
                       </FormControl>
                     )}
                   </Field>
-                  <Field name="members">
+                  {/* <Field name="members">
                     {({ field, form }: any) => (
                       <FormControl minW={"fit-content"}>
                         <FormLabel>(Temp.) Members</FormLabel>
@@ -455,7 +443,7 @@ export default function PlatformOrganization() {
                         </InputGroup>
                       </FormControl>
                     )}
-                  </Field>
+                  </Field> */}
                   <Stack
                     direction={{ base: "column", md: "row" }}
                     spacing={2}
@@ -463,17 +451,6 @@ export default function PlatformOrganization() {
                   >
                     <Button
                       mb={2}
-                      isDisabled={props.isSubmitting}
-                      isLoading={props.isSubmitting}
-                      onClick={roleModalOnOpen}
-                      leftIcon={<FaUserShield />}
-                    >
-                      Manage Clearances
-                    </Button>
-                    <Button
-                      mb={2}
-                      isDisabled={props.isSubmitting}
-                      isLoading={props.isSubmitting}
                       onClick={memberModalOnOpen}
                       leftIcon={<FaIdBadge />}
                     >
@@ -481,12 +458,10 @@ export default function PlatformOrganization() {
                     </Button>
                     <Button
                       mb={2}
-                      isDisabled={props.isSubmitting}
-                      isLoading={props.isSubmitting}
-                      onClick={inviteModalOnOpen}
-                      leftIcon={<RiMailAddFill />}
+                      onClick={roleModalOnOpen}
+                      leftIcon={<FaUserShield />}
                     >
-                      Invite Members
+                      Manage Access Groups
                     </Button>
                   </Stack>
                   <Stack
@@ -496,11 +471,11 @@ export default function PlatformOrganization() {
                   >
                     <Button
                       mb={2}
-                      isDisabled={props.isSubmitting}
                       isLoading={props.isSubmitting}
+                      leftIcon={<IoSave />}
                       type={"submit"}
                     >
-                      Update
+                      Save Changes
                     </Button>
                     <Button
                       as={NextLink}
@@ -514,7 +489,6 @@ export default function PlatformOrganization() {
                       <Button
                         colorScheme="red"
                         mb={2}
-                        isDisabled={props.isSubmitting}
                         onClick={onDeleteDialogOpen}
                         leftIcon={<IoIosRemoveCircle />}
                       >

@@ -24,24 +24,24 @@ import {
 } from "next/font/google";
 const font = Familjen_Grotesk({ subsets: ["latin"] });
 
-type NextPageWithLayout = NextPage & {
-  getLayout?: (page: React.ReactElement) => React.ReactNode;
-};
-
 export default function App({ Component, pageProps }: any) {
   const getLayout = Component.getLayout || ((page: any) => page);
 
   return (
     <>
-      <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-      <AuthProvider>
-        <ChakraProvider>
+      <style jsx global>
+        {`
+          :root {
+            --font-familjen: ${font.style.fontFamily};
+          }
+        `}
+      </style>
+      <ChakraProvider theme={theme} cssVarsRoot="body">
+        <AuthProvider>
           <PageProgress />
-          <div className={font.className} style={{}}>
-            {getLayout(<Component {...pageProps} />)}
-          </div>
-        </ChakraProvider>
-      </AuthProvider>
+          {getLayout(<Component {...pageProps} />)}
+        </AuthProvider>
+      </ChakraProvider>
     </>
   );
 }

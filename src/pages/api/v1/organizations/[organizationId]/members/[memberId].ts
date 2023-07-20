@@ -48,12 +48,13 @@ export default async function handler(
   }
 
   const timestamp = new Date();
+  let { role } = req.body as { role: number };
 
   if (!organization.members[memberId]) {
     return res.status(404).json({ message: "User not found in organization." });
   }
 
-  if (organization.members[memberId].role >= 3) {
+  if (role !== organization.members[memberId].role && organization.members[memberId].role >= 3) {
     return res.status(403).json({
       message: "User is the owner of the organization.",
       success: false,
@@ -62,7 +63,6 @@ export default async function handler(
 
   // Edit Member
   if (req.method === "PATCH") {
-    let { role } = req.body as { role: number };
     role = parseInt(role.toString());
 
     if (organization.members[uid].role < 3) {
@@ -72,7 +72,7 @@ export default async function handler(
       });
     }
 
-    if (role === 3) {
+    if (role !== organization.members[memberId].role && role === 3) {
       return res.status(403).json({
         message: "You cannot grant ownership.",
         success: false,
@@ -112,7 +112,7 @@ export default async function handler(
 
     return res.status(200).json({
       success: true,
-      message: `Successfully edited ${user?.displayName}'s role.`,
+      message: `Successfully edited member permissions for ${user?.displayName}.`,
     });
   }
 

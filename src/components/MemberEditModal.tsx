@@ -4,6 +4,7 @@ import {
   Flex,
   FormControl,
   FormLabel,
+  HStack,
   Input,
   Modal,
   ModalBody,
@@ -13,12 +14,16 @@ import {
   ModalHeader,
   ModalOverlay,
   Select,
+  Spacer,
   useColorModeValue,
   useDisclosure,
-  useToast
+  useToast,
 } from "@chakra-ui/react";
 
+import DeleteDialog from "@/components/DeleteDialog";
+import InviteOrganizationModal from "@/components/InviteOrganizationModal";
 import { useAuthContext } from "@/contexts/AuthContext";
+import { roleToText, textToRole } from "@/lib/utils";
 import {
   Box,
   Table,
@@ -32,10 +37,12 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
+import { MultiSelect } from "chakra-multiselect";
 import { Field, Form, Formik } from "formik";
 import moment from "moment";
 import { useEffect, useRef, useState } from "react";
-import DeleteDialog from "./DeleteDialog";
+import { IoSave } from "react-icons/io5";
+import { RiMailAddFill } from "react-icons/ri";
 
 export default function MemberEditModal({
   isOpen,
@@ -55,23 +62,16 @@ export default function MemberEditModal({
   const [filteredMembers, setFilteredMembers] = useState<any>();
 
   const {
-    isOpen: isDeleteUserDialogOpen,
-    onOpen: onDeleteUserDialogOpen,
-    onClose: onDeleteUserDialogClose,
+    isOpen: deleteUserDialogOpen,
+    onOpen: deleteUserDialogOnOpen,
+    onClose: deleteUserDialogOnClose,
   } = useDisclosure();
 
-  const roleToText = (role: number) => {
-    switch (role) {
-      case 1:
-        return "Member";
-      case 2:
-        return "Manager";
-      case 3:
-        return "Owner";
-      default:
-        return "Member";
-    }
-  };
+  const {
+    isOpen: inviteModalOpen,
+    onOpen: inviteModalOnOpen,
+    onClose: inviteModalOnClose,
+  } = useDisclosure();
 
   const filterMembers = (query: string) => {
     if (!query) return members;
@@ -89,16 +89,23 @@ export default function MemberEditModal({
   return (
     <>
       <DeleteDialog
-        isOpen={isDeleteUserDialogOpen}
-        onClose={onDeleteUserDialogClose}
+        isOpen={deleteUserDialogOpen}
+        onClose={deleteUserDialogOnClose}
         title="Remove Member"
         body={`Are you sure you want to remove ${focusedMember?.displayName} from this organization?`}
         buttonText="Remove"
         onDelete={() => {
-          onDeleteUserDialogClose();
+          deleteUserDialogOnClose();
           onMemberRemove(focusedMember);
           setFocusedMember(null);
         }}
+      />
+      <InviteOrganizationModal
+        isOpen={inviteModalOpen}
+        onOpen={inviteModalOnOpen}
+        onClose={inviteModalOnClose}
+        onCreate={() => {}}
+        organizationId={organization?.id}
       />
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
@@ -109,23 +116,32 @@ export default function MemberEditModal({
           <ModalHeader>Manage Members</ModalHeader>
           <ModalCloseButton />
           <ModalBody w={"full"}>
-            <FormControl w={"fit-content"}>
-              <FormLabel>Search Member</FormLabel>
-              <Input
-                placeholder={"Search for a member..."}
-                ref={memberSearchRef}
-                onChange={(e) => {
-                  if (e.target.value) {
-                    setFilteredMembers(filterMembers(e.target.value));
-                  } else {
-                    setFilteredMembers(members);
-                  }
-                }}
-              />
-            </FormControl>
-
+            <HStack>
+              <FormControl w={"fit-content"}>
+                <FormLabel>Search Member</FormLabel>
+                <Input
+                  placeholder={"Search for a member..."}
+                  ref={memberSearchRef}
+                  onChange={(e) => {
+                    if (e.target.value) {
+                      setFilteredMembers(filterMembers(e.target.value));
+                    } else {
+                      setFilteredMembers(members);
+                    }
+                  }}
+                />
+              </FormControl>
+              <Button
+                alignSelf={"flex-end"}
+                justifySelf={"flex-end"}
+                onClick={inviteModalOnOpen}
+                leftIcon={<RiMailAddFill />}
+              >
+                Invite Members
+              </Button>
+            </HStack>
             <TableContainer py={4}>
-              <Table size="md">
+              <Table size={{ base: "sm", md: "md" }}>
                 <Thead>
                   <Tr>
                     <Th>Member</Th>
@@ -138,7 +154,12 @@ export default function MemberEditModal({
                     <Tr key={member?.id}>
                       <Td>
                         <Flex align={"center"}>
-                          <Avatar size="md" src={member?.avatar} mr={4} />
+                          <Avatar
+                            display={{ base: "none", md: "block" }}
+                            size="md"
+                            src={member?.avatar}
+                            mr={4}
+                          />
                           <Flex flexDir={"column"}>
                             <Text fontWeight="bold">{member?.displayName}</Text>
                             <Text fontSize="sm" color="gray.500">
@@ -161,7 +182,7 @@ export default function MemberEditModal({
                             setFocusedMember(member);
                           }}
                         >
-                          Edit
+                          Edit Member
                         </Button>
                         {clientMember?.id !== member?.id &&
                           clientMember?.role >= 2 &&
@@ -172,7 +193,7 @@ export default function MemberEditModal({
                               ml={2}
                               onClick={() => {
                                 setFocusedMember(member);
-                                onDeleteUserDialogOpen();
+                                deleteUserDialogOnOpen();
                               }}
                             >
                               Remove
@@ -190,15 +211,14 @@ export default function MemberEditModal({
             {/* Edit Member */}
             <Flex
               mt={4}
-              p={4}
+              p={6}
               rounded={"lg"}
               w={"full"}
-              minH={"256px"}
               border={"1px solid"}
               borderColor={useColorModeValue("gray.200", "gray.700")}
             >
               {!focusedMember ? (
-                <Text fontWeight={"bold"} m={"auto"}>
+                <Text m={"auto"} color={"gray.500"}>
                   Select a member to manage.
                 </Text>
               ) : (
@@ -211,16 +231,20 @@ export default function MemberEditModal({
                         {focusedMember?.displayName}
                       </Text>
                       <Text fontSize={"sm"} color={"gray.500"}>
+                        Joined{" "}
+                        {moment(focusedMember?.joinedAt).format("MMMM Do YYYY")}
+                      </Text>
+                      <Text fontSize={"sm"} color={"gray.500"}>
                         {roleToText(focusedMember?.role)}
                       </Text>
                     </Flex>
                   </Flex>
                   {/* Body */}
-                  <Flex>
+                  <Flex h={"full"}>
                     <Formik
                       enableReinitialize={true}
                       initialValues={{
-                        role: focusedMember?.role,
+                        role: roleToText(focusedMember?.role),
                       }}
                       onSubmit={(values, actions) => {
                         user.getIdToken().then((token: string) => {
@@ -233,7 +257,7 @@ export default function MemberEditModal({
                                 "Content-Type": "application/json",
                               },
                               body: JSON.stringify({
-                                role: values.role,
+                                role: textToRole(values.role),
                               }),
                             }
                           )
@@ -272,27 +296,51 @@ export default function MemberEditModal({
                       }}
                     >
                       {(props) => (
-                        <Form>
+                        <Form style={{ width: "100%", height: "100%" }}>
                           <Flex flexDir={"column"} mt={4} w={"full"}>
                             <Field name="role">
                               {({ field, form }: any) => (
-                                <FormControl>
-                                  <FormLabel>Role</FormLabel>
-                                  <Select {...field} variant={"outline"}>
-                                    <option value={"1"}>Member</option>
-                                    <option value={"2"}>Manager</option>
-                                    <option value={"3"}>Owner</option>
-                                  </Select>
+                                <FormControl w={"fit-content"}>
+                                  <MultiSelect
+                                    {...field}
+                                    label="Organization Role"
+                                    options={
+                                      focusedMember.role < 3
+                                        ? [
+                                            {
+                                              label: "Member",
+                                              value: "Member",
+                                            },
+                                            {
+                                              label: "Manager",
+                                              value: "Manager",
+                                            },
+                                          ]
+                                        : [{ label: "Owner", value: "Owner" }]
+                                    }
+                                    onChange={(value) => {
+                                      form.setFieldValue(
+                                        "role",
+                                        value as string
+                                      );
+                                    }}
+                                    value={form.values.role}
+                                    placeholder="Select a role..."
+                                    single={true}
+                                  />
                                 </FormControl>
                               )}
                             </Field>
-                            <Button
-                              mt={4}
-                              type="submit"
-                              isLoading={props.isSubmitting}
-                            >
-                              Save Changes
-                            </Button>
+                            <Flex align={"flex-end"} justify={"flex-end"}>
+                              <Button
+                                mt={8}
+                                isLoading={props.isSubmitting}
+                                leftIcon={<IoSave />}
+                                type={"submit"}
+                              >
+                                Save Changes
+                              </Button>
+                            </Flex>
                           </Flex>
                         </Form>
                       )}
