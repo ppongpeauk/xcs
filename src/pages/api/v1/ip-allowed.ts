@@ -10,7 +10,7 @@ const handler = async (
 ): Promise<void> => {
   const ip = req.headers["x-real-ip"] || requestIP.getClientIp(req);
 
-  const geoInfo = await fetch(`http://ip-api.com/json/${ip}`);
+  const geoInfo = await fetch(`${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/ip-api/json/${ip}`);
   const geoInfoJson = await geoInfo.json();
 
   if (geoInfoJson.status === "fail") {

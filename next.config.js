@@ -14,6 +14,10 @@ const nextConfig = {
       {
         source: "/api/v1/roblox/thumbnails/:slug*",
         destination: "https://thumbnails.roblox.com/:slug*",
+      },
+      {
+        source: "/api/v1/ip-api/:slug*",
+        destination: "http://ip-api.com/:slug*",
       }
     ]
   },
