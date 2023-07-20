@@ -4,11 +4,14 @@
       "id": "AP_001",
       "locationId": "LOC_001",
       "organizationId": "ORG_001",
+
       "name": "Main Entrance",
       "description": "Primary access point for the office building.",
+
       "createdAt": "2023-07-20T12:00:00Z",
       "updatedAt": "2023-07-20T14:30:00Z",
       "createdBy": "JohnDoe",
+
       "schedules": [
         {
           "id": "SCH_001",
@@ -53,7 +56,7 @@
       "id": "USR_001",
       "name": "Alice",
       "groupIds": ["GRP_001", "GRP_002"],
-      "metadata": {
+      "scanData": {
         "allowedFloors": [1, 2, 5]
       }
     },
@@ -61,7 +64,7 @@
       "id": "USR_002",
       "name": "Bob",
       "groupIds": ["GRP_002"],
-      "metadata": {
+      "scanData": {
         "allowedFloors": [3, 4, 6]
       }
     }
@@ -70,13 +73,13 @@
     {
       "id": "GRP_001",
       "name": "Managers",
-      "metadata": {
+      "scanData": {
       }
     },
     {
       "id": "GRP_002",
       "name": "Employees",
-      "metadata": {
+      "scanData": {
       }
     }
   ]
