@@ -13,16 +13,15 @@ const handler = async (
   if (geoInfoJson.status === "fail") {
     return res.status(500).json({
       success: false,
-      collection: [ip, req.socket.remoteAddress, requestIP.getClientIp(req), req.headers["x-real-ip"], req.headers["x-forwarded-for"]],
+      ip: ip,
       message: "Failed to get IP address",
     });
   }
 
   return res.status(200).json({
     success: true,
-    collection: [ip, req.socket.remoteAddress, requestIP.getClientIp(req), req.headers["x-real-ip"], req.headers["x-forwarded-for"]],
+    ip: ip,
     isp: geoInfoJson.isp,
-    info: geoInfoJson,
   });
 };
 
