@@ -116,7 +116,7 @@ export default function MemberEditModal({
           <ModalHeader>Manage Members</ModalHeader>
           <ModalCloseButton />
           <ModalBody w={"full"}>
-            <HStack>
+            <HStack mb={2}>
               <FormControl w={"fit-content"}>
                 <FormLabel>Search Member</FormLabel>
                 <Input
@@ -140,7 +140,7 @@ export default function MemberEditModal({
                 Invite Members
               </Button>
             </HStack>
-            <TableContainer py={4}>
+            <TableContainer py={2} maxH={"352px"} overflowY={"auto"}>
               <Table size={{ base: "sm", md: "md" }}>
                 <Thead>
                   <Tr>
@@ -210,7 +210,7 @@ export default function MemberEditModal({
             </TableContainer>
             {/* Edit Member */}
             <Flex
-              mt={4}
+              mt={2}
               p={6}
               rounded={"lg"}
               w={"full"}
