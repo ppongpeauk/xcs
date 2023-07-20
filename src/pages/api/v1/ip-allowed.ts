@@ -11,6 +11,7 @@ const handler = async (
   if (geoInfoJson.status === "fail") {
     return res.status(500).json({
       success: false,
+      remote: req.socket.remoteAddress,
       message: "Failed to get IP address",
     });
   }
@@ -18,6 +19,7 @@ const handler = async (
   return res.status(200).json({
     success: true,
     ip: requestIP.getClientIp(req),
+    remote: req.socket.remoteAddress,
     isp: geoInfoJson.isp,
     info: geoInfoJson,
   });
