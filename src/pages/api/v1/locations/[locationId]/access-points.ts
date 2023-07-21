@@ -74,6 +74,7 @@ export default async function handler(
       id = generateString({
         length: 8,
         charset: "alphanumeric",
+        capitalization: "uppercase",
       });
     } while (await accessPoints.findOne({ id: id }));
 

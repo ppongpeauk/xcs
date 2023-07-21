@@ -109,6 +109,7 @@ export default async function handler(
     const id = generateString({
       length: 16,
       charset: "alphanumeric",
+      capitalization: "lowercase",
     });
 
     await organizations.insertOne({
