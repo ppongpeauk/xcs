@@ -310,7 +310,7 @@ export default function PlatformOrganization() {
           <Flex flexDir={"column"}>
             <Text
               as={"h1"}
-              fontSize={{ base: "2xl", md: "3xl" }}
+              fontSize={{ base: "2xl", md: "4xl" }}
               fontWeight={"900"}
               lineHeight={1}
             >
@@ -444,9 +444,9 @@ export default function PlatformOrganization() {
                             placeholder="Organization Name"
                             variant={"outline"}
                             width={"fit-content"}
-                            autoComplete="off"
-                            autoCorrect="off"
-                            spellCheck="false"
+                            autoComplete={"off"}
+                            autoCorrect={"off"}
+                            spellCheck={"false"}
                           />
                         </InputGroup>
                       </FormControl>
