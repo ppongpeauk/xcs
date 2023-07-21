@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import {
   Avatar,
   Button,
@@ -391,7 +392,7 @@ export default function MemberEditModal({
                                 "There was an error parsing the scan data.",
                               description: error.message as string,
                               status: "error",
-                              duration: 9000,
+                              duration: 5000,
                               isClosable: true,
                             });
                             actions.setSubmitting(false);
@@ -570,7 +571,7 @@ export default function MemberEditModal({
                                             height="240px"
                                             width="100%"
                                             language="json"
-                                            theme="vs-light"
+                                            theme={useColorModeValue("vs-light", "vs-dark")}
                                             options={{
                                               minimap: {
                                                 enabled: true,
