@@ -119,12 +119,14 @@ export default async function handler(
       avatar: "",
       members: {
         [uid]: {
+          type: "user",
+          id: uid,
           role: 3,
-          clearances: [],
+          accessGroups: [],
           joinedAt: timestamp,
         },
       },
-      clearances: {},
+      accessGroups: {},
       invitations: [],
       logs: [],
       apiKeys: {},

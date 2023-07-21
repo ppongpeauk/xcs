@@ -90,7 +90,7 @@ export default async function handler(
         $set: {
           [`members.${uid}`]: {
             role: inviteCodeData.role || 1,
-            clearances: [],
+            accessGroups: [],
             joinedAt: new Date().getTime(),
           },
         },

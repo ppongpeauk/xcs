@@ -334,12 +334,12 @@ export default function PlatformOrganization() {
               initialValues={{
                 name: organization?.name,
                 members: JSON.stringify(organization?.members),
-                clearances: JSON.stringify(organization?.clearances),
+                accessGroups: JSON.stringify(organization?.accessGroups),
               }}
               onSubmit={(values, actions) => {
                 try {
                   JSON.parse(values.members);
-                  JSON.parse(values.clearances);
+                  JSON.parse(values.accessGroups);
                 } catch (err) {
                   toast({
                     title: "Error",
@@ -360,7 +360,7 @@ export default function PlatformOrganization() {
                     body: JSON.stringify({
                       name: values.name,
                       members: JSON.parse(values.members),
-                      clearances: JSON.parse(values.clearances),
+                      accessGroups: JSON.parse(values.accessGroups),
                     }),
                   })
                     .then((res: any) => {
