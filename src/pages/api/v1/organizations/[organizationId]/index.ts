@@ -74,6 +74,7 @@ export default async function handler(
           }
         );
         members.push({
+          type: "user",
           id: key,
           displayName: member?.displayName,
           username: member?.username,

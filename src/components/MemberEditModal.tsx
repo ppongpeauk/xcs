@@ -342,7 +342,7 @@ export default function MemberEditModal({
                       role: roleToText(focusedMember?.role),
                       accessGroups:
                         focusedMember.accessGroups.map((accessGroup: any) => {
-                          return organization.accessGroups[accessGroup].name;
+                          return organization?.accessGroups[accessGroup].name;
                         }) || [],
                     }}
                     onSubmit={(values, actions) => {

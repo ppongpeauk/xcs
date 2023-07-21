@@ -6,6 +6,7 @@ import {
   Button,
   Container,
   Divider,
+  Flex,
   FormControl,
   FormLabel,
   HStack,
@@ -276,7 +277,7 @@ export default function PlatformOrganization() {
       <Container maxW={"full"} p={8}>
         <Breadcrumb
           spacing="8px"
-          mb={4}
+          mb={2}
           separator={<ChevronRightIcon color="gray.500" />}
         >
           <BreadcrumbItem>
@@ -299,35 +300,64 @@ export default function PlatformOrganization() {
             </BreadcrumbLink>
           </BreadcrumbItem>
         </Breadcrumb>
-        <Text as={"h1"} fontSize={"4xl"} fontWeight={"900"}>
-          {organization?.name}
-        </Text>
-        <Text fontSize={"lg"} color={"gray.500"}>
-          Owned by {organization?.owner.displayName}
-        </Text>
-        <AvatarGroup size="md" max={4} my={2}>
+        <Stack direction={"row"} align={"center"} spacing={4} py={4}>
           <Avatar
-            as={NextLink}
-            key={organization?.owner.id}
-            href={`/platform/profile/${organization?.owner.username}`}
-            src={organization?.owner.avatar}
+            name={organization?.name}
+            src={organization?.avatar}
+            size={{ base: "xl", md: "2xl" }}
+            rounded={"lg"}
           />
-          {organization?.members.map(
-            (member: any) =>
-              member.id !== organization?.owner.id &&
-              (member.type !== "roblox" ? (
-                <Avatar
-                  as={NextLink}
-                  key={member?.id}
-                  href={`/platform/profile/${member.username}`}
-                  src={member?.avatar}
-                  bg={"gray.300"}
-                />
-              ) : (
-                <Avatar key={member?.id} src={member?.avatar} bg={"gray.300"} />
-              ))
-          )}
-        </AvatarGroup>
+          <Flex flexDir={"column"}>
+            <Text
+              as={"h1"}
+              fontSize={{ base: "2xl", md: "3xl" }}
+              fontWeight={"900"}
+              lineHeight={1}
+            >
+              {organization?.name}
+            </Text>
+            <Text fontSize={"md"} fontWeight={"500"} color={"gray.500"} py={1}>
+              Owned by{" "}
+              <Link
+                as={NextLink}
+                textUnderlineOffset={4}
+                href={`/platform/profile/${organization?.owner.username}`}
+              >
+                {organization?.owner.displayName}
+              </Link>
+            </Text>
+            <AvatarGroup size={"md"} max={4}>
+              <Avatar
+                as={NextLink}
+                key={organization?.owner.id}
+                href={`/platform/profile/${organization?.owner.username}`}
+                src={organization?.owner.avatar}
+              />
+              {organization?.members.map(
+                (member: any) =>
+                  member.id !== organization?.owner.id &&
+                  (member.type !== "roblox" ? (
+                    <Avatar
+                      as={NextLink}
+                      key={member?.id}
+                      href={`/platform/profile/${member?.username}`}
+                      src={member?.avatar}
+                      bg={"gray.300"}
+                    />
+                  ) : (
+                    <Avatar
+                      as={NextLink}
+                      key={member?.id}
+                      href={`https://www.roblox.com/users/${member?.id}/profile`}
+                      src={member?.avatar}
+                      bg={"gray.300"}
+                      target={"_blank"}
+                    />
+                  ))
+              )}
+            </AvatarGroup>
+          </Flex>
+        </Stack>
         <Divider my={4} />
         <Text as={"h2"} fontSize={"3xl"} fontWeight={"900"}>
           General Settings
@@ -414,41 +444,14 @@ export default function PlatformOrganization() {
                             placeholder="Organization Name"
                             variant={"outline"}
                             width={"fit-content"}
+                            autoComplete="off"
+                            autoCorrect="off"
+                            spellCheck="false"
                           />
                         </InputGroup>
                       </FormControl>
                     )}
                   </Field>
-                  {/* <Field name="members">
-                    {({ field, form }: any) => (
-                      <FormControl minW={"fit-content"}>
-                        <FormLabel>(Temp.) Members</FormLabel>
-                        <InputGroup mb={2}>
-                          <Textarea
-                            {...field}
-                            type="text"
-                            placeholder="Members (JSON)"
-                            variant={"outline"}
-                          />
-                        </InputGroup>
-                      </FormControl>
-                    )}
-                  </Field>
-                  <Field name="clearances">
-                    {({ field, form }: any) => (
-                      <FormControl minW={"fit-content"}>
-                        <FormLabel>(Temp.) Clearances</FormLabel>
-                        <InputGroup mb={2}>
-                          <Textarea
-                            {...field}
-                            type="text"
-                            placeholder="Clearances (JSON)"
-                            variant={"outline"}
-                          />
-                        </InputGroup>
-                      </FormControl>
-                    )}
-                  </Field> */}
                   <Stack
                     direction={{ base: "column", md: "row" }}
                     spacing={2}
