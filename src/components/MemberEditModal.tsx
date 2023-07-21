@@ -16,6 +16,9 @@ import {
   ModalHeader,
   ModalOverlay,
   Select,
+  Skeleton,
+  SkeletonCircle,
+  SkeletonText,
   Spacer,
   Stack,
   useColorModeValue,
@@ -100,6 +103,7 @@ export default function MemberEditModal({
 
   useEffect(() => {
     if (!organization) return;
+    setFilteredMembers(filterMembers(memberSearchRef?.current?.value));
     setFocusedMember(
       organization.members.find(
         (member: any) => member.id === focusedMember?.id
@@ -176,7 +180,7 @@ export default function MemberEditModal({
                 Add Roblox User
               </Button>
             </Stack>
-            <TableContainer py={2} maxH={"352px"} overflowY={"scroll"}>
+            <TableContainer py={2} h={"320px"} overflowY={"scroll"}>
               <Table size={{ base: "sm", md: "sm" }}>
                 <Thead>
                   <Tr>
@@ -186,78 +190,103 @@ export default function MemberEditModal({
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {(filteredMembers || []).map((member: any) => (
-                    <Tr key={member?.id}>
-                      <Td>
-                        <Flex align={"center"}>
-                          <Avatar
-                            size="md"
-                            src={member?.avatar}
-                            mr={4}
-                            bg={"gray.300"}
-                          />
+                  {organization ? (
+                    (filteredMembers || []).map((member: any) => (
+                      <Tr key={member?.id}>
+                        <Td>
+                          <Flex align={"center"}>
+                            <Avatar
+                              size="md"
+                              src={member?.avatar}
+                              mr={4}
+                              bg={"gray.300"}
+                            />
 
-                          <Flex flexDir={"column"}>
-                            {member.type !== "roblox" ? (
-                              <>
-                                <Text fontWeight="bold">
-                                  {member?.displayName}
-                                </Text>
-                                <Text fontSize="sm" color="gray.500">
-                                  @{member?.username}
-                                </Text>
-                              </>
-                            ) : (
-                              <Flex flexDir={"column"} justify={"center"}>
-                                <Flex align={"center"}>
-                                  <Icon size={"sm"} as={SiRoblox} mr={1} />
+                            <Flex flexDir={"column"}>
+                              {member.type !== "roblox" ? (
+                                <>
                                   <Text fontWeight="bold">
                                     {member?.displayName}
                                   </Text>
+                                  <Text fontSize="sm" color="gray.500">
+                                    @{member?.username}
+                                  </Text>
+                                </>
+                              ) : (
+                                <Flex flexDir={"column"} justify={"center"}>
+                                  <Flex align={"center"}>
+                                    <Icon size={"sm"} as={SiRoblox} mr={1} />
+                                    <Text fontWeight="bold">
+                                      {member?.displayName}
+                                    </Text>
+                                  </Flex>
+                                  <Text fontSize="sm" color="gray.500">
+                                    @{member?.username}
+                                  </Text>
                                 </Flex>
-                                <Text fontSize="sm" color="gray.500">
-                                  @{member?.username}
-                                </Text>
-                              </Flex>
-                            )}
-                            <Text fontSize="sm" color="gray.500">
-                              Joined{" "}
-                              {moment(member?.joinedAt).format("MMMM Do YYYY")}
-                            </Text>
+                              )}
+                              <Text fontSize="sm" color="gray.500">
+                                Joined{" "}
+                                {moment(member?.joinedAt).format(
+                                  "MMMM Do YYYY"
+                                )}
+                              </Text>
+                            </Flex>
                           </Flex>
-                        </Flex>
-                      </Td>
-                      <Td>
-                        <Text>{roleToText(member?.role)}</Text>
-                      </Td>
-                      <Td isNumeric>
-                        <Button
-                          size="sm"
-                          onClick={() => {
-                            setFocusedMember(member);
-                          }}
-                        >
-                          Edit Member
-                        </Button>
-                        <Button
-                          size="sm"
-                          colorScheme="red"
-                          ml={2}
-                          onClick={() => {
-                            setFocusedMember(member);
-                            deleteUserDialogOnOpen();
-                          }}
-                          isDisabled={
-                            clientMember?.id === member?.id ||
-                            member?.role >= 3 ||
-                            member?.role >= clientMember?.role
-                          }
-                        >
-                          Remove
-                        </Button>
-                      </Td>
-                    </Tr>
-                  ))}
+                        </Td>
+                        <Td>
+                          <Text>{roleToText(member?.role)}</Text>
+                        </Td>
+                        <Td isNumeric>
+                          <Button
+                            size="sm"
+                            onClick={() => {
+                              setFocusedMember(member);
+                            }}
+                          >
+                            Edit Member
+                          </Button>
+                          <Button
+                            size="sm"
+                            colorScheme="red"
+                            ml={2}
+                            onClick={() => {
+                              setFocusedMember(member);
+                              deleteUserDialogOnOpen();
+                            }}
+                            isDisabled={
+                              clientMember?.id === member?.id ||
+                              member?.role >= 3 ||
+                              member?.role >= clientMember?.role
+                            }
+                          >
+                            Remove
+                          </Button>
+                        </Td>
+                      </Tr>
+                    ))
+                  ) : (
+                    <>
+                      {Array.from(Array(8).keys()).map((i) => (
+                        <Tr key={i}>
+                          <Td>
+                            <Flex align={"center"}>
+                              <SkeletonCircle size="10" mr={4} />
+                              <Flex flexDir={"column"}>
+                                <SkeletonText noOfLines={2} spacing="4" />
+                              </Flex>
+                            </Flex>
+                          </Td>
+                          <Td>
+                            <SkeletonText noOfLines={1} spacing="4" skeletonHeight={4} />
+                          </Td>
+                          <Td isNumeric>
+                            <SkeletonText noOfLines={1} spacing="4" skeletonHeight={4} />
+                          </Td>
+                        </Tr>
+                      ))}
+                    </>
+                  )}
                 </Tbody>
                 {filteredMembers?.length < 1 && (
                   <TableCaption>No members found.</TableCaption>

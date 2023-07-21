@@ -33,4 +33,42 @@ const textToRole = (role: string) => {
   }
 };
 
-export { roleToText, textToRole };
+const getRobloxUsers = async (userIds: string[]) => {
+  let robloxResponse = await fetch(`${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/roblox/users/v1/users`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+        userIds,
+        excludeBannedUsers: true
+    }),
+  }).then((res) => res.json()).then((res) => res.data);
+
+  let robloxUserAvatar = await fetch(
+    `${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/roblox/thumbnails/v1/users/avatar-headshot?userIds=${userIds.join(",")}&size=150x150&format=Png&isCircular=false`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  ).then((res) => res.json()).then((res) => res.data);
+  for (let i = 0; i < robloxResponse.length; i++) {
+    robloxResponse[i].avatar = robloxUserAvatar[i].imageUrl;
+  }
+
+  let response = Object();
+
+  // convert array to object, with userId as key
+  for (let i = 0; i < robloxResponse.length; i++) {
+    response[robloxResponse[i].id as string] = robloxResponse[i];
+  }
+
+  console.log(response);
+  
+  return response;
+};
+
+export { getRobloxUsers, roleToText, textToRole };
+

@@ -1,4 +1,5 @@
 import clientPromise from "@/lib/mongodb";
+import { getRobloxUsers } from "@/lib/utils";
 import { tokenToID } from "@/pages/api/firebase";
 import { NextApiRequest, NextApiResponse } from "next";
 
@@ -55,37 +56,10 @@ export default async function handler(
 
     // Get all members
     let members = [];
-    for (const [key, value] of Object.entries(organization.members) as any) {
-      if (value.type === "roblox") {
-        console.log(value);
-        let robloxUser = await fetch(
-          `${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/roblox/users/v1/users/${value.id}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        ).then((res) => res.json());
-        let robloxUserAvatar = await fetch(
-          `${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/roblox/thumbnails/v1/users/avatar-headshot?userIds=${value.id}&size=150x150&format=Png&isCircular=false`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        ).then((res) => res.json());
-        robloxUser.avatar = robloxUserAvatar.data[0].imageUrl;
 
-        members.push({
-          id: key,
-          displayName: robloxUser.displayName,
-          username: robloxUser.name,
-          avatar: robloxUser.avatar,
-          ...value,
-        });
-      } else {
+    // xcs users
+    for (const [key, value] of Object.entries(organization.members) as any) {
+      if (value.type !== "roblox") {
         let member = await users.findOne(
           { id: key },
           {
@@ -110,7 +84,36 @@ export default async function handler(
       if (members.length > 99) break;
     }
 
-    organization.members = members.sort((a: any, b: any) => (a.role > b.role || b.type === "roblox" ? -1 : 1)); // sort by role (descending)
+    // roblox users
+    
+    // make an array of roblox user ids
+    let robloxUserIds = [];
+    for (const [key, value] of Object.entries(organization.members) as any) {
+      if (value.type === "roblox") {
+        robloxUserIds.push(value.id);
+      }
+    }
+
+    // get roblox users
+    let robloxUsers = await getRobloxUsers(robloxUserIds);
+    
+    // add roblox users to members array
+    for (const [key, value] of Object.entries(organization.members) as any) {
+      if (value.type === "roblox") {
+        members.push({
+          id: key,
+          displayName: robloxUsers[value.id].displayName,
+          username: robloxUsers[value.id].name,
+          avatar: robloxUsers[value.id].avatar,
+          ...value,
+        });
+      }
+      if (members.length > 99) break;
+    }
+
+    organization.members = members.sort((a: any, b: any) =>
+      a.role > b.role || b.type === "roblox" ? -1 : 1
+    ); // sort by role (descending)
 
     return res.status(200).json({
       organization: organization,
