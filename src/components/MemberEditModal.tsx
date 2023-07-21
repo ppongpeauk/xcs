@@ -139,7 +139,7 @@ export default function MemberEditModal({
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
         <ModalContent
-          maxW={{ base: "full", md: "900px" }}
+          maxW={{ base: "full", md: "720px" }}
           bg={useColorModeValue("white", "gray.800")}
         >
           <ModalHeader>Manage Members</ModalHeader>
@@ -177,7 +177,7 @@ export default function MemberEditModal({
               </Button>
             </Stack>
             <TableContainer py={2} maxH={"352px"} overflowY={"scroll"}>
-              <Table size={{ base: "sm", md: "md" }}>
+              <Table size={{ base: "sm", md: "sm" }}>
                 <Thead>
                   <Tr>
                     <Th>Member</Th>
@@ -186,76 +186,78 @@ export default function MemberEditModal({
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {(filteredMembers || [])
-                    .map((member: any) => (
-                      <Tr key={member?.id}>
-                        <Td>
-                          <Flex align={"center"}>
-                            <Avatar
-                              display={{ base: "none", md: "block" }}
-                              size="md"
-                              src={member?.avatar}
-                              mr={4}
-                              bg={"gray.300"}
-                            />
+                  {(filteredMembers || []).map((member: any) => (
+                    <Tr key={member?.id}>
+                      <Td>
+                        <Flex align={"center"}>
+                          <Avatar
+                            size="md"
+                            src={member?.avatar}
+                            mr={4}
+                            bg={"gray.300"}
+                          />
 
-                            <Flex flexDir={"column"}>
-                              {member.type !== "roblox" ? (
-                                <>
-                                  <Text fontWeight="bold">
-                                    {member?.displayName}
-                                  </Text>
-                                  <Text fontSize="sm" color="gray.500">
-                                    @{member?.username}
-                                  </Text>
-                                </>
-                              ) : (
+                          <Flex flexDir={"column"}>
+                            {member.type !== "roblox" ? (
+                              <>
+                                <Text fontWeight="bold">
+                                  {member?.displayName}
+                                </Text>
+                                <Text fontSize="sm" color="gray.500">
+                                  @{member?.username}
+                                </Text>
+                              </>
+                            ) : (
+                              <Flex flexDir={"column"} justify={"center"}>
                                 <Flex align={"center"}>
-                                  <Icon as={SiRoblox} mr={1} />
+                                  <Icon size={"sm"} as={SiRoblox} mr={1} />
                                   <Text fontWeight="bold">
                                     {member?.displayName}
                                   </Text>
                                 </Flex>
-                              )}
-                              <Text fontSize="sm" color="gray.500">
-                                Joined{" "}
-                                {moment(member?.joinedAt).format(
-                                  "MMMM Do YYYY"
-                                )}
-                              </Text>
-                            </Flex>
-                          </Flex>
-                        </Td>
-                        <Td>
-                          <Text>{roleToText(member?.role)}</Text>
-                        </Td>
-                        <Td isNumeric>
-                          <Button
-                            size="sm"
-                            onClick={() => {
-                              setFocusedMember(member);
-                            }}
-                          >
-                            Edit Member
-                          </Button>
-                          {clientMember?.id !== member?.id &&
-                            clientMember?.role >= 2 &&
-                            member?.role !== 3 && (
-                              <Button
-                                size="sm"
-                                colorScheme="red"
-                                ml={2}
-                                onClick={() => {
-                                  setFocusedMember(member);
-                                  deleteUserDialogOnOpen();
-                                }}
-                              >
-                                Remove
-                              </Button>
+                                <Text fontSize="sm" color="gray.500">
+                                  @{member?.username}
+                                </Text>
+                              </Flex>
                             )}
-                        </Td>
-                      </Tr>
-                    ))}
+                            <Text fontSize="sm" color="gray.500">
+                              Joined{" "}
+                              {moment(member?.joinedAt).format("MMMM Do YYYY")}
+                            </Text>
+                          </Flex>
+                        </Flex>
+                      </Td>
+                      <Td>
+                        <Text>{roleToText(member?.role)}</Text>
+                      </Td>
+                      <Td isNumeric>
+                        <Button
+                          size="sm"
+                          onClick={() => {
+                            setFocusedMember(member);
+                          }}
+                        >
+                          Edit Member
+                        </Button>
+                        <Button
+                          size="sm"
+                          colorScheme="red"
+                          ml={2}
+                          onClick={() => {
+                            setFocusedMember(member);
+                            deleteUserDialogOnOpen();
+                          }}
+                          isDisabled={
+                            clientMember?.id === member?.id ||
+                            member?.role >= 3 ||
+                            member?.role >= clientMember?.role
+                          }
+                        >
+                          Remove
+                        </Button>
+                      </Td>
+                    </Tr>
+                  ))}
                 </Tbody>
                 {filteredMembers?.length < 1 && (
                   <TableCaption>No members found.</TableCaption>
@@ -270,6 +272,7 @@ export default function MemberEditModal({
               w={"full"}
               border={"1px solid"}
               borderColor={useColorModeValue("gray.200", "gray.700")}
+              minH={"384px"}
             >
               {!focusedMember || !organization ? (
                 <Text m={"auto"} color={"gray.500"}>
@@ -279,11 +282,21 @@ export default function MemberEditModal({
                 <Flex flexDir={"column"} w={"full"}>
                   {/* Header */}
                   <Flex align={"center"} h={"fit-content"}>
-                    <Avatar size="lg" src={focusedMember?.avatar} mr={4} />
+                    <Avatar
+                      size="lg"
+                      src={focusedMember?.avatar}
+                      mr={4}
+                      bg={"gray.300"}
+                    />
                     <Flex flexDir={"column"}>
-                      <Text as={"h2"} fontSize={"xl"} fontWeight={"500"}>
-                        {focusedMember?.displayName}
-                      </Text>
+                      <Flex align={"center"}>
+                        {focusedMember.type === "roblox" && (
+                          <Icon size={"sm"} as={SiRoblox} mr={1} h={"full"} />
+                        )}
+                        <Text as={"h2"} fontSize={"xl"} fontWeight={"bold"}>
+                          {focusedMember?.displayName}
+                        </Text>
+                      </Flex>
                       <Text fontSize={"sm"} color={"gray.500"}>
                         Joined{" "}
                         {moment(focusedMember?.joinedAt).format("MMMM Do YYYY")}
@@ -294,181 +307,183 @@ export default function MemberEditModal({
                     </Flex>
                   </Flex>
                   {/* Body */}
-                  <Flex h={"full"}>
-                    <Formik
-                      enableReinitialize={true}
-                      initialValues={{
-                        role: roleToText(focusedMember?.role),
-                        accessGroups:
-                          focusedMember.accessGroups.map((accessGroup: any) => {
-                            return organization.accessGroups[accessGroup].name;
-                          }) || [],
-                      }}
-                      onSubmit={(values, actions) => {
-                        // alert(JSON.stringify(values, null, 2));
+                  <Formik
+                    enableReinitialize={true}
+                    initialValues={{
+                      role: roleToText(focusedMember?.role),
+                      accessGroups:
+                        focusedMember.accessGroups.map((accessGroup: any) => {
+                          return organization.accessGroups[accessGroup].name;
+                        }) || [],
+                    }}
+                    onSubmit={(values, actions) => {
+                      // alert(JSON.stringify(values, null, 2));
 
-                        user.getIdToken().then((token: string) => {
-                          fetch(
-                            `/api/v1/organizations/${organization?.id}/members/${focusedMember?.id}`,
-                            {
-                              method: "PATCH",
-                              headers: {
-                                Authorization: `Bearer ${token}`,
-                                "Content-Type": "application/json",
-                              },
-                              body: JSON.stringify({
-                                role: textToRole(values?.role),
+                      user.getIdToken().then((token: string) => {
+                        fetch(
+                          `/api/v1/organizations/${organization?.id}/members/${focusedMember?.id}`,
+                          {
+                            method: "PATCH",
+                            headers: {
+                              Authorization: `Bearer ${token}`,
+                              "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({
+                              role: textToRole(values?.role),
 
-                                // get access group ids from names
-                                accessGroups: values?.accessGroups.map(
-                                  (accessGroup: any) => {
-                                    return Object.keys(
-                                      organization?.accessGroups || {}
-                                    ).find(
-                                      (accessGroupId: any) =>
-                                        organization?.accessGroups[
-                                          accessGroupId
-                                        ].name === accessGroup
-                                    );
-                                  }
-                                ),
-                              }),
+                              // get access group ids from names
+                              accessGroups: values?.accessGroups.map(
+                                (accessGroup: any) => {
+                                  return Object.keys(
+                                    organization?.accessGroups || {}
+                                  ).find(
+                                    (accessGroupId: any) =>
+                                      organization?.accessGroups[accessGroupId]
+                                        .name === accessGroup
+                                  );
+                                }
+                              ),
+                            }),
+                          }
+                        )
+                          .then((res) => {
+                            if (res.status === 200) {
+                              return res.json();
+                            } else {
+                              return res.json().then((json) => {
+                                throw new Error(json.message);
+                              });
                             }
-                          )
-                            .then((res) => {
-                              if (res.status === 200) {
-                                return res.json();
-                              } else {
-                                return res.json().then((json) => {
-                                  throw new Error(json.message);
-                                });
-                              }
-                            })
-                            .then((data) => {
-                              toast({
-                                title: data.message,
-                                status: "success",
-                                duration: 9000,
-                                isClosable: true,
-                              });
-                              onRefresh();
-                            })
-                            .catch((error) => {
-                              toast({
-                                title:
-                                  "There was an error updating the member.",
-                                description: error.message,
-                                status: "error",
-                                duration: 9000,
-                                isClosable: true,
-                              });
-                            })
-                            .finally(() => {
-                              actions.setSubmitting(false);
+                          })
+                          .then((data) => {
+                            toast({
+                              title: data.message,
+                              status: "success",
+                              duration: 9000,
+                              isClosable: true,
                             });
-                        });
-                      }}
-                    >
-                      {(props) => (
-                        <Form style={{ width: "100%", height: "100%" }}>
-                          <Flex flexDir={"column"} mt={4} w={"full"}>
-                            <Stack>
-                              {focusedMember?.type !== "roblox" && (
-                                <Field name="role">
-                                  {({ field, form }: any) => (
-                                    <FormControl w={"fit-content"}>
-                                      <MultiSelect
-                                        {...field}
-                                        label="Organization Role"
-                                        options={
-                                          focusedMember.role < 3
-                                            ? [
-                                                {
-                                                  label: "Member",
-                                                  value: "Member",
-                                                },
-                                                {
-                                                  label: "Manager",
-                                                  value: "Manager",
-                                                },
-                                              ]
-                                            : [
-                                                {
-                                                  label: "Owner",
-                                                  value: "Owner",
-                                                },
-                                              ]
-                                        }
-                                        onChange={(value) => {
-                                          form.setFieldValue(
-                                            "role",
-                                            value || ("" as string)
-                                          );
-                                        }}
-                                        value={form.values?.role}
-                                        placeholder="Select a role..."
-                                        single={true}
-                                      />
-                                    </FormControl>
-                                  )}
-                                </Field>
-                              )}
-                              <Field name="accessGroups">
+                            onRefresh();
+                          })
+                          .catch((error) => {
+                            toast({
+                              title: "There was an error updating the member.",
+                              description: error.message,
+                              status: "error",
+                              duration: 9000,
+                              isClosable: true,
+                            });
+                          })
+                          .finally(() => {
+                            actions.setSubmitting(false);
+                          });
+                      });
+                    }}
+                  >
+                    {(props) => (
+                      <Form
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          width: "100%",
+                          height: "100%",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <Flex flexDir={"column"} mt={4} w={"full"}>
+                          <Stack>
+                            {focusedMember?.type !== "roblox" && (
+                              <Field name="role">
                                 {({ field, form }: any) => (
                                   <FormControl w={"fit-content"}>
                                     <MultiSelect
                                       {...field}
-                                      label="Access Groups"
+                                      label="Organization Role"
                                       options={
-                                        Object.keys(
-                                          organization?.accessGroups || {}
-                                        ).map((accessGroup: any) => {
-                                          const name =
-                                            organization?.accessGroups[
-                                              accessGroup
-                                            ]?.name || "Option";
-
-                                          return {
-                                            label: name,
-                                            value: name,
-                                          };
-                                        }) || [
-                                          {
-                                            label: "Option",
-                                            value: "Option",
-                                          },
-                                        ]
+                                        focusedMember.role < 3
+                                          ? [
+                                              {
+                                                label: "Member",
+                                                value: "Member",
+                                              },
+                                              {
+                                                label: "Manager",
+                                                value: "Manager",
+                                              },
+                                            ]
+                                          : [
+                                              {
+                                                label: "Owner",
+                                                value: "Owner",
+                                              },
+                                            ]
                                       }
                                       onChange={(value) => {
                                         form.setFieldValue(
-                                          "accessGroups",
-                                          value as string[]
+                                          "role",
+                                          value || ("" as string)
                                         );
                                       }}
-                                      value={form.values?.accessGroups}
-                                      placeholder="Select an access group..."
-                                      single={false}
+                                      value={form.values?.role}
+                                      placeholder="Select a role..."
+                                      single={true}
                                     />
                                   </FormControl>
                                 )}
                               </Field>
-                            </Stack>
+                            )}
+                            <Field name="accessGroups">
+                              {({ field, form }: any) => (
+                                <FormControl w={"fit-content"}>
+                                  <MultiSelect
+                                    {...field}
+                                    label="Access Groups"
+                                    options={
+                                      Object.keys(
+                                        organization?.accessGroups || {}
+                                      ).map((accessGroup: any) => {
+                                        const name =
+                                          organization?.accessGroups[
+                                            accessGroup
+                                          ]?.name || "Option";
 
-                            <Flex align={"flex-end"} justify={"flex-end"}>
-                              <Button
-                                mt={8}
-                                isLoading={props.isSubmitting}
-                                leftIcon={<IoSave />}
-                                type={"submit"}
-                              >
-                                Save Changes
-                              </Button>
-                            </Flex>
-                          </Flex>
-                        </Form>
-                      )}
-                    </Formik>
-                  </Flex>
+                                        return {
+                                          label: name,
+                                          value: name,
+                                        };
+                                      }) || [
+                                        {
+                                          label: "Option",
+                                          value: "Option",
+                                        },
+                                      ]
+                                    }
+                                    onChange={(value) => {
+                                      form.setFieldValue(
+                                        "accessGroups",
+                                        value as string[]
+                                      );
+                                    }}
+                                    value={form.values?.accessGroups}
+                                    placeholder="Select an access group..."
+                                    single={false}
+                                  />
+                                </FormControl>
+                              )}
+                            </Field>
+                          </Stack>
+                        </Flex>
+                        <Flex align={"flex-end"} justify={"flex-end"} pt={4}>
+                          <Button
+                            isLoading={props.isSubmitting}
+                            leftIcon={<IoSave />}
+                            type={"submit"}
+                          >
+                            Save Changes
+                          </Button>
+                        </Flex>
+                      </Form>
+                    )}
+                  </Formik>
                 </Flex>
               )}
             </Flex>

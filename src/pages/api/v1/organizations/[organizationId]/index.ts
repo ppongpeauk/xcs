@@ -80,7 +80,7 @@ export default async function handler(
 
         members.push({
           id: key,
-          displayName: robloxUser.name,
+          displayName: robloxUser.displayName,
           username: robloxUser.name,
           avatar: robloxUser.avatar,
           ...value,
