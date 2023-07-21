@@ -5,7 +5,9 @@ import {
   FormControl,
   FormLabel,
   HStack,
+  Icon,
   Input,
+  InputGroup,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -15,6 +17,7 @@ import {
   ModalOverlay,
   Select,
   Spacer,
+  Stack,
   useColorModeValue,
   useDisclosure,
   useToast,
@@ -22,6 +25,7 @@ import {
 
 import DeleteDialog from "@/components/DeleteDialog";
 import InviteOrganizationModal from "@/components/InviteOrganizationModal";
+import InviteOrganizationRobloxModal from "@/components/InviteOrganizationRobloxModal";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { roleToText, textToRole } from "@/lib/utils";
 import {
@@ -43,6 +47,7 @@ import moment from "moment";
 import { useEffect, useRef, useState } from "react";
 import { IoSave } from "react-icons/io5";
 import { RiMailAddFill } from "react-icons/ri";
+import { SiRoblox } from "react-icons/si";
 
 export default function MemberEditModal({
   isOpen,
@@ -59,7 +64,7 @@ export default function MemberEditModal({
   const [focusedMember, setFocusedMember] = useState<any>(null);
 
   const memberSearchRef = useRef<any>(null);
-  const [filteredMembers, setFilteredMembers] = useState<any>();
+  const [filteredMembers, setFilteredMembers] = useState<any>(null);
 
   const {
     isOpen: deleteUserDialogOpen,
@@ -73,6 +78,12 @@ export default function MemberEditModal({
     onClose: inviteModalOnClose,
   } = useDisclosure();
 
+  const {
+    isOpen: robloxModalOpen,
+    onOpen: robloxModalOnOpen,
+    onClose: robloxModalOnClose,
+  } = useDisclosure();
+
   const filterMembers = (query: string) => {
     if (!query) return members;
     return members.filter(
@@ -83,8 +94,18 @@ export default function MemberEditModal({
   };
 
   useEffect(() => {
+    // if (filteredMembers && filteredMembers !== members) return; // don't reset if we're already filtering
     setFilteredMembers(members);
   }, [members]);
+
+  useEffect(() => {
+    if (!organization) return;
+    setFocusedMember(
+      organization.members.find(
+        (member: any) => member.id === focusedMember?.id
+      )
+    );
+  }, [organization]);
 
   return (
     <>
@@ -107,6 +128,14 @@ export default function MemberEditModal({
         onCreate={() => {}}
         organizationId={organization?.id}
       />
+      <InviteOrganizationRobloxModal
+        isOpen={robloxModalOpen}
+        onClose={robloxModalOnClose}
+        onAdd={() => {
+          onRefresh();
+        }}
+        organization={organization}
+      />
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
         <ModalContent
@@ -116,31 +145,38 @@ export default function MemberEditModal({
           <ModalHeader>Manage Members</ModalHeader>
           <ModalCloseButton />
           <ModalBody w={"full"}>
-            <HStack mb={2}>
-              <FormControl w={"fit-content"}>
+            <Stack mb={2} direction={{ base: "column", md: "row" }}>
+              <FormControl w={{ base: "full", md: "300px" }}>
                 <FormLabel>Search Member</FormLabel>
                 <Input
                   placeholder={"Search for a member..."}
                   ref={memberSearchRef}
                   onChange={(e) => {
-                    if (e.target.value) {
-                      setFilteredMembers(filterMembers(e.target.value));
+                    if (e.target?.value) {
+                      setFilteredMembers(filterMembers(e.target?.value));
                     } else {
                       setFilteredMembers(members);
                     }
                   }}
                 />
               </FormControl>
+              <Spacer />
               <Button
-                alignSelf={"flex-end"}
-                justifySelf={"flex-end"}
+                alignSelf={{ base: "normal", md: "flex-end" }}
                 onClick={inviteModalOnOpen}
                 leftIcon={<RiMailAddFill />}
               >
-                Invite Members
+                Invite User
               </Button>
-            </HStack>
-            <TableContainer py={2} maxH={"352px"} overflowY={"auto"}>
+              <Button
+                alignSelf={{ base: "normal", md: "flex-end" }}
+                leftIcon={<SiRoblox />}
+                onClick={robloxModalOnOpen}
+              >
+                Add Roblox User
+              </Button>
+            </Stack>
+            <TableContainer py={2} maxH={"352px"} overflowY={"scroll"}>
               <Table size={{ base: "sm", md: "md" }}>
                 <Thead>
                   <Tr>
@@ -150,7 +186,7 @@ export default function MemberEditModal({
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {filteredMembers?.map((member: any) => (
+                  {(filteredMembers || []).map((member: any) => (
                     <Tr key={member?.id}>
                       <Td>
                         <Flex align={"center"}>
@@ -160,11 +196,25 @@ export default function MemberEditModal({
                             src={member?.avatar}
                             mr={4}
                           />
+
                           <Flex flexDir={"column"}>
-                            <Text fontWeight="bold">{member?.displayName}</Text>
-                            <Text fontSize="sm" color="gray.500">
-                              @{member?.username}
-                            </Text>
+                            {member.type !== "roblox" ? (
+                              <>
+                                <Text fontWeight="bold">
+                                  {member?.displayName}
+                                </Text>
+                                <Text fontSize="sm" color="gray.500">
+                                  @{member?.username}
+                                </Text>
+                              </>
+                            ) : (
+                              <Flex align={"center"}>
+                                <Icon as={SiRoblox} mr={1} />
+                                <Text fontWeight="bold">
+                                  {member?.displayName}
+                                </Text>
+                              </Flex>
+                            )}
                             <Text fontSize="sm" color="gray.500">
                               Joined{" "}
                               {moment(member?.joinedAt).format("MMMM Do YYYY")}
@@ -217,7 +267,7 @@ export default function MemberEditModal({
               border={"1px solid"}
               borderColor={useColorModeValue("gray.200", "gray.700")}
             >
-              {!focusedMember ? (
+              {!focusedMember || !organization ? (
                 <Text m={"auto"} color={"gray.500"}>
                   Select a member to manage.
                 </Text>
@@ -225,7 +275,7 @@ export default function MemberEditModal({
                 <Flex flexDir={"column"} w={"full"}>
                   {/* Header */}
                   <Flex align={"center"} h={"fit-content"}>
-                    <Avatar size="md" src={focusedMember?.avatar} mr={4} />
+                    <Avatar size="lg" src={focusedMember?.avatar} mr={4} />
                     <Flex flexDir={"column"}>
                       <Text as={"h2"} fontSize={"xl"} fontWeight={"500"}>
                         {focusedMember?.displayName}
@@ -245,11 +295,17 @@ export default function MemberEditModal({
                       enableReinitialize={true}
                       initialValues={{
                         role: roleToText(focusedMember?.role),
+                        accessGroups:
+                          focusedMember.accessGroups.map((accessGroup: any) => {
+                            return organization.accessGroups[accessGroup].name;
+                          }) || [],
                       }}
                       onSubmit={(values, actions) => {
+                        // alert(JSON.stringify(values, null, 2));
+
                         user.getIdToken().then((token: string) => {
                           fetch(
-                            `${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/organizations/${organization.id}/members/${focusedMember?.id}`,
+                            `/api/v1/organizations/${organization?.id}/members/${focusedMember?.id}`,
                             {
                               method: "PATCH",
                               headers: {
@@ -257,7 +313,21 @@ export default function MemberEditModal({
                                 "Content-Type": "application/json",
                               },
                               body: JSON.stringify({
-                                role: textToRole(values.role),
+                                role: textToRole(values?.role),
+
+                                // get access group ids from names
+                                accessGroups: values?.accessGroups.map(
+                                  (accessGroup: any) => {
+                                    return Object.keys(
+                                      organization?.accessGroups || {}
+                                    ).find(
+                                      (accessGroupId: any) =>
+                                        organization?.accessGroups[
+                                          accessGroupId
+                                        ].name === accessGroup
+                                    );
+                                  }
+                                ),
                               }),
                             }
                           )
@@ -298,39 +368,88 @@ export default function MemberEditModal({
                       {(props) => (
                         <Form style={{ width: "100%", height: "100%" }}>
                           <Flex flexDir={"column"} mt={4} w={"full"}>
-                            <Field name="role">
-                              {({ field, form }: any) => (
-                                <FormControl w={"fit-content"}>
-                                  <MultiSelect
-                                    {...field}
-                                    label="Organization Role"
-                                    options={
-                                      focusedMember.role < 3
-                                        ? [
-                                            {
-                                              label: "Member",
-                                              value: "Member",
-                                            },
-                                            {
-                                              label: "Manager",
-                                              value: "Manager",
-                                            },
-                                          ]
-                                        : [{ label: "Owner", value: "Owner" }]
-                                    }
-                                    onChange={(value) => {
-                                      form.setFieldValue(
-                                        "role",
-                                        value as string
-                                      );
-                                    }}
-                                    value={form.values.role}
-                                    placeholder="Select a role..."
-                                    single={true}
-                                  />
-                                </FormControl>
+                            <Stack>
+                              {focusedMember?.type !== "roblox" && (
+                                <Field name="role">
+                                  {({ field, form }: any) => (
+                                    <FormControl w={"fit-content"}>
+                                      <MultiSelect
+                                        {...field}
+                                        label="Organization Role"
+                                        options={
+                                          focusedMember.role < 3
+                                            ? [
+                                                {
+                                                  label: "Member",
+                                                  value: "Member",
+                                                },
+                                                {
+                                                  label: "Manager",
+                                                  value: "Manager",
+                                                },
+                                              ]
+                                            : [
+                                                {
+                                                  label: "Owner",
+                                                  value: "Owner",
+                                                },
+                                              ]
+                                        }
+                                        onChange={(value) => {
+                                          form.setFieldValue(
+                                            "role",
+                                            value || ("" as string)
+                                          );
+                                        }}
+                                        value={form.values?.role}
+                                        placeholder="Select a role..."
+                                        single={true}
+                                      />
+                                    </FormControl>
+                                  )}
+                                </Field>
                               )}
-                            </Field>
+                              <Field name="accessGroups">
+                                {({ field, form }: any) => (
+                                  <FormControl w={"fit-content"}>
+                                    <MultiSelect
+                                      {...field}
+                                      label="Access Groups"
+                                      options={
+                                        Object.keys(
+                                          organization?.accessGroups || {}
+                                        ).map((accessGroup: any) => {
+                                          const name =
+                                            organization?.accessGroups[
+                                              accessGroup
+                                            ]?.name || "Option";
+
+                                          return {
+                                            label: name,
+                                            value: name,
+                                          };
+                                        }) || [
+                                          {
+                                            label: "Option",
+                                            value: "Option",
+                                          },
+                                        ]
+                                      }
+                                      onChange={(value) => {
+                                        form.setFieldValue(
+                                          "accessGroups",
+                                          value as string[]
+                                        );
+                                      }}
+                                      value={form.values?.accessGroups}
+                                      placeholder="Select an access group..."
+                                      single={false}
+                                    />
+                                  </FormControl>
+                                )}
+                              </Field>
+                            </Stack>
+
                             <Flex align={"flex-end"} justify={"flex-end"}>
                               <Button
                                 mt={8}

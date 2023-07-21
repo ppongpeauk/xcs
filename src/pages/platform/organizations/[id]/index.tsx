@@ -42,7 +42,8 @@ import { useToast } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
 import { AiFillTag } from "react-icons/ai";
 import { BiSolidExit } from "react-icons/bi";
-import { FaIdBadge, FaUserShield } from "react-icons/fa";
+import { FaIdBadge, FaTags, FaUserShield } from "react-icons/fa";
+import { HiUserGroup } from "react-icons/hi";
 import { ImTree } from "react-icons/im";
 import { IoIosRemoveCircle } from "react-icons/io";
 import { IoSave } from "react-icons/io5";
@@ -452,14 +453,14 @@ export default function PlatformOrganization() {
                     <Button
                       mb={2}
                       onClick={memberModalOnOpen}
-                      leftIcon={<FaIdBadge />}
+                      leftIcon={<HiUserGroup />}
                     >
                       Manage Members
                     </Button>
                     <Button
                       mb={2}
                       onClick={roleModalOnOpen}
-                      leftIcon={<FaUserShield />}
+                      leftIcon={<FaTags />}
                     >
                       Manage Access Groups
                     </Button>

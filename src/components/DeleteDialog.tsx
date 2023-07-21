@@ -17,6 +17,7 @@ export default function DeleteDialog({ isOpen, onClose, cancelRef, onDelete, tit
         isOpen={isOpen}
         leastDestructiveRef={cancelRef}
         onClose={onClose}
+        isCentered
       >
         <AlertDialogOverlay>
           <AlertDialogContent bg={useColorModeValue("white", "gray.800")}>

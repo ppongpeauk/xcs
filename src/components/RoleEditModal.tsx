@@ -13,7 +13,7 @@ import {
 export default function RoleEditModal({ isOpen, onOpen, onClose }: any) {
   return (
     <>
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Modal Title</ModalHeader>

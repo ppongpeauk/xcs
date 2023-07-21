@@ -28,15 +28,14 @@ export default async function handler(
   const invitations = db.collection("invitations");
   const accessPoints = db.collection("accessPoints");
   const users = db.collection("users");
-  let organization = (await organizations
-    .find({ id: organizationId })
-    .toArray()) as any;
+  let organization = (await organizations.findOne(
+    { id: organizationId },
+    { projection: { apiKeys: 0 } }
+  )) as any;
 
-  if (organization.length == 0) {
+  if (!organization) {
     return res.status(404).json({ message: "Organization not found" });
   }
-
-  organization = organization[0];
 
   if (!organization.members[uid]) {
     return res.status(401).json({ message: "Unauthorized" });
@@ -57,18 +56,59 @@ export default async function handler(
     // Get all members
     let members = [];
     for (const [key, value] of Object.entries(organization.members) as any) {
-      let member = await users.findOne(
-        { id: key },
-        { projection: { name: 1, displayName: 1, username: 1, avatar: 1 } }
-      );
-      members.push({
-        id: key,
-        displayName: member?.displayName,
-        name: member?.name,
-        username: member?.username,
-        avatar: member?.avatar,
-        ...value,
-      });
+      if (value.type === "roblox") {
+        console.log(value);
+        let robloxUser = await fetch(
+          `${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/roblox/users/v1/users/${value.id}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        ).then((res) => res.json());
+        let robloxUserAvatar = await fetch(
+          `${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/roblox/thumbnails/v1/users/avatar-headshot?userIds=${value.id}&size=150x150&format=Png&isCircular=false`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        ).then((res) => res.json());
+        robloxUser.avatar = robloxUserAvatar.data[0].imageUrl;
+
+        members.push({
+          id: key,
+          displayName: robloxUser.name,
+          name: robloxUser.name,
+          username: robloxUser.username,
+          avatar: robloxUser.avatar,
+          ...value,
+        });
+      } else {
+        let member = await users.findOne(
+          { id: key },
+          {
+            projection: {
+              type: 1,
+              name: 1,
+              id: 1,
+              displayName: 1,
+              username: 1,
+              avatar: 1,
+            },
+          }
+        );
+        members.push({
+          id: key,
+          displayName: member?.displayName,
+          name: member?.name,
+          username: member?.username,
+          avatar: member?.avatar,
+          ...value,
+        });
+      }
       if (members.length > 99) break;
     }
 

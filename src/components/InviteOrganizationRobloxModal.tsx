@@ -4,7 +4,6 @@ import {
   FormControl,
   FormLabel,
   Input,
-  Link,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -21,17 +20,19 @@ import {
 import { Field, Form, Formik } from "formik";
 
 import { useAuthContext } from "@/contexts/AuthContext";
-import NextLink from "next/link";
+import { MultiSelect } from "chakra-multiselect";
 import { useRef } from "react";
 
-export default function CreateOrganizationDialog({
+export default function InviteOrganizationRobloxModal({
   isOpen,
   onClose,
-  onCreate,
+  onAdd,
+  organization,
 }: {
   isOpen: boolean;
   onClose: () => void;
-  onCreate: (location: any) => void;
+  onAdd: () => void;
+  organization: any;
 }) {
   const toast = useToast();
   const initialRef = useRef(null);
@@ -41,17 +42,19 @@ export default function CreateOrganizationDialog({
   return (
     <>
       <Formik
-        initialValues={{ name: "" }}
+        initialValues={{ username: "", accessGroups: [] }}
         onSubmit={(values, actions) => {
           user.getIdToken().then((token: any) => {
-            fetch("/api/v1/organizations", {
+            fetch(`/api/v1/organizations/${organization.id}/members`, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`,
               },
               body: JSON.stringify({
-                name: values.name,
+                type: "roblox",
+                username: values.username,
+                accessGroups: values.accessGroups,
               }),
             })
               .then((res) => {
@@ -71,11 +74,12 @@ export default function CreateOrganizationDialog({
                   isClosable: true,
                 });
                 onClose();
-                onCreate(data.organizationId);
+                onAdd();
               })
               .catch((error) => {
                 toast({
-                  title: "There was an error creating the organization.",
+                  title:
+                    "There was an error adding a Roblox user to your organization.",
                   description: error.message,
                   status: "error",
                   duration: 9000,
@@ -89,66 +93,53 @@ export default function CreateOrganizationDialog({
         }}
       >
         {(props) => (
-          <Modal isOpen={isOpen} onClose={onClose} isCentered>
+          <Modal isOpen={isOpen} onClose={onClose} isCentered allowPinchZoom>
             <ModalOverlay />
             <Form>
               <ModalContent bg={useColorModeValue("white", "gray.800")}>
-                <ModalHeader pb={2}>Create Organization</ModalHeader>
+                <ModalHeader pb={2}>Add Roblox Member</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody pb={4}>
                   <VStack spacing={2}>
-                    <Field name="name">
+                    <Field name="username">
                       {({ field, form }: any) => (
                         <FormControl>
-                          <FormLabel>Name</FormLabel>
+                          <FormLabel>Username</FormLabel>
                           <Input
                             {...field}
+                            type={"username"}
                             variant={"outline"}
-                            placeholder={"Organization Name"}
+                            placeholder={"Roblox Username"}
                           />
                         </FormControl>
                       )}
                     </Field>
-                    {/* <Field name="organization">
+                    <Field name="accessGroups">
                       {({ field, form }: any) => (
                         <FormControl>
-                          <FormLabel>Organization</FormLabel>
-                          <Input
+                          <MultiSelect
                             {...field}
-                            variant={"outline"}
-                            value={selectedOrganization.name}
-                            isDisabled={true}
+                            label="Access Groups"
+                            options={Object.keys(organization.accessGroups).map(
+                              (key) => ({
+                                value: key,
+                                label: organization.accessGroups[key].name,
+                              })
+                            )}
+                            onChange={(value) => {
+                              form.setFieldValue("accessGroups", value);
+                            }}
+                            value={form.values.accessGroups || []}
+                            placeholder="Select an access group..."
+                            single={false}
                           />
                         </FormControl>
                       )}
-                    </Field> */}
+                    </Field>
                   </VStack>
                   <Text fontSize={"sm"} pt={2}>
-                    By creating an organization, you agree to our{" "}
-                    <Text as={"span"}>
-                      <Link
-                        as={NextLink}
-                        href={"/terms"}
-                        textDecor={"underline"}
-                        textUnderlineOffset={4}
-                        whiteSpace={"nowrap"}
-                      >
-                        Terms of Service
-                      </Link>
-                    </Text>{" "}
-                    and{" "}
-                    <Text as={"span"}>
-                      <Link
-                        as={NextLink}
-                        href={"/privacy"}
-                        textDecor={"underline"}
-                        textUnderlineOffset={4}
-                        whiteSpace={"nowrap"}
-                      >
-                        Privacy Policy
-                      </Link>
-                    </Text>
-                    .
+                    Add a Roblox user that isn&apos;t registered on XCS to your
+                    organization.
                   </Text>
                 </ModalBody>
 
@@ -159,7 +150,7 @@ export default function CreateOrganizationDialog({
                     isLoading={props.isSubmitting}
                     type={"submit"}
                   >
-                    Create
+                    Add Roblox User
                   </Button>
                   <Button onClick={onClose}>Cancel</Button>
                 </ModalFooter>

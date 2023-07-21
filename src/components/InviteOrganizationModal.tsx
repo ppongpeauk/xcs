@@ -125,7 +125,7 @@ export default function InviteOrganizationModal({
         }}
       >
         {(props) => (
-          <Modal isOpen={isOpen} onClose={onModalClose}>
+          <Modal isOpen={isOpen} onClose={onModalClose} isCentered>
             <ModalOverlay />
             <Form>
               <ModalContent bg={useColorModeValue("white", "gray.800")}>

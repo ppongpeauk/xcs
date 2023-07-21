@@ -43,18 +43,20 @@ export default async function handler(
   }
 
   const user = await users.findOne({ id: memberId });
-  if (!user) {
-    return res.status(404).json({ message: "User not found." });
-  }
+  // if (!user) {
+  //   return res.status(404).json({ message: "User not found." });
+  // }
 
   const timestamp = new Date();
-  let { role } = req.body as { role: number };
+  let { role, accessGroups } = req.body as {
+    role: number;
+    accessGroups: string[];
+  };
 
-  if (!organization.members[memberId]) {
-    return res.status(404).json({ message: "User not found in organization." });
-  }
-
-  if (role !== organization.members[memberId].role && organization.members[memberId].role >= 3) {
+  if (
+    role !== organization.members[memberId].role &&
+    organization.members[memberId].role >= 3
+  ) {
     return res.status(403).json({
       message: "User is the owner of the organization.",
       success: false,
@@ -86,75 +88,66 @@ export default async function handler(
       });
     }
 
-
     organizations.updateOne(
       { id: organizationId },
       {
         $set: {
           [`members.${memberId}.role`]: role,
-        },
-      }
-    );
-
-    // Log
-    await organizations.updateOne(
-      { id: organizationId },
-      {
-        $push: {
-          logs: {
-            type: "member-edited",
-            performer: uid,
-            timestamp: timestamp,
-          },
+          [`members.${memberId}.accessGroups`]: accessGroups,
         },
       }
     );
 
     return res.status(200).json({
       success: true,
-      message: `Successfully edited member permissions for ${user?.displayName}.`,
+      message: `Successfully saved changes.`,
+      id: user?.id,
     });
   }
 
   // Remove From Organization
   if (req.method === "DELETE") {
-    if (organization.members[memberId].role > organization.members[uid].role) {
-      return res.status(403).json({
-        message: "You cannot remove a user with a higher role than you.",
-        success: false,
-      });
-    }
-
-    // Kick From Organization
-    await organizations.updateOne(
-      { id: organizationId },
-      {
-        $unset: {
-          [`members.${memberId}`]: "",
-        },
+    if (organization.members[memberId].type !== "roblox") {
+      if (
+        organization.members[memberId].role > organization.members[uid].role
+      ) {
+        return res.status(403).json({
+          message: "You cannot remove a user with a higher role than you.",
+          success: false,
+        });
       }
-    );
 
-    // Log
-    await organizations.updateOne(
-      { id: organizationId },
-      {
-        $push: {
-          logs: {
-            type: "member-removed",
-            performer: uid,
-            timestamp: timestamp,
+      // Kick From Organization
+      await organizations.updateOne(
+        { id: organizationId },
+        {
+          $unset: {
+            [`members.${memberId}`]: "",
           },
-        },
-      }
-    );
+        }
+      );
 
-    return res
-      .status(200)
-      .json({
+      return res.status(200).json({
         message: `Successfully removed ${user?.displayName} from the organization.`,
         success: true,
       });
+    } else {
+      
+      // Kick From Organization
+      await organizations.updateOne(
+        { id: organizationId },
+        {
+          $unset: {
+            [`members.${memberId}`]: "",
+          },
+        }
+      );
+
+      return res.status(200).json({
+        message: `Successfully removed ${user?.id} from the organization.`,
+        success: true,
+      });
+    }
   }
 
   return res.status(500).json({ message: "An unknown errror occurred." });
