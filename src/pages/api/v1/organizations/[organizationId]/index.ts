@@ -81,8 +81,7 @@ export default async function handler(
         members.push({
           id: key,
           displayName: robloxUser.name,
-          name: robloxUser.name,
-          username: robloxUser.username,
+          username: robloxUser.name,
           avatar: robloxUser.avatar,
           ...value,
         });
@@ -103,7 +102,6 @@ export default async function handler(
         members.push({
           id: key,
           displayName: member?.displayName,
-          name: member?.name,
           username: member?.username,
           avatar: member?.avatar,
           ...value,
