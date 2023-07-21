@@ -9,10 +9,10 @@ async function checkBlacklist(robloxId: string) {
     //   type: 0,
     //   id: 32757211,
     // },
-    // {
-    //   type: 1,
-    //   id: 1,
-    // },
+    {
+      type: 1,
+      id: 4951045,
+    },
   ] as { type: number; id: number }[];
 
   // check if user is in any of the blacklisted users
@@ -72,7 +72,7 @@ export default async function handler(
       if (isBlacklisted) {
         return res.status(403).json({
           success: false,
-          message: "You are not authorized to use this service.",
+          message: "You are not permitted to use the service.",
         });
       }      
 
