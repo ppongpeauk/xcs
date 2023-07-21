@@ -343,7 +343,7 @@ export default function LocationInfo({
                   </Button>
                 </Stack>
                 <Text fontSize={"sm"}>
-                  Security clearances can be managed in the settings of{" "}
+                  Access groups can be managed in the settings of{" "}
                   <Link
                     as={NextLink}
                     href={`/platform/organizations/${location?.organizationId}`}

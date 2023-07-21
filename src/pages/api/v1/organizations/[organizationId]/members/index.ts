@@ -64,7 +64,7 @@ export default async function handler(
   }
 
   const robloxId = robloxUsers[0].id;
-  const user = await users.findOne({ "roblox.id": robloxId });
+  const user = await users.findOne({ "roblox.id": robloxId.toString() });
   console.log(user);
 
   if (req.method === "POST") {
