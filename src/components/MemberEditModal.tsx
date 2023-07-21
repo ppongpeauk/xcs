@@ -186,72 +186,76 @@ export default function MemberEditModal({
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {(filteredMembers || []).map((member: any) => (
-                    <Tr key={member?.id}>
-                      <Td>
-                        <Flex align={"center"}>
-                          <Avatar
-                            display={{ base: "none", md: "block" }}
-                            size="md"
-                            src={member?.avatar}
-                            mr={4}
-                          />
+                  {(filteredMembers || [])
+                    .sort((a: any, b: any) => (a.role > b.role ? -1 : 1)) // sort by role (descending)
+                    .map((member: any) => (
+                      <Tr key={member?.id}>
+                        <Td>
+                          <Flex align={"center"}>
+                            <Avatar
+                              display={{ base: "none", md: "block" }}
+                              size="md"
+                              src={member?.avatar}
+                              mr={4}
+                            />
 
-                          <Flex flexDir={"column"}>
-                            {member.type !== "roblox" ? (
-                              <>
-                                <Text fontWeight="bold">
-                                  {member?.displayName}
-                                </Text>
-                                <Text fontSize="sm" color="gray.500">
-                                  @{member?.username}
-                                </Text>
-                              </>
-                            ) : (
-                              <Flex align={"center"}>
-                                <Icon as={SiRoblox} mr={1} />
-                                <Text fontWeight="bold">
-                                  {member?.displayName}
-                                </Text>
-                              </Flex>
-                            )}
-                            <Text fontSize="sm" color="gray.500">
-                              Joined{" "}
-                              {moment(member?.joinedAt).format("MMMM Do YYYY")}
-                            </Text>
+                            <Flex flexDir={"column"}>
+                              {member.type !== "roblox" ? (
+                                <>
+                                  <Text fontWeight="bold">
+                                    {member?.displayName}
+                                  </Text>
+                                  <Text fontSize="sm" color="gray.500">
+                                    @{member?.username}
+                                  </Text>
+                                </>
+                              ) : (
+                                <Flex align={"center"}>
+                                  <Icon as={SiRoblox} mr={1} />
+                                  <Text fontWeight="bold">
+                                    {member?.displayName}
+                                  </Text>
+                                </Flex>
+                              )}
+                              <Text fontSize="sm" color="gray.500">
+                                Joined{" "}
+                                {moment(member?.joinedAt).format(
+                                  "MMMM Do YYYY"
+                                )}
+                              </Text>
+                            </Flex>
                           </Flex>
-                        </Flex>
-                      </Td>
-                      <Td>
-                        <Text>{roleToText(member?.role)}</Text>
-                      </Td>
-                      <Td isNumeric>
-                        <Button
-                          size="sm"
-                          onClick={() => {
-                            setFocusedMember(member);
-                          }}
-                        >
-                          Edit Member
-                        </Button>
-                        {clientMember?.id !== member?.id &&
-                          clientMember?.role >= 2 &&
-                          member?.role !== 3 && (
-                            <Button
-                              size="sm"
-                              colorScheme="red"
-                              ml={2}
-                              onClick={() => {
-                                setFocusedMember(member);
-                                deleteUserDialogOnOpen();
-                              }}
-                            >
-                              Remove
-                            </Button>
-                          )}
-                      </Td>
-                    </Tr>
-                  ))}
+                        </Td>
+                        <Td>
+                          <Text>{roleToText(member?.role)}</Text>
+                        </Td>
+                        <Td isNumeric>
+                          <Button
+                            size="sm"
+                            onClick={() => {
+                              setFocusedMember(member);
+                            }}
+                          >
+                            Edit Member
+                          </Button>
+                          {clientMember?.id !== member?.id &&
+                            clientMember?.role >= 2 &&
+                            member?.role !== 3 && (
+                              <Button
+                                size="sm"
+                                colorScheme="red"
+                                ml={2}
+                                onClick={() => {
+                                  setFocusedMember(member);
+                                  deleteUserDialogOnOpen();
+                                }}
+                              >
+                                Remove
+                              </Button>
+                            )}
+                        </Td>
+                      </Tr>
+                    ))}
                 </Tbody>
                 {filteredMembers?.length < 1 && (
                   <TableCaption>No members found.</TableCaption>
