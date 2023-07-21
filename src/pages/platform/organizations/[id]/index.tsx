@@ -314,14 +314,18 @@ export default function PlatformOrganization() {
           />
           {organization?.members.map(
             (member: any) =>
-              member.id !== organization?.owner.id && (
+              member.id !== organization?.owner.id &&
+              (member.type !== "roblox" ? (
                 <Avatar
                   as={NextLink}
                   key={member?.id}
                   href={`/platform/profile/${member.username}`}
                   src={member?.avatar}
+                  bg={"gray.300"}
                 />
-              )
+              ) : (
+                <Avatar key={member?.id} src={member?.avatar} bg={"gray.300"} />
+              ))
           )}
         </AvatarGroup>
         <Divider my={4} />

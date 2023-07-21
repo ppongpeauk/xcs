@@ -197,6 +197,7 @@ export default function MemberEditModal({
                               size="md"
                               src={member?.avatar}
                               mr={4}
+                              bg={"gray.300"}
                             />
 
                             <Flex flexDir={"column"}>
