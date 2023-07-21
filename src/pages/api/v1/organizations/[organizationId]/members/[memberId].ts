@@ -132,6 +132,18 @@ export default async function handler(
         success: true,
       });
     } else {
+
+      let robloxUser = await fetch(
+        `${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/roblox/users/v1/users/${memberId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      ).then((res) => res.json())
+      
+      const robloxUsername = robloxUser.name;
       
       // Kick From Organization
       await organizations.updateOne(
@@ -144,7 +156,7 @@ export default async function handler(
       );
 
       return res.status(200).json({
-        message: `Successfully removed ${user?.id} from the organization.`,
+        message: `Successfully removed ${robloxUsername} from the organization.`,
         success: true,
       });
     }

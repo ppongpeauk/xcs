@@ -65,7 +65,6 @@ export default async function handler(
 
   const robloxId = robloxUsers[0].id;
   const user = await users.findOne({ "roblox.id": robloxId.toString() });
-  console.log(user);
 
   if (req.method === "POST") {
     if (organization.members[uid].role < 2) {
@@ -78,6 +77,13 @@ export default async function handler(
     if (user) {
       return res.status(409).json({
         message: "An account with this Roblox ID already exists. Please send them an invitation instead.",
+        success: false,
+      });
+    }
+
+    if (organization.members[robloxId]) {
+      return res.status(409).json({
+        message: "This user is already in the organization.",
         success: false,
       });
     }
@@ -99,7 +105,7 @@ export default async function handler(
 
     return res.status(200).json({
       success: true,
-      message: `Successfully added ${robloxUsers[0].username} to the organization.`,
+      message: `Successfully added ${robloxUsers[0].name} to the organization.`,
     });
   }
 
