@@ -98,7 +98,7 @@ export default async function handler(
           $set: {
             roblox: {
               username: username,
-              id: robloxId,
+              id: robloxId.toString(),
               verified: true,
               verifiedAt: timestamp,
             },

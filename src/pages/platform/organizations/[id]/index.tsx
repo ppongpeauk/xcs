@@ -16,6 +16,8 @@ import {
   InputLeftElement,
   Link,
   Skeleton,
+  SkeletonCircle,
+  SkeletonText,
   Stack,
   Switch,
   Text,
@@ -301,31 +303,37 @@ export default function PlatformOrganization() {
           </BreadcrumbItem>
         </Breadcrumb>
         <Stack direction={"row"} align={"center"} spacing={4} py={4}>
-          <Avatar
-            name={organization?.name}
-            src={organization?.avatar}
-            size={{ base: "xl", md: "2xl" }}
-            rounded={"lg"}
-          />
+          <Skeleton isLoaded={organization} rounded={"lg"}>
+            <Avatar
+              name={organization?.name}
+              src={organization?.avatar}
+              size={{ base: "xl", md: "2xl" }}
+              rounded={"lg"}
+            />
+          </Skeleton>
           <Flex flexDir={"column"}>
-            <Text
-              as={"h1"}
-              fontSize={{ base: "2xl", md: "4xl" }}
-              fontWeight={"900"}
-              lineHeight={1}
-            >
-              {organization?.name}
-            </Text>
-            <Text fontSize={"md"} fontWeight={"500"} color={"gray.500"} py={1}>
-              Owned by{" "}
-              <Link
-                as={NextLink}
-                textUnderlineOffset={4}
-                href={`/platform/profile/${organization?.owner.username}`}
+            <Skeleton isLoaded={organization}>
+              <Text
+                as={"h1"}
+                fontSize={{ base: "2xl", md: "4xl" }}
+                fontWeight={"900"}
+                lineHeight={0.9}
               >
-                {organization?.owner.displayName}
-              </Link>
-            </Text>
+                {organization?.name || "Organization Name"}
+              </Text>
+            </Skeleton>
+            <Skeleton isLoaded={organization} my={2}>
+              <Text fontSize={"md"} fontWeight={"500"} color={"gray.500"}>
+                Owned by{" "}
+                <Link
+                  as={NextLink}
+                  textUnderlineOffset={4}
+                  href={`/platform/profile/${organization?.owner.username}`}
+                >
+                  {organization?.owner.displayName || "Organization Owner"}
+                </Link>
+              </Text>
+            </Skeleton>
             <AvatarGroup size={"md"} max={4}>
               <Avatar
                 as={NextLink}

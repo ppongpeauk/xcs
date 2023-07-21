@@ -42,6 +42,7 @@ export default function InviteOrganizationRobloxModal({
   return (
     <>
       <Formik
+        enableReinitialize={true}
         initialValues={{ username: "", accessGroups: [] }}
         onSubmit={(values, actions) => {
           user.getIdToken().then((token: any) => {
@@ -110,6 +111,9 @@ export default function InviteOrganizationRobloxModal({
                             type={"username"}
                             variant={"outline"}
                             placeholder={"Roblox Username"}
+                            autoComplete={"off"}
+                            autoCorrect={"off"}
+                            spellCheck={"false"}
                           />
                         </FormControl>
                       )}

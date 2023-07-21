@@ -65,6 +65,7 @@ export default async function handler(
 
   const robloxId = robloxUsers[0].id;
   const user = await users.findOne({ "roblox.id": robloxId.toString() });
+  
 
   if (req.method === "POST") {
     if (organization.members[uid].role < 2) {
