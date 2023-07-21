@@ -7,6 +7,8 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Text,
+  useColorModeValue,
   useDisclosure,
 } from '@chakra-ui/react';
 
@@ -15,18 +17,19 @@ export default function RoleEditModal({ isOpen, onOpen, onClose }: any) {
     <>
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Modal Title</ModalHeader>
+        <ModalContent
+          bg={useColorModeValue("white", "gray.800")}
+        >
+          <ModalHeader>Manage Access Groups</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <p>Modal body text goes here.</p>
+            <Text size={'md'}>This is the modal body</Text>
           </ModalBody>
 
           <ModalFooter>
             <Button colorScheme='blue' mr={3} onClick={onClose}>
               Close
             </Button>
-            <Button variant='ghost'>Secondary Action</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
