@@ -71,7 +71,7 @@ export default function Invitation({ invite }: { invite: any }) {
       <Head>
         <title>EVE XCS – Invitation</title>
       </Head>
-      <Container maxW={"container.lg"} h={"100vh"}>
+      <Container maxW={"container.lg"} h={"100dvh"}>
         <Flex
           pos={"relative"}
           flexDir={"column"}
@@ -101,7 +101,7 @@ export default function Invitation({ invite }: { invite: any }) {
           </Link>
 
           <Flex
-            w={["full", "480px"]}
+            w={["100%", "480px"]}
             aspectRatio={invite ? 1 / 1.25 : "unset"}
             rounded={"xl"}
             border={["none", "1px solid"]}
@@ -117,7 +117,7 @@ export default function Invitation({ invite }: { invite: any }) {
                   as={"h2"}
                   fontSize={"3xl"}
                   fontWeight={"900"}
-                  letterSpacing={"tighter"}
+                  letterSpacing={"tight"}
                   w={"full"}
                   textAlign={"center"}
                 >
@@ -168,13 +168,11 @@ export default function Invitation({ invite }: { invite: any }) {
                   >
                     <Avatar
                       src={invite?.from?.avatar}
-                      w={"full"}
-                      h={"auto"}
+                      size={"full"}
                       maxW={"240px"}
                       aspectRatio={1 / 1}
                       outline={"1px solid"}
                       outlineColor={useColorModeValue("gray.300", "gray.600")}
-                      fontSize={"3xl"}
                     />
                   </Skeleton>
                 </Flex>

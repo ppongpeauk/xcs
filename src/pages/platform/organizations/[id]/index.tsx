@@ -46,7 +46,7 @@ import { Field, Form, Formik } from "formik";
 import { AiFillTag } from "react-icons/ai";
 import { BiSolidExit } from "react-icons/bi";
 import { FaIdBadge, FaTags, FaUserShield } from "react-icons/fa";
-import { HiIdentification, HiUserGroup } from "react-icons/hi";
+import { HiGlobeAlt, HiIdentification, HiUserGroup } from "react-icons/hi";
 import { ImTree } from "react-icons/im";
 import { IoIosRemoveCircle } from "react-icons/io";
 import { IoSave } from "react-icons/io5";
@@ -161,7 +161,7 @@ export default function PlatformOrganization() {
   };
 
   let refreshData = () => {
-    setOrganization(null);
+    // setOrganization(null);
     fetch(`/api/v1/organizations/${query.id}`, {
       method: "GET",
       headers: { Authorization: `Bearer ${idToken}` },
@@ -474,7 +474,7 @@ export default function PlatformOrganization() {
                     </Button>
                     <Button
                       onClick={roleModalOnOpen}
-                      leftIcon={<HiIdentification />}
+                      leftIcon={<HiGlobeAlt />}
                     >
                       Manage Access Groups
                     </Button>

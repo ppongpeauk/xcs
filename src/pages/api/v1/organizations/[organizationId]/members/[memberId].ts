@@ -48,9 +48,10 @@ export default async function handler(
   // }
 
   const timestamp = new Date();
-  let { role, accessGroups } = req.body as {
+  let { role, accessGroups, scanData } = req.body as {
     role: number;
     accessGroups: string[];
+    scanData: string[];
   };
 
   if (
@@ -94,6 +95,7 @@ export default async function handler(
         $set: {
           [`members.${memberId}.role`]: role,
           [`members.${memberId}.accessGroups`]: accessGroups,
+          [`members.${memberId}.scanData`]: scanData || {},
         },
       }
     );
