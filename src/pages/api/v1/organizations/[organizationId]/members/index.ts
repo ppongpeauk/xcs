@@ -91,6 +91,7 @@ export default async function handler(
             id: robloxId,
             accessGroups: accessGroups,
             role: 0,
+            joinedAt: timestamp,
           }
         },
       }
