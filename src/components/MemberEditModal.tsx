@@ -187,7 +187,6 @@ export default function MemberEditModal({
                 </Thead>
                 <Tbody>
                   {(filteredMembers || [])
-                    .sort((a: any, b: any) => (a.role > b.role ? -1 : 1)) // sort by role (descending)
                     .map((member: any) => (
                       <Tr key={member?.id}>
                         <Td>

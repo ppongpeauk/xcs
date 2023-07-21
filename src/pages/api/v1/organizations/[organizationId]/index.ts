@@ -112,7 +112,7 @@ export default async function handler(
       if (members.length > 99) break;
     }
 
-    organization.members = members;
+    organization.members = members.sort((a: any, b: any) => (a.role > b.role ? -1 : 1)); // sort by role (descending)
 
     return res.status(200).json({
       organization: organization,
