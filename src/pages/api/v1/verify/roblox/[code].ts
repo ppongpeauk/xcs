@@ -44,6 +44,7 @@ export default async function handler(
 
     const mongoClient = await clientPromise;
     const db = mongoClient.db(process.env.MONGODB_DB as string);
+    const organizations = db.collection("organizations");
     const codes = db.collection("verificationCodes");
     const users = db.collection("users");
 
@@ -104,6 +105,33 @@ export default async function handler(
           },
         }
       );
+
+      // convert all roblox-type members across all organizations to user-type
+      const robloxUserOrganizations = await organizations.find({
+        [`members.${robloxId}`]: { $exists: true },
+      }).toArray() // get all organizations that have the roblox user as a member
+
+      // convert all roblox-type members to user-type
+      for (const organization of robloxUserOrganizations) {
+        const organizationRobloxUser = organization.members[robloxId];
+        await organizations.updateOne(
+          { id: organization.id },
+          {
+            $set: {
+              [`members.${fetchCode.id}`]: {
+                type: "user",
+                id: fetchCode.id,
+                role: organizationRobloxUser.role,
+                accessGroups: organizationRobloxUser.accessGroups,
+                joinedAt: organizationRobloxUser.joinedAt,
+              },
+            },
+            $unset: {
+              [`members.${robloxId}`]: "",
+            },
+          }
+        );
+      }
 
       // revoke code
       await codes.deleteOne({ code: code });
