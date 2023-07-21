@@ -46,7 +46,7 @@ import { Field, Form, Formik } from "formik";
 import { AiFillTag } from "react-icons/ai";
 import { BiSolidExit } from "react-icons/bi";
 import { FaIdBadge, FaTags, FaUserShield } from "react-icons/fa";
-import { HiUserGroup } from "react-icons/hi";
+import { HiIdentification, HiUserGroup } from "react-icons/hi";
 import { ImTree } from "react-icons/im";
 import { IoIosRemoveCircle } from "react-icons/io";
 import { IoSave } from "react-icons/io5";
@@ -303,12 +303,12 @@ export default function PlatformOrganization() {
           </BreadcrumbItem>
         </Breadcrumb>
         <Stack direction={"row"} align={"center"} spacing={4} py={4}>
-          <Skeleton isLoaded={organization} rounded={"lg"}>
+          <Skeleton isLoaded={organization} borderRadius={"lg"}>
             <Avatar
               name={organization?.name}
               src={organization?.avatar}
               size={{ base: "xl", md: "2xl" }}
-              rounded={"lg"}
+              borderRadius={"lg"}
             />
           </Skeleton>
           <Flex flexDir={"column"}>
@@ -460,22 +460,21 @@ export default function PlatformOrganization() {
                       </FormControl>
                     )}
                   </Field>
+                  <Text>Member and Access Group Management</Text>
                   <Stack
                     direction={{ base: "column", md: "row" }}
                     spacing={2}
-                    pt={2}
+                    py={2}
                   >
                     <Button
-                      mb={2}
                       onClick={memberModalOnOpen}
                       leftIcon={<HiUserGroup />}
                     >
                       Manage Members
                     </Button>
                     <Button
-                      mb={2}
                       onClick={roleModalOnOpen}
-                      leftIcon={<FaTags />}
+                      leftIcon={<HiIdentification />}
                     >
                       Manage Access Groups
                     </Button>
@@ -483,10 +482,9 @@ export default function PlatformOrganization() {
                   <Stack
                     direction={{ base: "column", md: "row" }}
                     spacing={2}
-                    pt={2}
+                    py={2}
                   >
                     <Button
-                      mb={2}
                       isLoading={props.isSubmitting}
                       leftIcon={<IoSave />}
                       type={"submit"}
@@ -495,7 +493,6 @@ export default function PlatformOrganization() {
                     </Button>
                     <Button
                       as={NextLink}
-                      mb={2}
                       href={`/platform/locations/?organization=${query.id}`}
                       leftIcon={<ImTree />}
                     >
