@@ -1,14 +1,14 @@
 import { useAuthContext } from "@/contexts/AuthContext";
 import Layout from "@/layouts/PlatformLayout";
 import {
-  Box,
-  Card,
-  CardHeader,
-  Container,
-  Heading,
-  SimpleGrid,
-  Skeleton,
-  Text,
+    Box,
+    Card,
+    CardHeader,
+    Container,
+    Heading,
+    SimpleGrid,
+    Skeleton,
+    Text,
 } from "@chakra-ui/react";
 import Head from "next/head";
 import { Suspense } from "react";

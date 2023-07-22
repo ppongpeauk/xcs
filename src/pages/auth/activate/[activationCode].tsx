@@ -4,21 +4,21 @@ import Section from "@/components/section";
 import { auth } from "@/lib/firebase";
 import { useDisclosure } from "@chakra-ui/hooks";
 import {
-  Box,
-  Button,
-  Flex,
-  FormControl,
-  FormLabel,
-  HStack,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  Link,
-  Skeleton,
-  SkeletonText,
-  Text,
-  useColorModeValue,
-  useToast,
+    Box,
+    Button,
+    Flex,
+    FormControl,
+    FormLabel,
+    HStack,
+    Input,
+    InputGroup,
+    InputLeftElement,
+    Link,
+    Skeleton,
+    SkeletonText,
+    Text,
+    useColorModeValue,
+    useToast,
 } from "@chakra-ui/react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { Field, Form, Formik } from "formik";

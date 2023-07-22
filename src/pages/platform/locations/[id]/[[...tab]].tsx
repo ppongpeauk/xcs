@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import Layout from "@/layouts/PlatformLayout";
 import {
-  Container,
-  Divider,
-  MenuList,
-  useColorModeValue,
+    Container,
+    Divider,
+    MenuList,
+    useColorModeValue,
 } from "@chakra-ui/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -12,24 +12,24 @@ import { Suspense, useEffect, useState } from "react";
 
 import { ChevronRightIcon, DeleteIcon } from "@chakra-ui/icons";
 import {
-  Box,
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbSeparator,
-  Heading,
-  IconButton,
-  Menu,
-  MenuButton,
-  MenuDivider,
-  MenuItem,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-  Text,
-  useDisclosure,
+    Box,
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbSeparator,
+    Heading,
+    IconButton,
+    Menu,
+    MenuButton,
+    MenuDivider,
+    MenuItem,
+    Tab,
+    TabList,
+    TabPanel,
+    TabPanels,
+    Tabs,
+    Text,
+    useDisclosure,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 
@@ -44,9 +44,9 @@ import { useToast } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
 import { AiFillTag } from "react-icons/ai";
 import {
-  BiSolidGroup,
-  BiSolidTime,
-  BiSolidTrafficBarrier,
+    BiSolidGroup,
+    BiSolidTime,
+    BiSolidTrafficBarrier,
 } from "react-icons/bi";
 import { BsFillCloudDownloadFill } from "react-icons/bs";
 import { IoIosRemoveCircle } from "react-icons/io";

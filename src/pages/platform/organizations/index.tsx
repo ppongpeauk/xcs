@@ -1,22 +1,22 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import Layout from "@/layouts/PlatformLayout";
 import {
-  Box,
-  Button,
-  Code,
-  Container,
-  Flex,
-  FormControl,
-  FormLabel,
-  HStack,
-  Heading,
-  Link,
-  Select,
-  Skeleton,
-  Stack,
-  Text,
-  useColorModeValue,
-  useDisclosure,
+    Box,
+    Button,
+    Code,
+    Container,
+    Flex,
+    FormControl,
+    FormLabel,
+    HStack,
+    Heading,
+    Link,
+    Select,
+    Skeleton,
+    Stack,
+    Text,
+    useColorModeValue,
+    useDisclosure,
 } from "@chakra-ui/react";
 import Head from "next/head";
 import { useEffect, useState } from "react";

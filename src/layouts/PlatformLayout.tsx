@@ -7,13 +7,13 @@ import { useRouter } from "next/router";
 import Footer from "@/components/Footer";
 import PlatformNav from "@/components/PlatformNav";
 import {
-  Alert,
-  AlertDescription,
-  AlertIcon,
-  AlertTitle,
-  Box,
-  Flex,
-  Stack,
+    Alert,
+    AlertDescription,
+    AlertIcon,
+    AlertTitle,
+    Box,
+    Flex,
+    Stack,
 } from "@chakra-ui/react";
 
 // Authentication

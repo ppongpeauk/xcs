@@ -1,12 +1,12 @@
 import DeleteDialog from "@/components/DeleteDialog";
 import { useAuthContext } from "@/contexts/AuthContext";
 import {
-  Box,
-  Button,
-  ButtonGroup,
-  Text,
-  useDisclosure,
-  useToast,
+    Box,
+    Button,
+    ButtonGroup,
+    Text,
+    useDisclosure,
+    useToast,
 } from "@chakra-ui/react";
 import moment from "moment";
 import { useRouter } from "next/router";
