@@ -18,13 +18,16 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Portal,
   Select,
   Skeleton,
   SkeletonCircle,
   SkeletonText,
   Spacer,
   Stack,
+  Switch,
   Textarea,
+  Tooltip,
   chakra,
   useColorModeValue,
   useDisclosure,
@@ -38,6 +41,7 @@ import InviteOrganizationModal from "@/components/InviteOrganizationModal";
 import InviteOrganizationRobloxModal from "@/components/InviteOrganizationRobloxModal";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { roleToText, textToRole } from "@/lib/utils";
+import { InfoIcon } from "@chakra-ui/icons";
 import {
   Box,
   Table,
@@ -82,6 +86,8 @@ export default function RoleEditModal({
 
   const groupSearchRef = useRef<any>(null);
   const [filteredGroups, setFilteredGroups] = useState<any>([]);
+
+  const editButtonsRef = useRef<any>(null);
 
   const {
     isOpen: deleteGroupDialogOpen,
@@ -141,13 +147,13 @@ export default function RoleEditModal({
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
         <ModalContent
-          maxW={{ base: "full", md: "75vw" }}
+          maxW={{ base: "full", lg: "container.xl" }}
           bg={useColorModeValue("white", "gray.800")}
         >
           <ModalHeader>Manage Access Groups</ModalHeader>
           <ModalCloseButton />
-          <ModalBody w={"full"}>
-            <Stack mb={2} direction={{ base: "column", md: "row" }}>
+          <ModalBody w={"full"} pb={0}>
+            <Stack mb={4} direction={{ base: "column", md: "row" }}>
               <FormControl w={{ base: "full", md: "300px" }}>
                 <FormLabel>Search Access Group</FormLabel>
                 <Input
@@ -168,7 +174,7 @@ export default function RoleEditModal({
                 onClick={createModalOnOpen}
                 leftIcon={<IoIosCreate />}
               >
-                Create Access Group
+                New Access Group
               </Button>
             </Stack>
             <Flex
@@ -201,7 +207,7 @@ export default function RoleEditModal({
                             {filteredGroups[group].description && (
                               <Text
                                 color={"gray.500"}
-                                maxW={"320px"}
+                                maxW={"384px"}
                                 isTruncated
                               >
                                 {filteredGroups[group].description}
@@ -268,13 +274,14 @@ export default function RoleEditModal({
                 flexBasis={1}
               >
                 <Flex
-                  mt={2}
                   p={6}
                   rounded={"lg"}
                   border={"1px solid"}
                   borderColor={themeBorderColor}
                   minH={{ base: "unset", xl: "512px" }}
+                  maxH={{ base: "unset", xl: "512px" }}
                   h={"full"}
+                  overflowY={"auto"}
                 >
                   {!focusedGroup || !organization ? (
                     <Text m={"auto"} color={"gray.500"}>
@@ -286,7 +293,11 @@ export default function RoleEditModal({
                       <Flex align={"center"} h={"fit-content"}>
                         <Flex flexDir={"column"}>
                           <Flex align={"center"}>
-                            <Text as={"h2"} fontSize={"xl"} fontWeight={"bold"}>
+                            <Text
+                              as={"h2"}
+                              fontSize={"3xl"}
+                              fontWeight={"bold"}
+                            >
                               {focusedGroup?.name}
                             </Text>
                           </Flex>
@@ -303,6 +314,10 @@ export default function RoleEditModal({
                             null,
                             2
                           ),
+                          // config
+                          configActive: focusedGroup?.config?.active,
+                          configOpenToEveryone:
+                            focusedGroup?.config?.openToEveryone,
                         }}
                         onSubmit={(values, actions) => {
                           // alert(JSON.stringify(values, null, 2));
@@ -335,6 +350,11 @@ export default function RoleEditModal({
                                   scanData: JSON.parse(
                                     values?.scanData || "{}"
                                   ),
+                                  config: {
+                                    active: values?.configActive,
+                                    openToEveryone:
+                                      values?.configOpenToEveryone,
+                                  },
                                 }),
                               }
                             )
@@ -359,7 +379,7 @@ export default function RoleEditModal({
                               .catch((error) => {
                                 toast({
                                   title:
-                                    "There was an error updating the member.",
+                                    "There was an error updating the access group.",
                                   description: error.message,
                                   status: "error",
                                   duration: 9000,
@@ -465,39 +485,108 @@ export default function RoleEditModal({
                                     </FormControl>
                                   )}
                                 </Field> */}
-                                <Field name="name">
-                                  {({ field, form }: any) => (
-                                    <FormControl w={"fit-content"}>
-                                      <FormLabel>Name</FormLabel>
-                                      <Input
-                                        {...field}
-                                        type={"text"}
-                                        variant={"outline"}
-                                        placeholder={"Access Group Name"}
-                                        autoComplete={"off"}
-                                        autoCorrect={"off"}
-                                      />
-                                    </FormControl>
-                                  )}
-                                </Field>
-                                <Field name="description">
-                                  {({ field, form }: any) => (
-                                    <FormControl>
-                                      <FormLabel>Short Description</FormLabel>
-                                      <Textarea
-                                        {...field}
-                                        variant={"outline"}
-                                        placeholder={"Access Group Short Description"}
-                                        maxH={"1rem"}
-                                        autoComplete={"off"}
-                                        autoCorrect={"off"}
-                                      />
-                                    </FormControl>
-                                  )}
-                                </Field>
+                                <Stack
+                                  direction={{ base: "column", md: "column" }}
+                                >
+                                  <Field name="name">
+                                    {({ field, form }: any) => (
+                                      <FormControl w={"fit-content"}>
+                                        <FormLabel>Name</FormLabel>
+                                        <Input
+                                          {...field}
+                                          type={"text"}
+                                          variant={"outline"}
+                                          placeholder={"Access Group Name"}
+                                          autoComplete={"off"}
+                                          autoCorrect={"off"}
+                                        />
+                                      </FormControl>
+                                    )}
+                                  </Field>
+                                  <Field name="description">
+                                    {({ field, form }: any) => (
+                                      <FormControl>
+                                        <FormLabel>Short Description</FormLabel>
+                                        <Input
+                                          {...field}
+                                          type={"text"}
+                                          variant={"outline"}
+                                          placeholder={
+                                            "Access Group Short Description"
+                                          }
+                                          autoComplete={"off"}
+                                          autoCorrect={"off"}
+                                        />
+                                      </FormControl>
+                                    )}
+                                  </Field>
+                                </Stack>
+                                <Stack
+                                  direction={{ base: "column", md: "row" }}
+                                  py={4}
+                                  w={"fit-content"}
+                                >
+                                  <Field name="configActive">
+                                    {({ field, form }: any) => (
+                                      <FormControl w={"fit-content"}>
+                                        <FormLabel>Active</FormLabel>
+                                        <InputGroup>
+                                          <Switch
+                                            {...field}
+                                            placeholder="Active"
+                                            variant={"outline"}
+                                            width={"fit-content"}
+                                            isChecked={
+                                              form.values?.configActive
+                                            }
+                                            onChange={(e) => {
+                                              form.setFieldValue(
+                                                "configActive",
+                                                e.target.checked
+                                              );
+                                            }}
+                                          />
+                                        </InputGroup>
+                                        <FormHelperText>
+                                          Whether or not this access group is
+                                          active.
+                                        </FormHelperText>
+                                      </FormControl>
+                                    )}
+                                  </Field>
+                                  <Field name="configOpenToEveryone">
+                                    {({ field, form }: any) => (
+                                      <FormControl w={"fit-content"}>
+                                        <FormLabel>Everyone</FormLabel>
+                                        <InputGroup>
+                                          <Switch
+                                            {...field}
+                                            colorScheme={"red"}
+                                            placeholder="Everyone"
+                                            variant={"outline"}
+                                            width={"fit-content"}
+                                            isChecked={
+                                              form.values?.configOpenToEveryone
+                                            }
+                                            onChange={(e) => {
+                                              form.setFieldValue(
+                                                "configOpenToEveryone",
+                                                e.target.checked
+                                              );
+                                            }}
+                                          />
+                                        </InputGroup>
+                                        <FormHelperText>
+                                          This could serve as a
+                                          &quot;Guest&quot; access group.
+                                        </FormHelperText>
+                                      </FormControl>
+                                    )}
+                                  </Field>
+                                </Stack>
                                 <Field name="scanData">
                                   {({ field, form }: any) => (
-                                    <FormControl w={"full"}>
+                                    <FormControl w={"fit-content"}>
                                       <FormLabel>Scan Data</FormLabel>
                                       <InputGroup>
                                         <Box
@@ -536,39 +625,43 @@ export default function RoleEditModal({
                                       </InputGroup>
                                       <FormHelperText>
                                         This is the data that will be returned
-                                        when this member scans their card. (User
-                                        scan data takes priority over access
-                                        group scan data when it is merged.)
+                                        when a user under this access group
+                                        scans their card. (User scan data takes
+                                        priority over access group scan data
+                                        when it is merged.)
                                       </FormHelperText>
                                     </FormControl>
                                   )}
                                 </Field>
                               </Stack>
                             </Flex>
-                            <Flex
-                              align={"flex-end"}
-                              justify={"flex-end"}
-                              pt={4}
-                            >
-                              <Button
-                                isLoading={props.isSubmitting}
-                                leftIcon={<IoSave />}
-                                type={"submit"}
-                              >
-                                Save Changes
-                              </Button>
-                              <Button
-                                colorScheme="red"
-                                ml={2}
-                                leftIcon={<IoIosRemoveCircle />}
-                                onClick={() => {
-                                  setFocusedGroup(focusedGroup);
-                                  deleteGroupDialogOnOpen();
-                                }}
-                              >
-                                Delete
-                              </Button>
-                            </Flex>
+                            <Portal containerRef={editButtonsRef}>
+                              <Stack direction={"row"} spacing={4}>
+                                <Button
+                                  isLoading={props.isSubmitting}
+                                  leftIcon={<IoSave />}
+                                  type={"submit"}
+                                  onClick={() => {
+                                    props.handleSubmit();
+                                  }}
+                                  onSubmit={() => {
+                                    props.handleSubmit();
+                                  }}
+                                >
+                                  Save Changes
+                                </Button>
+                                <Button
+                                  colorScheme="red"
+                                  leftIcon={<IoIosRemoveCircle />}
+                                  onClick={() => {
+                                    setFocusedGroup(focusedGroup);
+                                    deleteGroupDialogOnOpen();
+                                  }}
+                                >
+                                  Delete
+                                </Button>
+                              </Stack>
+                            </Portal>
                           </Form>
                         )}
                       </Formik>
@@ -579,9 +672,12 @@ export default function RoleEditModal({
             </Flex>
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Close
-            </Button>
+            <Stack direction={"row"} spacing={4}>
+              <Box ref={editButtonsRef} />
+              <Button colorScheme="blue" onClick={onClose}>
+                Close
+              </Button>
+            </Stack>
           </ModalFooter>
         </ModalContent>
       </Modal>

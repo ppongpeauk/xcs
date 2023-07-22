@@ -560,7 +560,7 @@ export default function MemberEditModal({
                                         onChange={(value) => {
                                           form.setFieldValue(
                                             "accessGroups",
-                                            value as string[]
+                                            value || [] as string[]
                                           );
                                         }}
                                         value={form.values?.accessGroups}

@@ -90,9 +90,15 @@ export default async function handler(
 
     // Create Access Group
     const accessGroup = {
+      type: "organization",
       id,
       name,
+      description,
       scanData,
+      config: {
+        active: true,
+        openToEveryone: false,
+      },
       createdAt: timestamp,
       updatedAt: timestamp,
     };

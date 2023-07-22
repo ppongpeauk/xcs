@@ -159,28 +159,30 @@ export default function PlatformOrganization() {
       });
   };
 
-  let refreshData = () => {
+  let refreshData = async () => {
     // setOrganization(null);
-    fetch(`/api/v1/organizations/${query.id}`, {
-      method: "GET",
-      headers: { Authorization: `Bearer ${idToken}` },
-    })
-      .then((res) => {
-        if (res.status === 200) return res.json();
-        return push(`/${res.status}`);
+    await user.getIdToken().then((token: string) => {
+      fetch(`/api/v1/organizations/${query.id}`, {
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}` },
       })
-      .then((data) => {
-        setOrganization(data.organization);
-      })
-      .catch((err) => {
-        toast({
-          title: "Error",
-          description: err.message,
-          status: "error",
-          duration: 9000,
-          isClosable: true,
+        .then((res) => {
+          if (res.status === 200) return res.json();
+          return push(`/${res.status}`);
+        })
+        .then((data) => {
+          setOrganization(data.organization);
+        })
+        .catch((err) => {
+          toast({
+            title: "Error",
+            description: err.message,
+            status: "error",
+            duration: 9000,
+            isClosable: true,
+          });
         });
-      });
+    });
   };
 
   const onMemberRemove = (member: any) => {
@@ -512,10 +514,7 @@ export default function PlatformOrganization() {
                     >
                       Manage Members
                     </Button>
-                    <Button
-                      onClick={roleModalOnOpen}
-                      leftIcon={<HiGlobeAlt />}
-                    >
+                    <Button onClick={roleModalOnOpen} leftIcon={<HiGlobeAlt />}>
                       Manage Access Groups
                     </Button>
                   </Stack>

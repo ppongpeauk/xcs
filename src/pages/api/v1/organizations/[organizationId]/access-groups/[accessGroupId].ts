@@ -46,11 +46,7 @@ export default async function handler(
   const user = await users.findOne({ id: uid });
 
   const timestamp = new Date();
-  let { name, description, scanData } = req.body as {
-    name: string;
-    description: string;
-    scanData: string;
-  };
+  let { name, description, scanData, config } = req.body as any;
 
   // Edit Access Group
   if (req.method === "PATCH") {
@@ -95,9 +91,14 @@ export default async function handler(
       { id: organizationId },
       {
         $set: {
-          [`accessGroups.${accessGroupId}.name`]: name,
-          [`accessGroups.${accessGroupId}.description`]: description,
-          [`accessGroups.${accessGroupId}.scanData`]: scanData,
+          [`accessGroups.${accessGroupId}`]: {
+            ...organization.accessGroups[accessGroupId],
+            name,
+            description,
+            scanData,
+            config,
+            lastUpdated: timestamp,
+          }
         },
       }
     );
