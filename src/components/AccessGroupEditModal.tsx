@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import {
   Avatar,
+  Badge,
   Button,
   Flex,
   FormControl,
@@ -202,8 +203,34 @@ export default function AccessGroupEditModal({
                         <Tr key={group}>
                           <Td>
                             <Box my={2}>
-                              <Text fontWeight="bold">
+                              <Text
+                                fontWeight="bold"
+                                alignItems={"center"}
+                                display={"flex"}
+                              >
                                 {filteredGroups[group].name}
+                                {filteredGroups[group].config?.openToEveryone && (
+                                  <Badge
+                                    as={"span"}
+                                    ml={2}
+                                    colorScheme={"blue"}
+                                  >
+                                    Everyone
+                                  </Badge>
+                                )}
+                                <Badge
+                                  as={"span"}
+                                  ml={2}
+                                  colorScheme={
+                                    filteredGroups[group].config?.active
+                                      ? "green"
+                                      : "red"
+                                  }
+                                >
+                                  {filteredGroups[group].config?.active
+                                    ? "Active"
+                                    : "Inactive"}
+                                </Badge>
                               </Text>
                               {filteredGroups[group].description && (
                                 <Text
