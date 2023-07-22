@@ -41,7 +41,7 @@ const getRobloxUsers = async (userIds: string[]) => {
     },
     body: JSON.stringify({
         userIds,
-        excludeBannedUsers: true
+        excludeBannedUsers: false
     }),
   }).then((res) => res.json()).then((res) => res.data);
 
