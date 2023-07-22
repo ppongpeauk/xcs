@@ -55,7 +55,14 @@ export default function InviteOrganizationRobloxModal({
               body: JSON.stringify({
                 type: "roblox",
                 username: values.username,
-                accessGroups: values.accessGroups,
+                // get access group ids from names
+                accessGroups: values?.accessGroups.map((accessGroup: any) => {
+                  return Object.keys(organization?.accessGroups || {}).find(
+                    (accessGroupId: any) =>
+                      organization?.accessGroups[accessGroupId].name ===
+                      accessGroup
+                  );
+                }),
               }),
             })
               .then((res) => {
@@ -126,7 +133,7 @@ export default function InviteOrganizationRobloxModal({
                             label="Access Groups"
                             options={Object.keys(organization.accessGroups).map(
                               (key) => ({
-                                value: key,
+                                value: organization.accessGroups[key].name,
                                 label: organization.accessGroups[key].name,
                               })
                             )}
