@@ -158,7 +158,7 @@ export default function MemberEditModal({
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
         <ModalContent
-          maxW={{ base: "full", md: "75vw" }}
+          maxW={{ base: "full", lg: "container.xl" }}
           bg={useColorModeValue("white", "gray.800")}
         >
           <ModalHeader>Manage Members</ModalHeader>
@@ -531,6 +531,7 @@ export default function MemberEditModal({
                                           value={form.values?.role}
                                           placeholder="Select a role..."
                                           single={true}
+                                          disabled={clientMember?.role >= 3}
                                         />
                                       </FormControl>
                                     )}
