@@ -284,7 +284,6 @@ export default function PlatformOrganization() {
         onClose={onDeleteDialogClose}
         onDelete={onDelete}
       />
-
       <DeleteDialog
         title="Leave Organization"
         body="Are you sure you want to leave this organization?"
@@ -293,7 +292,6 @@ export default function PlatformOrganization() {
         onDelete={onLeave}
         buttonText="Leave"
       />
-
       <AccessGroupEditModal
         isOpen={roleModalOpen}
         onOpen={roleModalOnOpen}

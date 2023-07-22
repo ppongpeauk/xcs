@@ -123,6 +123,7 @@ export default async function handler(
                 id: fetchCode.id,
                 role: organizationRobloxUser.role,
                 accessGroups: organizationRobloxUser.accessGroups,
+                scanData: organizationRobloxUser.scanData,
                 joinedAt: organizationRobloxUser.joinedAt,
               },
             },

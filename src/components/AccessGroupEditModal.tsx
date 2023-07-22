@@ -69,7 +69,7 @@ import CreateAccessGroupDialog from "./CreateAccessGroupDialog";
 
 const ChakraEditor = chakra(Editor);
 
-export default function RoleEditModal({
+export default function AccessGroupEditModal({
   isOpen,
   onOpen,
   onClose,
@@ -189,7 +189,7 @@ export default function RoleEditModal({
                 flexGrow={1}
                 px={4}
               >
-                <Table size={{ base: "sm", md: "lg" }}>
+                <Table size={{ base: "sm", md: "sm" }}>
                   <Thead>
                     <Tr>
                       <Th>Name</Th>
@@ -201,18 +201,20 @@ export default function RoleEditModal({
                       Object.keys(filteredGroups).map((group: any) => (
                         <Tr key={group}>
                           <Td>
-                            <Text fontWeight="bold">
-                              {filteredGroups[group].name}
-                            </Text>
-                            {filteredGroups[group].description && (
-                              <Text
-                                color={"gray.500"}
-                                maxW={"384px"}
-                                isTruncated
-                              >
-                                {filteredGroups[group].description}
+                            <Box my={2}>
+                              <Text fontWeight="bold">
+                                {filteredGroups[group].name}
                               </Text>
-                            )}
+                              {filteredGroups[group].description && (
+                                <Text
+                                  color={"gray.500"}
+                                  maxW={"384px"}
+                                  isTruncated
+                                >
+                                  {filteredGroups[group].description}
+                                </Text>
+                              )}
+                            </Box>
                           </Td>
                           <Td isNumeric>
                             <Button
@@ -222,7 +224,7 @@ export default function RoleEditModal({
                                 setFocusedGroup(filteredGroups[group]);
                               }}
                             >
-                              Edit
+                              Manage
                             </Button>
                             <IconButton
                               aria-label="Delete Access Group"
@@ -295,7 +297,7 @@ export default function RoleEditModal({
                           <Flex align={"center"}>
                             <Text
                               as={"h2"}
-                              fontSize={"3xl"}
+                              fontSize={"2xl"}
                               fontWeight={"bold"}
                             >
                               {focusedGroup?.name}
@@ -402,7 +404,7 @@ export default function RoleEditModal({
                               justifyContent: "space-between",
                             }}
                           >
-                            <Flex flexDir={"column"} mt={4} w={"full"}>
+                            <Flex flexDir={"column"} mt={4} w={"full"} pb={8}>
                               <Stack>
                                 {/* {focusedGroup?.type !== "roblox" && (
                                   <Field name="role">
@@ -672,7 +674,7 @@ export default function RoleEditModal({
             </Flex>
           </ModalBody>
           <ModalFooter>
-            <Stack direction={"row"} spacing={4}>
+            <Stack direction={{ base: "column", md: "row" }} spacing={4}>
               <Box ref={editButtonsRef} />
               <Button colorScheme="blue" onClick={onClose}>
                 Close

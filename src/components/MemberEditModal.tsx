@@ -18,6 +18,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Portal,
   Select,
   Skeleton,
   SkeletonCircle,
@@ -80,6 +81,8 @@ export default function MemberEditModal({
 
   const memberSearchRef = useRef<any>(null);
   const [filteredMembers, setFilteredMembers] = useState<any>(null);
+
+  const editButtonsRef = useRef<any>(null);
 
   const {
     isOpen: deleteUserDialogOpen,
@@ -160,7 +163,7 @@ export default function MemberEditModal({
         >
           <ModalHeader>Manage Members</ModalHeader>
           <ModalCloseButton />
-          <ModalBody w={"full"}>
+          <ModalBody w={"full"} py={0}>
             <Stack mb={2} direction={{ base: "column", md: "row" }}>
               <FormControl w={{ base: "full", md: "300px" }}>
                 <FormLabel>Search Member</FormLabel>
@@ -204,7 +207,7 @@ export default function MemberEditModal({
                 flexGrow={1}
                 px={4}
               >
-                <Table size={{ base: "sm", md: "md" }}>
+                <Table size={{ base: "sm", md: "sm" }}>
                   <Thead>
                     <Tr>
                       <Th>Member</Th>
@@ -217,7 +220,7 @@ export default function MemberEditModal({
                       (filteredMembers || []).map((member: any) => (
                         <Tr key={member?.id}>
                           <Td>
-                            <Flex align={"center"}>
+                            <Flex align={"center"} my={2}>
                               <Avatar
                                 size="md"
                                 src={member?.avatar}
@@ -268,7 +271,7 @@ export default function MemberEditModal({
                                 setFocusedMember(member);
                               }}
                             >
-                              Edit
+                              Manage
                             </Button>
                             <IconButton
                               aria-label="Remove Member"
@@ -339,7 +342,9 @@ export default function MemberEditModal({
                   border={"1px solid"}
                   borderColor={themeBorderColor}
                   minH={{ base: "unset", xl: "512px" }}
+                  maxH={{ base: "unset", xl: "512px" }}
                   h={"full"}
+                  overflowY={"auto"}
                 >
                   {!focusedMember || !organization ? (
                     <Text m={"auto"} color={"gray.500"}>
@@ -489,7 +494,7 @@ export default function MemberEditModal({
                               justifyContent: "space-between",
                             }}
                           >
-                            <Flex flexDir={"column"} mt={4} w={"full"}>
+                            <Flex flexDir={"column"} mt={4} w={"full"} pb={8}>
                               <Stack>
                                 {focusedMember?.type !== "roblox" && (
                                   <Field name="role">
@@ -560,7 +565,7 @@ export default function MemberEditModal({
                                         onChange={(value) => {
                                           form.setFieldValue(
                                             "accessGroups",
-                                            value || [] as string[]
+                                            value || ([] as string[])
                                           );
                                         }}
                                         value={form.values?.accessGroups}
@@ -622,35 +627,39 @@ export default function MemberEditModal({
                                 </Field>
                               </Stack>
                             </Flex>
-                            <Flex
-                              align={"flex-end"}
-                              justify={"flex-end"}
-                              pt={4}
-                            >
-                              <Button
-                                isLoading={props.isSubmitting}
-                                leftIcon={<IoSave />}
-                                type={"submit"}
-                              >
-                                Save Changes
-                              </Button>
-                              <Button
-                                colorScheme="red"
-                                ml={2}
-                                leftIcon={<IoIosRemoveCircle />}
-                                onClick={() => {
-                                  setFocusedMember(focusedMember);
-                                  deleteUserDialogOnOpen();
-                                }}
-                                isDisabled={
-                                  clientMember?.id === focusedMember?.id ||
-                                  focusedMember?.role >= 3 ||
-                                  focusedMember?.role >= clientMember?.role
-                                }
-                              >
-                                Remove
-                              </Button>
-                            </Flex>
+
+                            <Portal containerRef={editButtonsRef}>
+                              <Stack direction={"row"} spacing={4}>
+                                <Button
+                                  isLoading={props.isSubmitting}
+                                  leftIcon={<IoSave />}
+                                  type={"submit"}
+                                  onClick={() => {
+                                    props.handleSubmit();
+                                  }}
+                                  onSubmit={() => {
+                                    props.handleSubmit();
+                                  }}
+                                >
+                                  Save Changes
+                                </Button>
+                                <Button
+                                  colorScheme="red"
+                                  leftIcon={<IoIosRemoveCircle />}
+                                  onClick={() => {
+                                    setFocusedMember(focusedMember);
+                                    deleteUserDialogOnOpen();
+                                  }}
+                                  isDisabled={
+                                    clientMember?.id === focusedMember?.id ||
+                                    focusedMember?.role >= 3 ||
+                                    focusedMember?.role >= clientMember?.role
+                                  }
+                                >
+                                  Remove
+                                </Button>
+                              </Stack>
+                            </Portal>
                           </Form>
                         )}
                       </Formik>
@@ -661,9 +670,12 @@ export default function MemberEditModal({
             </Flex>
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Close
-            </Button>
+            <Stack direction={{ base: "column", md: "row" }} pt={{ base: 2, md: 0 }} spacing={4}>
+              <Box ref={editButtonsRef} />
+              <Button colorScheme="blue" onClick={onClose}>
+                Close
+              </Button>
+            </Stack>
           </ModalFooter>
         </ModalContent>
       </Modal>
