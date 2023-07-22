@@ -39,8 +39,8 @@ import NextLink from "next/link";
 
 import { useAuthContext } from "@/contexts/AuthContext";
 
+import AccessGroupEditModal from "@/components/AccessGroupEditModal";
 import MemberEditModal from "@/components/MemberEditModal";
-import RoleEditModal from "@/components/RoleEditModal";
 import { useToast } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
 import { AiFillTag } from "react-icons/ai";
@@ -54,7 +54,6 @@ import { RiMailAddFill } from "react-icons/ri";
 import { SiRoblox } from "react-icons/si";
 
 import DeleteDialog from "@/components/DeleteDialog";
-import InviteOrganizationModal from "@/components/InviteOrganizationModal";
 export default function PlatformOrganization() {
   const { query, push } = useRouter();
   const { user } = useAuthContext();
@@ -161,7 +160,7 @@ export default function PlatformOrganization() {
   };
 
   let refreshData = () => {
-    // setOrganization(null);
+    setOrganization(null);
     fetch(`/api/v1/organizations/${query.id}`, {
       method: "GET",
       headers: { Authorization: `Bearer ${idToken}` },
@@ -186,6 +185,40 @@ export default function PlatformOrganization() {
 
   const onMemberRemove = (member: any) => {
     fetch(`/api/v1/organizations/${query.id}/members/${member.id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${idToken}` },
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          return res.json();
+        } else {
+          return res.json().then((json: any) => {
+            throw new Error(json.message);
+          });
+        }
+      })
+      .then((data) => {
+        toast({
+          title: data.message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+        refreshData();
+      })
+      .catch((err) => {
+        toast({
+          title: "Error",
+          description: err.message,
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
+      });
+  };
+
+  const onGroupRemove = (group: any) => {
+    fetch(`/api/v1/organizations/${query.id}/access-groups/${group.id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${idToken}` },
     })
@@ -259,10 +292,17 @@ export default function PlatformOrganization() {
         buttonText="Leave"
       />
 
-      <RoleEditModal
+      <AccessGroupEditModal
         isOpen={roleModalOpen}
         onOpen={roleModalOnOpen}
         onClose={roleModalOnClose}
+        onRefresh={refreshData}
+        organization={organization}
+        clientMember={organization?.members.find(
+          (member: any) => member.id === user?.uid
+        )}
+        groups={organization?.accessGroups}
+        onGroupRemove={onGroupRemove}
       />
       <MemberEditModal
         isOpen={memberModalOpen}

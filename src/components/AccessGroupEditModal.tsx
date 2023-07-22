@@ -54,102 +54,87 @@ import { Field, Form, Formik } from "formik";
 import moment from "moment";
 import { useEffect, useRef, useState } from "react";
 import { AiFillEdit } from "react-icons/ai";
-import { IoIosRemoveCircle } from "react-icons/io";
+import { IoIosCreate, IoIosRemoveCircle } from "react-icons/io";
 import { IoSave } from "react-icons/io5";
 import { MdEditSquare } from "react-icons/md";
 import { RiMailAddFill } from "react-icons/ri";
 import { SiRoblox } from "react-icons/si";
+import CreateAccessGroupDialog from "./CreateAccessGroupDialog";
 
 const ChakraEditor = chakra(Editor);
 
-export default function MemberEditModal({
+export default function RoleEditModal({
   isOpen,
   onOpen,
   onClose,
   onRefresh,
   clientMember,
-  members,
+  groups,
   organization,
-  onMemberRemove,
+  onGroupRemove,
 }: any) {
   const { user } = useAuthContext();
   const toast = useToast();
-  const [focusedMember, setFocusedMember] = useState<any>(null);
+  const [focusedGroup, setFocusedGroup] = useState<any>(null);
   const themeBorderColor = useColorModeValue("gray.200", "gray.700");
 
-  const memberSearchRef = useRef<any>(null);
-  const [filteredMembers, setFilteredMembers] = useState<any>(null);
+  const groupSearchRef = useRef<any>(null);
+  const [filteredGroups, setFilteredGroups] = useState<any>([]);
 
   const {
-    isOpen: deleteUserDialogOpen,
-    onOpen: deleteUserDialogOnOpen,
-    onClose: deleteUserDialogOnClose,
+    isOpen: deleteGroupDialogOpen,
+    onOpen: deleteGroupDialogOnOpen,
+    onClose: deleteGroupDialogOnClose,
   } = useDisclosure();
 
   const {
-    isOpen: inviteModalOpen,
-    onOpen: inviteModalOnOpen,
-    onClose: inviteModalOnClose,
+    isOpen: createModalOpen,
+    onOpen: createModalOnOpen,
+    onClose: createModalOnClose,
   } = useDisclosure();
 
-  const {
-    isOpen: robloxModalOpen,
-    onOpen: robloxModalOnOpen,
-    onClose: robloxModalOnClose,
-  } = useDisclosure();
-
-  const filterMembers = (query: string) => {
-    if (!query) return members;
-    return members.filter(
-      (member: any) =>
-        member.displayName.toLowerCase().includes(query.toLowerCase()) ||
-        member.username.toLowerCase().includes(query.toLowerCase())
-    );
+  const filterGroups = (query: string) => {
+    if (!query) return groups;
+    return Object.keys(groups)
+      .filter((group: any) =>
+        groups[group].name.toLowerCase().includes(query.toLowerCase())
+      )
+      .map((group: any) => groups[group]);
   };
 
   useEffect(() => {
-    // if (filteredMembers && filteredMembers !== members) return; // don't reset if we're already filtering
-    setFilteredMembers(members);
-  }, [members]);
+    setFilteredGroups(groups || {});
+  }, [groups]);
 
   useEffect(() => {
     if (!organization) return;
-    setFilteredMembers(filterMembers(memberSearchRef?.current?.value));
-    setFocusedMember(
-      organization.members.find(
-        (member: any) => member.id === focusedMember?.id
-      )
-    );
+    setFilteredGroups(filterGroups(groupSearchRef?.current?.value));
+    setFocusedGroup(groups[focusedGroup?.id]);
+    console.log(focusedGroup);
   }, [organization]);
 
   return (
     <>
       <DeleteDialog
-        isOpen={deleteUserDialogOpen}
-        onClose={deleteUserDialogOnClose}
-        title="Remove Member"
-        body={`Are you sure you want to remove ${focusedMember?.displayName} from this organization?`}
+        isOpen={deleteGroupDialogOpen}
+        onClose={deleteGroupDialogOnClose}
+        title="Remove Access Group"
+        body={`Are you sure you want to remove ${focusedGroup?.name} from this organization?`}
         buttonText="Remove"
         onDelete={() => {
-          deleteUserDialogOnClose();
-          onMemberRemove(focusedMember);
-          setFocusedMember(null);
+          deleteGroupDialogOnClose();
+          onGroupRemove(focusedGroup);
+          setFocusedGroup(null);
         }}
       />
-      <InviteOrganizationModal
-        isOpen={inviteModalOpen}
-        onOpen={inviteModalOnOpen}
-        onClose={inviteModalOnClose}
-        onCreate={() => {}}
-        organizationId={organization?.id}
-      />
-      <InviteOrganizationRobloxModal
-        isOpen={robloxModalOpen}
-        onClose={robloxModalOnClose}
-        onAdd={() => {
-          onRefresh();
-        }}
+      <CreateAccessGroupDialog
+        isOpen={createModalOpen}
+        onClose={createModalOnClose}
         organization={organization}
+        onCreate={(group: any) => {
+          onRefresh();
+          createModalOnClose();
+        }}
       />
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
@@ -157,20 +142,20 @@ export default function MemberEditModal({
           maxW={{ base: "full", md: "75vw" }}
           bg={useColorModeValue("white", "gray.800")}
         >
-          <ModalHeader>Manage Members</ModalHeader>
+          <ModalHeader>Manage Access Groups</ModalHeader>
           <ModalCloseButton />
           <ModalBody w={"full"}>
             <Stack mb={2} direction={{ base: "column", md: "row" }}>
               <FormControl w={{ base: "full", md: "300px" }}>
-                <FormLabel>Search Member</FormLabel>
+                <FormLabel>Search Access Group</FormLabel>
                 <Input
-                  placeholder={"Search for a member..."}
-                  ref={memberSearchRef}
+                  placeholder={"Search for an access group..."}
+                  ref={groupSearchRef}
                   onChange={(e) => {
                     if (e.target?.value) {
-                      setFilteredMembers(filterMembers(e.target?.value));
+                      setFilteredGroups(filterGroups(e.target?.value));
                     } else {
-                      setFilteredMembers(members);
+                      setFilteredGroups(groups);
                     }
                   }}
                 />
@@ -178,83 +163,46 @@ export default function MemberEditModal({
               <Spacer />
               <Button
                 alignSelf={{ base: "normal", md: "flex-end" }}
-                onClick={inviteModalOnOpen}
-                leftIcon={<RiMailAddFill />}
+                onClick={createModalOnOpen}
+                leftIcon={<IoIosCreate />}
               >
-                Invite User
-              </Button>
-              <Button
-                alignSelf={{ base: "normal", md: "flex-end" }}
-                leftIcon={<SiRoblox />}
-                onClick={robloxModalOnOpen}
-              >
-                Add Roblox User
+                Create Access Group
               </Button>
             </Stack>
-            <Flex w={"full"} justify={"space-between"} flexDir={{ base: "column", xl: "row" }}>
-              <TableContainer py={2} h={{ base: "320px", xl: "100%" }} overflowY={"scroll"} flexGrow={1} px={4}>
-                <Table size={{ base: "sm", md: "sm" }}>
+            <Flex
+              w={"full"}
+              justify={"space-between"}
+              flexDir={{ base: "column", xl: "row" }}
+            >
+              <TableContainer
+                py={2}
+                h={{ base: "320px", xl: "100%" }}
+                overflowY={"scroll"}
+                flexGrow={1}
+                px={4}
+              >
+                <Table size={{ base: "sm", md: "md" }}>
                   <Thead>
                     <Tr>
-                      <Th>Member</Th>
-                      <Th>Role</Th>
+                      <Th>Name</Th>
                       <Th isNumeric>Actions</Th>
                     </Tr>
                   </Thead>
                   <Tbody>
                     {organization ? (
-                      (filteredMembers || []).map((member: any) => (
-                        <Tr key={member?.id}>
+                      Object.keys(filteredGroups).map((group: any) => (
+                        <Tr key={group}>
                           <Td>
-                            <Flex align={"center"}>
-                              <Avatar
-                                size="md"
-                                src={member?.avatar}
-                                mr={4}
-                                bg={"gray.300"}
-                              />
-
-                              <Flex flexDir={"column"}>
-                                {member.type !== "roblox" ? (
-                                  <>
-                                    <Text fontWeight="bold">
-                                      {member?.displayName}
-                                    </Text>
-                                    <Text fontSize="sm" color="gray.500">
-                                      @{member?.username}
-                                    </Text>
-                                  </>
-                                ) : (
-                                  <Flex flexDir={"column"} justify={"center"}>
-                                    <Flex align={"center"}>
-                                      <Icon size={"sm"} as={SiRoblox} mr={1} />
-                                      <Text fontWeight="bold">
-                                        {member?.displayName}
-                                      </Text>
-                                    </Flex>
-                                    <Text fontSize="sm" color="gray.500">
-                                      @{member?.username}
-                                    </Text>
-                                  </Flex>
-                                )}
-                                <Text fontSize="sm" color="gray.500">
-                                  Joined{" "}
-                                  {moment(member?.joinedAt).format(
-                                    "MMMM Do YYYY"
-                                  )}
-                                </Text>
-                              </Flex>
-                            </Flex>
-                          </Td>
-                          <Td>
-                            <Text>{roleToText(member?.role)}</Text>
+                            <Text fontWeight="bold">
+                              {filteredGroups[group].name}
+                            </Text>
                           </Td>
                           <Td isNumeric>
                             <Button
                               size="sm"
                               leftIcon={<MdEditSquare />}
                               onClick={() => {
-                                setFocusedMember(member);
+                                setFocusedGroup(filteredGroups[group]);
                               }}
                             >
                               Edit
@@ -266,14 +214,9 @@ export default function MemberEditModal({
                               ml={2}
                               icon={<IoIosRemoveCircle />}
                               onClick={() => {
-                                setFocusedMember(member);
-                                deleteUserDialogOnOpen();
+                                setFocusedGroup(filteredGroups[group]);
+                                deleteGroupDialogOnOpen();
                               }}
-                              isDisabled={
-                                clientMember?.id === member?.id ||
-                                member?.role >= 3 ||
-                                member?.role >= clientMember?.role
-                              }
                             />
                           </Td>
                         </Tr>
@@ -282,14 +225,6 @@ export default function MemberEditModal({
                       <>
                         {Array.from(Array(8).keys()).map((i) => (
                           <Tr key={i}>
-                            <Td>
-                              <Flex align={"center"}>
-                                <SkeletonCircle size="10" mr={4} />
-                                <Flex flexDir={"column"}>
-                                  <SkeletonText noOfLines={2} spacing="4" />
-                                </Flex>
-                              </Flex>
-                            </Td>
                             <Td>
                               <SkeletonText
                                 noOfLines={1}
@@ -309,13 +244,18 @@ export default function MemberEditModal({
                       </>
                     )}
                   </Tbody>
-                  {filteredMembers?.length < 1 && (
-                    <TableCaption>No members found.</TableCaption>
+                  {filteredGroups?.length < 1 && (
+                    <TableCaption>No access groups found.</TableCaption>
                   )}
                 </Table>
               </TableContainer>
-              {/* Edit Member */}
-              <Skeleton isLoaded={organization} rounded={"lg"} minW={{ base: "unset", sm: "unset", lg: "512px" }} flexBasis={1}>
+              {/* Edit Group */}
+              <Skeleton
+                isLoaded={organization}
+                rounded={"lg"}
+                minW={{ base: "unset", sm: "unset", lg: "512px" }}
+                flexBasis={1}
+              >
                 <Flex
                   mt={2}
                   p={6}
@@ -325,59 +265,29 @@ export default function MemberEditModal({
                   minH={{ base: "unset", xl: "512px" }}
                   h={"full"}
                 >
-                  {!focusedMember || !organization ? (
+                  {!focusedGroup || !organization ? (
                     <Text m={"auto"} color={"gray.500"}>
-                      Select a member to manage.
+                      Select an access group to manage.
                     </Text>
                   ) : (
                     <Flex flexDir={"column"} w={"full"}>
                       {/* Header */}
                       <Flex align={"center"} h={"fit-content"}>
-                        <Avatar
-                          size="lg"
-                          src={focusedMember?.avatar}
-                          mr={4}
-                          bg={"gray.300"}
-                        />
                         <Flex flexDir={"column"}>
                           <Flex align={"center"}>
-                            {focusedMember.type === "roblox" && (
-                              <Icon
-                                size={"sm"}
-                                as={SiRoblox}
-                                mr={1}
-                                h={"full"}
-                              />
-                            )}
                             <Text as={"h2"} fontSize={"xl"} fontWeight={"bold"}>
-                              {focusedMember?.displayName}
+                              {focusedGroup?.name}
                             </Text>
                           </Flex>
-                          <Text fontSize={"sm"} color={"gray.500"}>
-                            Joined{" "}
-                            {moment(focusedMember?.joinedAt).format(
-                              "MMMM Do YYYY"
-                            )}
-                          </Text>
-                          <Text fontSize={"sm"} color={"gray.500"}>
-                            {roleToText(focusedMember?.role)}
-                          </Text>
                         </Flex>
                       </Flex>
                       {/* Body */}
                       <Formik
                         enableReinitialize={true}
                         initialValues={{
-                          role: roleToText(focusedMember?.role),
-                          accessGroups:
-                            focusedMember.accessGroups.map(
-                              (accessGroup: any) => {
-                                return organization?.accessGroups[accessGroup]
-                                  .name;
-                              }
-                            ) || [],
+                          name: focusedGroup?.name,
                           scanData: JSON.stringify(
-                            focusedMember?.scanData,
+                            focusedGroup?.scanData,
                             null,
                             2
                           ),
@@ -400,7 +310,7 @@ export default function MemberEditModal({
                           }
                           user.getIdToken().then((token: string) => {
                             fetch(
-                              `/api/v1/organizations/${organization?.id}/members/${focusedMember?.id}`,
+                              `/api/v1/organizations/${organization?.id}/access-groups/${focusedGroup?.id}`,
                               {
                                 method: "PATCH",
                                 headers: {
@@ -408,21 +318,9 @@ export default function MemberEditModal({
                                   "Content-Type": "application/json",
                                 },
                                 body: JSON.stringify({
-                                  role: textToRole(values?.role),
-                                  scanData: JSON.parse(values?.scanData || "{}"),
-
-                                  // get access group ids from names
-                                  accessGroups: values?.accessGroups.map(
-                                    (accessGroup: any) => {
-                                      return Object.keys(
-                                        organization?.accessGroups || {}
-                                      ).find(
-                                        (accessGroupId: any) =>
-                                          organization?.accessGroups[
-                                            accessGroupId
-                                          ].name === accessGroup
-                                      );
-                                    }
+                                  name: values?.name,
+                                  scanData: JSON.parse(
+                                    values?.scanData || "{}"
                                   ),
                                 }),
                               }
@@ -473,7 +371,7 @@ export default function MemberEditModal({
                           >
                             <Flex flexDir={"column"} mt={4} w={"full"}>
                               <Stack>
-                                {focusedMember?.type !== "roblox" && (
+                                {/* {focusedGroup?.type !== "roblox" && (
                                   <Field name="role">
                                     {({ field, form }: any) => (
                                       <FormControl w={"fit-content"}>
@@ -481,7 +379,7 @@ export default function MemberEditModal({
                                           {...field}
                                           label="Organization Role"
                                           options={
-                                            focusedMember.role < 3
+                                            focusedGroup.role < 3
                                               ? [
                                                   {
                                                     label: "Member",
@@ -521,10 +419,10 @@ export default function MemberEditModal({
                                         label="Access Groups"
                                         options={
                                           Object.keys(
-                                            organization?.accessGroups || {}
+                                            groups || {}
                                           ).map((accessGroup: any) => {
                                             const name =
-                                              organization?.accessGroups[
+                                              groups[
                                                 accessGroup
                                               ]?.name || "Option";
 
@@ -553,6 +451,21 @@ export default function MemberEditModal({
                                       />
                                     </FormControl>
                                   )}
+                                </Field> */}
+                                <Field name="name">
+                                  {({ field, form }: any) => (
+                                    <FormControl w={"fit-content"}>
+                                      <FormLabel>Name</FormLabel>
+                                      <Input
+                                        {...field}
+                                        type={"text"}
+                                        variant={"outline"}
+                                        placeholder={"Access Group Name"}
+                                        autoComplete={"off"}
+                                        autoCorrect={"off"}
+                                      />
+                                    </FormControl>
+                                  )}
                                 </Field>
                                 <Field name="scanData">
                                   {({ field, form }: any) => (
@@ -572,7 +485,10 @@ export default function MemberEditModal({
                                             width="100%"
                                             p={4}
                                             language="json"
-                                            theme={useColorModeValue("vs-light", "vs-dark")}
+                                            theme={useColorModeValue(
+                                              "vs-light",
+                                              "vs-dark"
+                                            )}
                                             options={{
                                               minimap: {
                                                 enabled: true,
@@ -612,14 +528,9 @@ export default function MemberEditModal({
                                 ml={2}
                                 leftIcon={<IoIosRemoveCircle />}
                                 onClick={() => {
-                                  setFocusedMember(focusedMember);
-                                  deleteUserDialogOnOpen();
+                                  setFocusedGroup(focusedGroup);
+                                  deleteGroupDialogOnOpen();
                                 }}
-                                isDisabled={
-                                  clientMember?.id === focusedMember?.id ||
-                                  focusedMember?.role >= 3 ||
-                                  focusedMember?.role >= clientMember?.role
-                                }
                               >
                                 Remove
                               </Button>
