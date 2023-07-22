@@ -347,7 +347,7 @@ export default function PlatformOrganization() {
             <Avatar
               name={organization?.name}
               src={organization?.avatar}
-              size={{ base: "xl", md: "2xl" }}
+              boxSize={{ base: "6rem", md: "10rem" }}
               borderRadius={"lg"}
             />
           </Skeleton>
