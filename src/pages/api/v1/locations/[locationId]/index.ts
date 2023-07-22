@@ -18,7 +18,7 @@ export default async function handler(
   // Verify Token
   const uid = await tokenToID(token as string);
   if (!uid) {
-    return res.status(401).json({ message: "Unauthorized" });
+    return res.status(401).json({ message: "Unauthorized." });
   }
 
   const mongoClient = await clientPromise;
@@ -43,7 +43,7 @@ export default async function handler(
 
   let member = organization.members[uid as any];
   if (!member) {
-    return res.status(401).json({ message: "Unauthorized" });
+    return res.status(401).json({ message: "Unauthorized." });
   }
 
   // Append Organization Data to Location
@@ -69,7 +69,7 @@ export default async function handler(
     if (body.name !== undefined) {
       body.name = body.name.trim();
       if (member.role <= 2 && body.name !== location.name) {
-        return res.status(401).json({ message: "Unauthorized" });
+        return res.status(401).json({ message: "Unauthorized." });
       }
       if (body.name.length > 32 || body.name.length < 1) {
         return res
@@ -81,7 +81,7 @@ export default async function handler(
     if (body.description) {
       body.description = body.description.trim();
       if (member.role <= 2 && body.description !== location.description) {
-        return res.status(401).json({ message: "Unauthorized" });
+        return res.status(401).json({ message: "Unauthorized." });
       }
       if (body.description.length > 256) {
         return res
@@ -113,7 +113,7 @@ export default async function handler(
         member.role <= 2 &&
         body.roblox.universe.id !== location.roblox.universe.id
       ) {
-        return res.status(401).json({ message: "Unauthorized" });
+        return res.status(401).json({ message: "Unauthorized." });
       }
 
       // check if another location is using the same universe

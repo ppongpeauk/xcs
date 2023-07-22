@@ -18,7 +18,7 @@ export default async function handler(
   // Verify Token
   const uid = await tokenToID(token as string);
   if (!uid) {
-    return res.status(401).json({ message: "Unauthorized" });
+    return res.status(401).json({ message: "Unauthorized." });
   }
 
   const mongoClient = await clientPromise;
@@ -50,7 +50,7 @@ export default async function handler(
 
   let member = organization.members[uid as any];
   if (!member) {
-    return res.status(401).json({ message: "Unauthorized" });
+    return res.status(401).json({ message: "Unauthorized." });
   }
 
   // Fetching Access Point Data
@@ -80,7 +80,7 @@ export default async function handler(
     if (body.name !== undefined) {
       body.name = body.name.trim();
       if (member.role <= 1 && body.name !== accessPoint.name) {
-        return res.status(401).json({ message: "Unauthorized" });
+        return res.status(401).json({ message: "Unauthorized." });
       }
       if (body.name.length > 32 || body.name.length < 1) {
         return res
@@ -92,7 +92,7 @@ export default async function handler(
     if (body.description) {
       body.description = body.description.trim();
       if (member.role <= 1 && body.description !== accessPoint.description) {
-        return res.status(401).json({ message: "Unauthorized" });
+        return res.status(401).json({ message: "Unauthorized." });
       }
       if (body.description.length > 256) {
         return res

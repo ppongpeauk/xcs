@@ -13,7 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // verify token
     const uid = await tokenToID(token as string);
     if (!uid) {
-      return res.status(401).json({ message: "Unauthorized" });
+      return res.status(401).json({ message: "Unauthorized." });
     }
 
     const mongoClient = await clientPromise;

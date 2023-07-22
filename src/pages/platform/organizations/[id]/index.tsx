@@ -57,7 +57,6 @@ import DeleteDialog from "@/components/DeleteDialog";
 export default function PlatformOrganization() {
   const { query, push } = useRouter();
   const { user } = useAuthContext();
-  const [idToken, setIdToken] = useState<string | null>(null);
   const [organization, setOrganization] = useState<any>(null);
   const toast = useToast();
 
@@ -85,78 +84,82 @@ export default function PlatformOrganization() {
     onClose: memberModalOnClose,
   } = useDisclosure();
 
-  const onLeave = () => {
-    fetch(`/api/v1/organizations/${query.id}/leave`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${idToken}` },
-    })
-      .then((res) => {
-        if (res.status === 200) {
-          return res.json();
-        } else {
-          return res.json().then((json: any) => {
-            throw new Error(json.message);
+  const onLeave = async () => {
+    await user.getIdToken().then((token: string) => {
+      fetch(`/api/v1/organizations/${query.id}/leave`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((res) => {
+          if (res.status === 200) {
+            return res.json();
+          } else {
+            return res.json().then((json: any) => {
+              throw new Error(json.message);
+            });
+          }
+        })
+        .then((data) => {
+          toast({
+            title: data.message,
+            status: "success",
+            duration: 5000,
+            isClosable: true,
           });
-        }
-      })
-      .then((data) => {
-        toast({
-          title: data.message,
-          status: "success",
-          duration: 5000,
-          isClosable: true,
+          push("/platform/organizations");
+        })
+        .catch((err) => {
+          toast({
+            title: "Error",
+            description: err.message,
+            status: "error",
+            duration: 9000,
+            isClosable: true,
+          });
+        })
+        .finally(() => {
+          onLeaveDialogClose();
         });
-        push("/platform/organizations");
-      })
-      .catch((err) => {
-        toast({
-          title: "Error",
-          description: err.message,
-          status: "error",
-          duration: 9000,
-          isClosable: true,
-        });
-      })
-      .finally(() => {
-        onLeaveDialogClose();
-      });
+    });
   };
 
-  const onDelete = () => {
-    fetch(`/api/v1/organizations/${query.id}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${idToken}` },
-    })
-      .then((res) => {
-        if (res.status === 200) {
-          return res.json();
-        } else {
-          return res.json().then((json: any) => {
-            throw new Error(json.message);
+  const onDelete = async () => {
+    await user.getIdToken().then((token: string) => {
+      fetch(`/api/v1/organizations/${query.id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((res) => {
+          if (res.status === 200) {
+            return res.json();
+          } else {
+            return res.json().then((json: any) => {
+              throw new Error(json.message);
+            });
+          }
+        })
+        .then((data) => {
+          toast({
+            title: data.message,
+            status: "success",
+            duration: 5000,
+            isClosable: true,
           });
-        }
-      })
-      .then((data) => {
-        toast({
-          title: data.message,
-          status: "success",
-          duration: 5000,
-          isClosable: true,
+          push("/platform/organizations");
+        })
+        .catch((err) => {
+          toast({
+            title: "Error",
+            description: err.message,
+            status: "error",
+            duration: 9000,
+            isClosable: true,
+          });
+        })
+        .finally(() => {
+          onDeleteDialogClose();
         });
-        push("/platform/organizations");
-      })
-      .catch((err) => {
-        toast({
-          title: "Error",
-          description: err.message,
-          status: "error",
-          duration: 9000,
-          isClosable: true,
-        });
-      })
-      .finally(() => {
-        onDeleteDialogClose();
-      });
+    });
   };
 
   let refreshData = async () => {
@@ -168,10 +171,58 @@ export default function PlatformOrganization() {
       })
         .then((res) => {
           if (res.status === 200) return res.json();
-          return push(`/${res.status}`);
+          push("/platform/organizations");
+          switch (res.status) {
+            case 404:
+              throw new Error("Organization not found.");
+            case 403:
+              throw new Error("You do not have permission to view this organization.");
+            case 401:
+              throw new Error("You do not have permission to view this organization.");
+            case 500:
+              throw new Error("An internal server error occurred.");
+            default:
+              throw new Error("An unknown error occurred.");
+          }
         })
         .then((data) => {
           setOrganization(data.organization);
+        })
+        .catch((err) => {
+          toast({
+            title: "There was an error fetching the organization.",
+            description: err.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+          });
+        });
+    });
+  };
+
+  const onMemberRemove = async (member: any) => {
+    await user.getIdToken().then((token: string) => {
+      fetch(`/api/v1/organizations/${query.id}/members/${member.id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((res) => {
+          if (res.status === 200) {
+            return res.json();
+          } else {
+            return res.json().then((json: any) => {
+              throw new Error(json.message);
+            });
+          }
+        })
+        .then((data) => {
+          toast({
+            title: data.message,
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+          });
+          refreshData();
         })
         .catch((err) => {
           toast({
@@ -185,87 +236,48 @@ export default function PlatformOrganization() {
     });
   };
 
-  const onMemberRemove = (member: any) => {
-    fetch(`/api/v1/organizations/${query.id}/members/${member.id}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${idToken}` },
-    })
-      .then((res) => {
-        if (res.status === 200) {
-          return res.json();
-        } else {
-          return res.json().then((json: any) => {
-            throw new Error(json.message);
+  const onGroupRemove = async (group: any) => {
+    await user.getIdToken().then((token: string) => {
+      fetch(`/api/v1/organizations/${query.id}/access-groups/${group.id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((res) => {
+          if (res.status === 200) {
+            return res.json();
+          } else {
+            return res.json().then((json: any) => {
+              throw new Error(json.message);
+            });
+          }
+        })
+        .then((data) => {
+          toast({
+            title: data.message,
+            status: "success",
+            duration: 5000,
+            isClosable: true,
           });
-        }
-      })
-      .then((data) => {
-        toast({
-          title: data.message,
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-        });
-        refreshData();
-      })
-      .catch((err) => {
-        toast({
-          title: "Error",
-          description: err.message,
-          status: "error",
-          duration: 9000,
-          isClosable: true,
-        });
-      });
-  };
-
-  const onGroupRemove = (group: any) => {
-    fetch(`/api/v1/organizations/${query.id}/access-groups/${group.id}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${idToken}` },
-    })
-      .then((res) => {
-        if (res.status === 200) {
-          return res.json();
-        } else {
-          return res.json().then((json: any) => {
-            throw new Error(json.message);
+          refreshData();
+        })
+        .catch((err) => {
+          toast({
+            title: "Error",
+            description: err.message,
+            status: "error",
+            duration: 9000,
+            isClosable: true,
           });
-        }
-      })
-      .then((data) => {
-        toast({
-          title: data.message,
-          status: "success",
-          duration: 5000,
-          isClosable: true,
         });
-        refreshData();
-      })
-      .catch((err) => {
-        toast({
-          title: "Error",
-          description: err.message,
-          status: "error",
-          duration: 9000,
-          isClosable: true,
-        });
-      });
+    });
   };
 
   // Fetch organization data
   useEffect(() => {
-    if (!idToken) return;
+    if (!user) return;
     if (!query.id) return;
     refreshData();
-  }, [query.id, idToken]);
-
-  useEffect(() => {
-    if (!user) return;
-    user.getIdToken().then((token: string) => {
-      setIdToken(token);
-    });
-  }, [user]);
+  }, [query.id, user]);
 
   return (
     <>
@@ -500,7 +512,6 @@ export default function PlatformOrganization() {
                       </FormControl>
                     )}
                   </Field>
-                  <Text>Member and Access Group Management</Text>
                   <Stack
                     direction={{ base: "column", md: "row" }}
                     spacing={2}

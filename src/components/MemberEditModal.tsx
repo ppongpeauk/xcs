@@ -54,8 +54,10 @@ import {
 import { MultiSelect } from "chakra-multiselect";
 import { Field, Form, Formik } from "formik";
 import moment from "moment";
+import NextLink from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { AiFillEdit } from "react-icons/ai";
+import { FaIdBadge } from "react-icons/fa";
 import { IoIosRemoveCircle } from "react-icons/io";
 import { IoSave } from "react-icons/io5";
 import { MdEditSquare } from "react-icons/md";
@@ -184,6 +186,7 @@ export default function MemberEditModal({
                 alignSelf={{ base: "normal", md: "flex-end" }}
                 onClick={inviteModalOnOpen}
                 leftIcon={<RiMailAddFill />}
+                isDisabled={clientMember?.role < 2}
               >
                 Invite User
               </Button>
@@ -191,6 +194,7 @@ export default function MemberEditModal({
                 alignSelf={{ base: "normal", md: "flex-end" }}
                 leftIcon={<SiRoblox />}
                 onClick={robloxModalOnOpen}
+                isDisabled={clientMember?.role < 2}
               >
                 Add Roblox User
               </Button>
@@ -355,7 +359,7 @@ export default function MemberEditModal({
                       {/* Header */}
                       <Flex align={"center"} h={"fit-content"}>
                         <Avatar
-                          size="lg"
+                          size={"xl"}
                           src={focusedMember?.avatar}
                           mr={4}
                           bg={"gray.300"}
@@ -383,6 +387,23 @@ export default function MemberEditModal({
                           <Text fontSize={"sm"} color={"gray.500"}>
                             {roleToText(focusedMember?.role)}
                           </Text>
+                          {
+                            <Button
+                              as={NextLink}
+                              href={
+                                focusedMember?.type === "user"
+                                  ? `/platform/profile/${focusedMember?.username}`
+                                  : `https://www.roblox.com/users/${focusedMember?.id}/profile`
+                              }
+                              size={"sm"}
+                              mt={2}
+                              target={"_blank"}
+                              w={"fit-content"}
+                              px={8}
+                            >
+                              View Profile
+                            </Button>
+                          }
                         </Flex>
                       </Flex>
                       {/* Body */}
@@ -671,7 +692,11 @@ export default function MemberEditModal({
             </Flex>
           </ModalBody>
           <ModalFooter>
-            <Stack direction={{ base: "column", md: "row" }} pt={{ base: 2, md: 0 }} spacing={4}>
+            <Stack
+              direction={{ base: "column", md: "row" }}
+              pt={{ base: 2, md: 0 }}
+              spacing={4}
+            >
               <Box ref={editButtonsRef} />
               <Button colorScheme="blue" onClick={onClose}>
                 Close

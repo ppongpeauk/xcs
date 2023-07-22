@@ -20,7 +20,7 @@ export default async function handler(
   // Verify Token
   const uid = await tokenToID(token as string);
   if (!uid) {
-    return res.status(401).json({ message: "Unauthorized" });
+    return res.status(401).json({ message: "Unauthorized." });
   }
 
   const mongoClient = await clientPromise;
@@ -51,7 +51,7 @@ export default async function handler(
 
   let member = organization.members[uid as any];
   if (!member) {
-    return res.status(401).json({ message: "Unauthorized" });
+    return res.status(401).json({ message: "Unauthorized." });
   }
 
   if (req.method === "GET") {
@@ -63,7 +63,7 @@ export default async function handler(
 
   if (req.method === "POST") {
     if (member.role <= 1) {
-      return res.status(401).json({ message: "Unauthorized" });
+      return res.status(401).json({ message: "Unauthorized." });
     }
 
     // Create Access Point

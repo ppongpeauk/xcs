@@ -1,24 +1,24 @@
 // Components
 import {
-    Avatar,
-    Box,
-    Button,
-    Container,
-    Divider,
-    IconButton,
-    Menu,
-    MenuButton,
-    MenuItem,
-    MenuList,
-    Tab,
-    TabList,
-    TabPanel,
-    TabPanels,
-    Tabs,
-    Text,
-    useColorModeValue,
-    useDisclosure,
-    useToast,
+  Avatar,
+  Box,
+  Button,
+  Container,
+  Divider,
+  IconButton,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  Text,
+  useColorModeValue,
+  useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 
 // Layouts
@@ -56,8 +56,8 @@ function StyledTab({ children, index }: { children: React.ReactNode, index: numb
         color: useColorModeValue("black", "gray.900"),
       }}
       _active={{
-        bg: useColorModeValue("gray.200", "gray.600"),
-        color: useColorModeValue("gray.900", "#fff"),
+        bg: useColorModeValue("gray.200", "gray.300"),
+        color: useColorModeValue("gray.900", "#000"),
       }}
       onClick={() => {
         push(`/platform/settings/${index + 1}`)

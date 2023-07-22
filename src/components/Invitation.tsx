@@ -1,23 +1,23 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useAuthContext } from "@/contexts/AuthContext";
 import {
-    Avatar,
-    Box,
-    Button,
-    Container,
-    Flex,
-    Heading,
-    Image,
-    Input,
-    InputGroup,
-    InputLeftElement,
-    Link,
-    Skeleton,
-    SkeletonCircle,
-    SkeletonText,
-    Text,
-    useColorModeValue,
-    useToast,
+  Avatar,
+  Box,
+  Button,
+  Container,
+  Flex,
+  Heading,
+  Image,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  Link,
+  Skeleton,
+  SkeletonCircle,
+  SkeletonText,
+  Text,
+  useColorModeValue,
+  useToast,
 } from "@chakra-ui/react";
 import Head from "next/head";
 import NextLink from "next/link";
@@ -55,10 +55,7 @@ export default function Invitation({ invite }: { invite: any }) {
       case "xcs":
         return (
           <>
-            create an account on{" "}
-            <Text as={"span"} fontWeight={"bold"} whiteSpace={"nowrap"}>
-              EVE XCS
-            </Text>
+            create an account.
           </>
         );
       default:
@@ -124,7 +121,7 @@ export default function Invitation({ invite }: { invite: any }) {
                   {invite
                     ? invite.type === "organization"
                       ? "You've recieved an invitation"
-                      : "You're invited!"
+                      : "You're invited to register"
                     : "Invitation not found"}
                 </Text>
               </Skeleton>
@@ -133,11 +130,11 @@ export default function Invitation({ invite }: { invite: any }) {
                   {invite ? (
                     <>
                       {invite?.from?.displayName || invite?.from?.name.first} has invited you to{" "}
-                      {inviteTypeSwitch(invite?.type)}.
+                      {inviteTypeSwitch(invite?.type)}
                       {invite?.type === "organization" ? (
                         <Text as={"span"} fontWeight={"bold"}>
-                          {" "}
-                          ({invite.organization.name})
+                          {", "}
+                          {invite.organization.name}
                         </Text>
                       ) : null}
                     </>
@@ -184,10 +181,11 @@ export default function Invitation({ invite }: { invite: any }) {
                         my={2}
                         isLoading={isAcceptLoading}
                         onClick={acceptInvite}
+                        isDisabled={invite?.type === "xcs" && currentUser}
                       >
                         {invite?.type === "xcs"
-                          ? "Register & Accept"
-                          : "Accept Invitation"}
+                          ? (currentUser ? "You are logged in" : "Register & accept")
+                          : "Accept invitation"}
                       </Button>
                     ) : (
                       <Button
@@ -199,7 +197,7 @@ export default function Invitation({ invite }: { invite: any }) {
                           push("/login?redirect=/invitation/" + query.id);
                         }}
                       >
-                        Login to Accept
+                        Login to accept
                       </Button>
                     )}
                   </Skeleton>

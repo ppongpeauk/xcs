@@ -22,7 +22,7 @@ export default async function handler(
   // Verify Token
   const uid = await tokenToID(token as string);
   if (!uid) {
-    return res.status(401).json({ message: "Unauthorized" });
+    return res.status(401).json({ message: "Unauthorized." });
   }
 
   const mongoClient = await clientPromise;
@@ -39,7 +39,7 @@ export default async function handler(
   }
 
   if (!organization.members[uid]) {
-    return res.status(401).json({ message: "Unauthorized" });
+    return res.status(401).json({ message: "Unauthorized." });
   }
 
   const id = generateString({ length: 16, charset: "alphanumeric" });

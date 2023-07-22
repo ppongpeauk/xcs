@@ -21,7 +21,7 @@ export default async function handler(
   // Verify Token
   const uid = await tokenToID(token as string);
   if (!uid) {
-    return res.status(401).json({ message: "Unauthorized" });
+    return res.status(401).json({ message: "Unauthorized." });
   }
 
   const mongoClient = await clientPromise;
@@ -39,7 +39,7 @@ export default async function handler(
   }
 
   if (!organization.members[uid]) {
-    return res.status(401).json({ message: "Unauthorized" });
+    return res.status(401).json({ message: "Unauthorized." });
   }
 
   const user = await users.findOne({ id: memberId });
@@ -68,7 +68,7 @@ export default async function handler(
   if (req.method === "PATCH") {
     role = parseInt(role.toString());
 
-    if (organization.members[uid].role < 3) {
+    if (organization.members[uid].role < 2) {
       return res.status(403).json({
         message: "You don't have edit permissions.",
         success: false,
@@ -111,10 +111,10 @@ export default async function handler(
   if (req.method === "DELETE") {
     if (organization.members[memberId].type !== "roblox") {
       if (
-        organization.members[memberId].role > organization.members[uid].role
+        organization.members[memberId].role >= organization.members[uid].role
       ) {
         return res.status(403).json({
-          message: "You cannot remove a user with a higher role than you.",
+          message: "You cannot remove a user with an equal or higher role than you.",
           success: false,
         });
       }

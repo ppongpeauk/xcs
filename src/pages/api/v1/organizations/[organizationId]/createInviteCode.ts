@@ -24,7 +24,7 @@ export default async function handler(
   // Verify Token
   const uid = await tokenToID(token as string);
   if (!uid) {
-    return res.status(401).json({ message: "Unauthorized" });
+    return res.status(401).json({ message: "Unauthorized." });
   }
 
   const mongoClient = await clientPromise;
@@ -38,8 +38,8 @@ export default async function handler(
     return res.status(404).json({ message: "Organization not found" });
   }
 
-  if (!organization.members[uid] || organization.members[uid].role < 3) {
-    return res.status(401).json({ message: "Unauthorized" });
+  if (!organization.members[uid] || organization.members[uid].role < 2) {
+    return res.status(401).json({ message: "Unauthorized." });
   }
 
   // Create Invite Code

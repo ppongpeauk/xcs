@@ -119,7 +119,6 @@ export default function AccessGroupEditModal({
     if (!organization) return;
     setFilteredGroups(filterGroups(groupSearchRef?.current?.value));
     setFocusedGroup(groups[focusedGroup?.id]);
-    console.log(focusedGroup);
   }, [organization]);
 
   return (
@@ -213,7 +212,6 @@ export default function AccessGroupEditModal({
                                   <Badge
                                     as={"span"}
                                     ml={2}
-                                    colorScheme={"blue"}
                                   >
                                     Everyone
                                   </Badge>
@@ -606,8 +604,8 @@ export default function AccessGroupEditModal({
                                           />
                                         </InputGroup>
                                         <FormHelperText>
-                                          This could serve as a
-                                          &quot;Guest&quot; access group.
+                                          Whether or not this access group is
+                                          open to everyone.
                                         </FormHelperText>
                                       </FormControl>
                                     )}

@@ -8,6 +8,8 @@ export function cn(...inputs: ClassValue[]) {
 const roleToText = (role: number) => {
   role = Number(role);
   switch (role) {
+    case 0:
+      return "Guest";
     case 1:
       return "Member";
     case 2:
@@ -22,6 +24,8 @@ const roleToText = (role: number) => {
 const textToRole = (role: string) => {
   role = role.toString().toLowerCase();
   switch (role) {
+    case "guest":
+      return 0;
     case "member":
       return 1;
     case "manager":
@@ -31,6 +35,19 @@ const textToRole = (role: string) => {
     default:
       return 1;
   }
+};
+
+const getRobloxUsersByUsernames = async (usernames: string[]) => {
+  let robloxResponse = await fetch(`${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/roblox/users/v1/usernames/users`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+        usernames,
+        excludeBannedUsers: false
+    }),
+  }).then((res) => res.json()).then((res) => res.data);
 };
 
 const getRobloxUsers = async (userIds: string[]) => {
@@ -54,6 +71,7 @@ const getRobloxUsers = async (userIds: string[]) => {
       },
     }
   ).then((res) => res.json()).then((res) => res.data);
+
   for (let i = 0; i < robloxResponse.length; i++) {
     robloxResponse[i].avatar = robloxUserAvatar[i].imageUrl;
   }
@@ -64,11 +82,9 @@ const getRobloxUsers = async (userIds: string[]) => {
   for (let i = 0; i < robloxResponse.length; i++) {
     response[robloxResponse[i].id as string] = robloxResponse[i];
   }
-
-  console.log(response);
   
   return response;
 };
 
-export { getRobloxUsers, roleToText, textToRole };
+export { getRobloxUsers, getRobloxUsersByUsernames, roleToText, textToRole };
 

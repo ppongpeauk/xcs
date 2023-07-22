@@ -1,4 +1,5 @@
 import clientPromise from "@/lib/mongodb";
+import { getRobloxUsersByUsernames } from "@/lib/utils";
 import { tokenToID } from "@/pages/api/firebase";
 import { NextApiRequest, NextApiResponse } from "next";
 
@@ -20,7 +21,7 @@ export default async function handler(
   // Verify Token
   const uid = await tokenToID(token as string);
   if (!uid) {
-    return res.status(401).json({ message: "Unauthorized" });
+    return res.status(401).json({ message: "Unauthorized." });
   }
 
   const mongoClient = await clientPromise;
@@ -38,26 +39,17 @@ export default async function handler(
   }
 
   if (!organization.members[uid]) {
-    return res.status(401).json({ message: "Unauthorized" });
+    return res.status(401).json({ message: "Unauthorized." });
   }
 
   const timestamp = new Date();
   let { username, accessGroups } = req.body as {
-    username?: number;
+    username?: string;
     accessGroups: string[];
   };
 
   // get roblox username
-  let robloxUsers = await fetch(`${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/roblox/users/v1/usernames/users`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ usernames: [username] }),
-    })
-    .then((res) => res.json())
-    .then((json) => json.data);
+  let robloxUsers = await getRobloxUsersByUsernames([username as string]) as unknown as any[];
 
   if (!robloxUsers.length) {
     return res.status(404).json({ message: "Roblox user not found." });
