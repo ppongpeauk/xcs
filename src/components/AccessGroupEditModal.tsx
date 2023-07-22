@@ -24,6 +24,7 @@ import {
   SkeletonText,
   Spacer,
   Stack,
+  Textarea,
   chakra,
   useColorModeValue,
   useDisclosure,
@@ -182,7 +183,7 @@ export default function RoleEditModal({
                 flexGrow={1}
                 px={4}
               >
-                <Table size={{ base: "sm", md: "md" }}>
+                <Table size={{ base: "sm", md: "lg" }}>
                   <Thead>
                     <Tr>
                       <Th>Name</Th>
@@ -197,6 +198,15 @@ export default function RoleEditModal({
                             <Text fontWeight="bold">
                               {filteredGroups[group].name}
                             </Text>
+                            {filteredGroups[group].description && (
+                              <Text
+                                fontSize={"sm"}
+                                color={"gray.500"}
+                                noOfLines={1}
+                              >
+                                {filteredGroups[group].description}
+                              </Text>
+                            )}
                           </Td>
                           <Td isNumeric>
                             <Button
@@ -287,6 +297,7 @@ export default function RoleEditModal({
                         enableReinitialize={true}
                         initialValues={{
                           name: focusedGroup?.name,
+                          description: focusedGroup?.description || "",
                           scanData: JSON.stringify(
                             focusedGroup?.scanData,
                             null,
@@ -320,6 +331,7 @@ export default function RoleEditModal({
                                 },
                                 body: JSON.stringify({
                                   name: values?.name,
+                                  description: values?.description,
                                   scanData: JSON.parse(
                                     values?.scanData || "{}"
                                   ),
@@ -462,6 +474,21 @@ export default function RoleEditModal({
                                         type={"text"}
                                         variant={"outline"}
                                         placeholder={"Access Group Name"}
+                                        autoComplete={"off"}
+                                        autoCorrect={"off"}
+                                      />
+                                    </FormControl>
+                                  )}
+                                </Field>
+                                <Field name="description">
+                                  {({ field, form }: any) => (
+                                    <FormControl>
+                                      <FormLabel>Short Description</FormLabel>
+                                      <Textarea
+                                        {...field}
+                                        variant={"outline"}
+                                        placeholder={"Access Group Short Description"}
+                                        maxH={"1rem"}
                                         autoComplete={"off"}
                                         autoCorrect={"off"}
                                       />

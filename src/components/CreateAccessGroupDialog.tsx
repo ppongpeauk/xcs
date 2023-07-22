@@ -41,7 +41,7 @@ export default function CreateAccessGroupDialog({
   return (
     <>
       <Formik
-        initialValues={{ name: "", scanData: {} }}
+        initialValues={{ name: "", description: "", scanData: {} }}
         onSubmit={(values, actions) => {
           user.getIdToken().then((token: any) => {
             fetch(`/api/v1/organizations/${organization.id}/access-groups`, {
@@ -52,6 +52,7 @@ export default function CreateAccessGroupDialog({
               },
               body: JSON.stringify({
                 name: values.name,
+                description: values.description,
                 scanData: {}
               }),
             })
@@ -114,14 +115,22 @@ export default function CreateAccessGroupDialog({
                         </FormControl>
                       )}
                     </Field>
+                    <Field name="description">
+                      {({ field, form }: any) => (
+                        <FormControl>
+                          <FormLabel>Short Description</FormLabel>
+                          <Textarea
+                            {...field}
+                            variant={"outline"}
+                            placeholder={"Access Group Short Description"}
+                            maxH={"1rem"}
+                            autoComplete={"off"}
+                            autoCorrect={"off"}
+                          />
+                        </FormControl>
+                      )}
+                    </Field>
                   </VStack>
-                  <Text fontSize={"sm"} pt={2}>
-                    This access group will be created under the{" "}
-                    <Text as={"span"} fontWeight={"bold"}>
-                      {organization?.name}
-                    </Text>{" "}
-                    organization.
-                  </Text>
                 </ModalBody>
 
                 <ModalFooter>

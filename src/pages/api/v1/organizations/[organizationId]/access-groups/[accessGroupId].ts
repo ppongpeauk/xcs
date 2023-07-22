@@ -46,8 +46,9 @@ export default async function handler(
   const user = await users.findOne({ id: uid });
 
   const timestamp = new Date();
-  let { name, scanData } = req.body as {
+  let { name, description, scanData } = req.body as {
     name: string;
+    description: string;
     scanData: string;
   };
 
@@ -83,11 +84,19 @@ export default async function handler(
       }
     }
 
+    description = description.trim();
+    if (description.length > 128) {
+      return res.status(400).json({
+        message: "Description must be less than 128 characters.",
+      });
+    }
+
     organizations.updateOne(
       { id: organizationId },
       {
         $set: {
           [`accessGroups.${accessGroupId}.name`]: name,
+          [`accessGroups.${accessGroupId}.description`]: description,
           [`accessGroups.${accessGroupId}.scanData`]: scanData,
         },
       }

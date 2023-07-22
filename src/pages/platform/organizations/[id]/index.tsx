@@ -160,7 +160,7 @@ export default function PlatformOrganization() {
   };
 
   let refreshData = () => {
-    setOrganization(null);
+    // setOrganization(null);
     fetch(`/api/v1/organizations/${query.id}`, {
       method: "GET",
       headers: { Authorization: `Bearer ${idToken}` },
