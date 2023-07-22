@@ -28,6 +28,7 @@ export default async function handler(
   const db = mongoClient.db(process.env.MONGODB_DB as string);
   const organizations = db.collection("organizations");
   const locations = db.collection("locations");
+  const accessPoints = db.collection("accessPoints");
   const users = db.collection("users");
 
   let organization = (await organizations.findOne({
@@ -99,6 +100,60 @@ export default async function handler(
     });
   }
 
+  // if (req.method === "DELETE") {
+  //   if (organization.members[uid].role < 2) {
+  //     return res.status(403).json({
+  //       message: "You don't have edit permissions.",
+  //       success: false,
+  //     });
+  //   }
+
+  //   await organizations.updateOne(
+  //     { id: organizationId },
+  //     {
+  //       $unset: {
+  //         [`accessGroups.${accessGroupId}`]: "",
+  //       },
+  //     }
+  //   );
+
+  //   // remove access group from all access points and members
+  //   const accessPoints = Object.values(organization.accessPoints);
+  //   for (let i = 0; i < accessPoints.length; i++) {
+  //     const accessPoint = accessPoints[i] as any;
+  //     if (accessPoint.accessGroups.includes(accessGroupId)) {
+  //       await organizations.updateOne(
+  //         { id: organizationId },
+  //         {
+  //           $pull: {
+  //             [`accessPoints.${accessPoint.id}.accessGroups`]: accessGroupId,
+  //           },
+  //         }
+  //       );
+  //     }
+  //   }
+
+  //   const members = Object.values(organization.members);
+  //   for (let i = 0; i < members.length; i++) {
+  //     const member = members[i] as any;
+  //     if (member.accessGroups.includes(accessGroupId)) {
+  //       await organizations.updateOne(
+  //         { id: organizationId },
+  //         {
+  //           $pull: {
+  //             [`members.${member.id}.accessGroups`]: accessGroupId,
+  //           },
+  //         }
+  //       );
+  //     }
+  //   }
+
+  //   return res.status(200).json({
+  //     message: "Successfully deleted access group.",
+  //     success: true,
+  //   });
+  // }
+
   if (req.method === "DELETE") {
     if (organization.members[uid].role < 2) {
       return res.status(403).json({
@@ -107,6 +162,7 @@ export default async function handler(
       });
     }
 
+    // remove access group from the main document
     await organizations.updateOne(
       { id: organizationId },
       {
@@ -117,30 +173,29 @@ export default async function handler(
     );
 
     // remove access group from all access points and members
-    const accessPoints = Object.values(organization.accessPoints);
-    for (let i = 0; i < accessPoints.length; i++) {
-      const accessPoint = accessPoints[i] as any;
-      if (accessPoint.accessGroups.includes(accessGroupId)) {
-        await organizations.updateOne(
-          { id: organizationId },
-          {
-            $pull: {
-              [`accessPoints.${accessPoint.id}.accessGroups`]: accessGroupId,
-            },
-          }
-        );
+    await accessPoints.updateMany(
+      { organizationId: organizationId },
+      {
+        $unset: {
+          [`config.alwaysAllowed.accessGroups.${accessGroupId}`]: ""
+        },
       }
-    }
-    
+    );
+
+    // remove access group from all members in the organization, where the member.accessGroups array contains accessGroupId
     const members = Object.values(organization.members);
     for (let i = 0; i < members.length; i++) {
       const member = members[i] as any;
-      if (member.accessGroups.includes(accessGroupId)) {
+      const memberId = member.id || Object.keys(organization.members).find((key) => organization.members[key] === member);
+      const memberAccessGroups = member.accessGroups;
+
+      if (memberAccessGroups.includes(accessGroupId)) {
+        console.log(`Removing access group ${accessGroupId} from member ${memberId}`);
         await organizations.updateOne(
           { id: organizationId },
           {
             $pull: {
-              [`members.${member.id}.accessGroups`]: accessGroupId,
+              [`members.${memberId}.accessGroups`]: accessGroupId,
             },
           }
         );

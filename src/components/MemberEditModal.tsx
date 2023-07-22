@@ -4,6 +4,7 @@ import {
   Button,
   Flex,
   FormControl,
+  FormHelperText,
   FormLabel,
   HStack,
   Icon,
@@ -191,8 +192,18 @@ export default function MemberEditModal({
                 Add Roblox User
               </Button>
             </Stack>
-            <Flex w={"full"} justify={"space-between"} flexDir={{ base: "column", xl: "row" }}>
-              <TableContainer py={2} h={{ base: "320px", xl: "100%" }} overflowY={"scroll"} flexGrow={1} px={4}>
+            <Flex
+              w={"full"}
+              justify={"space-between"}
+              flexDir={{ base: "column", xl: "row" }}
+            >
+              <TableContainer
+                py={2}
+                h={{ base: "320px", xl: "100%" }}
+                overflowY={"scroll"}
+                flexGrow={1}
+                px={4}
+              >
                 <Table size={{ base: "sm", md: "sm" }}>
                   <Thead>
                     <Tr>
@@ -315,7 +326,12 @@ export default function MemberEditModal({
                 </Table>
               </TableContainer>
               {/* Edit Member */}
-              <Skeleton isLoaded={organization} rounded={"lg"} minW={{ base: "unset", sm: "unset", lg: "512px" }} flexBasis={1}>
+              <Skeleton
+                isLoaded={organization}
+                rounded={"lg"}
+                minW={{ base: "unset", sm: "unset", lg: "512px" }}
+                flexBasis={1}
+              >
                 <Flex
                   mt={2}
                   p={6}
@@ -370,10 +386,10 @@ export default function MemberEditModal({
                         initialValues={{
                           role: roleToText(focusedMember?.role),
                           accessGroups:
-                            focusedMember.accessGroups.map(
+                            focusedMember.accessGroups?.map(
                               (accessGroup: any) => {
                                 return organization?.accessGroups[accessGroup]
-                                  .name;
+                                  ?.name;
                               }
                             ) || [],
                           scanData: JSON.stringify(
@@ -409,7 +425,9 @@ export default function MemberEditModal({
                                 },
                                 body: JSON.stringify({
                                   role: textToRole(values?.role),
-                                  scanData: JSON.parse(values?.scanData || "{}"),
+                                  scanData: JSON.parse(
+                                    values?.scanData || "{}"
+                                  ),
 
                                   // get access group ids from names
                                   accessGroups: values?.accessGroups.map(
@@ -572,7 +590,10 @@ export default function MemberEditModal({
                                             width="100%"
                                             p={4}
                                             language="json"
-                                            theme={useColorModeValue("vs-light", "vs-dark")}
+                                            theme={useColorModeValue(
+                                              "vs-light",
+                                              "vs-dark"
+                                            )}
                                             options={{
                                               minimap: {
                                                 enabled: true,
@@ -590,6 +611,12 @@ export default function MemberEditModal({
                                           />
                                         </Box>
                                       </InputGroup>
+                                      <FormHelperText>
+                                        This is the data that will be returned
+                                        when this member scans their card. (User
+                                        scan data takes priority over access
+                                        group scan data when it is merged.)
+                                      </FormHelperText>
                                     </FormControl>
                                   )}
                                 </Field>

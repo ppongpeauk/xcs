@@ -89,9 +89,12 @@ export default async function handler(
       {
         $set: {
           [`members.${uid}`]: {
+            type: "user",
+            id: uid,
             role: inviteCodeData.role || 1,
             accessGroups: [],
             joinedAt: new Date().getTime(),
+            updatedAt: new Date().getTime(),
           },
         },
       }

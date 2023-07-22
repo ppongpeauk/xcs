@@ -4,6 +4,7 @@ import {
   Button,
   Flex,
   FormControl,
+  FormHelperText,
   FormLabel,
   HStack,
   Icon,
@@ -118,9 +119,9 @@ export default function RoleEditModal({
       <DeleteDialog
         isOpen={deleteGroupDialogOpen}
         onClose={deleteGroupDialogOnClose}
-        title="Remove Access Group"
-        body={`Are you sure you want to remove ${focusedGroup?.name} from this organization?`}
-        buttonText="Remove"
+        title="Delete Access Group"
+        body={`Are you sure you want to delete the ${focusedGroup?.name} access group from this organization? All members and access points that have this access group will be updated.`}
+        buttonText="Delete"
         onDelete={() => {
           deleteGroupDialogOnClose();
           onGroupRemove(focusedGroup);
@@ -208,7 +209,7 @@ export default function RoleEditModal({
                               Edit
                             </Button>
                             <IconButton
-                              aria-label="Remove Member"
+                              aria-label="Delete Access Group"
                               size="sm"
                               colorScheme="red"
                               ml={2}
@@ -506,6 +507,12 @@ export default function RoleEditModal({
                                           />
                                         </Box>
                                       </InputGroup>
+                                      <FormHelperText>
+                                        This is the data that will be returned
+                                        when this member scans their card. (User
+                                        scan data takes priority over access
+                                        group scan data when it is merged.)
+                                      </FormHelperText>
                                     </FormControl>
                                   )}
                                 </Field>
@@ -532,7 +539,7 @@ export default function RoleEditModal({
                                   deleteGroupDialogOnOpen();
                                 }}
                               >
-                                Remove
+                                Delete
                               </Button>
                             </Flex>
                           </Form>
