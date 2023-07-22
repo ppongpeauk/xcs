@@ -204,7 +204,7 @@ export default function MemberEditModal({
                 flexGrow={1}
                 px={4}
               >
-                <Table size={{ base: "sm", md: "sm" }}>
+                <Table size={{ base: "sm", md: "md" }}>
                   <Thead>
                     <Tr>
                       <Th>Member</Th>

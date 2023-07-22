@@ -200,9 +200,9 @@ export default function RoleEditModal({
                             </Text>
                             {filteredGroups[group].description && (
                               <Text
-                                fontSize={"sm"}
                                 color={"gray.500"}
-                                noOfLines={1}
+                                maxW={"320px"}
+                                isTruncated
                               >
                                 {filteredGroups[group].description}
                               </Text>
