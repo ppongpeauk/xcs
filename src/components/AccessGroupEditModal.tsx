@@ -525,7 +525,7 @@ export default function AccessGroupEditModal({
                                 </Stack>
                                 <Stack
                                   direction={{ base: "column", md: "row" }}
-                                  py={4}
+                                  py={2}
                                   w={"fit-content"}
                                 >
                                   <Field name="configActive">
