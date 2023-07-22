@@ -116,6 +116,37 @@ export default async function handler(
       }
     );
 
+    // remove access group from all access points and members
+    const accessPoints = Object.values(organization.accessPoints);
+    for (let i = 0; i < accessPoints.length; i++) {
+      const accessPoint = accessPoints[i] as any;
+      if (accessPoint.accessGroups.includes(accessGroupId)) {
+        await organizations.updateOne(
+          { id: organizationId },
+          {
+            $pull: {
+              [`accessPoints.${accessPoint.id}.accessGroups`]: accessGroupId,
+            },
+          }
+        );
+      }
+    }
+    
+    const members = Object.values(organization.members);
+    for (let i = 0; i < members.length; i++) {
+      const member = members[i] as any;
+      if (member.accessGroups.includes(accessGroupId)) {
+        await organizations.updateOne(
+          { id: organizationId },
+          {
+            $pull: {
+              [`members.${member.id}.accessGroups`]: accessGroupId,
+            },
+          }
+        );
+      }
+    }
+
     return res.status(200).json({
       message: "Successfully deleted access group.",
       success: true,
