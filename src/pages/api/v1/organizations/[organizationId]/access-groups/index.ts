@@ -52,8 +52,9 @@ export default async function handler(
       });
     }
 
-    let { name, scanData } = req.body as {
+    let { name, description, scanData } = req.body as {
       name: string;
+      description: string;
       scanData: string;
     };
 
@@ -76,6 +77,13 @@ export default async function handler(
       ) {
         return res.status(400).json({ message: "Name must be unique." });
       }
+    }
+
+    description = description.trim();
+    if (description.length > 128) {
+      return res.status(400).json({
+        message: "Description must be less than 128 characters.",
+      });
     }
     
     const timestamp = new Date();
