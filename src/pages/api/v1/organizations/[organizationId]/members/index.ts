@@ -1,3 +1,4 @@
+import { authToken } from "@/lib/auth";
 import clientPromise from "@/lib/mongodb";
 import { getRobloxUsersByUsernames } from "@/lib/utils";
 import { tokenToID } from "@/pages/api/firebase";
@@ -12,14 +13,7 @@ export default async function handler(
     organizationId: string;
   };
 
-  // Authorization Header
-  const authHeader = req.headers.authorization;
-
-  // Bearer Token
-  const token = authHeader?.split(" ")[1];
-
-  // Verify Token
-  const uid = await tokenToID(token as string);
+  const uid = await authToken(req);
   if (!uid) {
     return res.status(401).json({ message: "Unauthorized." });
   }
@@ -47,6 +41,13 @@ export default async function handler(
     username?: string;
     accessGroups: string[];
   };
+
+  if (!username?.trim()) {
+    return res.status(400).json({
+      message: "Missing username.",
+      success: false,
+    });
+  }
 
   // get roblox username
   let robloxUsers = await getRobloxUsersByUsernames([username as string]) as unknown as any[];

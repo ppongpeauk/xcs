@@ -1,25 +1,25 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import Layout from "@/layouts/PlatformLayout";
 import {
-    Avatar,
-    Box,
-    Button,
-    Code,
-    Container,
-    Flex,
-    FormControl,
-    FormLabel,
-    HStack,
-    Heading,
-    IconButton,
-    Image,
-    InputGroup,
-    Select,
-    Skeleton,
-    Stack,
-    Text,
-    useColorModeValue,
-    useDisclosure,
+  Avatar,
+  Box,
+  Button,
+  Code,
+  Container,
+  Flex,
+  FormControl,
+  FormLabel,
+  HStack,
+  Heading,
+  IconButton,
+  Image,
+  InputGroup,
+  Select,
+  Skeleton,
+  Stack,
+  Text,
+  useColorModeValue,
+  useDisclosure,
 } from "@chakra-ui/react";
 import Head from "next/head";
 import NextLink from "next/link";
@@ -108,24 +108,6 @@ export default function PlatformLocations() {
       setIdToken(token);
     });
   }, [user]);
-
-  // const experienceToThumbnail = useCallback((placeId: string) => {
-  //   if (!placeId) return;
-  //   const url = fetch(
-  //     `https://thumbnails.roblox.com/v1/places/gameicons?placeIds=${placeId}&returnPolicy=PlaceHolder&size=256x256&format=Png&isCircular=false`,
-  //     {
-  //       method: "GET",
-  //       headers: {
-  //         "Accept": "application/json",
-  //       }
-  //     })
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       const thumbnail = data.data[0].imageUrl;
-  //       return thumbnail;
-  //     });
-  //   return url;
-  // }, []);
 
   return (
     <>
@@ -245,6 +227,7 @@ export default function PlatformLocations() {
                           <Text fontSize={"2xl"} fontWeight={"bold"}>
                             {location.name}
                           </Text>
+                          <Text color={"gray.500"}>{location.roblox.place.name}</Text>
                           {location.description ? (
                             <Text>{location.description}</Text>
                           ) : (
@@ -252,18 +235,12 @@ export default function PlatformLocations() {
                               No description available.
                             </Text>
                           )}
-                          <Text>
-                            ID: <Code>{location.id}</Code>
-                          </Text>
-                          <Text>
-                            Updated at:{" "}
-                            <Code>{moment(location.updatedAt).fromNow()}</Code>
-                          </Text>
                         </Box>
                         {location.roblox?.place && (
                           <Avatar
                             as={NextLink}
                             href={`https://www.roblox.com/games/${location.roblox.place.rootPlaceId}/${location.roblox.place.name}`}
+                            target={"_blank"}
                             alignSelf={"flex-start"}
                             name={location.roblox.place.name}
                             src={location.roblox.place.thumbnail}
@@ -271,11 +248,11 @@ export default function PlatformLocations() {
                             borderRadius={"md"}
                             overflow={"hidden"}
                             objectFit={"cover"}
+                            size={"lg"}
                           />
                         )}
                       </HStack>
-
-                      <Stack pb={2} w={"full"}>
+                      <Stack py={2} w={"full"}>
                         <Button
                           as={NextLink}
                           href={`/platform/locations/${location.id}`}

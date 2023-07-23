@@ -20,7 +20,8 @@ import {
 import { Field, Form, Formik } from "formik";
 
 import { useAuthContext } from "@/contexts/AuthContext";
-import { useRef } from "react";
+import { getRandomAccessPointName } from "@/lib/utils";
+import { useCallback, useRef } from "react";
 
 export default function CreateAccessPointDialog({
   isOpen,
@@ -37,6 +38,8 @@ export default function CreateAccessPointDialog({
   const initialRef = useRef(null);
   const finalRef = useRef(null);
   const { user } = useAuthContext();
+
+  const namePlaceholder = getRandomAccessPointName();
 
   return (
     <>
@@ -69,7 +72,7 @@ export default function CreateAccessPointDialog({
                 toast({
                   title: data.message,
                   status: "success",
-                  duration: 9000,
+                  duration: 5000,
                   isClosable: true,
                 });
                 onClose();
@@ -80,7 +83,7 @@ export default function CreateAccessPointDialog({
                   title: "There was an error creating the access point.",
                   description: error.message,
                   status: "error",
-                  duration: 9000,
+                  duration: 5000,
                   isClosable: true,
                 });
               })
@@ -91,7 +94,7 @@ export default function CreateAccessPointDialog({
         }}
       >
         {(props) => (
-          <Modal isOpen={isOpen} onClose={onClose} isCentered>
+          <Modal isOpen={isOpen} onClose={onClose} isCentered initialFocusRef={initialRef}>
             <ModalOverlay />
             <Form>
               <ModalContent bg={useColorModeValue("white", "gray.800")}>
@@ -105,25 +108,15 @@ export default function CreateAccessPointDialog({
                           <FormLabel>Name</FormLabel>
                           <Input
                             {...field}
+                            ref={initialRef}
                             variant={"outline"}
-                            placeholder={"Access Point Name"}
+                            placeholder={namePlaceholder || "Access Point Name"}
+                            autoComplete={"off"}
+                            autoCorrect={"off"}
                           />
                         </FormControl>
                       )}
                     </Field>
-                    {/* <Field name="organization">
-                      {({ field, form }: any) => (
-                        <FormControl>
-                          <FormLabel>Organization</FormLabel>
-                          <Input
-                            {...field}
-                            variant={"outline"}
-                            value={selectedOrganization.name}
-                            isDisabled={true}
-                          />
-                        </FormControl>
-                      )}
-                    </Field> */}
                     <Field name="description">
                       {({ field, form }: any) => (
                         <FormControl>

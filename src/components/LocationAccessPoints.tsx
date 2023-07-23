@@ -87,7 +87,7 @@ export default function LocationAccessPoints({
           Create
         </Button>
       </Stack>
-      <Flex h={"full"} overflow={"auto"} flexWrap={"wrap"}>
+      <Flex as={Stack} direction={"row"} h={"full"} spacing={4} overflow={"auto"} flexWrap={"wrap"}>
         <Skeleton isLoaded={!!accessPoints} w={"full"}>
           {accessPoints?.accessPoints?.length > 0 ? (
             <Flex flexWrap={"wrap"}>

@@ -1,29 +1,29 @@
 // Components
 import {
-    Box,
-    Button,
-    Center,
-    Code,
-    Container,
-    Flex,
-    Heading,
-    Link,
-    Skeleton,
-    Spacer,
-    Stack,
-    Step,
-    StepDescription,
-    StepIcon,
-    StepIndicator,
-    StepNumber,
-    StepSeparator,
-    StepStatus,
-    StepTitle,
-    Stepper,
-    Text,
-    useColorModeValue,
-    useSteps,
-    useToast,
+  Box,
+  Button,
+  Center,
+  Code,
+  Container,
+  Flex,
+  Heading,
+  Link,
+  Skeleton,
+  Spacer,
+  Stack,
+  Step,
+  StepDescription,
+  StepIcon,
+  StepIndicator,
+  StepNumber,
+  StepSeparator,
+  StepStatus,
+  StepTitle,
+  Stepper,
+  Text,
+  useColorModeValue,
+  useSteps,
+  useToast,
 } from "@chakra-ui/react";
 
 import Head from "next/head";
@@ -76,7 +76,7 @@ export default function Verify() {
             toast({
               title: "Your account has been verified.",
               status: "success",
-              duration: 9000,
+              duration: 5000,
               isClosable: true,
             });
           } else {
@@ -84,7 +84,7 @@ export default function Verify() {
               title: "Unable to verify your account with Roblox.",
               description: "Ensure that you've joined the game and provided the correct verification code.",
               status: "error",
-              duration: 9000,
+              duration: 5000,
               isClosable: true,
             });
           }
@@ -94,7 +94,7 @@ export default function Verify() {
             title: "There was an error checking your verification status.",
             description: error.message,
             status: "error",
-            duration: 9000,
+            duration: 5000,
             isClosable: true,
           });
         }).finally(() => {
@@ -130,7 +130,7 @@ export default function Verify() {
             title: "There was an error creating the verification code.",
             description: error.message,
             status: "error",
-            duration: 9000,
+            duration: 5000,
             isClosable: true,
           });
         });

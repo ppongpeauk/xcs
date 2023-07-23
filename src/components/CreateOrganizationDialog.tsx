@@ -67,7 +67,7 @@ export default function CreateOrganizationDialog({
                 toast({
                   title: data.message,
                   status: "success",
-                  duration: 9000,
+                  duration: 5000,
                   isClosable: true,
                 });
                 onClose();
@@ -78,7 +78,7 @@ export default function CreateOrganizationDialog({
                   title: "There was an error creating the organization.",
                   description: error.message,
                   status: "error",
-                  duration: 9000,
+                  duration: 5000,
                   isClosable: true,
                 });
               })

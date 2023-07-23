@@ -1,12 +1,13 @@
 import DeleteDialog from "@/components/DeleteDialog";
 import { useAuthContext } from "@/contexts/AuthContext";
 import {
-    Box,
-    Button,
-    ButtonGroup,
-    Text,
-    useDisclosure,
-    useToast,
+  Box,
+  Button,
+  ButtonGroup,
+  Heading,
+  Text,
+  useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 import moment from "moment";
 import { useRouter } from "next/router";
@@ -137,24 +138,22 @@ export default function SettingsLinkedAccounts() {
       />
       <Box>
         <Box id={"roblox"} mb={4}>
-          <Text as={"h2"} fontSize={"2xl"} fontWeight={"900"}>
+          <Heading as={"h2"} size={"lg"}>
             Roblox
-          </Text>
+          </Heading>
           {currentUser?.roblox?.verified ? (
             <>
-              <Text fontSize={"lg"}>
+              <Text>
                 You&apos;ve linked your Roblox account on{" "}
-                {moment(currentUser?.roblox.verifiedAt).format(
-                  "MMMM Do YYYY (h:mm a.)"
-                )}
+                {moment(currentUser?.roblox.verifiedAt).format("MMMM Do YYYY.")}
               </Text>
-              <Text fontSize={"lg"}>
+              <Text>
                 Your Roblox username:{" "}
                 <Text as={"span"} fontWeight={"900"}>
-                  {currentUser?.roblox.username} ({currentUser?.roblox.id})
+                  {currentUser?.roblox.username}
                 </Text>
               </Text>
-              <ButtonGroup mt={2}>
+              <ButtonGroup mt={4}>
                 <Button
                   colorScheme={"red"}
                   onClick={() => {
@@ -167,39 +166,43 @@ export default function SettingsLinkedAccounts() {
             </>
           ) : (
             <>
-              <Text fontSize={"lg"} pb={2}>
+              <Text pb={2}>
                 You have not linked your Roblox account. Please link one to use
                 EVE XCS.
               </Text>
-              <Button
-                colorScheme={"blue"}
-                onClick={() => {
-                  push("/platform/verify");
-                }}
-              >
-                Link Roblox Account
-              </Button>
+              <ButtonGroup mt={4}>
+                <Button
+                  colorScheme={"blue"}
+                  onClick={() => {
+                    push("/platform/verify");
+                  }}
+                >
+                  Link Roblox Account
+                </Button>
+              </ButtonGroup>
             </>
           )}
         </Box>
 
         <Box id={"discord"} mb={4}>
-          <Text as={"h2"} fontSize={"2xl"} fontWeight={"900"}>
+          <Heading as={"h2"} size={"lg"}>
             Discord
-          </Text>
+          </Heading>
           {currentUser?.discord.verified ? (
             <>
-              <Text fontSize={"lg"}>
+              <Text>
                 You&apos;ve linked your Discord account using{" "}
                 <Text as={"span"} fontWeight={"900"}>
-                  @{currentUser?.discord.username}{currentUser?.discord.discriminator && `#${currentUser?.discord.discriminator}`}
+                  @{currentUser?.discord.username}
+                  {currentUser?.discord.discriminator &&
+                    `#${currentUser?.discord.discriminator}`}
                 </Text>{" "}
                 on{" "}
                 {moment(currentUser?.discord.verifiedAt).format(
-                  "MMMM Do YYYY (h:mm a.)"
+                  "MMMM Do YYYY."
                 )}
               </Text>
-              <ButtonGroup mt={2}>
+              <ButtonGroup mt={4}>
                 <Button
                   colorScheme={"red"}
                   onClick={() => {
@@ -222,19 +225,19 @@ export default function SettingsLinkedAccounts() {
             </>
           ) : (
             <>
-              <Text fontSize={"lg"} pb={2}>
-                You have not linked your Discord account.
-              </Text>
-              <Button
-                colorScheme={"blue"}
-                onClick={() => {
-                  push(
-                    `https://discord.com/api/oauth2/authorize?client_id=1127492928995078215&redirect_uri=${process.env.NEXT_PUBLIC_ROOT_URL}/platform/settings/discord&response_type=code&scope=identify`
-                  );
-                }}
-              >
-                Link Discord Account
-              </Button>
+              <Text pb={2}>You have not linked your Discord account.</Text>
+              <ButtonGroup mt={4}>
+                <Button
+                  colorScheme={"blue"}
+                  onClick={() => {
+                    push(
+                      `https://discord.com/api/oauth2/authorize?client_id=1127492928995078215&redirect_uri=${process.env.NEXT_PUBLIC_ROOT_URL}/platform/settings/discord&response_type=code&scope=identify`
+                    );
+                  }}
+                >
+                  Link Discord Account
+                </Button>
+              </ButtonGroup>
             </>
           )}
         </Box>

@@ -1,3 +1,4 @@
+import { authToken } from "@/lib/auth";
 import clientPromise from "@/lib/mongodb";
 import { tokenToID } from "@/pages/api/firebase";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -12,14 +13,7 @@ export default async function handler(
     accessGroupId: string;
   };
 
-  // Authorization Header
-  const authHeader = req.headers.authorization;
-
-  // Bearer Token
-  const token = authHeader?.split(" ")[1];
-
-  // Verify Token
-  const uid = await tokenToID(token as string);
+  const uid = await authToken(req);
   if (!uid) {
     return res.status(401).json({ message: "Unauthorized." });
   }
@@ -87,6 +81,12 @@ export default async function handler(
       });
     }
 
+    try {
+      scanData = JSON.parse(scanData);
+    } catch (err) {
+      return res.status(400).json({ message: "Unable to parse scan data. Check your JSON and try again." });
+    }
+
     organizations.updateOne(
       { id: organizationId },
       {
@@ -109,60 +109,6 @@ export default async function handler(
       id: user?.id,
     });
   }
-
-  // if (req.method === "DELETE") {
-  //   if (organization.members[uid].role < 2) {
-  //     return res.status(403).json({
-  //       message: "You don't have edit permissions.",
-  //       success: false,
-  //     });
-  //   }
-
-  //   await organizations.updateOne(
-  //     { id: organizationId },
-  //     {
-  //       $unset: {
-  //         [`accessGroups.${accessGroupId}`]: "",
-  //       },
-  //     }
-  //   );
-
-  //   // remove access group from all access points and members
-  //   const accessPoints = Object.values(organization.accessPoints);
-  //   for (let i = 0; i < accessPoints.length; i++) {
-  //     const accessPoint = accessPoints[i] as any;
-  //     if (accessPoint.accessGroups.includes(accessGroupId)) {
-  //       await organizations.updateOne(
-  //         { id: organizationId },
-  //         {
-  //           $pull: {
-  //             [`accessPoints.${accessPoint.id}.accessGroups`]: accessGroupId,
-  //           },
-  //         }
-  //       );
-  //     }
-  //   }
-
-  //   const members = Object.values(organization.members);
-  //   for (let i = 0; i < members.length; i++) {
-  //     const member = members[i] as any;
-  //     if (member.accessGroups.includes(accessGroupId)) {
-  //       await organizations.updateOne(
-  //         { id: organizationId },
-  //         {
-  //           $pull: {
-  //             [`members.${member.id}.accessGroups`]: accessGroupId,
-  //           },
-  //         }
-  //       );
-  //     }
-  //   }
-
-  //   return res.status(200).json({
-  //     message: "Successfully deleted access group.",
-  //     success: true,
-  //   });
-  // }
 
   if (req.method === "DELETE") {
     if (organization.members[uid].role < 2) {

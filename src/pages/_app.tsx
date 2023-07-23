@@ -34,6 +34,9 @@ export default function App({ Component, pageProps }: any) {
           :root {
             --font-familjen: ${font.style.fontFamily};
           }
+          #nprogress .spinner {
+            display: none;
+          }
         `}
       </style>
       <ChakraProvider theme={theme} cssVarsRoot="body">

@@ -5,6 +5,8 @@ import {
   Button,
   Container,
   Divider,
+  Heading,
+  Icon,
   IconButton,
   Menu,
   MenuButton,
@@ -34,9 +36,11 @@ import SettingsAppearance from "@/components/SettingsAppearance";
 import SettingsLinkedAccounts from "@/components/SettingsLinkedAccounts";
 import SettingsProfile from "@/components/SettingsProfile";
 import { HamburgerIcon } from "@chakra-ui/icons";
-import { FaIdBadge, FaLink } from "react-icons/fa";
+import { BiSolidUserBadge, BiSolidUserDetail } from "react-icons/bi";
+import { FaIdBadge, FaLink, FaPaintBrush } from "react-icons/fa";
+import { FiExternalLink } from "react-icons/fi";
 
-function StyledTab({ children, index }: { children: React.ReactNode, index: number }) {
+function StyledTab({ children, index, icon }: { children: React.ReactNode, index: number, icon?: any }) {
   const { push } = useRouter();
 
   return (
@@ -51,18 +55,21 @@ function StyledTab({ children, index }: { children: React.ReactNode, index: numb
       _hover={{
         bg: useColorModeValue("gray.100", "gray.700"),
       }}
+      _active={{
+        bg: useColorModeValue("gray.200", "gray.600"),
+        color: useColorModeValue("gray.900", "white"),
+      }}
       _selected={{
         bg: useColorModeValue("gray.100", "#fff"),
         color: useColorModeValue("black", "gray.900"),
-      }}
-      _active={{
-        bg: useColorModeValue("gray.200", "gray.300"),
-        color: useColorModeValue("gray.900", "#000"),
       }}
       onClick={() => {
         push(`/platform/settings/${index + 1}`)
       }}
     >
+      {
+        icon ? <Icon as={icon} mr={2} /> : null
+      }
       {children}
     </Tab>
   );
@@ -89,7 +96,7 @@ export default function Settings() {
       });
     } else {
       toast({
-        title: "There was an error while linking your Discord account.",
+        title: "There was an error linking your Discord account.",
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -106,9 +113,9 @@ export default function Settings() {
         <meta property="og:title" content="Settings" />
       </Head>
       <Container maxW={"full"} p={8}>
-        <Text fontSize={"4xl"} fontWeight={"900"}>
+        <Heading>
           Settings
-        </Text>
+        </Heading>
         <Box display={{ base: "block", md: "none" }} pt={4}>
           <Menu>
             <MenuButton
@@ -158,22 +165,22 @@ export default function Settings() {
             h={"100%"}
             border={"none"}
           >
-            <StyledTab index={0}>
+            <StyledTab index={0} icon={BiSolidUserDetail}>
               <Text>Profile</Text>
             </StyledTab>
-            <StyledTab index={1}>
+            <StyledTab index={1} icon={FaPaintBrush}>
               <Text>Appearance</Text>
             </StyledTab>
-            <StyledTab index={2}>
+            <StyledTab index={2} icon={FiExternalLink}>
               <Text>Linked Accounts</Text>
             </StyledTab>
           </TabList>
 
           <TabPanels px={{ base: 0, md: 8 }}>
             <TabPanel p={0}>
-              <Text fontSize={"3xl"} fontWeight={"bold"}>
+              <Heading>
                 Profile
-              </Text>
+              </Heading>
               <Text fontSize={"md"} color={"gray.500"}>
                 This is how you appear to other users.
               </Text>
@@ -181,19 +188,19 @@ export default function Settings() {
               <SettingsProfile />
             </TabPanel>
             <TabPanel p={0}>
-              <Text fontSize={"3xl"} fontWeight={"bold"}>
+              <Heading>
                 Appearance
-              </Text>
+              </Heading>
               <Text fontSize={"md"} color={"gray.500"}>
-                Customize the appearance of the app.
+                Customize the appearance of the website.
               </Text>
               <Divider mt={4} mb={8} />
               <SettingsAppearance />
             </TabPanel>
             <TabPanel p={0}>
-              <Text fontSize={"3xl"} fontWeight={"bold"}>
+              <Heading>
                 Linked Accounts
-              </Text>
+              </Heading>
               <Text fontSize={"md"} color={"gray.500"}>
                 Link your accounts to verify your identity.
               </Text>

@@ -78,7 +78,7 @@ export default function InviteOrganizationRobloxModal({
                 toast({
                   title: data.message,
                   status: "success",
-                  duration: 9000,
+                  duration: 5000,
                   isClosable: true,
                 });
                 onClose();
@@ -90,7 +90,7 @@ export default function InviteOrganizationRobloxModal({
                     "There was an error adding a Roblox user to your organization.",
                   description: error.message,
                   status: "error",
-                  duration: 9000,
+                  duration: 5000,
                   isClosable: true,
                 });
               })

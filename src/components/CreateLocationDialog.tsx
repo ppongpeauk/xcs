@@ -69,7 +69,7 @@ export default function CreateLocationDialog({
                 toast({
                   title: data.message,
                   status: "success",
-                  duration: 9000,
+                  duration: 5000,
                   isClosable: true,
                 });
                 onClose();
@@ -80,7 +80,7 @@ export default function CreateLocationDialog({
                   title: "There was an error creating the location.",
                   description: error.message,
                   status: "error",
-                  duration: 9000,
+                  duration: 5000,
                   isClosable: true,
                 });
               })

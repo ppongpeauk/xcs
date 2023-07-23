@@ -127,7 +127,7 @@ export default function AccessGroupEditModal({
         isOpen={deleteGroupDialogOpen}
         onClose={deleteGroupDialogOnClose}
         title="Delete Access Group"
-        body={`Are you sure you want to delete the ${focusedGroup?.name} access group from this organization? All members and access points that have this access group will be updated.`}
+        body={`Are you sure you want to delete the ${focusedGroup?.name} access group from this organization? All members and access points that have this access group will be updated to reflect this change.`}
         buttonText="Delete"
         onDelete={() => {
           deleteGroupDialogOnClose();
@@ -339,7 +339,7 @@ export default function AccessGroupEditModal({
                           scanData: JSON.stringify(
                             focusedGroup?.scanData,
                             null,
-                            2
+                            3
                           ),
                           // config
                           configActive: focusedGroup?.config?.active,
@@ -347,21 +347,6 @@ export default function AccessGroupEditModal({
                             focusedGroup?.config?.openToEveryone,
                         }}
                         onSubmit={(values, actions) => {
-                          // alert(JSON.stringify(values, null, 2));
-                          try {
-                            JSON.parse(values?.scanData || "{}");
-                          } catch (error: any) {
-                            toast({
-                              title:
-                                "There was an error parsing the scan data.",
-                              description: error.message as string,
-                              status: "error",
-                              duration: 5000,
-                              isClosable: true,
-                            });
-                            actions.setSubmitting(false);
-                            return;
-                          }
                           user.getIdToken().then((token: string) => {
                             fetch(
                               `/api/v1/organizations/${organization?.id}/access-groups/${focusedGroup?.id}`,
@@ -374,9 +359,7 @@ export default function AccessGroupEditModal({
                                 body: JSON.stringify({
                                   name: values?.name,
                                   description: values?.description,
-                                  scanData: JSON.parse(
-                                    values?.scanData || "{}"
-                                  ),
+                                  scanData: values?.scanData,
                                   config: {
                                     active: values?.configActive,
                                     openToEveryone:
@@ -398,7 +381,7 @@ export default function AccessGroupEditModal({
                                 toast({
                                   title: data.message,
                                   status: "success",
-                                  duration: 9000,
+                                  duration: 5000,
                                   isClosable: true,
                                 });
                                 onRefresh();
@@ -409,7 +392,7 @@ export default function AccessGroupEditModal({
                                     "There was an error updating the access group.",
                                   description: error.message,
                                   status: "error",
-                                  duration: 9000,
+                                  duration: 5000,
                                   isClosable: true,
                                 });
                               })
@@ -639,12 +622,12 @@ export default function AccessGroupEditModal({
                                               },
                                             }}
                                             value={
-                                              form.values?.scanData || "{}"
+                                              form.values?.scanData
                                             }
                                             onChange={(value) => {
                                               form.setFieldValue(
                                                 "scanData",
-                                                value || ("" as string)
+                                                value
                                               );
                                             }}
                                           />

@@ -1,22 +1,24 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import Layout from "@/layouts/PlatformLayout";
 import {
-    Box,
-    Button,
-    Code,
-    Container,
-    Flex,
-    FormControl,
-    FormLabel,
-    HStack,
-    Heading,
-    Link,
-    Select,
-    Skeleton,
-    Stack,
-    Text,
-    useColorModeValue,
-    useDisclosure,
+  Avatar,
+  Box,
+  Button,
+  Code,
+  Container,
+  Divider,
+  Flex,
+  FormControl,
+  FormLabel,
+  HStack,
+  Heading,
+  Link,
+  Select,
+  Skeleton,
+  Stack,
+  Text,
+  useColorModeValue,
+  useDisclosure,
 } from "@chakra-ui/react";
 import Head from "next/head";
 import { useEffect, useState } from "react";
@@ -75,7 +77,7 @@ export default function PlatformOrganizations() {
             title: "Error",
             description: err.message,
             status: "error",
-            duration: 9000,
+            duration: 5000,
             isClosable: true,
           });
         });
@@ -95,7 +97,7 @@ export default function PlatformOrganizations() {
       title: "Success",
       description: "Organization created successfully",
       status: "success",
-      duration: 9000,
+      duration: 5000,
       isClosable: true,
     });
   };
@@ -176,19 +178,41 @@ export default function PlatformOrganizations() {
           </FormControl>
         </HStack>
         <Box>
-          {organizationsLoading ? (
-            <Stack>
-              <Skeleton height={4} width={"50%"} />
-              <Skeleton height={4} width={"50%"} />
-              <Skeleton height={4} width={"50%"} />
-            </Stack>
-          ) : organizations.length !== 0 ? (
-            <Stack
-              direction={{ base: "column", md: "row" }}
-              w={"full"}
-              spacing={4}
-            >
-              {organizations.map((organization: any) => (
+          <Flex
+            as={Stack}
+            direction={"row"}
+            h={"full"}
+            spacing={4}
+            overflow={"auto"}
+            flexWrap={"wrap"}
+          >
+            {organizationsLoading ? (
+              Array.from({ length: 6 }).map((_, i) => (
+                <Box
+                  key={i}
+                  as={Skeleton}
+                  w={{ base: "full", md: "384px" }}
+                  h={"max-content"}
+                  py={4}
+                  px={8}
+                  borderWidth={1}
+                  borderRadius={"xl"}
+                  borderColor={useColorModeValue("gray.200", "gray.700")}
+                >
+                  <HStack p={2} w={"full"}>
+                    <Box flexGrow={1}>
+                      <Text fontSize={"2xl"} fontWeight={"bold"}>
+                        Loading...
+                      </Text>
+                      <Text color={"gray.500"}>0 Members</Text>
+                      <Text color={"gray.500"}>Owned by</Text>
+                      <Text>Organization</Text>
+                    </Box>
+                  </HStack>
+                </Box>
+              ))
+            ) : organizations.length !== 0 ? (
+              organizations.map((organization: any) => (
                 <Box
                   key={organization.id}
                   w={{ base: "full", md: "384px" }}
@@ -198,24 +222,45 @@ export default function PlatformOrganizations() {
                   borderWidth={1}
                   borderRadius={"xl"}
                   borderColor={useColorModeValue("gray.200", "gray.700")}
-                  mr={4}
                 >
-                  <Box p={2}>
-                    <Text fontSize={"2xl"} fontWeight={"bold"}>
-                      {organization.name}
-                    </Text>
-                    <Text>{organization.description}</Text>
-                    <Text>
-                      ID: <Code>{organization.id}</Code>
-                    </Text>
-                    <Text>
-                      Updated at:{" "}
-                      <Code>
-                        {new Date(organization.updatedAt).toISOString()}
-                      </Code>
-                    </Text>
-                  </Box>
-                  <Stack pb={2}>
+                  <HStack p={2} w={"full"}>
+                    <Box flexGrow={1}>
+                      <Text fontSize={"2xl"} fontWeight={"bold"}>
+                        {organization.name}
+                      </Text>
+                      <Text color={"gray.500"}>
+                        {Object.keys(organization.members).length} member
+                        {Object.keys(organization.members).length !== 1
+                          ? "s"
+                          : ""}
+                      </Text>
+                      <Text color={"gray.500"}>
+                        Owned by{" "}
+                        <Link
+                          as={NextLink}
+                          textUnderlineOffset={4}
+                          href={`/platform/profile/${organization?.owner.username}`}
+                        >
+                          {organization?.owner.displayName ||
+                            "Organization Owner"}
+                        </Link>
+                      </Text>
+                      <Text>{organization.description}</Text>
+                    </Box>
+                    <Avatar
+                      as={NextLink}
+                      href={`/platform/organizations/${organization.id}`}
+                      alignSelf={"flex-start"}
+                      name={organization.name}
+                      src={organization.avatar}
+                      aspectRatio={1 / 1}
+                      borderRadius={"md"}
+                      overflow={"hidden"}
+                      objectFit={"cover"}
+                      size={"lg"}
+                    />
+                  </HStack>
+                  <Stack py={2}>
                     <Button
                       as={NextLink}
                       href={`/platform/organizations/${organization.id}`}
@@ -225,45 +270,45 @@ export default function PlatformOrganizations() {
                     </Button>
                   </Stack>
                 </Box>
-              ))}
-            </Stack>
-          ) : (
-            <Text>
-              You are currently not a member of any organization.{" "}
-              <Text as={"span"}>
-                <Button
-                  minW={"unset"}
-                  variant={"link"}
-                  color={"unset"}
-                  textDecor={"underline"}
-                  textUnderlineOffset={4}
-                  onClick={onCreateOrganizationModalOpen}
-                  _hover={{
-                    color: useColorModeValue("gray.600", "gray.400"),
-                  }}
-                >
-                  Create
-                </Button>
-              </Text>{" "}
-              or{" "}
-              <Text as={"span"}>
-                <Button
-                  minW={"unset"}
-                  variant={"link"}
-                  color={"unset"}
-                  textDecor={"underline"}
-                  textUnderlineOffset={4}
-                  onClick={onJoinOrganizationModalOpen}
-                  _hover={{
-                    color: useColorModeValue("gray.600", "gray.400"),
-                  }}
-                >
-                  join
-                </Button>
-              </Text>{" "}
-              an organization to get started.
-            </Text>
-          )}
+              ))
+            ) : (
+              <Text>
+                You are currently not a member of any organization.{" "}
+                <Text as={"span"}>
+                  <Button
+                    minW={"unset"}
+                    variant={"link"}
+                    color={"unset"}
+                    textDecor={"underline"}
+                    textUnderlineOffset={4}
+                    onClick={onCreateOrganizationModalOpen}
+                    _hover={{
+                      color: useColorModeValue("gray.600", "gray.400"),
+                    }}
+                  >
+                    Create
+                  </Button>
+                </Text>{" "}
+                or{" "}
+                <Text as={"span"}>
+                  <Button
+                    minW={"unset"}
+                    variant={"link"}
+                    color={"unset"}
+                    textDecor={"underline"}
+                    textUnderlineOffset={4}
+                    onClick={onJoinOrganizationModalOpen}
+                    _hover={{
+                      color: useColorModeValue("gray.600", "gray.400"),
+                    }}
+                  >
+                    join
+                  </Button>
+                </Text>{" "}
+                an organization to get started.
+              </Text>
+            )}
+          </Flex>
         </Box>
       </Container>
     </>

@@ -1,3 +1,4 @@
+import { authToken } from "@/lib/auth";
 import clientPromise from "@/lib/mongodb";
 import { tokenToID } from "@/pages/api/firebase";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -8,21 +9,14 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method !== "POST") {
-    return res.status(405).json({ message: "Method not allowed" });
+    return res.status(405).json({ message: "Method not allowed." });
   }
 
   // Organization ID
   const { organizationId } = req.query as { role: string, organizationId: string };
   const { role, singleUse } = req.body as { role: number, singleUse: boolean };
 
-  // Authorization Header
-  const authHeader = req.headers.authorization;
-
-  // Bearer Token
-  const token = authHeader?.split(" ")[1];
-
-  // Verify Token
-  const uid = await tokenToID(token as string);
+  const uid = await authToken(req);
   if (!uid) {
     return res.status(401).json({ message: "Unauthorized." });
   }

@@ -7,13 +7,13 @@ import { useRouter } from "next/router";
 import Footer from "@/components/Footer";
 import PlatformNav from "@/components/PlatformNav";
 import {
-    Alert,
-    AlertDescription,
-    AlertIcon,
-    AlertTitle,
-    Box,
-    Flex,
-    Stack,
+  Alert,
+  AlertDescription,
+  AlertIcon,
+  AlertTitle,
+  Box,
+  Flex,
+  Stack,
 } from "@chakra-ui/react";
 
 // Authentication
@@ -24,16 +24,19 @@ import PlatformAlert from "@/components/PlatformAlert";
 import { auth } from "@/lib/firebase";
 import firebase from "firebase/app";
 import { sendEmailVerification } from "firebase/auth";
+import { usePathname } from "next/navigation";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { user, currentUser, isAuthLoaded } = useAuthContext();
   const [sendVerificationEmailLoading, setSendVerificationEmailLoading] =
     useState<boolean>(false);
   const { push } = useRouter();
+  const pathname = usePathname();
 
   // Wait for the router to be ready before checking if the user is logged in
   useEffect(() => {
     if (!isAuthLoaded) return;
+    // if (pathname.startsWith("/platform/profile")) return;
     if (!user) {
       push("/auth/login?redirect=" + window.location.pathname);
     }

@@ -7,58 +7,58 @@ import { Suspense, useEffect, useState } from "react";
 import Footer from "@/components/Footer";
 import ThemeButton from "@/components/ThemeButton";
 import {
-    ChevronRightIcon,
-    HamburgerIcon,
-    SettingsIcon,
+  ChevronRightIcon,
+  HamburgerIcon,
+  SettingsIcon,
 } from "@chakra-ui/icons";
 import {
-    AbsoluteCenter,
-    Avatar,
-    Box,
-    Button,
-    ButtonGroup,
-    Code,
-    Container,
-    Divider,
-    Flex,
-    HStack,
-    Heading,
-    IconButton,
-    Image,
-    Link,
-    Menu,
-    MenuButton,
-    MenuDivider,
-    MenuItem,
-    MenuList,
-    Popover,
-    PopoverAnchor,
-    PopoverArrow,
-    PopoverBody,
-    PopoverCloseButton,
-    PopoverContent,
-    PopoverFooter,
-    PopoverHeader,
-    PopoverTrigger,
-    SkeletonCircle,
-    Spacer,
-    Stack,
-    Text,
-    VStack,
-    useColorMode,
-    useColorModeValue,
-    useDisclosure,
+  AbsoluteCenter,
+  Avatar,
+  Box,
+  Button,
+  ButtonGroup,
+  Code,
+  Container,
+  Divider,
+  Flex,
+  HStack,
+  Heading,
+  IconButton,
+  Image,
+  Link,
+  Menu,
+  MenuButton,
+  MenuDivider,
+  MenuItem,
+  MenuList,
+  Popover,
+  PopoverAnchor,
+  PopoverArrow,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverFooter,
+  PopoverHeader,
+  PopoverTrigger,
+  SkeletonCircle,
+  Spacer,
+  Stack,
+  Text,
+  VStack,
+  useColorMode,
+  useColorModeValue,
+  useDisclosure,
 } from "@chakra-ui/react";
 import NextImage from "next/image";
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
 import { forwardRef } from "react";
 import {
-    AiFillBell,
-    AiFillCrown,
-    AiFillHome,
-    AiFillInfoCircle,
-    AiFillSetting,
+  AiFillBell,
+  AiFillCrown,
+  AiFillHome,
+  AiFillInfoCircle,
+  AiFillSetting,
 } from "react-icons/ai";
 import { BiNotification, BiSolidExit, BiSolidTime } from "react-icons/bi";
 import { BsPersonBadgeFill } from "react-icons/bs";
@@ -250,7 +250,7 @@ export default function PlatformNav({
   title?: string | null | undefined;
 }) {
   const pathname = usePathname();
-  const { currentUser } = useAuthContext();
+  const { currentUser, isAuthLoaded } = useAuthContext();
 
   return (
     <>
@@ -308,7 +308,6 @@ export default function PlatformNav({
             </Flex>
           </Flex>
         </Flex>
-
         <Box w={"full"}>
           {/* Links */}
           <VStack
@@ -368,19 +367,29 @@ export default function PlatformNav({
           mt={"auto"}
         >
           <NavLink
-            href={"https://discord.gg/983DXK26"}
+            href={"https://xcs-docs.restrafes.co/"}
             pathname={pathname}
             leftIcon={<AiFillInfoCircle />}
           >
             Help & Information
           </NavLink>
-          <NavLink
-            href={"/auth/logout"}
-            pathname={pathname}
-            leftIcon={<BiSolidExit />}
-          >
-            Log Out
-          </NavLink>
+          {currentUser ? (
+            <NavLink
+              href={"/auth/logout"}
+              pathname={pathname}
+              leftIcon={<BiSolidExit />}
+            >
+              Log Out
+            </NavLink>
+          ) : (
+            <NavLink
+              href={"/auth/login"}
+              pathname={pathname}
+              leftIcon={<BiSolidExit />}
+            >
+              Log In
+            </NavLink>
+          )}
         </VStack>
       </Flex>
 
@@ -441,14 +450,14 @@ export default function PlatformNav({
                 </Button>
               </PopoverTrigger>
               <PopoverContent
-                 m={0}
-                 my={{ base: 5, md: 7 }}
-                 mx={{ base: 0, md: 2 }}
-                 zIndex={2}
-                 minW={{ base: "100vw", md: "320px" }}
-                 bg={useColorModeValue("white", "none")}
-                 backdropFilter={"blur(2em)"}
-                 rounded={"xl"}
+                m={0}
+                my={{ base: 5, md: 7 }}
+                mx={{ base: 0, md: 2 }}
+                zIndex={2}
+                minW={{ base: "100vw", md: "320px" }}
+                bg={useColorModeValue("white", "none")}
+                backdropFilter={"blur(2em)"}
+                rounded={"xl"}
               >
                 <PopoverCloseButton />
                 <PopoverHeader>
@@ -524,7 +533,7 @@ export default function PlatformNav({
                   <MenuItem
                     as={MenuLink}
                     icon={<AiFillInfoCircle />}
-                    href="https://discord.gg/983DXK26"
+                    href="https://xcs-docs.restrafes.co/"
                   >
                     Help & Information
                   </MenuItem>

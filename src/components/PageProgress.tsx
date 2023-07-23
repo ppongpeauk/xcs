@@ -10,7 +10,7 @@ export default function PageProgress() {
       color={useColorModeValue("#000", "#fff")}
       startPosition={0.3}
       stopDelayMs={250}
-      height={2}
+      height={3}
     />
   );
 }

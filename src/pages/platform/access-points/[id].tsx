@@ -94,7 +94,7 @@ export default function PlatformAccessPoint() {
             title: "Error",
             description: err.message,
             status: "error",
-            duration: 9000,
+            duration: 5000,
             isClosable: true,
           });
         })
@@ -130,7 +130,7 @@ export default function PlatformAccessPoint() {
             title: "Error",
             description: err.message,
             status: "error",
-            duration: 9000,
+            duration: 5000,
             isClosable: true,
           });
         });
@@ -228,7 +228,7 @@ export default function PlatformAccessPoint() {
                     title: "Error",
                     description: "Invalid JSON.",
                     status: "error",
-                    duration: 9000,
+                    duration: 5000,
                     isClosable: true,
                   });
                   actions.setSubmitting(false);
@@ -268,7 +268,7 @@ export default function PlatformAccessPoint() {
                       toast({
                         title: data.message,
                         status: "success",
-                        duration: 9000,
+                        duration: 5000,
                         isClosable: true,
                       });
                       actions.setSubmitting(false);
@@ -279,7 +279,7 @@ export default function PlatformAccessPoint() {
                         title: "There was an error updating the access point.",
                         description: error.message,
                         status: "error",
-                        duration: 9000,
+                        duration: 5000,
                         isClosable: true,
                       });
                     })
@@ -429,7 +429,7 @@ export default function PlatformAccessPoint() {
                         toast({
                           title: "Copied access point ID to clipboard.",
                           status: "success",
-                          duration: 9000,
+                          duration: 5000,
                           isClosable: true,
                         });
                       }}

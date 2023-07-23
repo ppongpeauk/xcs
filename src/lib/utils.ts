@@ -1,8 +1,8 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
- 
+
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 const roleToText = (role: number) => {
@@ -38,39 +38,57 @@ const textToRole = (role: string) => {
 };
 
 const getRobloxUsersByUsernames = async (usernames: string[]) => {
-  let robloxResponse = await fetch(`${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/roblox/users/v1/usernames/users`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
+  let robloxResponse = await fetch(
+    `${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/roblox/users/v1/usernames/users`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
         usernames,
-        excludeBannedUsers: false
-    }),
-  }).then((res) => res.json()).then((res) => res.data);
+        excludeBannedUsers: false,
+      }),
+    }
+  )
+    .then((res) => res.json())
+    .then((res) => res.data);
+
+  return robloxResponse;
 };
 
 const getRobloxUsers = async (userIds: string[]) => {
-  let robloxResponse = await fetch(`${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/roblox/users/v1/users`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
+  let robloxResponse = await fetch(
+    `${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/roblox/users/v1/users`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
         userIds,
-        excludeBannedUsers: false
-    }),
-  }).then((res) => res.json()).then((res) => res.data);
+        excludeBannedUsers: false,
+      }),
+    }
+  )
+    .then((res) => res.json())
+    .then((res) => res.data);
 
   let robloxUserAvatar = await fetch(
-    `${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/roblox/thumbnails/v1/users/avatar-headshot?userIds=${userIds.join(",")}&size=150x150&format=Png&isCircular=false`,
+    `${
+      process.env.NEXT_PUBLIC_ROOT_URL
+    }/api/v1/roblox/thumbnails/v1/users/avatar-headshot?userIds=${userIds.join(
+      ","
+    )}&size=150x150&format=Png&isCircular=false`,
     {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
     }
-  ).then((res) => res.json()).then((res) => res.data);
+  )
+    .then((res) => res.json())
+    .then((res) => res.data);
 
   for (let i = 0; i < robloxResponse.length; i++) {
     robloxResponse[i].avatar = robloxUserAvatar[i].imageUrl;
@@ -82,9 +100,63 @@ const getRobloxUsers = async (userIds: string[]) => {
   for (let i = 0; i < robloxResponse.length; i++) {
     response[robloxResponse[i].id as string] = robloxResponse[i];
   }
-  
+
   return response;
 };
 
-export { getRobloxUsers, getRobloxUsersByUsernames, roleToText, textToRole };
+const getRandomAccessPointName = () => {
+  let accessPointNames = [
+    "Front Entrance",
+    "Main Elevators",
+    "Closet B1-001",
+    "Conference Room 1255",
+    "Front Desk",
+    "Server Room",
+    "Break Room",
+    "Stairwell A",
+    "Lobby Area",
+    "Marketing Department",
+    "Reception Area",
+    "Copy Room",
+    "IT Department",
+    "Storage Room",
+    "Boardroom",
+    "Conference Room A",
+    "HR Department",
+    "Pantry",
+    "Design Studio",
+    "Training Room",
+    "Printer Area",
+    "Mailroom",
+    "Executive Offices",
+    "Stairwell B",
+    "Central Hub",
+    "Outdoor Patio",
+    "Supply Room",
+    "Accounting Department",
+    "Cafeteria",
+    "Meeting Room A",
+    "Conference Room B",
+    "Back Entrance",
+    "IT Helpdesk",
+    "Rooftop Garden",
+    "Quiet Room",
+    "Collaboration Area",
+    "Sales Department",
+    "Interview Room",
+    "Finance Department",
+    "Storage Closet",
+    "Conference Room C",
+    "Game Room",
+    "Engineering Department",
+    "Stairwell C",
+    "Innovation Lab",
+    "Conference Room D",
+    "Conference Room E",
+  ];
+
+  return accessPointNames[Math.floor(Math.random() * accessPointNames.length)];
+};
+
+export { getRandomAccessPointName, getRobloxUsers, getRobloxUsersByUsernames, roleToText, textToRole };
 

@@ -63,7 +63,7 @@ export default function InviteOrganizationModal({
     toast({
       title: "Copied invite link to clipboard!",
       status: "success",
-      duration: 9000,
+      duration: 5000,
       isClosable: true,
     });
   };
@@ -74,7 +74,7 @@ export default function InviteOrganizationModal({
         initialValues={{ role: "Member", singleUse: true }}
         onSubmit={(values, actions) => {
           user.getIdToken().then((token: any) => {
-            fetch(`/api/v1/organizations/${organizationId}/createInviteCode`, {
+            fetch(`/api/v1/organizations/${organizationId}/create-invite-link`, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -98,7 +98,7 @@ export default function InviteOrganizationModal({
                 toast({
                   title: data.message,
                   status: "success",
-                  duration: 9000,
+                  duration: 5000,
                   isClosable: true,
                 });
                 setInviteCode(data.inviteCode);
@@ -114,7 +114,7 @@ export default function InviteOrganizationModal({
                   title: "There was an error creating the invitation.",
                   description: error.message,
                   status: "error",
-                  duration: 9000,
+                  duration: 5000,
                   isClosable: true,
                 });
               })

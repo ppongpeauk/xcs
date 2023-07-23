@@ -1,3 +1,4 @@
+import { authToken } from "@/lib/auth";
 import clientPromise from "@/lib/mongodb";
 import { tokenToID } from "@/pages/api/firebase";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -8,27 +9,30 @@ export default async function handler(
 ) {
   if (req.method !== "GET") {
     console.log(req.method);
-    return res.status(405).json({ message: "Method not allowed" });
+    return res.status(405).json({ message: "Method not allowed." });
   }
 
-  // Authorization Header
-  const authHeader = req.headers.authorization;
-
-  // Bearer Token
-  const token = authHeader?.split(" ")[1];
-
-  // Verify Token
-  const uid = await tokenToID(token as string);
+  const uid = await authToken(req);
   if (!uid) {
     return res.status(401).json({ message: "Unauthorized." });
   }
 
   const mongoClient = await clientPromise;
   const db = mongoClient.db(process.env.MONGODB_DB as string);
-  const organizations = await db
+  let organizations = await db
     .collection("organizations")
     .find({ [`members.${uid}`]: { $exists: true } })
     .toArray();
+
+  organizations = await Promise.all(organizations.map(async (organization) => {
+    let ownerId = Object.keys(organization.members).find(
+      (member) => organization.members[member].role === 3
+    );
+    let owner = await db.collection("users").findOne({ id: uid }, { projection: { id: 1, displayName: 1, username: 1, avatar: 1 } });
+    return { ...organization, owner };
+  }))
+
+  console.log(organizations);
 
   res.status(200).json({ organizations: organizations });
 }

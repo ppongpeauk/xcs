@@ -1,3 +1,4 @@
+import { authToken } from "@/lib/auth";
 import clientPromise from "@/lib/mongodb";
 import { tokenToID } from "@/pages/api/firebase";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -12,14 +13,7 @@ export default async function handler(
       name: string;
     };
 
-    // Authorization Header
-    const authHeader = req.headers.authorization;
-
-    // Bearer Token
-    const token = authHeader?.split(" ")[1];
-
-    // Verify Token
-    const uid = await tokenToID(token as string);
+    const uid = await authToken(req);
     if (!uid) {
       return res.status(401).json({ message: "Unauthorized." });
     }
@@ -99,7 +93,9 @@ export default async function handler(
         { projection: { _id: 1 } }
       );
       if (checkName) {
-        return res.status(400).json({ message: "This name is taken. Please choose another." });
+        return res
+          .status(400)
+          .json({ message: "This name is taken. Please choose another." });
       }
     }
 

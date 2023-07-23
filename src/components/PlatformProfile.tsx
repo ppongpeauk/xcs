@@ -1,25 +1,25 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import {
-    Avatar,
-    AvatarBadge,
-    Box,
-    Button,
-    Center,
-    Container,
-    Flex,
-    Grid,
-    Heading,
-    Icon,
-    Image,
-    Link,
-    Skeleton,
-    SkeletonCircle,
-    SkeletonText,
-    Stack,
-    StackItem,
-    Text,
-    useColorModeValue,
-    useToast,
+  Avatar,
+  AvatarBadge,
+  Box,
+  Button,
+  Center,
+  Container,
+  Flex,
+  Grid,
+  Heading,
+  Icon,
+  Image,
+  Link,
+  Skeleton,
+  SkeletonCircle,
+  SkeletonText,
+  Stack,
+  StackItem,
+  Text,
+  useColorModeValue,
+  useToast,
 } from "@chakra-ui/react";
 import Head from "next/head";
 import NextLink from "next/link";
@@ -76,41 +76,51 @@ export default function Profile({ username }: { username?: string }) {
   const [user, setUser] = useState<any | undefined>(undefined);
   const toast = useToast();
 
+  const fetchUser = async (token?: string) => {
+    fetch(`/api/v1/users/${username}`, {
+      method: "GET",
+      headers: {
+        Authorization: token ? `Bearer ${token}` : "",
+      },
+    })
+      .then((res) => {
+        if (res.status === 404) return router.push("/404");
+        return res.json();
+      })
+      .then((res) => {
+        setUser(res.user);
+      })
+      .catch((err) => {
+        toast({
+          title: "User not found",
+          description: "Could not find user",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      });
+  };
+
   useEffect(() => {
-    if (!currentUser) return;
+    // if (!currentUser) return;
     if (!username) return;
     setUser(undefined);
-    authUser.getIdToken().then((token: any) => {
-      fetch(`/api/v1/users/${username}`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-        .then((res) => {
-          if (res.status === 404) return router.push("/404");
-          return res.json();
-        })
-        .then((res) => {
-          setUser(res.user);
-        })
-        .catch((err) => {
-          toast({
-            title: "User not found",
-            description: "Could not find user",
-            status: "error",
-            duration: 5000,
-            isClosable: true,
-          });
-        });
-    });
+    if (authUser) {
+      authUser.getIdToken().then((token: any) => {
+        fetchUser(token);
+      });
+    } else {
+      fetchUser();
+    }
   }, [username, currentUser, router, toast]);
 
   return (
     <>
       <Head>
         {user ? (
-          <title>{`EVE XCS – ${user?.displayName || user?.name?.first}'s Profile`}</title>
+          <title>{`EVE XCS – ${
+            user?.displayName || user?.name?.first
+          }'s Profile`}</title>
         ) : (
           <title>{`EVE XCS – Profile`}</title>
         )}

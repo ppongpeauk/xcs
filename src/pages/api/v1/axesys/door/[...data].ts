@@ -8,7 +8,7 @@ export default async function handler(
 ) {
   // reject non-GET requests
   if (req.method !== "GET") {
-    return res.status(405).json({ error: "Method not allowed" });
+    return res.status(405).json({ error: "Method not allowed." });
   }
 
   // query parameters

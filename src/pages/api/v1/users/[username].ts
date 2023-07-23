@@ -17,7 +17,7 @@ export default async function handler(
   )) as any;
 
   if (!user) {
-    return res.status(404).json({ message: "User not found" });
+    return res.status(404).json({ message: "User not found." });
   }
 
   if (req.method === "GET") {

@@ -73,7 +73,7 @@ export default function JoinOrganizationDialog({
                 toast({
                   title: data.message,
                   status: "success",
-                  duration: 9000,
+                  duration: 5000,
                   isClosable: true,
                 });
                 onClose();
@@ -84,7 +84,7 @@ export default function JoinOrganizationDialog({
                   title: "There was an error joining the organization.",
                   description: error.message,
                   status: "error",
-                  duration: 9000,
+                  duration: 5000,
                   isClosable: true,
                 });
               })

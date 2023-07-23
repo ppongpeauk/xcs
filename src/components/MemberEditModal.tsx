@@ -2,6 +2,7 @@
 import {
   Avatar,
   Button,
+  ButtonGroup,
   Flex,
   FormControl,
   FormHelperText,
@@ -35,7 +36,9 @@ import Editor from "@monaco-editor/react";
 
 import DeleteDialog from "@/components/DeleteDialog";
 import InviteOrganizationModal from "@/components/InviteOrganizationModal";
+import InviteOrganizationRobloxGroupModal from "@/components/InviteOrganizationRobloxGroupModal";
 import InviteOrganizationRobloxModal from "@/components/InviteOrganizationRobloxModal";
+
 import { useAuthContext } from "@/contexts/AuthContext";
 import { roleToText, textToRole } from "@/lib/utils";
 import {
@@ -104,6 +107,12 @@ export default function MemberEditModal({
     onClose: robloxModalOnClose,
   } = useDisclosure();
 
+  const {
+    isOpen: robloxGroupModalOpen,
+    onOpen: robloxGroupModalOnOpen,
+    onClose: robloxGroupModalOnClose,
+  } = useDisclosure();
+
   const filterMembers = (query: string) => {
     if (!query) return members;
     return members.filter(
@@ -157,7 +166,15 @@ export default function MemberEditModal({
         }}
         organization={organization}
       />
-      <Modal isOpen={isOpen} onClose={onClose} isCentered>
+      <InviteOrganizationRobloxGroupModal
+        isOpen={robloxGroupModalOpen}
+        onClose={robloxGroupModalOnClose}
+        onAdd={() => {
+          onRefresh();
+        }}
+        organization={organization}
+      />
+      <Modal isOpen={isOpen} onClose={onClose} isCentered blockScrollOnMount={false}>
         <ModalOverlay />
         <ModalContent
           maxW={{ base: "full", lg: "container.xl" }}
@@ -190,14 +207,22 @@ export default function MemberEditModal({
               >
                 Invite User
               </Button>
-              <Button
-                alignSelf={{ base: "normal", md: "flex-end" }}
-                leftIcon={<SiRoblox />}
-                onClick={robloxModalOnOpen}
-                isDisabled={clientMember?.role < 2}
-              >
-                Add Roblox User
-              </Button>
+                <Button
+                  alignSelf={{ base: "normal", md: "flex-end" }}
+                  onClick={robloxModalOnOpen}
+                  leftIcon={<SiRoblox />}
+                  isDisabled={clientMember?.role < 2}
+                >
+                  Add Roblox User
+                </Button>
+                {/* <Button
+                  alignSelf={{ base: "normal", md: "flex-end" }}
+                  onClick={robloxGroupModalOnOpen}
+                  leftIcon={<SiRoblox />}
+                  isDisabled={clientMember?.role < 2}
+                >
+                  Add Roblox Group
+                </Button> */}
             </Stack>
             <Flex
               w={"full"}
@@ -421,25 +446,11 @@ export default function MemberEditModal({
                           scanData: JSON.stringify(
                             focusedMember?.scanData,
                             null,
-                            2
+                            3
                           ),
                         }}
                         onSubmit={(values, actions) => {
                           // alert(JSON.stringify(values, null, 2));
-                          try {
-                            JSON.parse(values?.scanData || "{}");
-                          } catch (error: any) {
-                            toast({
-                              title:
-                                "There was an error parsing the scan data.",
-                              description: error.message as string,
-                              status: "error",
-                              duration: 5000,
-                              isClosable: true,
-                            });
-                            actions.setSubmitting(false);
-                            return;
-                          }
                           user.getIdToken().then((token: string) => {
                             fetch(
                               `/api/v1/organizations/${organization?.id}/members/${focusedMember?.id}`,
@@ -451,9 +462,7 @@ export default function MemberEditModal({
                                 },
                                 body: JSON.stringify({
                                   role: textToRole(values?.role),
-                                  scanData: JSON.parse(
-                                    values?.scanData || "{}"
-                                  ),
+                                  scanData: values?.scanData || "{}",
 
                                   // get access group ids from names
                                   accessGroups: values?.accessGroups.map(
@@ -484,7 +493,7 @@ export default function MemberEditModal({
                                 toast({
                                   title: data.message,
                                   status: "success",
-                                  duration: 9000,
+                                  duration: 5000,
                                   isClosable: true,
                                 });
                                 onRefresh();
@@ -495,7 +504,7 @@ export default function MemberEditModal({
                                     "There was an error updating the member.",
                                   description: error.message,
                                   status: "error",
-                                  duration: 9000,
+                                  duration: 5000,
                                   isClosable: true,
                                 });
                               })
@@ -626,13 +635,11 @@ export default function MemberEditModal({
                                                 enabled: true,
                                               },
                                             }}
-                                            value={
-                                              form.values?.scanData || "{}"
-                                            }
+                                            value={form.values?.scanData}
                                             onChange={(value) => {
                                               form.setFieldValue(
                                                 "scanData",
-                                                value || ("" as string)
+                                                value
                                               );
                                             }}
                                           />

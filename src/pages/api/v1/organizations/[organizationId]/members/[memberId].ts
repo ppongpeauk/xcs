@@ -1,3 +1,4 @@
+import { authToken } from "@/lib/auth";
 import clientPromise from "@/lib/mongodb";
 import { tokenToID } from "@/pages/api/firebase";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -12,14 +13,7 @@ export default async function handler(
     memberId: string;
   };
 
-  // Authorization Header
-  const authHeader = req.headers.authorization;
-
-  // Bearer Token
-  const token = authHeader?.split(" ")[1];
-
-  // Verify Token
-  const uid = await tokenToID(token as string);
+  const uid = await authToken(req);
   if (!uid) {
     return res.status(401).json({ message: "Unauthorized." });
   }
@@ -51,7 +45,7 @@ export default async function handler(
   let { role, accessGroups, scanData } = req.body as {
     role: number;
     accessGroups: string[];
-    scanData: string[];
+    scanData: string;
   };
 
   if (
@@ -87,6 +81,12 @@ export default async function handler(
         message: "You cannot edit a user with a higher role than you.",
         success: false,
       });
+    }
+
+    try {
+      scanData = JSON.parse(scanData);
+    } catch (err) {
+      return res.status(400).json({ message: "Unable to parse scan data. Check your JSON and try again." });
     }
 
     organizations.updateOne(

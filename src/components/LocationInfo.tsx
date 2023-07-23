@@ -90,7 +90,7 @@ export default function LocationInfo({
           title: "Error",
           description: err.message,
           status: "error",
-          duration: 9000,
+          duration: 5000,
           isClosable: true,
         });
       })
@@ -141,7 +141,7 @@ export default function LocationInfo({
           title: "Error",
           description: err.message,
           status: "error",
-          duration: 9000,
+          duration: 5000,
           isClosable: true,
         });
       })
@@ -208,7 +208,7 @@ export default function LocationInfo({
                   toast({
                     title: data.message,
                     status: "success",
-                    duration: 9000,
+                    duration: 5000,
                     isClosable: true,
                   });
                   actions.setSubmitting(false);
@@ -219,7 +219,7 @@ export default function LocationInfo({
                     title: "There was an error updating the location.",
                     description: error.message,
                     status: "error",
-                    duration: 9000,
+                    duration: 5000,
                     isClosable: true,
                   });
                 })
