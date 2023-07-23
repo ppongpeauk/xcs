@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import {
+  Badge,
   Box,
   Button,
   Code,
@@ -144,26 +145,26 @@ export default function LocationAccessPoints({
                   <Text fontSize={"xl"} fontWeight={"bold"} noOfLines={1}>
                     {accessPoint.name}
                   </Text>
-                  <Code>{accessPoint.id}</Code>{" "}
-                  <Code ml={2}>
-                    Updated {moment(accessPoint.updatedAt).fromNow()}
-                  </Code>
+                  <Code fontSize={"xs"} mt={2}>{accessPoint.id}</Code>
                   <HStack
                     align={"center"}
                     justify={"flex-start"}
                     fontSize={"xl"}
-                    py={2}
+                    mt={2}
                   >
-                    {!accessPoint?.config?.active && (
-                      <AiFillWarning title="Not active" />
+                    {accessPoint?.config?.active ? (
+                      <Badge colorScheme={"green"}>Active</Badge>
+                    ) : (
+                      <Badge colorScheme={"red"}>Inactive</Badge>
                     )}
                     {accessPoint?.config?.armed ? (
-                      <BiSolidLock title="Armed" />
+                      <Badge colorScheme={"blue"}>Armed</Badge>
                     ) : (
-                      <BiSolidLockOpen title="Unarmed" />
+                      <Badge colorScheme={"red"}>Not Armed</Badge>
                     )}
                   </HStack>
-                  <Text>
+                  
+                  <Text pt={2}>
                     {accessPoint.description || "No description available."}
                   </Text>
                   <Stack pt={4}>
