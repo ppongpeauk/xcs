@@ -29,7 +29,7 @@
     "@types/react-dom": "18.2.6",
     "@types/uuid": "^9.0.2",
     "autoprefixer": "10.4.14",
-    "chakra-multiselect": "git+https://github.com/rrodriguesilva/chakra-multiselect.git#56831f99aad954e8504476d2942b6bc94bf24743",
+    "chakra-multiselect": "git+https://github.com/ppongpeauk/chakra-multiselect",
     "class-variance-authority": "^0.6.1",
     "clsx": "^1.2.1",
     "eslint": "8.44.0",
