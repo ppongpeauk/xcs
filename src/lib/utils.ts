@@ -162,7 +162,10 @@ const getRandomAccessPointName = () => {
 };
 
 const agNames = (organization: any, names: string[]) => {
-  if (!organization?.accessGroups) return [];
+  if (!organization?.accessGroups) {
+    console.warn("No access groups found", organization, names);
+    return [];
+  }
   let res = [];
   for (let name of names) {
     let find = Object.keys(organization.accessGroups).find(

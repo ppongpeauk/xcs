@@ -455,6 +455,7 @@ export default function MemberEditModal({
                           console.log(values.accessGroups);
                           console.log(organization?.accessGroups);
                           console.log(agNames(organization, values.accessGroups));
+                          
                           user.getIdToken().then((token: string) => {
                             fetch(
                               `/api/v1/organizations/${organization?.id}/members/${focusedMember?.id}`,
