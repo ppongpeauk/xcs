@@ -143,7 +143,7 @@ export default function LocationAccessPoints({
               >
                 <Box flexGrow={1}>
                   <Text fontSize={"xl"} fontWeight={"bold"} noOfLines={1}>
-                    {accessPoint.name}
+                    {accessPoint?.name}
                   </Text>
                   <Code fontSize={"xs"} mt={2}>{accessPoint.id}</Code>
                   <HStack
