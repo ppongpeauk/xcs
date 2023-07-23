@@ -20,6 +20,7 @@ import {
 import { Field, Form, Formik } from "formik";
 
 import { useAuthContext } from "@/contexts/AuthContext";
+import { agKV, agNames, roleToText, textToRole } from "@/lib/utils";
 import { MultiSelect } from "chakra-multiselect";
 import { useRef } from "react";
 
@@ -55,14 +56,11 @@ export default function InviteOrganizationRobloxModal({
               body: JSON.stringify({
                 type: "roblox",
                 username: values.username,
-                // get access group ids from names
-                accessGroups: values?.accessGroups.map((accessGroup: any) => {
-                  return Object.keys(organization?.accessGroups || {}).find(
-                    (accessGroupId: any) =>
-                      organization?.accessGroups[accessGroupId].name ===
-                      accessGroup
-                  );
-                }),
+
+                accessGroups: agNames(
+                  organization,
+                  values.accessGroups
+                ),
               }),
             })
               .then((res) => {
@@ -131,12 +129,7 @@ export default function InviteOrganizationRobloxModal({
                           <MultiSelect
                             {...field}
                             label="Access Groups"
-                            options={Object.keys(organization.accessGroups).map(
-                              (key) => ({
-                                value: organization.accessGroups[key].name,
-                                label: organization.accessGroups[key].name,
-                              })
-                            )}
+                            options={agKV(organization)}
                             onChange={(value) => {
                               form.setFieldValue("accessGroups", value);
                             }}

@@ -71,7 +71,7 @@ export default function InviteOrganizationModal({
   return (
     <>
       <Formik
-        initialValues={{ role: "Member", singleUse: true }}
+        initialValues={{ role: "1", singleUse: true }}
         onSubmit={(values, actions) => {
           user.getIdToken().then((token: any) => {
             fetch(`/api/v1/organizations/${organizationId}/create-invite-link`, {
@@ -82,7 +82,7 @@ export default function InviteOrganizationModal({
               },
               body: JSON.stringify({
                 singleUse: values.singleUse,
-                role: textToRole(values.role),
+                role: parseInt(values.role),
               }),
             })
               .then((res) => {
@@ -147,8 +147,8 @@ export default function InviteOrganizationModal({
                                 {...field}
                                 label="Role"
                                 options={[
-                                  { label: "Member", value: "Member" },
-                                  { label: "Manager", value: "Manager" },
+                                  { label: "Member", value: "1" },
+                                  { label: "Manager", value: "2" },
                                 ]}
                                 onChange={(value) => {
                                   form.setFieldValue("role", value as string);

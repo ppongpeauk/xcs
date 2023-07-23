@@ -158,5 +158,53 @@ const getRandomAccessPointName = () => {
   return accessPointNames[Math.floor(Math.random() * accessPointNames.length)];
 };
 
-export { getRandomAccessPointName, getRobloxUsers, getRobloxUsersByUsernames, roleToText, textToRole };
+const agNames = (organization: any, names: string[]) => {
+  if (!organization?.accessGroups) return [];
+  let res = [];
+  for (let name of names) {
+    let find = Object.keys(organization.accessGroups).find(
+      (element: any) => organization.accessGroups[element].name === name
+    );
+    if (find) {
+      res.push(find);
+    }
+  }
+  return res;
+};
+
+const agIds = (organization: any, ids: string[]) => {
+  if (!organization?.accessGroups) return [];
+  let res = [];
+  for (let id of ids) {
+    let find = Object.keys(organization.accessGroups).find(
+      (element: any) => organization.accessGroups[element].id === id
+    );
+    if (find) {
+      res.push(organization.accessGroups[find].name);
+    }
+  }
+  return res;
+};
+
+const agKV = (organization: any) => {
+  if (!organization?.accessGroups) return [];
+  let res = [];
+  for (let key of Object.keys(organization.accessGroups)) {
+    res.push({
+      label: organization.accessGroups[key].name,
+      value: organization.accessGroups[key].name
+    });
+  }
+  return res;
+};
+
+
+
+export {
+  agIds, agKV, agNames, getRandomAccessPointName,
+  getRobloxUsers,
+  getRobloxUsersByUsernames,
+  roleToText,
+  textToRole
+};
 

@@ -1,4 +1,5 @@
 import clientPromise from "@/lib/mongodb";
+import { getRobloxUsers } from "@/lib/utils";
 import { tokenToID } from "@/pages/api/firebase";
 import { NextApiRequest, NextApiResponse } from "next";
 
@@ -26,6 +27,7 @@ export default async function handler(
   const locations = db.collection("locations");
   const organizations = db.collection("organizations");
   const accessPoints = db.collection("accessPoints");
+  const users = db.collection("users");
 
   let accessPoint = (await accessPoints.findOne({ id: accessPointId })) as any;
 
@@ -37,12 +39,14 @@ export default async function handler(
     {
       id: accessPoint.organizationId,
     },
-    { projection: {
-      id: 1,
-      name: 1,
-      members: 1,
-      accessGroups: 1,
-    } }
+    {
+      projection: {
+        id: 1,
+        name: 1,
+        members: 1,
+        accessGroups: 1,
+      },
+    }
   );
 
   if (!organization) {
@@ -65,6 +69,48 @@ export default async function handler(
     out.accessPoint.location = await locations.findOne({
       id: accessPoint.locationId,
     });
+
+    const regularMembers = Object.keys(
+      organization.members
+    ).filter((member) => {
+      if (organization?.members[member].type !== "roblox") {
+        return member;
+      }
+    });
+    
+    const robloxMembers = Object.keys(
+      organization.members
+    ).filter((member) => {
+      if (organization?.members[member].type === "roblox") {
+        return member;
+      }
+    });
+
+    await regularMembers.forEach(async (member) => {
+      const user = await users
+        .findOne(
+          { id: member },
+          { projection: { id: 1, displayName: 1, username: 1 } }
+        )
+        .then((res) => res);
+      out.accessPoint.organization.members[member] = {
+        ...out.accessPoint.organization.members[member],
+        displayName: user?.displayName,
+        username: user?.username,
+      };
+    });
+
+    // fetch roblox display names and usernames
+    const robloxUsers = await getRobloxUsers(robloxMembers);
+
+    await Object.entries(robloxUsers).map(async ([id, data]: any) => {
+      out.accessPoint.organization.members[id] = {
+        ...out.accessPoint.organization.members[id],
+        displayName: data.displayName,
+        username: data.name,
+      };
+    });
+
     out.accessPoint.self = organization.members[uid as any];
     return res.status(200).json(out);
   }

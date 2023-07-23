@@ -89,6 +89,11 @@ export default async function handler(
       return res.status(400).json({ message: "Unable to parse scan data. Check your JSON and try again." });
     }
 
+    // remove all access groups that don't exist
+    accessGroups = accessGroups.filter((accessGroup) => {
+      return Object.keys(organization.accessGroups).includes(accessGroup);
+    });
+
     organizations.updateOne(
       { id: organizationId },
       {

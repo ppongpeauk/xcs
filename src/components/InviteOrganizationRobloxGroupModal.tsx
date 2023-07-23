@@ -179,13 +179,10 @@ export default function InviteOrganizationRobloxGroupModal({
                 robloxGroupId: values.robloxGroupId,
                 robloxGroupRoles: values.robloxGroupRoles,
                 // get access group ids from names
-                accessGroups: values?.accessGroups.map((accessGroup: any) => {
-                  return Object.keys(organization?.accessGroups || {}).find(
-                    (accessGroupId: any) =>
-                      organization?.accessGroups[accessGroupId].name ===
-                      accessGroup
-                  );
-                }),
+                accessGroups: values?.accessGroups.map(
+                  (accessGroup: any) =>
+                    accessGroup.value
+                ),
               }),
             })
               .then((res) => {
@@ -296,7 +293,7 @@ export default function InviteOrganizationRobloxGroupModal({
                             overflowY={"scroll"}
                             label="Group Roles"
                             options={groupRoles.map((val: any) => ({
-                              value: val.name,
+                              value: val.id,
                               label: val.name,
                             }))}
                             onChange={(value) => {
@@ -316,7 +313,7 @@ export default function InviteOrganizationRobloxGroupModal({
                             label="Access Groups"
                             options={Object.keys(organization.accessGroups).map(
                               (key) => ({
-                                value: organization.accessGroups[key].name,
+                                value: key,
                                 label: organization.accessGroups[key].name,
                               })
                             )}

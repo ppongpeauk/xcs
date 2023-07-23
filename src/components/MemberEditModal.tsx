@@ -40,7 +40,7 @@ import InviteOrganizationRobloxGroupModal from "@/components/InviteOrganizationR
 import InviteOrganizationRobloxModal from "@/components/InviteOrganizationRobloxModal";
 
 import { useAuthContext } from "@/contexts/AuthContext";
-import { roleToText, textToRole } from "@/lib/utils";
+import { agNames, roleToText, textToRole } from "@/lib/utils";
 import {
   Box,
   Table,
@@ -174,7 +174,12 @@ export default function MemberEditModal({
         }}
         organization={organization}
       />
-      <Modal isOpen={isOpen} onClose={onClose} isCentered blockScrollOnMount={false}>
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        isCentered
+        blockScrollOnMount={false}
+      >
         <ModalOverlay />
         <ModalContent
           maxW={{ base: "full", lg: "container.xl" }}
@@ -207,15 +212,15 @@ export default function MemberEditModal({
               >
                 Invite User
               </Button>
-                <Button
-                  alignSelf={{ base: "normal", md: "flex-end" }}
-                  onClick={robloxModalOnOpen}
-                  leftIcon={<SiRoblox />}
-                  isDisabled={clientMember?.role < 2}
-                >
-                  Add Roblox User
-                </Button>
-                {/* <Button
+              <Button
+                alignSelf={{ base: "normal", md: "flex-end" }}
+                onClick={robloxModalOnOpen}
+                leftIcon={<SiRoblox />}
+                isDisabled={clientMember?.role < 2}
+              >
+                Add Roblox User
+              </Button>
+              {/* <Button
                   alignSelf={{ base: "normal", md: "flex-end" }}
                   onClick={robloxGroupModalOnOpen}
                   leftIcon={<SiRoblox />}
@@ -435,14 +440,11 @@ export default function MemberEditModal({
                       <Formik
                         enableReinitialize={true}
                         initialValues={{
-                          role: roleToText(focusedMember?.role),
-                          accessGroups:
-                            focusedMember.accessGroups?.map(
-                              (accessGroup: any) => {
-                                return organization?.accessGroups[accessGroup]
-                                  ?.name;
-                              }
-                            ) || [],
+                          role: focusedMember?.role.toString(),
+                          accessGroups: focusedMember.accessGroups.map(
+                            (accessGroup: any) =>
+                              organization.accessGroups[accessGroup]?.name
+                          ),
                           scanData: JSON.stringify(
                             focusedMember?.scanData,
                             null,
@@ -450,6 +452,8 @@ export default function MemberEditModal({
                           ),
                         }}
                         onSubmit={(values, actions) => {
+                          console.log(values.accessGroups);
+                          console.log(agNames(organization, values.accessGroups));
                           user.getIdToken().then((token: string) => {
                             fetch(
                               `/api/v1/organizations/${organization?.id}/members/${focusedMember?.id}`,
@@ -460,14 +464,10 @@ export default function MemberEditModal({
                                   "Content-Type": "application/json",
                                 },
                                 body: JSON.stringify({
-                                  role: textToRole(values?.role),
+                                  role: parseInt(values?.role),
                                   scanData: values?.scanData || "{}",
 
-                                  accessGroups: values?.accessGroups.map(
-                                    (accessGroup: any) => {
-                                      return accessGroup.value
-                                    }
-                                  ),
+                                  accessGroups: agNames(organization, values.accessGroups)
                                 }),
                               }
                             )
@@ -529,17 +529,17 @@ export default function MemberEditModal({
                                               ? [
                                                   {
                                                     label: "Member",
-                                                    value: "Member",
+                                                    value: "1",
                                                   },
                                                   {
                                                     label: "Manager",
-                                                    value: "Manager",
+                                                    value: "2",
                                                   },
                                                 ]
                                               : [
                                                   {
                                                     label: "Owner",
-                                                    value: "Owner",
+                                                    value: "3",
                                                   },
                                                 ]
                                           }
@@ -564,25 +564,23 @@ export default function MemberEditModal({
                                       <MultiSelect
                                         {...field}
                                         label="Access Groups"
-                                        options={
-                                          Object.keys(
-                                            organization?.accessGroups || {}
-                                          ).map((accessGroup: any) => {
-                                            const name =
-                                              organization?.accessGroups[
-                                                accessGroup
-                                              ]?.name || "Option";
+                                        options={Object.keys(
+                                          organization?.accessGroups || {}
+                                        ).map((accessGroup: any) => {
+                                          const name =
+                                            organization?.accessGroups[
+                                              accessGroup
+                                            ]?.name || "Option";
 
-                                            return {
-                                              label: name,
-                                              value: accessGroup,
-                                            };
-                                          })
-                                        }
+                                          return {
+                                            label: name,
+                                            value: name,
+                                          };
+                                        })}
                                         onChange={(value) => {
                                           form.setFieldValue(
                                             "accessGroups",
-                                            value || ([] as string[])
+                                            value
                                           );
                                         }}
                                         value={form.values?.accessGroups}
