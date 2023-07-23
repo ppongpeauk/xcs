@@ -166,7 +166,7 @@ export default function SettingsLinkedAccounts() {
             </>
           ) : (
             <>
-              <Text pb={2}>
+              <Text>
                 You have not linked your Roblox account. Please link one to use
                 EVE XCS.
               </Text>
@@ -225,7 +225,7 @@ export default function SettingsLinkedAccounts() {
             </>
           ) : (
             <>
-              <Text pb={2}>You have not linked your Discord account.</Text>
+              <Text>You have not linked your Discord account.</Text>
               <ButtonGroup mt={4}>
                 <Button
                   colorScheme={"blue"}
