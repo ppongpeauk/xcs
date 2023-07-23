@@ -2830,7 +2830,7 @@ catharsis@^0.9.0:
   dependencies:
     lodash "^4.17.15"
 
-chakra-multiselect@rrodriguesilva/chakra-multiselect:
+chakra-multiselect@rrodriguesilva/chakra-multiselect#56831f99aad954e8504476d2942b6bc94bf24743:
   version "0.4.5"
   resolved "https://codeload.github.com/rrodriguesilva/chakra-multiselect/tar.gz/56831f99aad954e8504476d2942b6bc94bf24743"
 
