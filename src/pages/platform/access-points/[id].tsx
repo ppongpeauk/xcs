@@ -228,7 +228,7 @@ export default function PlatformAccessPoint() {
               description: accessPoint?.description,
               active: accessPoint?.config?.active,
               armed: accessPoint?.config?.armed,
-              unlockTime: accessPoint?.config?.unlockTime || 8,
+              unlockTime: accessPoint?.config?.unlockTime,
               accessGroups: agIds(
                 accessPoint?.organization,
                 accessPoint?.config?.alwaysAllowed?.groups
@@ -436,6 +436,10 @@ export default function PlatformAccessPoint() {
                               placeholder="Unlock Time"
                               variant={"outline"}
                               min={1}
+                              defaultValue={8}
+                              onChange={(value) => {
+                                form.setFieldValue("unlockTime", value);
+                              }}
                             >
                               <NumberInputField />
                               <NumberInputStepper>

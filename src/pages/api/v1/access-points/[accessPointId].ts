@@ -148,6 +148,15 @@ export default async function handler(
       }
     }
 
+    if (body.config?.unlockTime) {
+      try {
+        body.config.unlockTime = parseInt(body.config.unlockTime);
+      }
+      catch {
+        return res.status(400).json({ message: "Invalid unlock time." });
+      }
+    }
+
     const timestamp = new Date();
 
     body.updatedAt = timestamp;
