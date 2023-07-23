@@ -217,15 +217,14 @@ export default function PlatformOrganizations() {
                   key={organization.id}
                   w={{ base: "full", md: "384px" }}
                   h={"max-content"}
-                  py={4}
-                  px={8}
+                  p={6}
                   borderWidth={1}
                   borderRadius={"xl"}
                   borderColor={useColorModeValue("gray.200", "gray.700")}
                 >
-                  <HStack p={2} w={"full"}>
+                  <HStack px={2} w={"full"}>
                     <Box flexGrow={1}>
-                      <Text fontSize={"2xl"} fontWeight={"bold"}>
+                      <Text fontSize={"xl"} fontWeight={"bold"} noOfLines={1}>
                         {organization.name}
                       </Text>
                       <Text color={"gray.500"}>
@@ -260,7 +259,7 @@ export default function PlatformOrganizations() {
                       size={"lg"}
                     />
                   </HStack>
-                  <Stack py={2}>
+                  <Stack pt={4}>
                     <Button
                       as={NextLink}
                       href={`/platform/organizations/${organization.id}`}

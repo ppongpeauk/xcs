@@ -212,8 +212,7 @@ export default function PlatformLocations() {
                       key={location.id}
                       w={{ base: "full", md: "384px" }}
                       h={"auto"}
-                      py={4}
-                      px={8}
+                      p={6}
                       borderWidth={1}
                       borderRadius={"xl"}
                       borderColor={useColorModeValue("gray.200", "gray.700")}
@@ -222,9 +221,9 @@ export default function PlatformLocations() {
                       justify={"space-between"}
                       flexDir={"column"}
                     >
-                      <HStack p={2} w={"full"}>
+                      <HStack px={2} w={"full"}>
                         <Box flexGrow={1}>
-                          <Text fontSize={"2xl"} fontWeight={"bold"}>
+                          <Text fontSize={"xl"} fontWeight={"bold"}>
                             {location.name}
                           </Text>
                           <Text color={"gray.500"}>{location.roblox.place.name}</Text>
@@ -252,7 +251,7 @@ export default function PlatformLocations() {
                           />
                         )}
                       </HStack>
-                      <Stack py={2} w={"full"}>
+                      <Stack pt={4} w={"full"}>
                         <Button
                           as={NextLink}
                           href={`/platform/locations/${location.id}`}
