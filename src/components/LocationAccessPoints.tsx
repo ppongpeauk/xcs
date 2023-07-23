@@ -87,53 +87,86 @@ export default function LocationAccessPoints({
           Create
         </Button>
       </Stack>
-      <Flex as={Stack} direction={"row"} h={"full"} spacing={4} overflow={"auto"} flexWrap={"wrap"}>
-        <Skeleton isLoaded={!!accessPoints} w={"full"}>
-          {accessPoints?.accessPoints?.length > 0 ? (
-            <Flex flexWrap={"wrap"}>
-              {accessPoints?.accessPoints?.map((accessPoint: any) => (
-                <Flex
-                  key={accessPoint.id}
-                  w={{ base: "full", md: "384px" }}
-                  h={"auto"}
-                  p={6}
-                  m={2}
-                  aspectRatio={1.5 / 1}
-                  borderWidth={1}
-                  borderRadius={"lg"}
-                  borderColor={useColorModeValue("gray.200", "gray.700")}
-                  align={"center"}
-                  justify={"space-between"}
-                  flexDir={"column"}
-                >
-                  <Box w={"full"}>
-                    <Text fontSize={"2xl"} fontWeight={"bold"}>
-                      {accessPoint.name}
-                    </Text>
-                    <Code>{accessPoint.id}</Code>{" "}
-                    <Code ml={2}>Updated {moment(accessPoint.updatedAt).fromNow()}</Code>
-                    <HStack
-                      align={"center"}
-                      justify={"flex-start"}
-                      fontSize={"xl"}
-                      py={2}
-                    >
-                      {!accessPoint?.config?.active && (
-                        <AiFillWarning title="Not active" />
-                      )}
-                      {accessPoint?.config?.armed ? (
-                        <BiSolidLock title="Armed" />
-                      ) : (
-                        <BiSolidLockOpen title="Unarmed" />
-                      )}
+      <Flex
+        as={Stack}
+        direction={"row"}
+        h={"full"}
+        spacing={4}
+        overflow={"auto"}
+        flexWrap={"wrap"}
+      >
+        {accessPoints && accessPoints?.accessPoints?.length > 0 ? (
+          <Flex
+            as={Stack}
+            direction={"row"}
+            h={"full"}
+            spacing={4}
+            overflow={"auto"}
+            flexWrap={"wrap"}
+          >
+            {!accessPoints
+              ? Array.from({ length: 6 }).map((_, i) => (
+                  <Box
+                    key={i}
+                    as={Skeleton}
+                    w={{ base: "full", md: "384px" }}
+                    h={"max-content"}
+                    py={4}
+                    px={8}
+                    borderWidth={1}
+                    borderRadius={"xl"}
+                    borderColor={useColorModeValue("gray.200", "gray.700")}
+                  >
+                    <HStack p={2} w={"full"}>
+                      <Box flexGrow={1}>
+                        <Text fontSize={"2xl"} fontWeight={"bold"}>
+                          Loading...
+                        </Text>
+                        <Text color={"gray.500"}>0 Members</Text>
+                        <Text color={"gray.500"}>Owned by</Text>
+                        <Text>Organization</Text>
+                      </Box>
                     </HStack>
-                    <Box>
-                      <Text>
-                        {accessPoint.description || "No description available."}
-                      </Text>
-                    </Box>
                   </Box>
-                  <Stack w={"full"}>
+                ))
+              : null}
+            {accessPoints?.accessPoints?.map((accessPoint: any) => (
+              <Flex
+                key={accessPoint.id}
+                w={{ base: "full", md: "384px" }}
+                h={"max-content"}
+                p={6}
+                borderWidth={1}
+                borderRadius={"xl"}
+                borderColor={useColorModeValue("gray.200", "gray.700")}
+              >
+                <Box flexGrow={1}>
+                  <Text fontSize={"xl"} fontWeight={"bold"} noOfLines={1}>
+                    {accessPoint.name}
+                  </Text>
+                  <Code>{accessPoint.id}</Code>{" "}
+                  <Code ml={2}>
+                    Updated {moment(accessPoint.updatedAt).fromNow()}
+                  </Code>
+                  <HStack
+                    align={"center"}
+                    justify={"flex-start"}
+                    fontSize={"xl"}
+                    py={2}
+                  >
+                    {!accessPoint?.config?.active && (
+                      <AiFillWarning title="Not active" />
+                    )}
+                    {accessPoint?.config?.armed ? (
+                      <BiSolidLock title="Armed" />
+                    ) : (
+                      <BiSolidLockOpen title="Unarmed" />
+                    )}
+                  </HStack>
+                  <Text>
+                    {accessPoint.description || "No description available."}
+                  </Text>
+                  <Stack pt={4}>
                     <Button
                       as={NextLink}
                       href={`/platform/access-points/${accessPoint.id}`}
@@ -143,36 +176,36 @@ export default function LocationAccessPoints({
                       View
                     </Button>
                   </Stack>
-                </Flex>
-              ))}
-            </Flex>
-          ) : (
-            <Text>
-              This location does not have any access points yet.{" "}
-              {accessPoints?.self?.role >= 2 ? (
-                <>
-                  <Text as={"span"}>
-                    <Button
-                      variant={"link"}
-                      color={"unset"}
-                      textDecor={"underline"}
-                      textUnderlineOffset={4}
-                      onClick={onCreateAccessPointModalOpen}
-                      _hover={{
-                        color: useColorModeValue("gray.600", "gray.400"),
-                      }}
-                    >
-                      Create one
-                    </Button>
-                  </Text>{" "}
-                  to get started.
-                </>
-              ) : (
-                <></>
-              )}
-            </Text>
-          )}
-        </Skeleton>
+                </Box>
+              </Flex>
+            ))}
+          </Flex>
+        ) : (
+          <Text>
+            This location does not have any access points yet.{" "}
+            {accessPoints?.self?.role >= 2 ? (
+              <>
+                <Text as={"span"}>
+                  <Button
+                    variant={"link"}
+                    color={"unset"}
+                    textDecor={"underline"}
+                    textUnderlineOffset={4}
+                    onClick={onCreateAccessPointModalOpen}
+                    _hover={{
+                      color: useColorModeValue("gray.600", "gray.400"),
+                    }}
+                  >
+                    Create one
+                  </Button>
+                </Text>{" "}
+                to get started.
+              </>
+            ) : (
+              <></>
+            )}
+          </Text>
+        )}
       </Flex>
     </>
   );

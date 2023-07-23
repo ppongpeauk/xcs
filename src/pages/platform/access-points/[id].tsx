@@ -323,7 +323,7 @@ export default function PlatformAccessPoint() {
                 </Field>
                 <Field name="description">
                   {({ field, form }: any) => (
-                    <FormControl>
+                    <FormControl maxW={"500px"}>
                       <Skeleton isLoaded={accessPoint}>
                         <FormLabel>Description</FormLabel>
                         <InputGroup mb={2}>
@@ -343,7 +343,7 @@ export default function PlatformAccessPoint() {
                 <Heading as={"h2"} fontSize={"xl"} fontWeight={"900"} py={2}>
                   Configuration
                 </Heading>
-                <Stack direction={"row"} spacing={2}>
+                <Stack direction={{ base: "column", md: "row" }} spacing={2}>
                   {/* <Field name="users">
                       {({ field, form }: any) => (
                         <FormControl w={"fit-content"}>
@@ -457,34 +457,38 @@ export default function PlatformAccessPoint() {
                   <Field name="active">
                     {({ field, form }: any) => (
                       <FormControl>
-                        <FormLabel>Active</FormLabel>
-                        <InputGroup>
-                          <Switch
-                            {...field}
-                            colorScheme="blue"
-                            placeholder="Active"
-                            variant={"outline"}
-                            width={"fit-content"}
-                            defaultChecked={accessPoint?.config?.active}
-                          />
-                        </InputGroup>
+                        <Skeleton isLoaded={accessPoint}>
+                          <FormLabel>Active</FormLabel>
+                          <InputGroup>
+                            <Switch
+                              {...field}
+                              colorScheme="blue"
+                              placeholder="Active"
+                              variant={"outline"}
+                              width={"fit-content"}
+                              defaultChecked={accessPoint?.config?.active}
+                            />
+                          </InputGroup>
+                        </Skeleton>
                       </FormControl>
                     )}
                   </Field>
                   <Field name="armed">
                     {({ field, form }: any) => (
                       <FormControl>
-                        <FormLabel>Armed</FormLabel>
-                        <InputGroup>
-                          <Switch
-                            {...field}
-                            colorScheme="red"
-                            placeholder="Armed"
-                            variant={"outline"}
-                            width={"fit-content"}
-                            defaultChecked={accessPoint?.config?.armed}
-                          />
-                        </InputGroup>
+                        <Skeleton isLoaded={accessPoint}>
+                          <FormLabel>Armed</FormLabel>
+                          <InputGroup>
+                            <Switch
+                              {...field}
+                              colorScheme="red"
+                              placeholder="Armed"
+                              variant={"outline"}
+                              width={"fit-content"}
+                              defaultChecked={accessPoint?.config?.armed}
+                            />
+                          </InputGroup>
+                        </Skeleton>
                       </FormControl>
                     )}
                   </Field>
@@ -532,9 +536,9 @@ export default function PlatformAccessPoint() {
                   >
                     Save Changes
                   </Button>
-                  <Button mb={2} leftIcon={<IoTime />}>
+                  {/* <Button mb={2} leftIcon={<IoTime />} isDisabled>
                     Setup Timed Access
-                  </Button>
+                  </Button> */}
                   <Button
                     colorScheme="red"
                     mb={2}
