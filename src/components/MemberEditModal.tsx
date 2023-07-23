@@ -40,7 +40,7 @@ import InviteOrganizationRobloxGroupModal from "@/components/InviteOrganizationR
 import InviteOrganizationRobloxModal from "@/components/InviteOrganizationRobloxModal";
 
 import { useAuthContext } from "@/contexts/AuthContext";
-import { agNames, roleToText, textToRole } from "@/lib/utils";
+import { agIds, agKV, agNames, roleToText, textToRole } from "@/lib/utils";
 import {
   Box,
   Table,
@@ -441,9 +441,9 @@ export default function MemberEditModal({
                         enableReinitialize={true}
                         initialValues={{
                           role: focusedMember?.role.toString(),
-                          accessGroups: focusedMember.accessGroups.map(
-                            (accessGroup: any) =>
-                              organization.accessGroups[accessGroup]?.name
+                          accessGroups: agIds(
+                            organization,
+                            focusedMember?.accessGroups
                           ),
                           scanData: JSON.stringify(
                             focusedMember?.scanData,
@@ -455,7 +455,7 @@ export default function MemberEditModal({
                           console.log(values.accessGroups);
                           console.log(organization?.accessGroups);
                           console.log(agNames(organization, values.accessGroups));
-                          
+
                           user.getIdToken().then((token: string) => {
                             fetch(
                               `/api/v1/organizations/${organization?.id}/members/${focusedMember?.id}`,
@@ -469,7 +469,7 @@ export default function MemberEditModal({
                                   role: parseInt(values?.role),
                                   scanData: values?.scanData || "{}",
 
-                                  accessGroups: agNames(organization, values.accessGroups)
+                                  accessGroups: agNames(organization, values?.accessGroups),
                                 }),
                               }
                             )
@@ -566,19 +566,7 @@ export default function MemberEditModal({
                                       <MultiSelect
                                         {...field}
                                         label="Access Groups"
-                                        options={Object.keys(
-                                          organization?.accessGroups || {}
-                                        ).map((accessGroup: any) => {
-                                          const name =
-                                            organization?.accessGroups[
-                                              accessGroup
-                                            ]?.name || "Option";
-
-                                          return {
-                                            label: name,
-                                            value: name,
-                                          };
-                                        })}
+                                        options={agKV(organization)}
                                         onChange={(value) => {
                                           form.setFieldValue(
                                             "accessGroups",
