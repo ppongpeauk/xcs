@@ -226,7 +226,7 @@ export default function PlatformLocations() {
                           <Text fontSize={"xl"} fontWeight={"bold"}>
                             {location?.name}
                           </Text>
-                          <Text color={"gray.500"}>{location?.roblox.place.name}</Text>
+                          <Text color={"gray.500"}>{location?.roblox?.place?.name}</Text>
                           {location?.description ? (
                             <Text>{location?.description}</Text>
                           ) : (
@@ -235,14 +235,14 @@ export default function PlatformLocations() {
                             </Text>
                           )}
                         </Box>
-                        {location.roblox?.place && (
+                        {location?.roblox?.place && (
                           <Avatar
                             as={NextLink}
-                            href={`https://www.roblox.com/games/${location?.roblox.place.rootPlaceId}/${location?.roblox.place.name}`}
+                            href={`https://www.roblox.com/games/${location?.roblox?.place?.rootPlaceId}/${location?.roblox?.place?.name}`}
                             target={"_blank"}
                             alignSelf={"flex-start"}
-                            name={location?.roblox.place.name}
-                            src={location?.roblox.place.thumbnail}
+                            name={location?.roblox?.place?.name}
+                            src={location?.roblox?.place?.thumbnail}
                             aspectRatio={1 / 1}
                             borderRadius={"md"}
                             overflow={"hidden"}
