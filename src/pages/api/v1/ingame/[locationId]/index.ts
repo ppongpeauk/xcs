@@ -10,8 +10,7 @@ export default async function handler(
     return res.status(405).json({ message: "Method not allowed." });
   }
 
-  const { locationId } = req.query;
-  const { apiKey="fbcd7418355042c7b6101b7b2eaf1dd6" } = req.body;
+  const { locationId, apiKey } = req.query as { locationId: string, apiKey: string };
 
   const mongoClient = await clientPromise;
 

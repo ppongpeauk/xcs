@@ -117,12 +117,13 @@ export default async function handler(
       config: {
         active: true,
         armed: true,
+        unlockTime: 8,
 
         schedules: [],
         temporaryAccess: [],
 
         alwaysAllowed: {
-          accessGroups: [],
+          groups: [],
           users: [],
         },
 

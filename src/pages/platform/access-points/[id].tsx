@@ -13,6 +13,11 @@ import {
   InputGroup,
   InputLeftElement,
   Link,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
   Skeleton,
   SkeletonText,
   Stack,
@@ -204,107 +209,104 @@ export default function PlatformAccessPoint() {
             </BreadcrumbLink>
           </BreadcrumbItem>
         </Breadcrumb>
-        <Text as={"h1"} fontSize={"4xl"} fontWeight={"900"}>
-          {accessPoint?.name}
-        </Text>
-        <Text fontSize={"lg"} color={"gray.500"}>
-          {accessPoint?.organization.name} – {accessPoint?.location.name}
-        </Text>
+        <Skeleton isLoaded={accessPoint}>
+          <Text as={"h1"} fontSize={"4xl"} fontWeight={"900"}>
+            {accessPoint?.name || "Loading..."}
+          </Text>
+        </Skeleton>
+        <Skeleton isLoaded={accessPoint}>
+          <Text fontSize={"lg"} color={"gray.500"}>
+            {accessPoint?.organization.name} – {accessPoint?.location.name}
+          </Text>
+        </Skeleton>
         <Divider my={4} />
         <Box minW={["100%", "fit-content"]}>
-          <Skeleton isLoaded={accessPoint}>
-            <Formik
-              initialValues={{
-                name: accessPoint?.name,
-                description: accessPoint?.description,
-                active: accessPoint?.config?.active,
-                armed: accessPoint?.config?.armed,
-                accessGroups: agIds(accessPoint?.organization, accessPoint?.config?.alwaysAllowed?.groups),
-                alwaysAllowedUsers: JSON.stringify(
-                  accessPoint?.config?.alwaysAllowed?.users
-                ),
-              }}
-              onSubmit={(values, actions) => {
-                try {
-                  JSON.parse(values.alwaysAllowedUsers);
-                } catch (err) {
-                  toast({
-                    title: "Error",
-                    description: "Invalid JSON.",
-                    status: "error",
-                    duration: 5000,
-                    isClosable: true,
-                  });
-                  actions.setSubmitting(false);
-                  return;
-                }
-                user.getIdToken().then((token: any) => {
-                  fetch(`/api/v1/access-points/${query.id}`, {
-                    method: "PUT",
-                    headers: {
-                      Authorization: `Bearer ${token}`,
-                      "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                      name: values.name,
-                      description: values.description || "",
+          <Formik
+            enableReinitialize={true}
+            initialValues={{
+              name: accessPoint?.name,
+              description: accessPoint?.description,
+              active: accessPoint?.config?.active,
+              armed: accessPoint?.config?.armed,
+              unlockTime: accessPoint?.config?.unlockTime || 8,
+              accessGroups: agIds(
+                accessPoint?.organization,
+                accessPoint?.config?.alwaysAllowed?.groups
+              ),
+              alwaysAllowedUsers: JSON.stringify(
+                accessPoint?.config?.alwaysAllowed?.users
+              ),
+            }}
+            onSubmit={(values, actions) => {
+              user.getIdToken().then((token: any) => {
+                fetch(`/api/v1/access-points/${query.id}`, {
+                  method: "PUT",
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    name: values.name,
+                    description: values.description || "",
 
-                      config: {
-                        active: values.active,
-                        armed: values.armed,
+                    config: {
+                      active: values.active,
+                      armed: values.armed,
+                      unlockTime: values.unlockTime,
 
-                        alwaysAllowed: {
-                          users: JSON.parse(values.alwaysAllowedUsers),
-                          groups: agNames(
-                            accessPoint?.organization,
-                            values.accessGroups
-                          ),
-                        },
+                      alwaysAllowed: {
+                        // users: JSON.parse(values.alwaysAllowedUsers),
+                        groups: agNames(
+                          accessPoint?.organization,
+                          values.accessGroups
+                        ),
                       },
-                    }),
+                    },
+                  }),
+                })
+                  .then((res: any) => {
+                    if (res.status === 200) {
+                      return res.json();
+                    } else {
+                      return res.json().then((json: any) => {
+                        throw new Error(json.message);
+                      });
+                    }
                   })
-                    .then((res: any) => {
-                      if (res.status === 200) {
-                        return res.json();
-                      } else {
-                        return res.json().then((json: any) => {
-                          throw new Error(json.message);
-                        });
-                      }
-                    })
-                    .then((data) => {
-                      toast({
-                        title: data.message,
-                        status: "success",
-                        duration: 5000,
-                        isClosable: true,
-                      });
-                      actions.setSubmitting(false);
-                      refreshData();
-                    })
-                    .catch((error) => {
-                      toast({
-                        title: "There was an error updating the access point.",
-                        description: error.message,
-                        status: "error",
-                        duration: 5000,
-                        isClosable: true,
-                      });
-                    })
-                    .finally(() => {
-                      actions.setSubmitting(false);
+                  .then((data) => {
+                    toast({
+                      title: data.message,
+                      status: "success",
+                      duration: 5000,
+                      isClosable: true,
                     });
-                });
-              }}
-            >
-              {(props) => (
-                <Form>
-                  <Heading as={"h2"} fontSize={"xl"} fontWeight={"900"} py={2}>
-                    General
-                  </Heading>
-                  <Field name="name" w={"min-content"}>
-                    {({ field, form }: any) => (
-                      <FormControl>
+                    actions.setSubmitting(false);
+                    refreshData();
+                  })
+                  .catch((error) => {
+                    toast({
+                      title: "There was an error updating the access point.",
+                      description: error.message,
+                      status: "error",
+                      duration: 5000,
+                      isClosable: true,
+                    });
+                  })
+                  .finally(() => {
+                    actions.setSubmitting(false);
+                  });
+              });
+            }}
+          >
+            {(props) => (
+              <Form>
+                <Heading as={"h2"} fontSize={"xl"} fontWeight={"900"} py={2}>
+                  General
+                </Heading>
+                <Field name="name" w={"min-content"}>
+                  {({ field, form }: any) => (
+                    <FormControl w={"fit-content"}>
+                      <Skeleton isLoaded={accessPoint}>
                         <FormLabel>Name</FormLabel>
                         <InputGroup mb={2}>
                           <Input
@@ -315,12 +317,14 @@ export default function PlatformAccessPoint() {
                             variant={"outline"}
                           />
                         </InputGroup>
-                      </FormControl>
-                    )}
-                  </Field>
-                  <Field name="description">
-                    {({ field, form }: any) => (
-                      <FormControl>
+                      </Skeleton>
+                    </FormControl>
+                  )}
+                </Field>
+                <Field name="description">
+                  {({ field, form }: any) => (
+                    <FormControl>
+                      <Skeleton isLoaded={accessPoint}>
                         <FormLabel>Description</FormLabel>
                         <InputGroup mb={2}>
                           <Textarea
@@ -332,32 +336,15 @@ export default function PlatformAccessPoint() {
                             maxH={"240px"}
                           />
                         </InputGroup>
-                      </FormControl>
-                    )}
-                  </Field>
-                  <Heading as={"h2"} fontSize={"xl"} fontWeight={"900"} py={2}>
-                    Configuration
-                  </Heading>
-                  <Stack direction={"row"} spacing={2}>
-                    {/* <Field name="timedAccess">
-                      {({ field, form }: any) => (
-                        <FormControl>
-                          <FormLabel>timedAccess</FormLabel>
-                          <InputGroup mb={2}>
-                            <Textarea
-                              {...field}
-                              type="text"
-                              autoComplete="off"
-                              spellCheck={false}
-                              placeholder={"timedAccess JSON"}
-                              variant={"outline"}
-                              maxH={"240px"}
-                            />
-                          </InputGroup>
-                        </FormControl>
-                      )}
-                    </Field> */}
-                    {/* <Field name="users">
+                      </Skeleton>
+                    </FormControl>
+                  )}
+                </Field>
+                <Heading as={"h2"} fontSize={"xl"} fontWeight={"900"} py={2}>
+                  Configuration
+                </Heading>
+                <Stack direction={"row"} spacing={2}>
+                  {/* <Field name="users">
                       {({ field, form }: any) => (
                         <FormControl w={"fit-content"}>
                           <MultiSelect
@@ -386,9 +373,10 @@ export default function PlatformAccessPoint() {
                         </FormControl>
                       )}
                     </Field> */}
-                    <Field name="accessGroups">
-                      {({ field, form }: any) => (
-                        <FormControl w={"fit-content"}>
+                  <Field name="accessGroups">
+                    {({ field, form }: any) => (
+                      <FormControl w={"fit-content"}>
+                        <Skeleton isLoaded={accessPoint}>
                           <MultiSelect
                             {...field}
                             label="Access Groups"
@@ -405,10 +393,11 @@ export default function PlatformAccessPoint() {
                             autoComplete={"off"}
                             autoCorrect={"off"}
                           />
-                        </FormControl>
-                      )}
-                    </Field>
-                    {/* <Field name="alwaysAllowedUsers">
+                        </Skeleton>
+                      </FormControl>
+                    )}
+                  </Field>
+                  {/* <Field name="alwaysAllowedUsers">
                       {({ field, form }: any) => (
                         <FormControl>
                           <FormLabel>alwaysAllowedUsers</FormLabel>
@@ -435,102 +424,125 @@ export default function PlatformAccessPoint() {
                         </FormControl>
                       )}
                     </Field> */}
-                  </Stack>
-                  <Stack direction={"row"} spacing={2} py={2} w={"fit-content"}>
-                    <Field name="active">
-                      {({ field, form }: any) => (
-                        <FormControl>
-                          <FormLabel>Active</FormLabel>
-                          <InputGroup>
-                            <Switch
+                  <Field name="unlockTime">
+                    {({ field, form }: any) => (
+                      <FormControl w={"fit-content"}>
+                        <Skeleton isLoaded={accessPoint}>
+                          <FormLabel>Unlock Time</FormLabel>
+                          <InputGroup mb={2}>
+                            <NumberInput
                               {...field}
-                              colorScheme="blue"
-                              placeholder="Active"
+                              autoComplete="off"
+                              placeholder="Unlock Time"
                               variant={"outline"}
-                              width={"fit-content"}
-                              defaultChecked={accessPoint?.config?.active}
-                            />
+                              min={1}
+                            >
+                              <NumberInputField />
+                              <NumberInputStepper>
+                                <NumberIncrementStepper />
+                                <NumberDecrementStepper />
+                              </NumberInputStepper>
+                            </NumberInput>
                           </InputGroup>
-                        </FormControl>
-                      )}
-                    </Field>
-                    <Field name="armed">
-                      {({ field, form }: any) => (
-                        <FormControl>
-                          <FormLabel>Armed</FormLabel>
-                          <InputGroup>
-                            <Switch
-                              {...field}
-                              colorScheme="red"
-                              placeholder="Armed"
-                              variant={"outline"}
-                              width={"fit-content"}
-                              defaultChecked={accessPoint?.config?.armed}
-                            />
-                          </InputGroup>
-                        </FormControl>
-                      )}
-                    </Field>
-                  </Stack>
-                  <Box my={2}>
-                    <Text fontSize={"sm"}>
-                      Active - Card scans will be processed.
-                    </Text>
-                    <Text fontSize={"sm"}>
-                      Armed - Turning this off will no longer require a card to
-                      grant access.
-                    </Text>
-                  </Box>
-                  <Stack
-                    direction={{ base: "column", md: "row" }}
-                    spacing={2}
-                    pt={2}
+                        </Skeleton>
+                      </FormControl>
+                    )}
+                  </Field>
+                </Stack>
+                <Stack direction={"row"} spacing={2} py={2} w={"fit-content"}>
+                  <Field name="active">
+                    {({ field, form }: any) => (
+                      <FormControl>
+                        <FormLabel>Active</FormLabel>
+                        <InputGroup>
+                          <Switch
+                            {...field}
+                            colorScheme="blue"
+                            placeholder="Active"
+                            variant={"outline"}
+                            width={"fit-content"}
+                            defaultChecked={accessPoint?.config?.active}
+                          />
+                        </InputGroup>
+                      </FormControl>
+                    )}
+                  </Field>
+                  <Field name="armed">
+                    {({ field, form }: any) => (
+                      <FormControl>
+                        <FormLabel>Armed</FormLabel>
+                        <InputGroup>
+                          <Switch
+                            {...field}
+                            colorScheme="red"
+                            placeholder="Armed"
+                            variant={"outline"}
+                            width={"fit-content"}
+                            defaultChecked={accessPoint?.config?.armed}
+                          />
+                        </InputGroup>
+                      </FormControl>
+                    )}
+                  </Field>
+                </Stack>
+                <Box my={2}>
+                  <Text fontSize={"sm"}>
+                    Active - Card scans will be processed.
+                  </Text>
+                  <Text fontSize={"sm"}>
+                    Armed - Turning this off will no longer require a card to
+                    grant access.
+                  </Text>
+                </Box>
+                <Stack
+                  direction={{ base: "column", md: "row" }}
+                  spacing={2}
+                  pt={2}
+                >
+                  <Button
+                    mb={2}
+                    leftIcon={<IoClipboard />}
+                    onClick={async () => {
+                      clipboardOnCopy();
+                      toast({
+                        title: "Copied access point ID to clipboard.",
+                        status: "success",
+                        duration: 5000,
+                        isClosable: true,
+                      });
+                    }}
                   >
-                    <Button
-                      mb={2}
-                      leftIcon={<IoClipboard />}
-                      onClick={async () => {
-                        clipboardOnCopy();
-                        toast({
-                          title: "Copied access point ID to clipboard.",
-                          status: "success",
-                          duration: 5000,
-                          isClosable: true,
-                        });
-                      }}
-                    >
-                      {clipboardHasCopied ? "Copied!" : "Copy ID"}
-                    </Button>
-                  </Stack>
-                  <Stack
-                    direction={{ base: "column", md: "row" }}
-                    spacing={2}
-                    py={2}
+                    {clipboardHasCopied ? "Copied!" : "Copy ID"}
+                  </Button>
+                </Stack>
+                <Stack
+                  direction={{ base: "column", md: "row" }}
+                  spacing={2}
+                  py={2}
+                >
+                  <Button
+                    mb={2}
+                    leftIcon={<IoSave />}
+                    isLoading={props.isSubmitting}
+                    type={"submit"}
                   >
-                    <Button
-                      mb={2}
-                      leftIcon={<IoSave />}
-                      isLoading={props.isSubmitting}
-                      type={"submit"}
-                    >
-                      Save Changes
-                    </Button>
-                    <Button mb={2} leftIcon={<IoTime />}>
-                      Setup Timed Access
-                    </Button>
-                    <Button
-                      colorScheme="red"
-                      mb={2}
-                      onClick={onDeleteDialogOpen}
-                      leftIcon={<IoIosRemoveCircle />}
-                    >
-                      Delete
-                    </Button>
-                  </Stack>
-                </Form>
-              )}
-            </Formik>
-          </Skeleton>
+                    Save Changes
+                  </Button>
+                  <Button mb={2} leftIcon={<IoTime />}>
+                    Setup Timed Access
+                  </Button>
+                  <Button
+                    colorScheme="red"
+                    mb={2}
+                    onClick={onDeleteDialogOpen}
+                    leftIcon={<IoIosRemoveCircle />}
+                  >
+                    Delete
+                  </Button>
+                </Stack>
+              </Form>
+            )}
+          </Formik>
         </Box>
       </Box>
     </>

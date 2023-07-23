@@ -4,7 +4,7 @@ import { tokenToID } from "@/pages/api/firebase";
 import mergician from "mergician";
 import { NextApiRequest, NextApiResponse } from "next";
 
-const mergicianOptions = { appendArrays: true, dedupArrays: true }
+const mergicianOptions = { appendArrays: true, dedupArrays: true };
 
 export default async function handler(
   req: NextApiRequest,
@@ -17,8 +17,8 @@ export default async function handler(
   const {
     locationId,
     accessPointId,
-    apiKey = "fbcd7418355042c7b6101b7b2eaf1dd6",
-    userId = 32757211,
+    apiKey,
+    userId,
   } = req.query;
 
   const mongoClient = await clientPromise;
@@ -145,15 +145,20 @@ export default async function handler(
     // group scan data
     if (memberGroups) {
       for (const group of memberGroups) {
-        scanData = mergician(mergicianOptions)(
-          scanData,
-          organization.accessGroups[group].scanData
-        );
+        if (organization.accessGroups[group].config.active) {
+          scanData = mergician(mergicianOptions)(
+            scanData,
+            organization.accessGroups[group].scanData
+          );
+        }
       }
     }
 
     // user scan data, user scan data overrides group scan data
-    scanData = mergician(mergicianOptions)(scanData, organization.members[memberId].scanData);
+    scanData = mergician(mergicianOptions)(
+      scanData,
+      organization.members[memberId].scanData
+    );
 
     return res.status(200).json({
       success: true,
