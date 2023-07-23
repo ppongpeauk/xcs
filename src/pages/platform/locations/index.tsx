@@ -224,11 +224,11 @@ export default function PlatformLocations() {
                       <HStack px={2} w={"full"}>
                         <Box flexGrow={1}>
                           <Text fontSize={"xl"} fontWeight={"bold"}>
-                            {location.name}
+                            {location?.name}
                           </Text>
-                          <Text color={"gray.500"}>{location.roblox.place.name}</Text>
-                          {location.description ? (
-                            <Text>{location.description}</Text>
+                          <Text color={"gray.500"}>{location?.roblox.place.name}</Text>
+                          {location?.description ? (
+                            <Text>{location?.description}</Text>
                           ) : (
                             <Text color={"gray.500"}>
                               No description available.
@@ -238,11 +238,11 @@ export default function PlatformLocations() {
                         {location.roblox?.place && (
                           <Avatar
                             as={NextLink}
-                            href={`https://www.roblox.com/games/${location.roblox.place.rootPlaceId}/${location.roblox.place.name}`}
+                            href={`https://www.roblox.com/games/${location?.roblox.place.rootPlaceId}/${location?.roblox.place.name}`}
                             target={"_blank"}
                             alignSelf={"flex-start"}
-                            name={location.roblox.place.name}
-                            src={location.roblox.place.thumbnail}
+                            name={location?.roblox.place.name}
+                            src={location?.roblox.place.thumbnail}
                             aspectRatio={1 / 1}
                             borderRadius={"md"}
                             overflow={"hidden"}
@@ -254,7 +254,7 @@ export default function PlatformLocations() {
                       <Stack pt={4} w={"full"}>
                         <Button
                           as={NextLink}
-                          href={`/platform/locations/${location.id}`}
+                          href={`/platform/locations/${location?.id}`}
                           variant={"solid"}
                           w={"full"}
                         >
