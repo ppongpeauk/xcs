@@ -45,6 +45,12 @@ export default async function handler(
 
   // get access points
   const accessPoints = await dbAccessPoints.find({ locationId }, { projection: { _id: 0 }}).toArray();
+
+  // convert to object
+  const accessPointsObject = {} as any;
+  accessPoints.forEach((accessPoint) => {
+    accessPointsObject[accessPoint.id] = accessPoint;
+  });
   
-  return res.status(200).json({ success: true, accessPoints: accessPoints });
+  return res.status(200).json({ success: true, accessPoints: accessPointsObject });
 }
