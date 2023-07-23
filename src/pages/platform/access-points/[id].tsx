@@ -43,6 +43,8 @@ import { useToast } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
 import { IoIosRemoveCircle } from "react-icons/io";
 import { IoBusiness, IoClipboard, IoSave, IoTime } from "react-icons/io5";
+
+import { MultiSelect } from "chakra-multiselect";
 export default function PlatformAccessPoint() {
   const { query, push } = useRouter();
   const { user } = useAuthContext();
@@ -208,7 +210,7 @@ export default function PlatformAccessPoint() {
           {accessPoint?.organization.name} – {accessPoint?.location.name}
         </Text>
         <Divider my={4} />
-        <Box py={4} minW={["100%", "fit-content"]}>
+        <Box minW={["100%", "fit-content"]}>
           <Skeleton isLoaded={accessPoint}>
             <Formik
               initialValues={{
@@ -216,6 +218,13 @@ export default function PlatformAccessPoint() {
                 description: accessPoint?.description,
                 active: accessPoint?.config?.active,
                 armed: accessPoint?.config?.armed,
+                accessGroups:
+                  accessPoint?.config?.alwaysAllowed?.groups.map(
+                    (group: any) => {
+                      return accessPoint?.organization?.accessGroups[group]
+                        ?.name;
+                    }
+                  ) || [],
                 alwaysAllowedUsers: JSON.stringify(
                   accessPoint?.config?.alwaysAllowed?.users
                 ),
@@ -251,7 +260,17 @@ export default function PlatformAccessPoint() {
 
                         alwaysAllowed: {
                           users: JSON.parse(values.alwaysAllowedUsers),
-                        }
+                          groups: values.accessGroups.map((group: any) => {
+                            return Object.keys(
+                              accessPoint?.organization?.accessGroups || {}
+                            ).find(
+                              (key: any) =>
+                                accessPoint?.organization?.accessGroups[
+                                  key
+                                ]?.name === group
+                            );
+                          }),
+                        },
                       },
                     }),
                   })
@@ -291,6 +310,9 @@ export default function PlatformAccessPoint() {
             >
               {(props) => (
                 <Form>
+                  <Heading as={"h2"} fontSize={"xl"} fontWeight={"900"} py={2}>
+                    General
+                  </Heading>
                   <Field name="name" w={"min-content"}>
                     {({ field, form }: any) => (
                       <FormControl>
@@ -324,6 +346,9 @@ export default function PlatformAccessPoint() {
                       </FormControl>
                     )}
                   </Field>
+                  <Heading as={"h2"} fontSize={"xl"} fontWeight={"900"} py={2}>
+                    Configuration
+                  </Heading>
                   <Stack direction={"row"} spacing={2}>
                     {/* <Field name="timedAccess">
                       {({ field, form }: any) => (
@@ -343,6 +368,42 @@ export default function PlatformAccessPoint() {
                         </FormControl>
                       )}
                     </Field> */}
+                    <Field name="accessGroups">
+                      {({ field, form }: any) => (
+                        <FormControl w={"fit-content"}>
+                            <MultiSelect
+                              {...field}
+                              label="Access Groups"
+                              options={
+                                Object.keys(
+                                  accessPoint?.organization?.accessGroups || {}
+                                ).map((accessGroup: any) => {
+                                  const accessGroupData =
+                                    accessPoint?.organization?.accessGroups[
+                                      accessGroup
+                                    ];
+
+                                  return {
+                                    label: accessGroupData.name,
+                                    value: accessGroupData.id,
+                                  };
+                                })
+                              }
+                              onChange={(value) => {
+                                form.setFieldValue(
+                                  "accessGroups",
+                                  value || ([] as string[])
+                                );
+                              }}
+                              value={form.values?.accessGroups}
+                              placeholder="Select an access group..."
+                              single={false}
+                              autoComplete={"off"}
+                              autoCorrect={"off"}
+                            />
+                        </FormControl>
+                      )}
+                    </Field>
                     <Field name="alwaysAllowedUsers">
                       {({ field, form }: any) => (
                         <FormControl>

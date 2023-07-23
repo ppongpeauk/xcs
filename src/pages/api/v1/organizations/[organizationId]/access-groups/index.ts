@@ -92,6 +92,10 @@ export default async function handler(
       config: {
         active: true,
         openToEveryone: false,
+        alwaysAllowed: {
+          users: [],
+          groups: [],
+        }
       },
       createdAt: timestamp,
       updatedAt: timestamp,

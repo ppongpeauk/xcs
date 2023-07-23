@@ -84,7 +84,11 @@ export default async function handler(
     try {
       scanData = JSON.parse(scanData);
     } catch (err) {
-      return res.status(400).json({ message: "Unable to parse scan data. Check your JSON and try again." });
+      return res
+        .status(400)
+        .json({
+          message: "Unable to parse scan data. Check your JSON and try again.",
+        });
     }
 
     organizations.updateOne(
@@ -98,7 +102,7 @@ export default async function handler(
             scanData,
             config,
             lastUpdated: timestamp,
-          }
+          },
         },
       }
     );
@@ -129,24 +133,23 @@ export default async function handler(
     );
 
     // remove access group from all access points and members
-    await accessPoints.updateMany(
-      { organizationId: organizationId },
-      {
-        $unset: {
-          [`config.alwaysAllowed.accessGroups.${accessGroupId}`]: ""
-        },
-      }
-    );
+    await accessPoints.updateMany({}, {$pull: {"config.alwaysAllowed.groups": accessGroupId} as any});
 
     // remove access group from all members in the organization, where the member.accessGroups array contains accessGroupId
     const members = Object.values(organization.members);
     for (let i = 0; i < members.length; i++) {
       const member = members[i] as any;
-      const memberId = member.id || Object.keys(organization.members).find((key) => organization.members[key] === member);
+      const memberId =
+        member.id ||
+        Object.keys(organization.members).find(
+          (key) => organization.members[key] === member
+        );
       const memberAccessGroups = member.accessGroups;
 
       if (memberAccessGroups.includes(accessGroupId)) {
-        console.log(`Removing access group ${accessGroupId} from member ${memberId}`);
+        console.log(
+          `Removing access group ${accessGroupId} from member ${memberId}`
+        );
         await organizations.updateOne(
           { id: organizationId },
           {

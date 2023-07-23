@@ -450,7 +450,6 @@ export default function MemberEditModal({
                           ),
                         }}
                         onSubmit={(values, actions) => {
-                          // alert(JSON.stringify(values, null, 2));
                           user.getIdToken().then((token: string) => {
                             fetch(
                               `/api/v1/organizations/${organization?.id}/members/${focusedMember?.id}`,
@@ -464,17 +463,9 @@ export default function MemberEditModal({
                                   role: textToRole(values?.role),
                                   scanData: values?.scanData || "{}",
 
-                                  // get access group ids from names
                                   accessGroups: values?.accessGroups.map(
                                     (accessGroup: any) => {
-                                      return Object.keys(
-                                        organization?.accessGroups || {}
-                                      ).find(
-                                        (accessGroupId: any) =>
-                                          organization?.accessGroups[
-                                            accessGroupId
-                                          ].name === accessGroup
-                                      );
+                                      return accessGroup.value
                                     }
                                   ),
                                 }),
@@ -584,14 +575,9 @@ export default function MemberEditModal({
 
                                             return {
                                               label: name,
-                                              value: name,
+                                              value: accessGroup,
                                             };
-                                          }) || [
-                                            {
-                                              label: "Option",
-                                              value: "Option",
-                                            },
-                                          ]
+                                          })
                                         }
                                         onChange={(value) => {
                                           form.setFieldValue(

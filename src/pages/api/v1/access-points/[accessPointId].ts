@@ -41,6 +41,7 @@ export default async function handler(
       id: 1,
       name: 1,
       members: 1,
+      accessGroups: 1,
     } }
   );
 
