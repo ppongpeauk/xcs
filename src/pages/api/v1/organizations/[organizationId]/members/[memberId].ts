@@ -83,10 +83,25 @@ export default async function handler(
       });
     }
 
+    if (
+      role !== organization.members[memberId].role &&
+      organization.members[uid].role <= organization.members[memberId].role
+    ) {
+      return res.status(403).json({
+        message:
+          "You cannot edit a user's role when they're an equal or higher role than you.",
+        success: false,
+      });
+    }
+
     try {
       scanData = JSON.parse(scanData);
     } catch (err) {
-      return res.status(400).json({ message: "Unable to parse scan data. Check your JSON and try again." });
+      return res
+        .status(400)
+        .json({
+          message: "Unable to parse scan data. Check your JSON and try again.",
+        });
     }
 
     // remove all access groups that don't exist
@@ -119,7 +134,8 @@ export default async function handler(
         organization.members[memberId].role >= organization.members[uid].role
       ) {
         return res.status(403).json({
-          message: "You cannot remove a user with an equal or higher role than you.",
+          message:
+            "You cannot remove a user with an equal or higher role than you.",
           success: false,
         });
       }
@@ -139,7 +155,6 @@ export default async function handler(
         success: true,
       });
     } else {
-
       let robloxUser = await fetch(
         `${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/roblox/users/v1/users/${memberId}`,
         {
@@ -148,10 +163,10 @@ export default async function handler(
             "Content-Type": "application/json",
           },
         }
-      ).then((res) => res.json())
-      
+      ).then((res) => res.json());
+
       const robloxUsername = robloxUser.name;
-      
+
       // Kick From Organization
       await organizations.updateOne(
         { id: organizationId },

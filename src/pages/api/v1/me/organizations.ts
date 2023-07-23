@@ -28,7 +28,7 @@ export default async function handler(
     let ownerId = Object.keys(organization.members).find(
       (member) => organization.members[member].role === 3
     );
-    let owner = await db.collection("users").findOne({ id: uid }, { projection: { id: 1, displayName: 1, username: 1, avatar: 1 } });
+    let owner = await db.collection("users").findOne({ id: ownerId }, { projection: { id: 1, displayName: 1, username: 1, avatar: 1 } });
     return { ...organization, owner };
   }))
 
