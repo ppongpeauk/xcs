@@ -96,8 +96,8 @@ export default async function handler(
   const allowedUsers = accessPoint.config.alwaysAllowed.users;
 
   // get all access groups that are open to everyone
-  const openAccessGroups = Object.entries(organization.accessGroups).filter(
-    ([_, group]: any) => group.config.openToEveryone
+  const openAccessGroups = Object.keys(organization.accessGroups).filter(
+    (groupId) => organization.accessGroups[groupId].config.openToEveryone
   );
 
   // get all organization members that belong to allowed groups
@@ -113,9 +113,9 @@ export default async function handler(
         allowedOrganizationMembers[memberId] = member.accessGroups;
 
         // add open access groups to the user's allowed groups
-        mergician(mergicianOptions)(
+        allowedOrganizationMembers[memberId] = mergician(mergicianOptions)(
           allowedOrganizationMembers[memberId],
-          openAccessGroups.map(([_, group]: any) => group.id)
+          openAccessGroups
         );
       }
     }
@@ -126,7 +126,7 @@ export default async function handler(
   for (const memberId of Object.keys(allowedOrganizationMembers)) {
     const member = organization.members[memberId];
     if (member.type === "roblox") {
-      allowedRobloxIds[member.id] = "roblox";
+      allowedRobloxIds[member.id] = memberId;
     } else {
       const user = await dbUsers.findOne({ id: memberId }).then((user) => user);
       if (user && user.roblox?.verified) {
@@ -144,7 +144,7 @@ export default async function handler(
 
     // group scan data
     if (memberGroups) {
-      for (const group of memberGroups) {
+      for (const group of Object.values(memberGroups) as any) {
         if (organization.accessGroups[group].config.active) {
           scanData = mergician(mergicianOptions)(
             scanData,
@@ -157,7 +157,7 @@ export default async function handler(
     // user scan data, user scan data overrides group scan data
     scanData = mergician(mergicianOptions)(
       scanData,
-      organization.members[memberId].scanData
+      organization.members[memberId].scanData || {}
     );
 
     return res.status(200).json({
