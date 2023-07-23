@@ -453,6 +453,7 @@ export default function MemberEditModal({
                         }}
                         onSubmit={(values, actions) => {
                           console.log(values.accessGroups);
+                          console.log(organization?.accessGroups);
                           console.log(agNames(organization, values.accessGroups));
                           user.getIdToken().then((token: string) => {
                             fetch(
