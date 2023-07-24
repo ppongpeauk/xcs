@@ -97,7 +97,7 @@ export default async function handler(
 
   // get all access groups that are open to everyone
   const openAccessGroups = Object.keys(organization.accessGroups).filter(
-    (groupId) => organization.accessGroups[groupId].config.openToEveryone
+    (groupId) => organization.accessGroups[groupId]?.config?.openToEveryone
   );
 
   // get all organization members that belong to allowed groups
@@ -145,7 +145,7 @@ export default async function handler(
     // group scan data
     if (memberGroups) {
       for (const group of Object.values(memberGroups) as any) {
-        if (organization.accessGroups[group].config.active) {
+        if (organization.accessGroups[group]?.config?.active) {
           scanData = mergician(mergicianOptions)(
             scanData,
             organization.accessGroups[group].scanData || {}
