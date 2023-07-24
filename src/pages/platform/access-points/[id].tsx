@@ -1,8 +1,14 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import Layout from "@/layouts/PlatformLayout";
 import {
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
   Box,
   Button,
+  Code,
   Container,
   Divider,
   FormControl,
@@ -219,6 +225,7 @@ export default function PlatformAccessPoint() {
             {accessPoint?.organization.name} – {accessPoint?.location.name}
           </Text>
         </Skeleton>
+        <Code fontSize={"sm"} mt={2}>{accessPoint?.id}</Code>
         <Divider my={4} />
         <Box minW={["100%", "fit-content"]}>
           <Formik
@@ -343,165 +350,144 @@ export default function PlatformAccessPoint() {
                 <Heading as={"h2"} fontSize={"xl"} fontWeight={"900"} py={2}>
                   Configuration
                 </Heading>
-                <Stack direction={{ base: "column", md: "row" }} spacing={2}>
-                  {/* <Field name="users">
-                      {({ field, form }: any) => (
-                        <FormControl w={"fit-content"}>
-                          <MultiSelect
-                            {...field}
-                            label="Users"
-                            options={
-                              Object.entries(accessPoint?.organization?.members || {}).map(
-                                ([key, value]: any) => ({
-                                  value: value.displayName || "",
-                                  label: value.displayName || "",
-                                })
-                              ) || ([] as any)
-                            }
-                            onChange={(value) => {
-                              form.setFieldValue(
-                                "users",
-                                value || ([] as string[])
-                              );
-                            }}
-                            value={form.values?.users}
-                            placeholder="Select a user.."
-                            single={false}
-                            autoComplete={"off"}
-                            autoCorrect={"off"}
-                          />
-                        </FormControl>
-                      )}
-                    </Field> */}
-                  <Field name="accessGroups">
-                    {({ field, form }: any) => (
-                      <FormControl w={"fit-content"}>
-                        <Skeleton isLoaded={accessPoint}>
-                          <MultiSelect
-                            {...field}
-                            label="Access Groups"
-                            options={agKV(accessPoint?.organization)}
-                            onChange={(value) => {
-                              form.setFieldValue(
-                                "accessGroups",
-                                value || ([] as string[])
-                              );
-                            }}
-                            value={form.values?.accessGroups}
-                            placeholder="Select an access group..."
-                            single={false}
-                            autoComplete={"off"}
-                            autoCorrect={"off"}
-                          />
-                        </Skeleton>
-                      </FormControl>
-                    )}
-                  </Field>
-                  {/* <Field name="alwaysAllowedUsers">
-                      {({ field, form }: any) => (
-                        <FormControl>
-                          <FormLabel>alwaysAllowedUsers</FormLabel>
-                          <InputGroup mb={2}>
-                            <Textarea
-                              {...field}
-                              type="text"
-                              autoComplete="off"
-                              spellCheck={false}
-                              variant={"outline"}
-                              placeholder={JSON.stringify(
-                                {
-                                  1168193517: {
-                                    scanData: {
-                                      allowedFloors: [-1],
-                                    },
-                                  },
-                                },
-                                null,
-                                0
-                              )}
-                            />
-                          </InputGroup>
-                        </FormControl>
-                      )}
-                    </Field> */}
-                  <Field name="unlockTime">
-                    {({ field, form }: any) => (
-                      <FormControl w={"fit-content"}>
-                        <Skeleton isLoaded={accessPoint}>
-                          <FormLabel>Unlock Time</FormLabel>
-                          <InputGroup mb={2}>
-                            <NumberInput
-                              {...field}
-                              autoComplete="off"
-                              placeholder="Unlock Time"
-                              variant={"outline"}
-                              min={1}
-                              defaultValue={8}
-                              onChange={(value) => {
-                                form.setFieldValue("unlockTime", value);
-                              }}
-                            >
-                              <NumberInputField />
-                              <NumberInputStepper>
-                                <NumberIncrementStepper />
-                                <NumberDecrementStepper />
-                              </NumberInputStepper>
-                            </NumberInput>
-                          </InputGroup>
-                        </Skeleton>
-                      </FormControl>
-                    )}
-                  </Field>
-                </Stack>
-                <Stack direction={"row"} spacing={2} py={2} w={"fit-content"}>
-                  <Field name="active">
-                    {({ field, form }: any) => (
-                      <FormControl>
-                        <Skeleton isLoaded={accessPoint}>
-                          <FormLabel>Active</FormLabel>
-                          <InputGroup>
-                            <Switch
-                              {...field}
-                              colorScheme="blue"
-                              placeholder="Active"
-                              variant={"outline"}
-                              width={"fit-content"}
-                              defaultChecked={accessPoint?.config?.active}
-                            />
-                          </InputGroup>
-                        </Skeleton>
-                      </FormControl>
-                    )}
-                  </Field>
-                  <Field name="armed">
-                    {({ field, form }: any) => (
-                      <FormControl>
-                        <Skeleton isLoaded={accessPoint}>
-                          <FormLabel>Armed</FormLabel>
-                          <InputGroup>
-                            <Switch
-                              {...field}
-                              colorScheme="red"
-                              placeholder="Armed"
-                              variant={"outline"}
-                              width={"fit-content"}
-                              defaultChecked={accessPoint?.config?.armed}
-                            />
-                          </InputGroup>
-                        </Skeleton>
-                      </FormControl>
-                    )}
-                  </Field>
-                </Stack>
-                <Box my={2}>
-                  <Text fontSize={"sm"}>
-                    Active - Card scans will be processed.
-                  </Text>
-                  <Text fontSize={"sm"}>
-                    Armed - Turning this off will no longer require a card to
-                    grant access.
-                  </Text>
-                </Box>
+                <Accordion defaultIndex={[0]} allowMultiple py={2}>
+                  <AccordionItem>
+                    <h2>
+                      <AccordionButton>
+                        <Box as="span" flex="1" textAlign="left">
+                          Main Settings
+                        </Box>
+                        <AccordionIcon />
+                      </AccordionButton>
+                    </h2>
+                    <AccordionPanel pb={4}>
+                      <Stack
+                        direction={"row"}
+                        spacing={2}
+                        py={2}
+                        w={"fit-content"}
+                      >
+                        <Field name="active">
+                          {({ field, form }: any) => (
+                            <FormControl>
+                              <Skeleton isLoaded={accessPoint}>
+                                <FormLabel>Active</FormLabel>
+                                <InputGroup>
+                                  <Switch
+                                    {...field}
+                                    colorScheme="blue"
+                                    placeholder="Active"
+                                    variant={"outline"}
+                                    width={"fit-content"}
+                                    defaultChecked={accessPoint?.config?.active}
+                                  />
+                                </InputGroup>
+                              </Skeleton>
+                            </FormControl>
+                          )}
+                        </Field>
+                        <Field name="armed">
+                          {({ field, form }: any) => (
+                            <FormControl>
+                              <Skeleton isLoaded={accessPoint}>
+                                <FormLabel>Armed</FormLabel>
+                                <InputGroup>
+                                  <Switch
+                                    {...field}
+                                    colorScheme="red"
+                                    placeholder="Armed"
+                                    variant={"outline"}
+                                    width={"fit-content"}
+                                    defaultChecked={accessPoint?.config?.armed}
+                                  />
+                                </InputGroup>
+                              </Skeleton>
+                            </FormControl>
+                          )}
+                        </Field>
+                      </Stack>
+                      <Box my={2}>
+                        <Text fontSize={"sm"}>
+                          Active - Card scans will be processed.
+                        </Text>
+                        <Text fontSize={"sm"}>
+                          Armed - Turning this off will no longer require a card
+                          to grant access.
+                        </Text>
+                      </Box>
+                      <Field name="unlockTime">
+                        {({ field, form }: any) => (
+                          <FormControl w={"fit-content"}>
+                            <Skeleton isLoaded={accessPoint}>
+                              <FormLabel>Unlock Time</FormLabel>
+                              <InputGroup mb={2}>
+                                <NumberInput
+                                  {...field}
+                                  autoComplete="off"
+                                  placeholder="Unlock Time"
+                                  variant={"outline"}
+                                  min={1}
+                                  defaultValue={8}
+                                  onChange={(value) => {
+                                    form.setFieldValue("unlockTime", value);
+                                  }}
+                                >
+                                  <NumberInputField />
+                                  <NumberInputStepper>
+                                    <NumberIncrementStepper />
+                                    <NumberDecrementStepper />
+                                  </NumberInputStepper>
+                                </NumberInput>
+                              </InputGroup>
+                            </Skeleton>
+                          </FormControl>
+                        )}
+                      </Field>
+                    </AccordionPanel>
+                  </AccordionItem>
+                  <AccordionItem>
+                    <h2>
+                      <AccordionButton>
+                        <Box as="span" flex="1" textAlign="left">
+                          Permissions
+                        </Box>
+                        <AccordionIcon />
+                      </AccordionButton>
+                    </h2>
+                    <AccordionPanel pb={4} overflow={"visible"} h={"256px"}>
+                      <Stack
+                        direction={{ base: "column", md: "row" }}
+                        spacing={2}
+                      >
+                        <Field name="accessGroups">
+                          {({ field, form }: any) => (
+                            <FormControl w={"fit-content"}>
+                              <Skeleton isLoaded={accessPoint}>
+                                <MultiSelect
+                                  {...field}
+                                  zIndex={500}
+                                  label="Access Groups"
+                                  options={agKV(accessPoint?.organization)}
+                                  onChange={(value) => {
+                                    form.setFieldValue(
+                                      "accessGroups",
+                                      value || ([] as string[])
+                                    );
+                                  }}
+                                  value={form.values?.accessGroups}
+                                  placeholder="Select an access group..."
+                                  single={false}
+                                  autoComplete={"off"}
+                                  autoCorrect={"off"}
+                                />
+                              </Skeleton>
+                            </FormControl>
+                          )}
+                        </Field>
+                      </Stack>
+                    </AccordionPanel>
+                  </AccordionItem>
+                </Accordion>
                 <Stack
                   direction={{ base: "column", md: "row" }}
                   spacing={2}
