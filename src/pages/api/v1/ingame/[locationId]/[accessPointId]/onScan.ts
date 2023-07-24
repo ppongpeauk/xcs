@@ -4,7 +4,7 @@ import { tokenToID } from "@/pages/api/firebase";
 import mergician from "mergician";
 import { NextApiRequest, NextApiResponse } from "next";
 
-const mergicianOptions = { appendArrays: true };
+const mergicianOptions = { appendArrays: true, dedupArrays: true };
 
 export default async function handler(
   req: NextApiRequest,
