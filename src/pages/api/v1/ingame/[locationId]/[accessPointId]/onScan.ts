@@ -4,7 +4,7 @@ import { tokenToID } from "@/pages/api/firebase";
 import mergician from "mergician";
 import { NextApiRequest, NextApiResponse } from "next";
 
-const mergicianOptions = { appendArrays: true, dedupArrays: true };
+const mergicianOptions = { appendArrays: true, prependArrays: true };
 
 export default async function handler(
   req: NextApiRequest,
@@ -14,7 +14,7 @@ export default async function handler(
     return res.status(405).json({ message: "Method not allowed." });
   }
 
-  const {
+  let {
     locationId,
     accessPointId,
     apiKey,
@@ -115,7 +115,7 @@ export default async function handler(
         // add open access groups to the user's allowed groups
         allowedOrganizationMembers[memberId] = mergician(mergicianOptions)(
           allowedOrganizationMembers[memberId],
-          openAccessGroups
+          {openAccessGroups},
         );
       }
     }
@@ -135,7 +135,7 @@ export default async function handler(
     }
   }
 
-  const isAllowed = Object.keys(allowedRobloxIds).includes(userId as string);
+  const isAllowed = Object.keys(allowedRobloxIds).includes(userId?.toString() as string);
 
   if (isAllowed) {
     let scanData = {} as any;
