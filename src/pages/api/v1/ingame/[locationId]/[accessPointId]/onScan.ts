@@ -148,7 +148,7 @@ export default async function handler(
         if (organization.accessGroups[group].config.active) {
           scanData = mergician(mergicianOptions)(
             scanData,
-            organization.accessGroups[group].scanData
+            organization.accessGroups[group].scanData || {}
           );
         }
       }
