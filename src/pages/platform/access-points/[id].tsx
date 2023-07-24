@@ -175,7 +175,7 @@ export default function PlatformAccessPoint() {
         onClose={onDeleteDialogClose}
         onDelete={onDelete}
       />
-      <Box maxW={"container.md"} p={8}>
+      <Box maxW={"container.sm"} p={8}>
         <Breadcrumb
           display={{ base: "none", md: "flex" }}
           spacing="8px"
@@ -514,7 +514,7 @@ export default function PlatformAccessPoint() {
                 <Stack
                   direction={{ base: "column", md: "row" }}
                   spacing={2}
-                  pt={2}
+                  py={2}
                 >
                   <Button
                     mb={2}
@@ -531,12 +531,6 @@ export default function PlatformAccessPoint() {
                   >
                     {clipboardHasCopied ? "Copied!" : "Copy ID"}
                   </Button>
-                </Stack>
-                <Stack
-                  direction={{ base: "column", md: "row" }}
-                  spacing={2}
-                  py={2}
-                >
                   <Button
                     mb={2}
                     leftIcon={<IoSave />}
