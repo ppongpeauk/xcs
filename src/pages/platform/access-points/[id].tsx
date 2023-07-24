@@ -454,10 +454,12 @@ export default function PlatformAccessPoint() {
                         <AccordionIcon />
                       </AccordionButton>
                     </h2>
-                    <AccordionPanel pb={4} overflow={"visible"} h={"256px"}>
+                    <AccordionPanel pb={4} overflow={"scroll"} h={"256px"}>
                       <Stack
                         direction={{ base: "column", md: "row" }}
                         spacing={2}
+                        overflow={"scroll"}
+                        h={"full"}
                       >
                         <Field name="accessGroups">
                           {({ field, form }: any) => (
