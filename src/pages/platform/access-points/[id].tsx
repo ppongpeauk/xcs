@@ -489,6 +489,27 @@ export default function PlatformAccessPoint() {
                       </Stack>
                     </AccordionPanel>
                   </AccordionItem>
+                  <AccordionItem>
+                    <h2>
+                      <AccordionButton>
+                        <Box as="span" flex="1" textAlign="left">
+                          Webhooks
+                        </Box>
+                        <AccordionIcon />
+                      </AccordionButton>
+                    </h2>
+                    <AccordionPanel>
+                      <Stack
+                        direction={{ base: "column", md: "row" }}
+                        spacing={2}
+                        w={"fit-content"}
+                      >
+                        <Text fontSize={"sm"} fontWeight={"500"}>
+                          Coming soon. This feature is not yet available.
+                        </Text>
+                      </Stack>
+                    </AccordionPanel>
+                  </AccordionItem>
                 </Accordion>
                 <Stack
                   direction={{ base: "column", md: "row" }}
