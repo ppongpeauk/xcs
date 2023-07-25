@@ -138,7 +138,7 @@ export default async function handler(
   );
 
   // update global statistics
-  dbStatistics.updateOne(
+  await dbStatistics.updateOne(
     { id: "global" },
     {
       $inc: {
