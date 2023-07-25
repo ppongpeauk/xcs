@@ -76,9 +76,6 @@ export default function PlatformHome() {
 
   useEffect(() => {
     if (!user) return;
-    setRandomSubGreeting(
-      randomSubGreetings[Math.floor(Math.random() * randomSubGreetings.length)]
-    );
     user.getIdToken().then((token: string) => {
       fetch("/api/v1/statistics/total-scans", {
         headers: {
@@ -91,6 +88,12 @@ export default function PlatformHome() {
         });
     });
   }, [user]);
+
+  useEffect(() => {
+    setRandomSubGreeting(
+      randomSubGreetings[Math.floor(Math.random() * randomSubGreetings.length)]
+    );
+  }, []);
 
   return (
     <>
