@@ -4,6 +4,7 @@ import {
   Container,
   Divider,
   MenuList,
+  Skeleton,
   useColorModeValue,
 } from "@chakra-ui/react";
 import Head from "next/head";
@@ -174,52 +175,58 @@ export default function PlatformLocation() {
         <meta property="og:type" content="website" />
         <meta property="og:image" content="/images/logo-square.jpeg" />
       </Head>
-      <Container maxW={"full"} px={{ base: 4, md: 8 }} py={8}>
-        <Breadcrumb
-          display={{ base: "none", md: "flex" }}
-          spacing="8px"
-          mb={4}
-          separator={<ChevronRightIcon color="gray.500" />}
-        >
-          <BreadcrumbItem>
-            <BreadcrumbLink
-              as={NextLink}
-              href="/platform/home"
-              textUnderlineOffset={4}
-            >
-              Platform
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbItem>
-            <BreadcrumbLink
-              as={NextLink}
-              href={`/platform/organizations/${location?.organization.id}`}
-              textUnderlineOffset={4}
-            >
-              {location?.organization.name}
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbItem>
-            <BreadcrumbLink
-              as={NextLink}
-              href={`/platform/locations?organization=${location?.organization.id}`}
-              textUnderlineOffset={4}
-            >
-              Locations
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbItem isCurrentPage>
-            <BreadcrumbLink href="#" textUnderlineOffset={4}>
-              {location?.name}
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-        </Breadcrumb>
-        <Text as={"h1"} fontSize={"4xl"} fontWeight={"900"}>
-          {location?.name}
-        </Text>
-        <Text fontSize={"lg"} color={"gray.500"}>
-          {location?.organization.name}
-        </Text>
+      <Box maxW={"full"} px={{ base: 4, md: 8 }} py={8}>
+        <Skeleton isLoaded={!!location}>
+          <Breadcrumb
+            display={{ base: "none", md: "flex" }}
+            spacing="8px"
+            mb={4}
+            separator={<ChevronRightIcon color="gray.500" />}
+          >
+            <BreadcrumbItem>
+              <BreadcrumbLink
+                as={NextLink}
+                href="/platform/home"
+                textUnderlineOffset={4}
+              >
+                Platform
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbItem>
+              <BreadcrumbLink
+                as={NextLink}
+                href={`/platform/organizations/${location?.organization.id}`}
+                textUnderlineOffset={4}
+              >
+                {location?.organization.name || "Organization Name"}
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbItem>
+              <BreadcrumbLink
+                as={NextLink}
+                href={`/platform/locations?organization=${location?.organization.id}`}
+                textUnderlineOffset={4}
+              >
+                Locations
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbItem isCurrentPage>
+              <BreadcrumbLink href="#" textUnderlineOffset={4}>
+                {location?.name || "Location Name"}
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+          </Breadcrumb>
+        </Skeleton>
+        <Skeleton isLoaded={!!location}>
+          <Text as={"h1"} fontSize={"4xl"} fontWeight={"900"} lineHeight={0.9} mb={2}>
+            {location?.name || "Location Name"}
+          </Text>
+        </Skeleton>
+        <Skeleton isLoaded={!!location}>
+          <Text fontSize={"lg"} color={"gray.500"}>
+            {location?.organization.name || "Organization Name"}
+          </Text>
+        </Skeleton>
         <Box display={{ base: "block", md: "none" }} pt={4}>
           <Menu>
             <MenuButton
@@ -319,7 +326,7 @@ export default function PlatformLocation() {
             </TabPanel>
           </TabPanels>
         </Tabs>
-      </Container>
+      </Box>
     </>
   );
 }

@@ -133,9 +133,13 @@ export default function PlatformAccessPoint() {
             case 404:
               throw new Error("Access point not found.");
             case 403:
-              throw new Error("You do not have permission to view this access point.");
+              throw new Error(
+                "You do not have permission to view this access point."
+              );
             case 401:
-              throw new Error("You do not have permission to view this access point.");
+              throw new Error(
+                "You do not have permission to view this access point."
+              );
             case 500:
               throw new Error("An internal server error occurred.");
             default:
@@ -185,47 +189,49 @@ export default function PlatformAccessPoint() {
         onDelete={onDelete}
       />
       <Box maxW={"container.sm"} p={8}>
-        <Breadcrumb
-          display={{ base: "none", md: "flex" }}
-          spacing="8px"
-          mb={4}
-          separator={<ChevronRightIcon color="gray.500" />}
-        >
-          <BreadcrumbItem>
-            <BreadcrumbLink
-              as={NextLink}
-              href="/platform/home"
-              textUnderlineOffset={4}
-            >
-              Platform
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbItem>
-            <BreadcrumbLink
-              as={NextLink}
-              href={`/platform/locations/?organization=${accessPoint?.organizationId}`}
-              textUnderlineOffset={4}
-            >
-              Locations
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbItem>
-            <BreadcrumbLink
-              as={NextLink}
-              href={`/platform/locations/${accessPoint?.location?.id}/access-points`}
-              textUnderlineOffset={4}
-            >
-              {accessPoint?.location?.name}
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbItem isCurrentPage>
-            <BreadcrumbLink href="#" textUnderlineOffset={4}>
-              {accessPoint?.name}
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-        </Breadcrumb>
         <Skeleton isLoaded={accessPoint}>
-          <Text as={"h1"} fontSize={"4xl"} fontWeight={"900"}>
+          <Breadcrumb
+            display={{ base: "none", md: "flex" }}
+            spacing="8px"
+            mb={4}
+            separator={<ChevronRightIcon color="gray.500" />}
+          >
+            <BreadcrumbItem>
+              <BreadcrumbLink
+                as={NextLink}
+                href="/platform/home"
+                textUnderlineOffset={4}
+              >
+                Platform
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbItem>
+              <BreadcrumbLink
+                as={NextLink}
+                href={`/platform/locations/?organization=${accessPoint?.organizationId}`}
+                textUnderlineOffset={4}
+              >
+                Locations
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbItem>
+              <BreadcrumbLink
+                as={NextLink}
+                href={`/platform/locations/${accessPoint?.location?.id}/access-points`}
+                textUnderlineOffset={4}
+              >
+                {accessPoint?.location?.name}
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbItem isCurrentPage>
+              <BreadcrumbLink href="#" textUnderlineOffset={4}>
+                {accessPoint?.name}
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+          </Breadcrumb>
+        </Skeleton>
+        <Skeleton isLoaded={accessPoint}>
+          <Text as={"h1"} fontSize={"4xl"} fontWeight={"900"} lineHeight={0.9} mb={2}>
             {accessPoint?.name || "Loading..."}
           </Text>
         </Skeleton>
