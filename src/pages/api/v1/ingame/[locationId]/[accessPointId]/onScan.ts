@@ -137,46 +137,8 @@ export default async function handler(
     userId?.toString() as string
   );
 
-  if (isAllowed) {
-    let scanData = {} as any;
-    const memberId = allowedRobloxIds[userId as string];
-    const memberGroups = allowedOrganizationMembers[memberId as string];
-
-    // group scan data
-    if (memberGroups) {
-      for (const group of Object.values(memberGroups) as any) {
-        if (organization.accessGroups[group]?.config?.active) {
-          scanData = mergician(mergicianOptions)(
-            scanData,
-            organization.accessGroups[group].scanData || {}
-          );
-        }
-      }
-    }
-
-    // user scan data, user scan data overrides group scan data
-    scanData = mergician(mergicianOptions)(
-      scanData,
-      organization.members[memberId].scanData || {}
-    );
-
-    res.status(200).json({
-      success: true,
-      grant_type: "user_scan",
-      response_code: "access_granted",
-      scan_data: scanData || {},
-    });
-  } else {
-    res.status(200).json({
-      success: true,
-      grant_type: "user_scan",
-      response_code: "access_denied",
-      scan_data: accessPoint.config?.scanData?.denied || {},
-    });
-  }
-
   // update global statistics
-  await dbStatistics.updateOne(
+  dbStatistics.updateOne(
     { id: "global" },
     {
       $inc: {
@@ -219,7 +181,7 @@ export default async function handler(
         }
 
         const avatarUrl = `${process.env.NEXT_PUBLIC_ROOT_URL}/images/logo-square.jpeg`;
-        const webhookRes = await fetch(webhook.url, {
+        const webhookRes = fetch(webhook.url, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -277,5 +239,43 @@ export default async function handler(
     }
   } catch (error) {
     console.error(error);
+  }
+
+  if (isAllowed) {
+    let scanData = {} as any;
+    const memberId = allowedRobloxIds[userId as string];
+    const memberGroups = allowedOrganizationMembers[memberId as string];
+
+    // group scan data
+    if (memberGroups) {
+      for (const group of Object.values(memberGroups) as any) {
+        if (organization.accessGroups[group]?.config?.active) {
+          scanData = mergician(mergicianOptions)(
+            scanData,
+            organization.accessGroups[group].scanData || {}
+          );
+        }
+      }
+    }
+
+    // user scan data, user scan data overrides group scan data
+    scanData = mergician(mergicianOptions)(
+      scanData,
+      organization.members[memberId].scanData || {}
+    );
+
+    res.status(200).json({
+      success: true,
+      grant_type: "user_scan",
+      response_code: "access_granted",
+      scan_data: scanData || {},
+    });
+  } else {
+    res.status(200).json({
+      success: true,
+      grant_type: "user_scan",
+      response_code: "access_denied",
+      scan_data: accessPoint.config?.scanData?.denied || {},
+    });
   }
 }
