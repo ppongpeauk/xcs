@@ -127,6 +127,13 @@ export default async function handler(
           users: [],
         },
 
+        webhook: {
+          enabled: true,
+          url: "",
+          eventDenied: false,
+          eventGranted: false,
+        },
+
         colors: {
           idle: "#ff0000",
           scanning: "#00ff00",
