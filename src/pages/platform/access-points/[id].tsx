@@ -128,10 +128,18 @@ export default function PlatformAccessPoint() {
       })
         .then((res) => {
           if (res.status === 200) return res.json();
-          if (res.status === 404) {
-            return push("/404");
-          } else if (res.status === 403) {
-            return push("/403");
+          push("/platform/organizations");
+          switch (res.status) {
+            case 404:
+              throw new Error("Access point not found.");
+            case 403:
+              throw new Error("You do not have permission to view this access point.");
+            case 401:
+              throw new Error("You do not have permission to view this access point.");
+            case 500:
+              throw new Error("An internal server error occurred.");
+            default:
+              throw new Error("An unknown error occurred.");
           }
         })
         .then((data) => {
