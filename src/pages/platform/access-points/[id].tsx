@@ -154,7 +154,7 @@ export default function PlatformAccessPoint() {
         })
         .catch((err) => {
           toast({
-            title: "Error",
+            title: "There was an error fetching the access point.",
             description: err.message,
             status: "error",
             duration: 5000,
