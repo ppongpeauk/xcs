@@ -141,7 +141,7 @@ export default function PlatformHome() {
                   label={"Successful Scans"}
                   value={`${stats.granted} scan${
                     stats.granted > 1 ? "s" : ""
-                  } (${(stats.granted / stats.total) * 100}%)`}
+                  } (${Math.round((stats.granted / stats.total) * 100)}%)`}
                   helper={"Scans that were successful."}
                 />
               </Skeleton>
@@ -149,7 +149,7 @@ export default function PlatformHome() {
                 <StatBox
                   label={"Failed Scans"}
                   value={`${stats.denied} scan${stats.denied > 1 ? "s" : ""} (${
-                    (stats.denied / stats.total) * 100
+                    Math.round((stats.denied / stats.total) * 100)
                   }%)`}
                   helper={"Scans that were denied."}
                 />
