@@ -182,7 +182,7 @@ export default async function handler(
         }
 
         const avatarUrl = `${process.env.NEXT_PUBLIC_ROOT_URL}/images/logo-square.jpeg`;
-        const webhookRes = fetch(webhook.url, {
+        const webhookRes = await fetch(webhook.url, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
