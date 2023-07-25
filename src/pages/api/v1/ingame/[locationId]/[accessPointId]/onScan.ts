@@ -251,7 +251,7 @@ export default async function handler(
                   },
                   {
                     name: "Access Point",
-                    value: `${accessPoint?.name} (${location?.name})}`,
+                    value: `${accessPoint?.name} (${location?.name})`,
                   },
                   {
                     name: "Organization",
