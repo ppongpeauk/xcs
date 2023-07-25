@@ -236,7 +236,7 @@ export default async function handler(
                       {
                         timeZone: "America/New_York",
                       }
-                    )).format("MMMM Do YYYY h:mm a EST"),
+                    )).format("LLL"),
                   },
                 ],
                 footer: {
