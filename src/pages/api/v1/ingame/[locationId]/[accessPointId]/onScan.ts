@@ -1,6 +1,8 @@
 import clientPromise from "@/lib/mongodb";
 import { tokenToID } from "@/pages/api/firebase";
 // @ts-ignore
+import { getRobloxUsers } from "@/lib/utils";
+// @ts-ignore
 import mergician from "mergician";
 import { NextApiRequest, NextApiResponse } from "next";
 
@@ -14,12 +16,7 @@ export default async function handler(
     return res.status(405).json({ message: "Method not allowed." });
   }
 
-  let {
-    locationId,
-    accessPointId,
-    apiKey,
-    userId,
-  } = req.query;
+  let { locationId, accessPointId, apiKey, userId } = req.query;
 
   const mongoClient = await clientPromise;
 
@@ -115,7 +112,7 @@ export default async function handler(
         // add open access groups to the user's allowed groups
         allowedOrganizationMembers[memberId] = mergician(mergicianOptions)(
           allowedOrganizationMembers[memberId],
-          {openAccessGroups},
+          { openAccessGroups }
         );
       }
     }
@@ -135,7 +132,9 @@ export default async function handler(
     }
   }
 
-  const isAllowed = Object.keys(allowedRobloxIds).includes(userId?.toString() as string);
+  const isAllowed = Object.keys(allowedRobloxIds).includes(
+    userId?.toString() as string
+  );
 
   if (isAllowed) {
     let scanData = {} as any;
@@ -160,18 +159,110 @@ export default async function handler(
       organization.members[memberId].scanData || {}
     );
 
-    return res.status(200).json({
+    res.status(200).json({
       success: true,
       grant_type: "user_scan",
       response_code: "access_granted",
       scan_data: scanData || {},
     });
   } else {
-    return res.status(200).json({
+    res.status(200).json({
       success: true,
       grant_type: "user_scan",
       response_code: "access_denied",
       scan_data: accessPoint.config?.scanData?.denied || {},
     });
+  }
+
+  try {
+    if (accessPoint?.config?.webhook?.url) {
+      if (
+        !(isAllowed && !accessPoint?.config?.webhook?.eventGranted) &&
+        !(!isAllowed && !accessPoint?.config?.webhook?.eventDenied)
+      ) {
+        const webhook = accessPoint?.config?.webhook;
+        let member = organization.members[
+          allowedRobloxIds[userId as string]
+        ] || {
+          type: "roblox",
+          id: userId,
+        };
+        if (member?.type === "roblox") {
+          const robloxUsers = await getRobloxUsers([member.id]);
+          member.displayName = robloxUsers[member.id].displayName;
+          member.username = robloxUsers[member.id].name;
+        } else {
+          const user = await dbUsers.findOne(
+            {
+              id: allowedRobloxIds[userId as string],
+            },
+            {
+              projection: { displayName: 1, username: 1, roblox: 1, avatar: 1 },
+            }
+          );
+          member.displayName = user?.displayName;
+          member.roblox = user?.roblox;
+          member.avatar = user?.avatar;
+        }
+
+        const avatarUrl = `${process.env.NEXT_PUBLIC_ROOT_URL}/images/logo-square.jpeg`;
+        const webhookRes = fetch(webhook.url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            username: "XCS",
+            avatar_url: avatarUrl,
+            embeds: [
+              {
+                title: "Access Scan Event",
+                description: `A user has scanned ${accessPoint?.name}.`,
+                color: isAllowed ? 0x16db65 : 0xdb1616,
+                thumbnail: {
+                  url: member?.avatar || avatarUrl,
+                },
+                author: {
+                  name: "RESTRAFES XCS",
+                  url: "https://xcs.restrafes.co",
+                  icon_url: avatarUrl,
+                },
+                fields: [
+                  {
+                    name:
+                      (member?.type !== "roblox" ? "XCS" : "Roblox") + " User",
+                    value:
+                      member?.type === "roblox"
+                        ? `${member.displayName} (${userId})`
+                        : `${member.displayName} (@${member.roblox.username}) (${userId})`,
+                  },
+                  {
+                    name: "Access Point",
+                    value: `${accessPoint?.name} (${location?.name})}`,
+                  },
+                  {
+                    name: "Organization",
+                    value: organization?.name,
+                  },
+                  {
+                    name: "Scan Result",
+                    value: isAllowed ? "Access Granted" : "Access Denied",
+                  },
+                  {
+                    name: "Scan Time",
+                    value: new Date().toLocaleString(),
+                  },
+                ],
+                footer: {
+                  text: `If you wish to disable these messages, reconfigure the webhook from the access point's configuration page.`,
+                },
+              },
+            ],
+          }),
+        });
+      }
+    }
+  } catch (error) {
+    console.error(error);
   }
 }

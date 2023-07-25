@@ -163,10 +163,17 @@ export default function LocationAccessPoints({
                       <Badge colorScheme={"red"}>Not Armed</Badge>
                     )}
                   </HStack>
-                  
-                  <Text pt={2}>
-                    {accessPoint.description || "No description available."}
-                  </Text>
+                  {
+                    accessPoint.description ? (
+                      <Text pt={2}>
+                        {accessPoint.description}
+                      </Text>
+                    ) : (
+                      <Text pt={2} color={"gray.500"}>
+                        No description available.
+                      </Text>
+                    )
+                  }
                   <Stack pt={4}>
                     <Button
                       as={NextLink}

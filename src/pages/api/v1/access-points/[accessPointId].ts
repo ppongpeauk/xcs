@@ -70,17 +70,15 @@ export default async function handler(
       id: accessPoint.locationId,
     });
 
-    const regularMembers = Object.keys(
-      organization.members
-    ).filter((member) => {
-      if (organization?.members[member].type !== "roblox") {
-        return member;
+    const regularMembers = Object.keys(organization.members).filter(
+      (member) => {
+        if (organization?.members[member].type !== "roblox") {
+          return member;
+        }
       }
-    });
-    
-    const robloxMembers = Object.keys(
-      organization.members
-    ).filter((member) => {
+    );
+
+    const robloxMembers = Object.keys(organization.members).filter((member) => {
       if (organization?.members[member].type === "roblox") {
         return member;
       }
@@ -126,7 +124,7 @@ export default async function handler(
     // Character limits
     if (body.name !== undefined) {
       body.name = body.name.trim();
-      if (member.role <= 1 && body.name !== accessPoint.name) {
+      if (member.role < 2 && body.name !== accessPoint.name) {
         return res.status(401).json({ message: "Unauthorized." });
       }
       if (body.name.length > 32 || body.name.length < 1) {
@@ -151,10 +149,78 @@ export default async function handler(
     if (body.config?.unlockTime) {
       try {
         body.config.unlockTime = parseInt(body.config.unlockTime);
-      }
-      catch {
+      } catch {
         return res.status(400).json({ message: "Invalid unlock time." });
       }
+    }
+
+    if (body.config?.unlockTime === 0) {
+      body.config.unlockTime = 8;
+    }
+
+    if (body.config?.unlockTime < 0) {
+      return res.status(400).json({ message: "Invalid unlock time." });
+    }
+
+    const urlPattern =
+      /(?:https?):\/\/(\w+:?\w*)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%!\-\/]))?/;
+    if (body.config?.webhook?.url) {
+      if (!urlPattern.test(body.config.webhook.url)) {
+        return res.status(400).json({ message: "Invalid webhook URL." });
+      }
+    }
+
+    // send webhook a test request if it's a new webhook url
+    if (body.config?.webhook?.url && !accessPoint.config?.webhook?.url) {
+      const location = await locations.findOne({
+        id: accessPoint.locationId,
+      }, { projection: { name: 1 }});
+
+      const avatarUrl = `${process.env.NEXT_PUBLIC_ROOT_URL}/images/logo-square.jpeg`;
+      const webhook = body.config.webhook;
+      const webhookRes = await fetch(webhook.url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: "XCS",
+          avatar_url: avatarUrl,
+          embeds: [
+            {
+              title: "Access Point Webhook Configured",
+              description: "If you're seeing this, your webhook has been fully set up! 🎉",
+              color: 0xffffff,
+              thumbnail: {
+                url: avatarUrl,
+              },
+              author: {
+                name: "RESTRAFES XCS",
+                url: "https://xcs.restrafes.co",
+                icon_url: avatarUrl,
+              },
+              fields: [
+                {
+                  name: "Access Point",
+                  value: accessPoint?.name,
+                },
+                {
+                  name: "Location",
+                  value: location?.name,
+                },
+                {
+                  name: "Organization",
+                  value: organization?.name,
+                }
+              ],
+            },
+          ],
+        }),
+      }).then((data) => {
+        if (!data.ok || data.status !== 204) {
+          return res.status(400).json({ message: "Unable to verify webhook. Ensure your URL is correct and try again." });
+        }
+      })
     }
 
     const timestamp = new Date();
@@ -186,6 +252,7 @@ export default async function handler(
         },
       }
     );
+
     return res
       .status(200)
       .json({ message: "Successfully updated access point!", success: true });

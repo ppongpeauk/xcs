@@ -26,6 +26,7 @@ import {
   NumberInputStepper,
   Skeleton,
   SkeletonText,
+  Spacer,
   Stack,
   Switch,
   Text,
@@ -162,7 +163,7 @@ export default function PlatformAccessPoint() {
     <>
       <Head>
         <title>EVE XCS – {accessPoint?.name}</title>
-        <meta property="og:title" content="EVE XCS - Manage Access Point" />
+        <meta property="og:title" content="EVE XCS – Manage Access Point" />
         <meta property="og:site_name" content="EVE XCS" />
         <meta property="og:url" content="https://xcs.restrafes.co" />
         <meta property="og:type" content="website" />
@@ -225,7 +226,6 @@ export default function PlatformAccessPoint() {
             {accessPoint?.organization.name} – {accessPoint?.location.name}
           </Text>
         </Skeleton>
-        <Code fontSize={"sm"} mt={2}>{accessPoint?.id}</Code>
         <Divider my={4} />
         <Box minW={["100%", "fit-content"]}>
           <Formik
@@ -243,6 +243,9 @@ export default function PlatformAccessPoint() {
               alwaysAllowedUsers: JSON.stringify(
                 accessPoint?.config?.alwaysAllowed?.users
               ),
+              webhookUrl: accessPoint?.config?.webhook?.url,
+              webhookEventGranted: accessPoint?.config?.webhook?.eventGranted,
+              webhookEventDenied: accessPoint?.config?.webhook?.eventDenied,
             }}
             onSubmit={(values, actions) => {
               user.getIdToken().then((token: any) => {
@@ -267,6 +270,12 @@ export default function PlatformAccessPoint() {
                           accessPoint?.organization,
                           values.accessGroups
                         ),
+                      },
+
+                      webhook: {
+                        url: values.webhookUrl,
+                        eventGranted: values.webhookEventGranted,
+                        eventDenied: values.webhookEventDenied,
                       },
                     },
                   }),
@@ -350,7 +359,7 @@ export default function PlatformAccessPoint() {
                 <Heading as={"h2"} fontSize={"xl"} fontWeight={"900"} py={2}>
                   Configuration
                 </Heading>
-                <Accordion defaultIndex={[0]} allowMultiple py={2}>
+                <Accordion defaultIndex={[0]} py={2}>
                   <AccordionItem>
                     <h2>
                       <AccordionButton>
@@ -445,7 +454,7 @@ export default function PlatformAccessPoint() {
                       </Field>
                     </AccordionPanel>
                   </AccordionItem>
-                  <AccordionItem>
+                  <AccordionItem zIndex={500}>
                     <h2>
                       <AccordionButton>
                         <Box as="span" flex="1" textAlign="left">
@@ -454,7 +463,7 @@ export default function PlatformAccessPoint() {
                         <AccordionIcon />
                       </AccordionButton>
                     </h2>
-                    <AccordionPanel pb={4} overflow={"scroll"} h={"256px"}>
+                    <AccordionPanel pb={4} overflow={"visible"} h={"200px"}>
                       <Stack
                         direction={{ base: "column", md: "row" }}
                         spacing={2}
@@ -467,7 +476,7 @@ export default function PlatformAccessPoint() {
                               <Skeleton isLoaded={accessPoint}>
                                 <MultiSelect
                                   {...field}
-                                  zIndex={500}
+                                  display={"absolute"}
                                   label="Access Groups"
                                   options={agKV(accessPoint?.organization)}
                                   onChange={(value) => {
@@ -499,15 +508,90 @@ export default function PlatformAccessPoint() {
                       </AccordionButton>
                     </h2>
                     <AccordionPanel>
+                      {/* <Text fontSize={"sm"} fontWeight={"500"}>
+                        Coming soon. This feature is not yet available.
+                      </Text> */}
+                      <Field name="webhookUrl" w={"min-content"}>
+                        {({ field, form }: any) => (
+                          <FormControl w={"full"}>
+                            <Skeleton isLoaded={accessPoint}>
+                              <FormLabel>Webhook URL</FormLabel>
+                              <InputGroup mb={2}>
+                                <Input
+                                  {...field}
+                                  type="text"
+                                  autoComplete="off"
+                                  placeholder="Webhook URL"
+                                  variant={"outline"}
+                                />
+                              </InputGroup>
+                            </Skeleton>
+                          </FormControl>
+                        )}
+                      </Field>
+                      <Heading
+                        as={"h3"}
+                        fontSize={"xl"}
+                        fontWeight={"900"}
+                        mt={4}
+                      >
+                        Events
+                      </Heading>
                       <Stack
-                        direction={{ base: "column", md: "row" }}
+                        direction={"row"}
                         spacing={2}
+                        py={2}
                         w={"fit-content"}
                       >
-                        <Text fontSize={"sm"} fontWeight={"500"}>
-                          Coming soon. This feature is not yet available.
-                        </Text>
+                        <Field name="webhookEventGranted">
+                          {({ field, form }: any) => (
+                            <FormControl>
+                              <Skeleton isLoaded={accessPoint}>
+                                <FormLabel>Granted</FormLabel>
+                                <InputGroup>
+                                  <Switch
+                                    {...field}
+                                    variant={"outline"}
+                                    width={"fit-content"}
+                                    defaultChecked={
+                                      accessPoint?.config?.webhook?.eventGranted
+                                    }
+                                  />
+                                </InputGroup>
+                              </Skeleton>
+                            </FormControl>
+                          )}
+                        </Field>
+                        <Field name="webhookEventDenied">
+                          {({ field, form }: any) => (
+                            <FormControl>
+                              <Skeleton isLoaded={accessPoint}>
+                                <FormLabel>Denied</FormLabel>
+                                <InputGroup>
+                                  <Switch
+                                    {...field}
+                                    variant={"outline"}
+                                    width={"fit-content"}
+                                    defaultChecked={
+                                      accessPoint?.config?.webhook?.eventDenied
+                                    }
+                                  />
+                                </InputGroup>
+                              </Skeleton>
+                            </FormControl>
+                          )}
+                        </Field>
                       </Stack>
+                      <Box my={2}>
+                        <Text fontSize={"sm"} mb={1}>
+                          Choose which events to send to the webhook.
+                        </Text>
+                        <Text fontSize={"sm"}>
+                          It is not recommended to enable denied events, as this
+                          will send a webhook request for every denied card scan
+                          (which could be a lot).
+                        </Text>
+                      </Box>
                     </AccordionPanel>
                   </AccordionItem>
                 </Accordion>
@@ -516,6 +600,17 @@ export default function PlatformAccessPoint() {
                   spacing={2}
                   py={2}
                 >
+                  <Button
+                    mb={2}
+                    leftIcon={<IoSave />}
+                    isLoading={props.isSubmitting}
+                    type={"submit"}
+                  >
+                    Save Changes
+                  </Button>
+                  {/* <Button mb={2} leftIcon={<IoTime />} isDisabled>
+                    Setup Timed Access
+                  </Button> */}
                   <Button
                     mb={2}
                     leftIcon={<IoClipboard />}
@@ -531,17 +626,7 @@ export default function PlatformAccessPoint() {
                   >
                     {clipboardHasCopied ? "Copied!" : "Copy ID"}
                   </Button>
-                  <Button
-                    mb={2}
-                    leftIcon={<IoSave />}
-                    isLoading={props.isSubmitting}
-                    type={"submit"}
-                  >
-                    Save Changes
-                  </Button>
-                  {/* <Button mb={2} leftIcon={<IoTime />} isDisabled>
-                    Setup Timed Access
-                  </Button> */}
+                  <Spacer />
                   <Button
                     colorScheme="red"
                     mb={2}
