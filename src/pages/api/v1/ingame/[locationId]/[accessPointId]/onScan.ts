@@ -4,6 +4,7 @@ import { tokenToID } from "@/pages/api/firebase";
 import { getRobloxUsers } from "@/lib/utils";
 // @ts-ignore
 import mergician from "mergician";
+import moment from "moment";
 import { NextApiRequest, NextApiResponse } from "next";
 
 const mergicianOptions = { appendArrays: true, prependArrays: true };
@@ -26,6 +27,7 @@ export default async function handler(
   const dbOrganizations = db.collection("organizations");
   const dbUsers = db.collection("users");
   const dbStatistics = db.collection("statistics");
+  const timestamp = new Date();
 
   // check if API key is empty
   if (!apiKey) {
@@ -157,17 +159,20 @@ export default async function handler(
       ) {
         const webhook = accessPoint?.config?.webhook;
         const user = await dbUsers
-          .findOne({ "roblox.id": userId }, { projection: {
-            id: 1,
-            displayName: 1,
-            username: 1,
-            roblox: 1,
-            avatar: 1,
-          } })
+          .findOne(
+            { "roblox.id": userId },
+            {
+              projection: {
+                id: 1,
+                displayName: 1,
+                username: 1,
+                roblox: 1,
+                avatar: 1,
+              },
+            }
+          )
           .then((user) => user);
-        let member = organization.members[
-          user?.id
-        ] || {
+        let member = organization.members[user?.id] || {
           type: "roblox",
           id: userId,
         };
@@ -226,7 +231,7 @@ export default async function handler(
                   },
                   {
                     name: "Scan Time",
-                    value: new Date().toLocaleString(),
+                    value: moment(timestamp).format("MMMM Do YYYY, h:mm a"),
                   },
                 ],
                 footer: {
