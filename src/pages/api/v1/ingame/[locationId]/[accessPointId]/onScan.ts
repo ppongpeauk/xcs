@@ -231,7 +231,12 @@ export default async function handler(
                   },
                   {
                     name: "Scan Time",
-                    value: moment(timestamp).format("MMMM Do YYYY, h:mm a"),
+                    value: moment(timestamp.toLocaleString(
+                      "en-US",
+                      {
+                        timeZone: "America/New_York",
+                      }
+                    )).format("MMMM Do YYYY h:mm a EST"),
                   },
                 ],
                 footer: {
