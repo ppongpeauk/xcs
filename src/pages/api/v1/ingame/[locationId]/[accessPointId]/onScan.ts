@@ -156,8 +156,17 @@ export default async function handler(
         !(!isAllowed && !accessPoint?.config?.webhook?.eventDenied)
       ) {
         const webhook = accessPoint?.config?.webhook;
+        const user = await dbUsers
+          .findOne({ "roblox.id": userId }, { projection: {
+            id: 1,
+            displayName: 1,
+            username: 1,
+            roblox: 1,
+            avatar: 1,
+          } })
+          .then((user) => user);
         let member = organization.members[
-          allowedRobloxIds[userId as string]
+          user?.id
         ] || {
           type: "roblox",
           id: userId,
@@ -167,14 +176,6 @@ export default async function handler(
           member.displayName = robloxUsers[member.id].displayName;
           member.username = robloxUsers[member.id].name;
         } else {
-          const user = await dbUsers.findOne(
-            {
-              id: allowedRobloxIds[userId as string],
-            },
-            {
-              projection: { displayName: 1, username: 1, roblox: 1, avatar: 1 },
-            }
-          );
           member.displayName = user?.displayName;
           member.roblox = user?.roblox;
           member.avatar = user?.avatar;
