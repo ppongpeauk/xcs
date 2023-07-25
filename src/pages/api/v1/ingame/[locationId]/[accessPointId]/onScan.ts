@@ -25,6 +25,7 @@ export default async function handler(
   const dbLocations = db.collection("locations");
   const dbOrganizations = db.collection("organizations");
   const dbUsers = db.collection("users");
+  const dbStatistics = db.collection("statistics");
 
   // check if API key is empty
   if (!apiKey) {
@@ -174,6 +175,18 @@ export default async function handler(
     });
   }
 
+  // update global statistics
+  dbStatistics.updateOne(
+    { id: "global" },
+    {
+      $inc: {
+        [`scans.total`]: 1,
+        [`scans.${isAllowed ? "granted" : "denied"}`]: 1,
+      },
+    }
+  );
+
+  // webhook event
   try {
     if (accessPoint?.config?.webhook?.url) {
       if (
