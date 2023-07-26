@@ -7,7 +7,7 @@ import mergician from "mergician";
 import moment from "moment";
 import { NextApiRequest, NextApiResponse } from "next";
 
-const mergicianOptions = { appendArrays: true, prependArrays: true };
+const mergicianOptions = { appendArrays: true, dedupArrays: true };
 
 export default async function handler(
   req: NextApiRequest,
@@ -145,7 +145,7 @@ export default async function handler(
   let allowedGroupRoles = {} as any; // roblox group roles that are allowed
 
   // make a list of allowed group roles from allowed groups
-  const robloxMemberGroups  = Object.values(organization.members).filter(
+  const robloxMemberGroups = Object.values(organization.members).filter(
     (member: any) => member.type === "roblox-group"
   );
   for (const member of robloxMemberGroups as any) {
@@ -175,6 +175,14 @@ export default async function handler(
         groupScanData,
         allowedGroupRoles[role]?.scanData || {}
       );
+      // get scan data from allowed groups' access groups
+      for (const group of allowedGroupRoles[role]?.accessGroups) {
+        groupScanData = mergician(mergicianOptions)(
+          groupScanData,
+          organization.accessGroups[group]?.scanData || {}
+        );
+        console.log("adding scan data from access group", group);
+      }
     }
   }
 
