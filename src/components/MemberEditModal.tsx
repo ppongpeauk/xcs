@@ -531,6 +531,7 @@ export default function MemberEditModal({
                             src={focusedMember?.avatar}
                             mr={4}
                             bg={"gray.300"}
+                            borderRadius={focusedMember?.type === "roblox-group" ? "lg" : "full"}
                           />
                           <Flex flexDir={"column"}>
                             <Flex align={"center"}>
