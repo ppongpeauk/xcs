@@ -176,9 +176,13 @@ export default function PlatformOrganization() {
             case 404:
               throw new Error("Organization not found.");
             case 403:
-              throw new Error("You do not have permission to view this organization.");
+              throw new Error(
+                "You do not have permission to view this organization."
+              );
             case 401:
-              throw new Error("You do not have permission to view this organization.");
+              throw new Error(
+                "You do not have permission to view this organization."
+              );
             case 500:
               throw new Error("An internal server error occurred.");
             default:
@@ -203,10 +207,15 @@ export default function PlatformOrganization() {
   const onMemberRemove = async (member: any) => {
     await user.getIdToken().then((token: string) => {
       console.log(member);
-      fetch(`/api/v1/organizations/${query.id}/members/${member.formattedId || member.id}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      fetch(
+        `/api/v1/organizations/${query.id}/members/${
+          member.formattedId || member.id
+        }`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
         .then((res) => {
           if (res.status === 200) {
             return res.json();
@@ -405,7 +414,7 @@ export default function PlatformOrganization() {
                       src={member?.avatar}
                       bg={"gray.300"}
                     />
-                  ) : (
+                  ) : member.type === "roblox" ? (
                     <Avatar
                       as={NextLink}
                       key={member?.id}
@@ -414,6 +423,17 @@ export default function PlatformOrganization() {
                       bg={"gray.300"}
                       target={"_blank"}
                     />
+                  ) : (
+                    <>
+                      <Avatar
+                        as={NextLink}
+                        key={member?.id}
+                        href={`https://www.roblox.com/groups/${member?.id}/group`}
+                        src={member?.avatar}
+                        bg={"gray.300"}
+                        target={"_blank"}
+                      />
+                    </>
                   ))
               )}
             </AvatarGroup>
