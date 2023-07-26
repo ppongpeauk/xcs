@@ -30,7 +30,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { user, currentUser, isAuthLoaded } = useAuthContext();
-  const [loading, error] = useAuthState(auth);
+  const [firebaseUser, loading, error] = useAuthState(auth);
   const [sendVerificationEmailLoading, setSendVerificationEmailLoading] =
     useState<boolean>(false);
   const { push } = useRouter();
@@ -42,7 +42,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     if (loading) return;
     // if (pathname.startsWith("/platform/profile")) return;
     setTimeout(() => {
-      if (!user) {
+      if (!firebaseUser) {
         push("/auth/login?redirect=" + window.location.pathname);
         toast({
           title: "You are not logged in",
