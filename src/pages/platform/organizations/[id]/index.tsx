@@ -403,39 +403,41 @@ export default function PlatformOrganization() {
                 href={`/platform/profile/${organization?.owner.username}`}
                 src={organization?.owner.avatar}
               />
-              {organization?.members.map(
-                (member: any) =>
-                  member.id !== organization?.owner.id &&
-                  (!member.type.startsWith("roblox") ? (
-                    <Avatar
-                      as={NextLink}
-                      key={member?.id}
-                      href={`/platform/profile/${member?.username}`}
-                      src={member?.avatar}
-                      bg={"gray.300"}
-                    />
-                  ) : member.type === "roblox" ? (
-                    <Avatar
-                      as={NextLink}
-                      key={member?.id}
-                      href={`https://www.roblox.com/users/${member?.id}/profile`}
-                      src={member?.avatar}
-                      bg={"gray.300"}
-                      target={"_blank"}
-                    />
-                  ) : (
-                    <>
+              {organization?.members
+                .filter((member: any) => member.type !== "roblox-group")
+                .map(
+                  (member: any) =>
+                    member.id !== organization?.owner.id &&
+                    (!member.type.startsWith("roblox") ? (
                       <Avatar
                         as={NextLink}
                         key={member?.id}
-                        href={`https://www.roblox.com/groups/${member?.id}/group`}
+                        href={`/platform/profile/${member?.username}`}
+                        src={member?.avatar}
+                        bg={"gray.300"}
+                      />
+                    ) : member.type === "roblox" ? (
+                      <Avatar
+                        as={NextLink}
+                        key={member?.id}
+                        href={`https://www.roblox.com/users/${member?.id}/profile`}
                         src={member?.avatar}
                         bg={"gray.300"}
                         target={"_blank"}
                       />
-                    </>
-                  ))
-              )}
+                    ) : (
+                      <>
+                        <Avatar
+                          as={NextLink}
+                          key={member?.id}
+                          href={`https://www.roblox.com/groups/${member?.id}/group`}
+                          src={member?.avatar}
+                          bg={"gray.300"}
+                          target={"_blank"}
+                        />
+                      </>
+                    ))
+                )}
             </AvatarGroup>
           </Flex>
         </Stack>
