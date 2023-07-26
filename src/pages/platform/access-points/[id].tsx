@@ -36,7 +36,7 @@ import {
 } from "@chakra-ui/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import {
@@ -57,7 +57,9 @@ import { IoIosRemoveCircle } from "react-icons/io";
 import { IoBusiness, IoClipboard, IoSave, IoTime } from "react-icons/io5";
 
 import { agIds, agKV, agNames } from "@/lib/utils";
+import { AccessGroup, Organization } from "@/types";
 import { MultiSelect } from "chakra-multiselect";
+import { AsyncSelect, CreatableSelect, Select } from "chakra-react-select";
 export default function PlatformAccessPoint() {
   const { query, push } = useRouter();
   const { user } = useAuthContext();
@@ -171,6 +173,68 @@ export default function PlatformAccessPoint() {
     refreshData();
   }, [query.id]);
 
+  const getAccessGroupType = (ag: AccessGroup) => {
+    if (ag.type === "organization") {
+      return "Organization";
+    } else if (ag.type === "location") {
+      // TODO: get location name
+      return ag.locationName || ag.locationId || "Unknown";
+    } else {
+      return ag.type;
+    }
+  };
+
+  const getAccessGroupOptions = useCallback(
+    (organization: Organization) => {
+      if (!organization) return [];
+      console.warn(organization);
+      const ags =
+        Object.values(organization?.accessGroups as AccessGroup[]) || [];
+      interface Group {
+        label: string;
+        options: {
+          label: string;
+          value: string;
+        }[];
+      }
+      let groups = [] as any;
+
+      ags.forEach((ag: AccessGroup) => {
+        // check if the group is already in the groups object
+        if (groups.find((g: Group) => g.label === getAccessGroupType(ag))) {
+          // if it is, add the option to the options array
+          groups
+            .find((g: Group) => g.label === getAccessGroupType(ag))
+            .options.push({
+              label: ag.name,
+              value: ag.id,
+            });
+        } else {
+          // if it's not, add the group to the groups array
+          groups.push({
+            label: getAccessGroupType(ag),
+            options: [
+              {
+                label: ag.name,
+                value: ag.id,
+              },
+            ],
+          });
+        }
+      });
+
+      // sort the groups so organizations are at the bottom
+      groups.sort((a: Group, b: Group) => {
+        if (a.label === "Organization") return 1;
+        if (b.label === "Organization") return -1;
+        return 0;
+      });
+
+      return groups;
+    },
+    []
+  );
+
   return (
     <>
       <Head>
@@ -231,7 +295,13 @@ export default function PlatformAccessPoint() {
           </Breadcrumb>
         </Skeleton>
         <Skeleton isLoaded={accessPoint}>
-          <Text as={"h1"} fontSize={"4xl"} fontWeight={"900"} lineHeight={0.9} mb={2}>
+          <Text
+            as={"h1"}
+            fontSize={"4xl"}
+            fontWeight={"900"}
+            lineHeight={0.9}
+            mb={2}
+          >
             {accessPoint?.name || "Loading..."}
           </Text>
         </Skeleton>
@@ -250,10 +320,12 @@ export default function PlatformAccessPoint() {
               active: accessPoint?.config?.active,
               armed: accessPoint?.config?.armed,
               unlockTime: accessPoint?.config?.unlockTime,
-              accessGroups: agIds(
-                accessPoint?.organization,
-                accessPoint?.config?.alwaysAllowed?.groups
-              ),
+              accessGroups: Object.values(accessPoint?.organization?.accessGroups || {}).map(
+                (ag: any) => ({
+                  label: ag.name,
+                  value: ag.id,
+                } as any)
+              ) || [],
               alwaysAllowedUsers: JSON.stringify(
                 accessPoint?.config?.alwaysAllowed?.users
               ),
@@ -280,10 +352,9 @@ export default function PlatformAccessPoint() {
 
                       alwaysAllowed: {
                         // users: JSON.parse(values.alwaysAllowedUsers),
-                        groups: agNames(
-                          accessPoint?.organization,
-                          values.accessGroups
-                        ),
+                        groups: values?.accessGroups?.map(
+                          (ag: any) => ag?.value
+                        )
                       },
 
                       webhook: {
@@ -477,18 +548,16 @@ export default function PlatformAccessPoint() {
                         <AccordionIcon />
                       </AccordionButton>
                     </h2>
-                    <AccordionPanel pb={4} overflow={"visible"} h={"200px"}>
+                    <AccordionPanel pb={4} overflow={"scroll"} minH={"240px"}>
                       <Stack
                         direction={{ base: "column", md: "row" }}
                         spacing={2}
-                        overflow={"scroll"}
-                        h={"full"}
                       >
                         <Field name="accessGroups">
                           {({ field, form }: any) => (
-                            <FormControl w={"fit-content"}>
+                            <FormControl w={"max-content"} maxW={"75%"}>
                               <Skeleton isLoaded={accessPoint}>
-                                <MultiSelect
+                                {/* <MultiSelect
                                   {...field}
                                   display={"absolute"}
                                   label="Access Groups"
@@ -504,6 +573,21 @@ export default function PlatformAccessPoint() {
                                   single={false}
                                   autoComplete={"off"}
                                   autoCorrect={"off"}
+                                /> */}
+                                <FormLabel>Access Groups</FormLabel>
+                                <Select
+                                  {...field}
+                                  name="accessGroups"
+                                  options={getAccessGroupOptions(accessPoint?.organization)}
+                                  placeholder="Select an access group..."
+                                  onChange={(value) => {
+                                    form.setFieldValue("accessGroups", value);
+                                  }}
+                                  value={field?.value}
+                                  isMulti
+                                  closeMenuOnSelect={false}
+                                  hideSelectedOptions={false}
+                                  selectedOptionStyle={"check"}
                                 />
                               </Skeleton>
                             </FormControl>

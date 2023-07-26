@@ -14,13 +14,13 @@ import {
   IconButton,
   Image,
   InputGroup,
-  Select,
   Skeleton,
   Stack,
   Text,
   useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
+import { AsyncSelect, CreatableSelect, Select } from "chakra-react-select";
 import Head from "next/head";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
@@ -138,28 +138,37 @@ export default function PlatformLocations() {
           align={"flex-end"}
           spacing={4}
         >
-          <FormControl w={"fit-content"}>
+          <FormControl w={{
+            base: "unset",
+            md: "384px",
+          }}>
             <FormLabel>Organization</FormLabel>
             <>
               <Select
-                value={selectedOrganization?.name}
-                onChange={(e) => {
+                value={{
+                  label: selectedOrganization?.name,
+                  value: selectedOrganization?.id
+                } as any}
+                onChange={(e: {
+                  label: string;
+                  value: string;
+                }) => {
                   const organization = organizations.find(
-                    (organization: any) => organization.name === e.target.value
+                    (organization: any) => organization.id === e.value
                   );
                   setSelectedOrganization(organization);
                 }}
-                minW={"200px"}
                 isReadOnly={organizationsLoading}
+                options={
+                  organizations.map((organization: any) => ({
+                    label: organization.name,
+                    value: organization.id,
+                  })) || []
+                }
+                selectedOptionStyle="check"
                 // icon={<FaBuilding />}
                 // iconSize="sm"
-              >
-                {organizations?.map((organization: any) => (
-                  <option key={organization.id} value={organization.name}>
-                    {organization.name}
-                  </option>
-                ))}
-              </Select>
+              />
             </>
           </FormControl>
           <Button
