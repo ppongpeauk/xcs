@@ -479,7 +479,7 @@ export default function MemberEditModal({
                                 label: Object.values(
                                   organization?.accessGroups as AccessGroup[]
                                 ).find((oag: any) => oag.id === ag)?.name,
-                                value: ag.id,
+                                value: ag,
                               })
                             ),
                             scanData: JSON.stringify(
@@ -554,18 +554,26 @@ export default function MemberEditModal({
                             >
                               <Flex flexDir={"column"} mt={4} w={"full"} pb={8}>
                                 <Stack>
-                                  {focusedMember?.type !== "roblox" && (
-                                    <Field name="role">
-                                      {({ field, form }: any) => (
-                                        <FormControl>
-                                          <FormLabel>
-                                            Organization Role
-                                          </FormLabel>
-                                          <Select
-                                            name="role"
-                                            options={
-                                              focusedMember.role < 3
+                                  <Field name="role">
+                                    {({ field, form }: any) => (
+                                      <FormControl
+                                        w={"fit-content"}
+                                        minW={"240px"}
+                                      >
+                                        <FormLabel>Organization Role</FormLabel>
+                                        <Select
+                                          {...field}
+                                          name="role"
+                                          options={
+                                            focusedMember.role < 3
+                                              ? focusedMember.type === "roblox"
                                                 ? [
+                                                    {
+                                                      label: "Guest",
+                                                      value: 1,
+                                                    },
+                                                  ]
+                                                : [
                                                     {
                                                       label: "Member",
                                                       value: 1,
@@ -575,23 +583,27 @@ export default function MemberEditModal({
                                                       value: 2,
                                                     },
                                                   ]
-                                                : [
-                                                    {
-                                                      label: "Owner",
-                                                      value: 3,
-                                                    },
-                                                  ]
-                                            }
-                                            placeholder="Select a role..."
-                                            onChange={(value) => {
-                                              form.setFieldValue(
-                                                "role",
-                                                value || ("" as string)
-                                              );
-                                            }}
-                                            value={field?.value}
-                                          />
-                                          {/* <MultiSelect
+                                              : [
+                                                  {
+                                                    label: "Owner",
+                                                    value: 3,
+                                                  },
+                                                ]
+                                          }
+                                          placeholder="Select a role..."
+                                          onChange={(value) => {
+                                            form.setFieldValue(
+                                              "role",
+                                              value || ("" as string)
+                                            );
+                                          }}
+                                          value={field?.value}
+                                          isDisabled={
+                                            focusedMember.type === "roblox" ||
+                                            focusedMember.role === 3
+                                          }
+                                        />
+                                        {/* <MultiSelect
                                             {...field}
                                             label="Organization Role"
                                             options={
@@ -624,15 +636,15 @@ export default function MemberEditModal({
                                             single={true}
                                             disabled={clientMember?.role >= 3}
                                           /> */}
-                                        </FormControl>
-                                      )}
-                                    </Field>
-                                  )}
+                                      </FormControl>
+                                    )}
+                                  </Field>
                                   <Field name="accessGroups">
                                     {({ field, form }: any) => (
                                       <FormControl>
                                         <FormLabel>Access Groups</FormLabel>
                                         <Select
+                                          {...field}
                                           name="accessGroups"
                                           options={Object.values(
                                             organization?.accessGroups as AccessGroup[]
