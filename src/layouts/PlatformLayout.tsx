@@ -41,16 +41,18 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (loading) return;
     // if (pathname.startsWith("/platform/profile")) return;
-    if (!user) {
-      push("/auth/login?redirect=" + window.location.pathname);
-      toast({
-        title: "You are not logged in",
-        description: "Please log in to continue.",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
-    }
+    setTimeout(() => {
+      if (!user) {
+        push("/auth/login?redirect=" + window.location.pathname);
+        toast({
+          title: "You are not logged in",
+          description: "Please log in to continue.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    }, 500);
   }, [loading]);
 
   // Return nothing if the user is not logged in
