@@ -2,7 +2,6 @@
 import {
     Avatar,
     Badge,
-    VStack,
     Button,
     Flex,
     FormControl,
@@ -30,6 +29,7 @@ import {
     Switch,
     Textarea,
     Tooltip,
+    VStack,
     chakra,
     useColorModeValue,
     useDisclosure,

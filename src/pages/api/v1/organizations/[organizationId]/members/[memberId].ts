@@ -105,6 +105,7 @@ export default async function handler(
     }
 
     // remove all access groups that don't exist
+    console.log(accessGroups);
     accessGroups = accessGroups.filter((accessGroup) => {
       return Object.keys(organization.accessGroups).includes(accessGroup);
     });

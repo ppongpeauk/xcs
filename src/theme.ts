@@ -1,5 +1,4 @@
 import { extendTheme, type ThemeConfig } from "@chakra-ui/react";
-import { MultiSelectTheme } from "chakra-multiselect";
 
 const config: ThemeConfig = {
   useSystemColorMode: true,
@@ -7,17 +6,7 @@ const config: ThemeConfig = {
 };
 
 const theme = {
-  components: {
-    MultiSelect: {
-      ...MultiSelectTheme,
-      baseStyle: (props: any) => {
-        const baseStyle = MultiSelectTheme.baseStyle(props) as any;
-        return {
-          ...baseStyle,
-        };
-      },
-    },
-  },
+  components: {},
   fonts: {
     heading: "var(--font-familjen)",
     body: "var(--font-familjen)",
