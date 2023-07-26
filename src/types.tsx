@@ -21,12 +21,21 @@ export interface User {
 
 export interface Organization {
   id: string,
-  isPersonal: boolean,
+  
   name: string,
   description: string,
+  isPersonal: boolean,
+  
   members: {}
   invitations: [],
-  logs: {}
+  logs: {},
+  apiKeys: {},
+
+  createdAt: string,
+  updatedAt: string,
+
+  avatar?: string,
+  accessGroups?: {},
 }
 
 export interface Location {
@@ -42,4 +51,12 @@ export interface Location {
   enabled: true,
   createdAt: string,
   updatedAt: string,
+}
+
+export interface AccessGroup {
+  id: string;
+  name: string;
+  locationName?: string;
+  locationId?: string;
+  type: "organization" | "location";
 }

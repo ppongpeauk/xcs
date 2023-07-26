@@ -1,6 +1,6 @@
 import { authToken } from "@/lib/auth";
 import clientPromise from "@/lib/mongodb";
-import { getRobloxUsers } from "@/lib/utils";
+import { getRobloxGroups, getRobloxUsers } from "@/lib/utils";
 import { tokenToID } from "@/pages/api/firebase";
 import { NextApiRequest, NextApiResponse } from "next";
 
@@ -53,7 +53,7 @@ export default async function handler(
 
     // xcs users
     for (const [key, value] of Object.entries(organization.members) as any) {
-      if (value.type !== "roblox") {
+      if (!["roblox", "roblox-group"].includes(value.type)) {
         let member = await users.findOne(
           { id: key },
           {
@@ -81,16 +81,21 @@ export default async function handler(
 
     // roblox users
     
-    // make an array of roblox user ids
+    // make an array of roblox user and group ids
     let robloxUserIds = [];
+    let robloxGroupIds = [];
+
     for (const [key, value] of Object.entries(organization.members) as any) {
       if (value.type === "roblox") {
         robloxUserIds.push(value.id);
+      } else if (value.type === "roblox-group") {
+        robloxGroupIds.push(value.id);
       }
     }
 
     // get roblox users
     let robloxUsers = await getRobloxUsers(robloxUserIds);
+    let robloxGroups = await getRobloxGroups(robloxGroupIds);
     
     // add roblox users to members array
     for (const [key, value] of Object.entries(organization.members) as any) {
@@ -102,13 +107,24 @@ export default async function handler(
           avatar: robloxUsers[value.id].avatar,
           ...value,
         });
+      } else if (value.type === "roblox-group") {
+        members.push({
+          id: key,
+          displayName: robloxGroups[value.id].name,
+          username: robloxGroups[value.id].name,
+          avatar: robloxGroups[value.id].avatar,
+          roleset: robloxGroups[value.id].roles,
+          ...value,
+        });
       }
       if (members.length > 99) break;
     }
 
     organization.members = members.sort((a: any, b: any) =>
-      a.role > b.role || b.type === "roblox" ? -1 : 1
+      a.role > b.role || (b.type === "roblox-group" || b.type === "roblox") ? -1 : 1
     ); // sort by role (descending)
+
+    console.log(organization.members);
 
     return res.status(200).json({
       organization: organization,
@@ -230,5 +246,5 @@ export default async function handler(
       .json({ message: "Successfully deleted organization!", success: true });
   }
 
-  return res.status(500).json({ message: "An unknown errror occurred." });
+  return res.status(500).json({ message: "An unknown errror occurred. If this error persists, please contact customer support." });
 }

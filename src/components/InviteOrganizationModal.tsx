@@ -14,7 +14,6 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Select,
   Stack,
   Text,
   Textarea,
@@ -23,7 +22,7 @@ import {
   useColorModeValue,
   useToast,
 } from "@chakra-ui/react";
-import { MultiSelect } from "chakra-multiselect";
+import { AsyncSelect, CreatableSelect, Select } from "chakra-react-select";
 import { Field, Form, Formik } from "formik";
 
 import { useAuthContext } from "@/contexts/AuthContext";
@@ -71,7 +70,8 @@ export default function InviteOrganizationModal({
   return (
     <>
       <Formik
-        initialValues={{ role: "1", singleUse: true }}
+        enableReinitialize={true}
+        initialValues={{ role: { label: "Member", value: 1 }, singleUse: true }}
         onSubmit={(values, actions) => {
           user.getIdToken().then((token: any) => {
             fetch(`/api/v1/organizations/${organizationId}/create-invite-link`, {
@@ -82,7 +82,7 @@ export default function InviteOrganizationModal({
               },
               body: JSON.stringify({
                 singleUse: values.singleUse,
-                role: parseInt(values.role),
+                role: values.role.value,
               }),
             })
               .then((res) => {
@@ -143,7 +143,7 @@ export default function InviteOrganizationModal({
                                 <option value={"1"}>Member</option>
                                 <option value={"2"}>Manager</option>
                               </Select> */}
-                              <MultiSelect
+                              {/* <MultiSelect
                                 {...field}
                                 label="Role"
                                 options={[
@@ -154,6 +154,21 @@ export default function InviteOrganizationModal({
                                   form.setFieldValue("role", value as string);
                                 }}
                                 value={form.values.role}
+                                placeholder="Select a role..."
+                                single={true}
+                              /> */}
+                              <FormLabel>Role</FormLabel>
+                              <Select
+                                {...field}
+                                variant={"outline"}
+                                options={[
+                                  { label: "Member", value: 1 },
+                                  { label: "Manager", value: 2 },
+                                ]}
+                                onChange={(value) => {
+                                  form.setFieldValue("role", value);
+                                }}
+                                value={field.value}
                                 placeholder="Select a role..."
                                 single={true}
                               />

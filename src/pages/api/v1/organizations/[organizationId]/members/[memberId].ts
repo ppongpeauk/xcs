@@ -42,15 +42,17 @@ export default async function handler(
   // }
 
   const timestamp = new Date();
-  let { role, accessGroups, scanData } = req.body as {
+  let { name, role, accessGroups, groupRoles, scanData } = req.body as {
+    name?: string;
     role: number;
     accessGroups: string[];
+    groupRoles?: string[];
     scanData: string;
   };
 
   if (
-    role !== organization.members[memberId].role &&
-    organization.members[memberId].role >= 3
+    role !== organization.members[memberId]?.role &&
+    organization.members[memberId]?.role >= 3
   ) {
     return res.status(403).json({
       message: "User is the owner of the organization.",
@@ -69,14 +71,14 @@ export default async function handler(
       });
     }
 
-    if (role !== organization.members[memberId].role && role === 3) {
+    if (role !== organization.members[memberId]?.role && role === 3) {
       return res.status(403).json({
         message: "You cannot grant ownership.",
         success: false,
       });
     }
 
-    if (organization.members[memberId].role > organization.members[uid].role) {
+    if (organization.members[memberId]?.role > organization.members[uid].role) {
       return res.status(403).json({
         message: "You cannot edit a user with a higher role than you.",
         success: false,
@@ -97,15 +99,12 @@ export default async function handler(
     try {
       scanData = JSON.parse(scanData);
     } catch (err) {
-      return res
-        .status(400)
-        .json({
-          message: "Unable to parse scan data. Check your JSON and try again.",
-        });
+      return res.status(400).json({
+        message: "Unable to parse scan data. Check your JSON and try again.",
+      });
     }
 
     // remove all access groups that don't exist
-    console.log(accessGroups);
     accessGroups = accessGroups.filter((accessGroup) => {
       return Object.keys(organization.accessGroups).includes(accessGroup);
     });
@@ -114,11 +113,21 @@ export default async function handler(
       { id: organizationId },
       {
         $set: {
+          [`members.${memberId}.name`]: name || user?.displayName || "Untitled Member Name",
           [`members.${memberId}.role`]: role,
+          [`members.${memberId}.groupRoles`]: groupRoles !== undefined ? groupRoles : undefined,
           [`members.${memberId}.accessGroups`]: accessGroups,
           [`members.${memberId}.scanData`]: scanData || {},
+          [`members.${memberId}.updatedAt`]: timestamp,
+          // [`members.${memberId}`]: {
+          //   name: name,
+          //   role: role,
+          //   accessGroups: accessGroups,
+          //   scanData: scanData || {},
+          // },
         },
-      }
+      },
+      { upsert: true }
     );
 
     return res.status(200).json({
@@ -130,9 +139,9 @@ export default async function handler(
 
   // Remove From Organization
   if (req.method === "DELETE") {
-    if (organization.members[memberId].type !== "roblox") {
+    if (organization.members[memberId]?.type !== "roblox") {
       if (
-        organization.members[memberId].role >= organization.members[uid].role
+        organization.members[memberId]?.role >= organization.members[uid]?.role
       ) {
         return res.status(403).json({
           message:
@@ -156,18 +165,7 @@ export default async function handler(
         success: true,
       });
     } else {
-      let robloxUser = await fetch(
-        `${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/roblox/users/v1/users/${memberId}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      ).then((res) => res.json());
-
-      const robloxUsername = robloxUser.name;
-
+      
       // Kick From Organization
       await organizations.updateOne(
         { id: organizationId },
@@ -179,7 +177,7 @@ export default async function handler(
       );
 
       return res.status(200).json({
-        message: `Successfully removed ${robloxUsername} from the organization.`,
+        message: `Successfully removed the member from the organization.`,
         success: true,
       });
     }

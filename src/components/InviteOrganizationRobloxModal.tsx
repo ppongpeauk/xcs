@@ -21,8 +21,9 @@ import { Field, Form, Formik } from "formik";
 
 import { useAuthContext } from "@/contexts/AuthContext";
 import { agKV, agNames, roleToText, textToRole } from "@/lib/utils";
-import { MultiSelect } from "chakra-multiselect";
-import { useRef } from "react";
+import { AccessGroup, Organization } from "@/types";
+import { AsyncSelect, CreatableSelect, Select } from "chakra-react-select";
+import { useCallback, useRef } from "react";
 
 export default function InviteOrganizationRobloxModal({
   isOpen,
@@ -39,6 +40,67 @@ export default function InviteOrganizationRobloxModal({
   const initialRef = useRef(null);
   const finalRef = useRef(null);
   const { user } = useAuthContext();
+
+  const getAccessGroupType = (ag: AccessGroup) => {
+    if (ag.type === "organization") {
+      return "Organization";
+    } else if (ag.type === "location") {
+      // TODO: get location name
+      return ag.locationName || ag.locationId || "Unknown";
+    } else {
+      return ag.type;
+    }
+  };
+
+  const getAccessGroupOptions = useCallback(
+    (organization: Organization) => {
+      if (!organization) return [];
+      const ags =
+        Object.values(organization?.accessGroups as AccessGroup[]) || [];
+      interface Group {
+        label: string;
+        options: {
+          label: string;
+          value: string;
+        }[];
+      }
+      let groups = [] as any;
+
+      ags.forEach((ag: AccessGroup) => {
+        // check if the group is already in the groups object
+        if (groups.find((g: Group) => g.label === getAccessGroupType(ag))) {
+          // if it is, add the option to the options array
+          groups
+            .find((g: Group) => g.label === getAccessGroupType(ag))
+            .options.push({
+              label: ag.name,
+              value: ag.id,
+            });
+        } else {
+          // if it's not, add the group to the groups array
+          groups.push({
+            label: getAccessGroupType(ag),
+            options: [
+              {
+                label: ag.name,
+                value: ag.id,
+              },
+            ],
+          });
+        }
+      });
+
+      // sort the groups so organizations are at the bottom
+      groups.sort((a: Group, b: Group) => {
+        if (a.label === "Organization") return 1;
+        if (b.label === "Organization") return -1;
+        return 0;
+      });
+
+      return groups;
+    },
+    [organization]
+  );
 
   return (
     <>
@@ -57,9 +119,8 @@ export default function InviteOrganizationRobloxModal({
                 type: "roblox",
                 username: values.username,
 
-                accessGroups: agNames(
-                  organization,
-                  values.accessGroups
+                accessGroups: values?.accessGroups?.map(
+                  (ag: any) => ag?.value
                 ),
               }),
             })
@@ -81,6 +142,7 @@ export default function InviteOrganizationRobloxModal({
                 });
                 onClose();
                 onAdd();
+                actions.resetForm();
               })
               .catch((error) => {
                 toast({
@@ -126,16 +188,20 @@ export default function InviteOrganizationRobloxModal({
                     <Field name="accessGroups">
                       {({ field, form }: any) => (
                         <FormControl>
-                          <MultiSelect
+                          <FormLabel>Access Groups</FormLabel>
+                          <Select
                             {...field}
-                            label="Access Groups"
-                            options={agKV(organization)}
+                            variant={"outline"}
+                            options={getAccessGroupOptions(
+                              organization
+                            )}
                             onChange={(value) => {
                               form.setFieldValue("accessGroups", value);
                             }}
-                            value={form.values.accessGroups || []}
+                            value={field.value || []}
                             placeholder="Select an access group..."
-                            single={false}
+                            isMulti
+                            closeMenuOnSelect={false}
                           />
                         </FormControl>
                       )}

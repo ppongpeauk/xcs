@@ -202,7 +202,8 @@ export default function PlatformOrganization() {
 
   const onMemberRemove = async (member: any) => {
     await user.getIdToken().then((token: string) => {
-      fetch(`/api/v1/organizations/${query.id}/members/${member.id}`, {
+      console.log(member);
+      fetch(`/api/v1/organizations/${query.id}/members/${member.formattedId || member.id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       })
@@ -396,7 +397,7 @@ export default function PlatformOrganization() {
               {organization?.members.map(
                 (member: any) =>
                   member.id !== organization?.owner.id &&
-                  (member.type !== "roblox" ? (
+                  (!member.type.startsWith("roblox") ? (
                     <Avatar
                       as={NextLink}
                       key={member?.id}
