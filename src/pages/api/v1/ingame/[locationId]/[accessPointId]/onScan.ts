@@ -177,11 +177,13 @@ export default async function handler(
       );
       // get scan data from allowed groups' access groups
       for (const group of allowedGroupRoles[role]?.accessGroups) {
-        groupScanData = mergician(mergicianOptions)(
-          groupScanData,
-          organization.accessGroups[group]?.scanData || {}
-        );
-        console.log("adding scan data from access group", group);
+        if (organization.accessGroups[group]?.config?.active) {
+          groupScanData = mergician(mergicianOptions)(
+            groupScanData,
+            organization.accessGroups[group]?.scanData || {}
+          );
+          console.log("adding scan data from access group", group);
+        }
       }
     }
   }
