@@ -170,7 +170,7 @@ export default async function handler(
       isAllowed = true;
       groupScanData = mergician(mergicianOptions)(
         groupScanData,
-        allowedGroupRoles[role].scanData || {}
+        allowedGroupRoles[role]?.scanData || {}
       );
     }
   }
@@ -294,7 +294,7 @@ export default async function handler(
         if (organization.accessGroups[group]?.config?.active) {
           scanData = mergician(mergicianOptions)(
             scanData,
-            organization.accessGroups[group].scanData || {}
+            organization.accessGroups[group]?.scanData || {}
           );
         }
       }
@@ -308,7 +308,7 @@ export default async function handler(
     // user scan data, user scan data overrides group scan data
     scanData = mergician(mergicianOptions)(
       scanData,
-      organization.members[memberId].scanData || {}
+      organization.members[memberId]?.scanData || {}
     );
 
     res.status(200).json({
