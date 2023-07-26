@@ -319,12 +319,14 @@ export default function PlatformAccessPoint() {
               active: accessPoint?.config?.active,
               armed: accessPoint?.config?.armed,
               unlockTime: accessPoint?.config?.unlockTime,
-              accessGroups: Object.values(accessPoint?.organization?.accessGroups || {}).map(
-                (ag: any) => ({
-                  label: ag.name,
-                  value: ag.id,
-                } as any)
-              ) || [],
+              accessGroups: accessPoint?.config?.alwaysAllowed?.groups.map(
+                (ag: AccessGroup) => ({
+                  label: Object.values(
+                    accessPoint?.organization?.accessGroups as AccessGroup[]
+                  ).find((oag: any) => oag.id === ag)?.name,
+                  value: ag,
+                })
+              ),
               alwaysAllowedUsers: JSON.stringify(
                 accessPoint?.config?.alwaysAllowed?.users
               ),
@@ -554,25 +556,8 @@ export default function PlatformAccessPoint() {
                       >
                         <Field name="accessGroups">
                           {({ field, form }: any) => (
-                            <FormControl w={"max-content"} maxW={"75%"}>
+                            <FormControl w={"fit-content"} maxW={"75%"}>
                               <Skeleton isLoaded={accessPoint}>
-                                {/* <MultiSelect
-                                  {...field}
-                                  display={"absolute"}
-                                  label="Access Groups"
-                                  options={agKV(accessPoint?.organization)}
-                                  onChange={(value) => {
-                                    form.setFieldValue(
-                                      "accessGroups",
-                                      value || ([] as string[])
-                                    );
-                                  }}
-                                  value={form.values?.accessGroups}
-                                  placeholder="Select an access group..."
-                                  single={false}
-                                  autoComplete={"off"}
-                                  autoCorrect={"off"}
-                                /> */}
                                 <FormLabel>Access Groups</FormLabel>
                                 <Select
                                   {...field}
