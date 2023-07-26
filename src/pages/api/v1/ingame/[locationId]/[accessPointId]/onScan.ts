@@ -145,11 +145,13 @@ export default async function handler(
   let allowedGroupRoles = {} as any; // roblox group roles that are allowed
 
   // make a list of allowed group roles from allowed groups
-  const memberInstance = Object.values(organization.members).find(
+  const robloxMemberGroups  = Object.values(organization.members).filter(
     (member: any) => member.type === "roblox-group"
-  ) as any;
-  for (const roleset of memberInstance.groupRoles) {
-    allowedGroupRoles[roleset] = memberInstance;
+  );
+  for (const member of robloxMemberGroups as any) {
+    for (const roleset of member.groupRoles) {
+      allowedGroupRoles[roleset] = member;
+    }
   }
 
   let userGroupRoles = [] as any; // roblox group roles that the user has
@@ -167,6 +169,7 @@ export default async function handler(
   // check if user has any allowed group roles
   for (const role of Object.keys(allowedGroupRoles)) {
     if (userGroupRoles.includes(parseInt(role))) {
+      console.log("user has allowed group role", role);
       isAllowed = true;
       groupScanData = mergician(mergicianOptions)(
         groupScanData,

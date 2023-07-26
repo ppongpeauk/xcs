@@ -186,7 +186,6 @@ export default function PlatformAccessPoint() {
   const getAccessGroupOptions = useCallback(
     (organization: Organization) => {
       if (!organization) return [];
-      console.warn(organization);
       const ags =
         Object.values(organization?.accessGroups as AccessGroup[]) || [];
       interface Group {
