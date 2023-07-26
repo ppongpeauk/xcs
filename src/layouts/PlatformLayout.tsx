@@ -26,9 +26,11 @@ import { auth } from "@/lib/firebase";
 import firebase from "firebase/app";
 import { sendEmailVerification } from "firebase/auth";
 import { usePathname } from "next/navigation";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { user, currentUser, isAuthLoaded } = useAuthContext();
+  const [loading, error] = useAuthState(auth);
   const [sendVerificationEmailLoading, setSendVerificationEmailLoading] =
     useState<boolean>(false);
   const { push } = useRouter();
@@ -37,7 +39,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   // Wait for the router to be ready before checking if the user is logged in
   useEffect(() => {
-    if (!isAuthLoaded) return;
+    if (loading) return;
     // if (pathname.startsWith("/platform/profile")) return;
     if (!user) {
       push("/auth/login?redirect=" + window.location.pathname);
@@ -49,7 +51,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         isClosable: true,
       });
     }
-  }, [isAuthLoaded]);
+  }, [loading]);
 
   // Return nothing if the user is not logged in
   return (
