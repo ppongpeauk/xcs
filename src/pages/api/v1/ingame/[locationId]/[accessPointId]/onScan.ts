@@ -101,7 +101,7 @@ export default async function handler(
   );
 
   // get all organization members that belong to allowed groups
-  var allowedOrganizationMembers = {} as any;
+  let allowedOrganizationMembers = {} as any;
   for (const group of allowedGroups) {
     for (const [memberId, member] of Object.entries(
       organization.members
@@ -135,9 +135,45 @@ export default async function handler(
     }
   }
 
-  const isAllowed = Object.keys(allowedRobloxIds).includes(
+  let isAllowed = Object.keys(allowedRobloxIds).includes(
     userId?.toString() as string
   );
+
+  // check for access through roblox groups
+  // get roblox groups and roles from user
+  let groupScanData = {} as any;
+  let allowedGroupRoles = {} as any; // roblox group roles that are allowed
+
+  // make a list of allowed group roles from allowed groups
+  const memberInstance = Object.values(organization.members).find(
+    (member: any) => member.type === "roblox-group"
+  ) as any;
+  for (const roleset of memberInstance.groupRoles) {
+    allowedGroupRoles[roleset] = memberInstance;
+  }
+
+  let userGroupRoles = [] as any; // roblox group roles that the user has
+  const robloxUserGroups = await fetch(
+    `${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/roblox/groups/v2/users/${userId}/groups/roles`
+  )
+    .then((res) => res.json())
+    .then((groups) => groups.data);
+  if (robloxUserGroups) {
+    for (const group of robloxUserGroups) {
+      userGroupRoles.push(group.role.id);
+    }
+  }
+
+  // check if user has any allowed group roles
+  for (const role of Object.keys(allowedGroupRoles)) {
+    if (userGroupRoles.includes(parseInt(role))) {
+      isAllowed = true;
+      groupScanData = mergician(mergicianOptions)(
+        groupScanData,
+        allowedGroupRoles[role].scanData || {}
+      );
+    }
+  }
 
   // update global statistics
   await dbStatistics.updateOne(
@@ -231,12 +267,11 @@ export default async function handler(
                   },
                   {
                     name: "Scan Time",
-                    value: moment(timestamp.toLocaleString(
-                      "en-US",
-                      {
+                    value: moment(
+                      timestamp.toLocaleString("en-US", {
                         timeZone: "America/New_York",
-                      }
-                    )).format("LLL"),
+                      })
+                    ).format("LLL"),
                   },
                 ],
                 footer: {
@@ -257,7 +292,7 @@ export default async function handler(
     const memberId = allowedRobloxIds[userId as string];
     const memberGroups = allowedOrganizationMembers[memberId as string];
 
-    // group scan data
+    // xcs group scan data
     if (memberGroups) {
       for (const group of Object.values(memberGroups) as any) {
         if (organization.accessGroups[group]?.config?.active) {
@@ -267,6 +302,11 @@ export default async function handler(
           );
         }
       }
+    }
+
+    // roblox group scan data
+    if (groupScanData) {
+      scanData = mergician(mergicianOptions)(scanData, groupScanData);
     }
 
     // user scan data, user scan data overrides group scan data

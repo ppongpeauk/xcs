@@ -58,7 +58,6 @@ import { IoBusiness, IoClipboard, IoSave, IoTime } from "react-icons/io5";
 
 import { agIds, agKV, agNames } from "@/lib/utils";
 import { AccessGroup, Organization } from "@/types";
-import { MultiSelect } from "chakra-multiselect";
 import { AsyncSelect, CreatableSelect, Select } from "chakra-react-select";
 export default function PlatformAccessPoint() {
   const { query, push } = useRouter();
