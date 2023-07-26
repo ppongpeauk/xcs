@@ -14,6 +14,7 @@ import {
   Box,
   Flex,
   Stack,
+  useToast,
 } from "@chakra-ui/react";
 
 // Authentication
@@ -32,6 +33,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     useState<boolean>(false);
   const { push } = useRouter();
   const pathname = usePathname();
+  const toast = useToast();
 
   // Wait for the router to be ready before checking if the user is logged in
   useEffect(() => {
@@ -39,6 +41,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     // if (pathname.startsWith("/platform/profile")) return;
     if (!user) {
       push("/auth/login?redirect=" + window.location.pathname);
+      toast({
+        title: "You are not logged in",
+        description: "Please log in to continue.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
     }
   }, [isAuthLoaded, user, push]);
 
