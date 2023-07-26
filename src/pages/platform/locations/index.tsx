@@ -166,8 +166,6 @@ export default function PlatformLocations() {
                   })) || []
                 }
                 selectedOptionStyle="check"
-                // icon={<FaBuilding />}
-                // iconSize="sm"
               />
             </>
           </FormControl>

@@ -798,6 +798,8 @@ export default function MemberEditModal({
                                               focusedMember.type
                                             ) || focusedMember.role === 3
                                           }
+                                          hideSelectedOptions={false}
+                                          selectedOptionStyle={"check"}
                                         />
                                       </FormControl>
                                     )}

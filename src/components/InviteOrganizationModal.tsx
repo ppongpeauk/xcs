@@ -74,17 +74,20 @@ export default function InviteOrganizationModal({
         initialValues={{ role: { label: "Member", value: 1 }, singleUse: true }}
         onSubmit={(values, actions) => {
           user.getIdToken().then((token: any) => {
-            fetch(`/api/v1/organizations/${organizationId}/create-invite-link`, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-              body: JSON.stringify({
-                singleUse: values.singleUse,
-                role: values.role.value,
-              }),
-            })
+            fetch(
+              `/api/v1/organizations/${organizationId}/create-invite-link`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                  singleUse: values.singleUse,
+                  role: values.role.value,
+                }),
+              }
+            )
               .then((res) => {
                 if (res.status === 200) {
                   return res.json();
@@ -138,25 +141,6 @@ export default function InviteOrganizationModal({
                         <Field name="role">
                           {({ field, form }: any) => (
                             <FormControl>
-                              {/* <FormLabel>Role</FormLabel>
-                              <Select {...field} variant={"outline"}>
-                                <option value={"1"}>Member</option>
-                                <option value={"2"}>Manager</option>
-                              </Select> */}
-                              {/* <MultiSelect
-                                {...field}
-                                label="Role"
-                                options={[
-                                  { label: "Member", value: "1" },
-                                  { label: "Manager", value: "2" },
-                                ]}
-                                onChange={(value) => {
-                                  form.setFieldValue("role", value as string);
-                                }}
-                                value={form.values.role}
-                                placeholder="Select a role..."
-                                single={true}
-                              /> */}
                               <FormLabel>Role</FormLabel>
                               <Select
                                 {...field}
@@ -171,6 +155,8 @@ export default function InviteOrganizationModal({
                                 value={field.value}
                                 placeholder="Select a role..."
                                 single={true}
+                                hideSelectedOptions={false}
+                                selectedOptionStyle={"check"}
                               />
                             </FormControl>
                           )}

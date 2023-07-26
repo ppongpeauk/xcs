@@ -119,9 +119,7 @@ export default function InviteOrganizationRobloxModal({
                 type: "roblox",
                 username: values.username,
 
-                accessGroups: values?.accessGroups?.map(
-                  (ag: any) => ag?.value
-                ),
+                accessGroups: values?.accessGroups?.map((ag: any) => ag?.value),
               }),
             })
               .then((res) => {
@@ -192,9 +190,7 @@ export default function InviteOrganizationRobloxModal({
                           <Select
                             {...field}
                             variant={"outline"}
-                            options={getAccessGroupOptions(
-                              organization
-                            )}
+                            options={getAccessGroupOptions(organization)}
                             onChange={(value) => {
                               form.setFieldValue("accessGroups", value);
                             }}
@@ -202,6 +198,8 @@ export default function InviteOrganizationRobloxModal({
                             placeholder="Select an access group..."
                             isMulti
                             closeMenuOnSelect={false}
+                            hideSelectedOptions={false}
+                            selectedOptionStyle={"check"}
                           />
                         </FormControl>
                       )}
