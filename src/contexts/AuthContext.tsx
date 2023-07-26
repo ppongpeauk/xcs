@@ -48,9 +48,9 @@ export default function AuthProvider({
 
   useEffect(() => {
     setIsAuthLoaded(false);
-    function checkUser() {
+    async function checkUser() {
       // Wait for auth to initialize before checking if the user is logged in
-      waitForAuthInit().then(async () => {
+      await waitForAuthInit().then(async () => {
         setIsAuthLoaded(true);
       });
     }

@@ -49,7 +49,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         isClosable: true,
       });
     }
-  }, [isAuthLoaded, user, push]);
+  }, [isAuthLoaded]);
 
   // Return nothing if the user is not logged in
   return (
