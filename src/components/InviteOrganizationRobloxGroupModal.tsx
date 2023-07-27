@@ -243,7 +243,7 @@ export default function InviteOrganizationRobloxGroupModal({
               },
               body: JSON.stringify({
                 type: "roblox-group",
-                name: values.name,
+                name: values.name || "Group",
                 robloxGroupId: values.robloxGroupId?.value,
                 robloxGroupRoles: values.robloxGroupRoles?.map(
                   (role: any) => role.value
@@ -296,7 +296,6 @@ export default function InviteOrganizationRobloxGroupModal({
             <Form>
               <ModalContent
                 bg={useColorModeValue("white", "gray.800")}
-                maxW={"container.md"}
               >
                 <ModalHeader pb={2}>Add Roblox Group</ModalHeader>
                 <ModalCloseButton />
@@ -318,7 +317,7 @@ export default function InviteOrganizationRobloxGroupModal({
                         </FormControl>
                       )}
                     </Field>
-                    <Stack direction={{ base: "column", md: "row" }} w={"full"}>
+                    <Stack direction={{ base: "column", md: "column" }} w={"full"}>
                       <Field name="robloxGroupId">
                         {({ field, form }: any) => (
                           <FormControl>

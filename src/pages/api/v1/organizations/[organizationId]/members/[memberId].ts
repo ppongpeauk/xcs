@@ -113,7 +113,7 @@ export default async function handler(
       { id: organizationId },
       {
         $set: {
-          [`members.${memberId}.name`]: name || user?.displayName || "Untitled Member Name",
+          [`members.${memberId}.name`]: name || user?.displayName || "Untitled",
           [`members.${memberId}.role`]: role,
           [`members.${memberId}.groupRoles`]: groupRoles !== undefined ? groupRoles : undefined,
           [`members.${memberId}.accessGroups`]: accessGroups,
