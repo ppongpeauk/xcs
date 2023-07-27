@@ -69,10 +69,10 @@ export default function InviteOrganizationRobloxGroupModal({
 
   const getGroupSearchResults = (value: string, callback: any) => {
     user.getIdToken().then((token: any) => {
-      fetch(`/api/v1/roblox/group-search/${value}`, {
+      fetch(`/api/v1/roblox/group-search/${encodeURIComponent(value)}`, {
         method: "GET",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/x-www-form-urlencoded",
         },
       })
         .then((res) => {
@@ -92,6 +92,7 @@ export default function InviteOrganizationRobloxGroupModal({
               value: group.id,
             });
           });
+          console.log(options);
           callback(options);
         })
         .catch((error) => {
@@ -332,6 +333,7 @@ export default function InviteOrganizationRobloxGroupModal({
                               closeMenuOnSelect={true}
                               isClearable={true}
                               size="md"
+                              noOptionsMessage={() => "No search results found."}
                               loadOptions={(inputValue, callback) => {
                                 getGroupSearchResults(inputValue, callback);
                               }}
