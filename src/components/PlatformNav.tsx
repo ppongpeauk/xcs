@@ -4,6 +4,7 @@
 import { Suspense, useEffect, useState } from "react";
 
 // Components
+import DeleteDialog from "@/components/DeleteDialog";
 import Footer from "@/components/Footer";
 import ThemeButton from "@/components/ThemeButton";
 import {
@@ -40,6 +41,7 @@ import {
   PopoverFooter,
   PopoverHeader,
   PopoverTrigger,
+  Skeleton,
   SkeletonCircle,
   Spacer,
   Stack,
@@ -70,7 +72,7 @@ import { MdSensors } from "react-icons/md";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { useRouter } from "next/router";
 
-function AvatarPopover({ currentUser }: { currentUser?: any }) {
+function AvatarPopover({ currentUser, onLogoutOpen }: { currentUser?: any, onLogoutOpen?: any }) {
   const { push } = useRouter();
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -80,9 +82,17 @@ function AvatarPopover({ currentUser }: { currentUser?: any }) {
       <Popover isOpen={isOpen} onOpen={onOpen} onClose={onClose}>
         <PopoverTrigger>
           <Button variant={"unstyled"} h={"full"} onClick={() => {}}>
-            <SkeletonCircle isLoaded={!!currentUser} w={"auto"} h={"auto"}>
-              <Avatar src={currentUser?.avatar} size={"md"} />
-            </SkeletonCircle>
+            <Skeleton
+              isLoaded={!!currentUser}
+              w={"auto"}
+              h={"auto"}
+              // border={"2px solid"}
+              // borderColor={useColorModeValue("gray.200", "gray.700")}
+              borderRadius={"full"}
+              overflow={"hidden"}
+            >
+              <Avatar src={currentUser?.avatar} size={"md"} borderRadius={0} />
+            </Skeleton>
           </Button>
         </PopoverTrigger>
         <PopoverContent
@@ -151,13 +161,13 @@ function AvatarPopover({ currentUser }: { currentUser?: any }) {
                 Settings
               </Button>
               <Button
-                as={NextLink}
-                href={"/auth/logout"}
+                // as={NextLink}
+                // href={"/auth/logout"}
                 variant={"outline"}
                 size={"md"}
                 leftIcon={<BiSolidExit />}
                 onClick={() => {
-                  onClose();
+                  onLogoutOpen();
                 }}
               >
                 Log Out
@@ -177,12 +187,14 @@ const MenuLink = forwardRef((props: any, ref: any) => (
 
 function NavLink({
   href,
+  onClick,
   variant = "ghost",
   pathname,
   children,
   leftIcon,
 }: {
-  href: string;
+  href?: string;
+  onClick?: () => void;
   variant?: string;
   pathname: string;
   children: React.ReactNode;
@@ -190,9 +202,10 @@ function NavLink({
 }) {
   return (
     <Button
-      as={NextLink}
+      as={!onClick ? NextLink : undefined}
+      href={!onClick ? href : undefined}
       variant={pathname === href ? "solid" : variant}
-      href={href}
+      onClick={onClick}
       leftIcon={
         leftIcon ? (
           <Box mr={2} fontSize={"2xl"}>
@@ -207,8 +220,9 @@ function NavLink({
       m={0}
       px={4}
       py={6}
-      rounded={"xl"}
+      rounded={"lg"}
       // fontSize={"lg"}
+      fontWeight={"900"}
       color={
         pathname === href
           ? useColorModeValue("gray.100", "gray.900")
@@ -251,9 +265,26 @@ export default function PlatformNav({
 }) {
   const pathname = usePathname();
   const { currentUser, isAuthLoaded } = useAuthContext();
+  const {
+    isOpen: isLogoutOpen,
+    onOpen: onLogoutOpen,
+    onClose: onLogoutClose,
+  } = useDisclosure();
+  const { push } = useRouter();
 
   return (
     <>
+      <DeleteDialog
+        isOpen={isLogoutOpen}
+        onClose={onLogoutClose}
+        onDelete={() => {
+          onLogoutClose();
+          push("/auth/logout");
+        }}
+        title={"Log Out"}
+        body={"Are you sure you want to log out?"}
+        buttonText={"Log Out"}
+      />
       <Flex
         id="platform-nav"
         as="nav"
@@ -375,7 +406,8 @@ export default function PlatformNav({
           </NavLink>
           {currentUser ? (
             <NavLink
-              href={"/auth/logout"}
+              // href={"/auth/logout"}
+              onClick={onLogoutOpen}
               pathname={pathname}
               leftIcon={<BiSolidExit />}
             >
@@ -438,7 +470,7 @@ export default function PlatformNav({
 
           <HStack align={"center"} justify={"flex-end"} spacing={4}>
             {/* Notifications */}
-            <Popover>
+            {/* <Popover>
               <PopoverTrigger>
                 <Button
                   variant={"unstyled"}
@@ -467,10 +499,10 @@ export default function PlatformNav({
                   <Text fontSize={"md"}>The service is unavailable.</Text>
                 </PopoverBody>
               </PopoverContent>
-            </Popover>
+            </Popover> */}
 
             {/* Avatar */}
-            <AvatarPopover currentUser={currentUser} />
+            <AvatarPopover currentUser={currentUser} onLogoutOpen={onLogoutOpen} />
 
             {/* Theme Button */}
             {/* <Box display={{ base: "none", md: "flex" }}>

@@ -1,13 +1,16 @@
 import { useAuthContext } from "@/contexts/AuthContext";
 import Layout from "@/layouts/PlatformLayout";
 import {
+  Avatar,
   Box,
   Card,
   CardHeader,
   Container,
+  Flex,
   Heading,
   SimpleGrid,
   Skeleton,
+  Stack,
   Stat,
   StatArrow,
   StatGroup,
@@ -51,9 +54,8 @@ export default function PlatformHome() {
   const [stats, setStats] = useState({ total: 0, granted: 0, denied: 0 });
   const randomSubGreetings = [
     "Securing your facility starts here.",
-    "The first step towards a safer space.",
     "Building trust through access.",
-    "Managing access with ease.", 
+    "Managing access with ease.",
     "Security made simple.",
     "Where security meets flexibility.",
     "Take control of your entry points.",
@@ -66,10 +68,9 @@ export default function PlatformHome() {
     "Intelligent access management.",
     "Seamless security, happy users.",
     "Making security seamless.",
-    "Peace of mind, delivered daily.",
     "The intersection of access and trust.",
     "Balancing security and convenience.",
-    "Let us handle access so you can focus on your work."
+    "Let us handle access so you can focus on your work.",
   ];
 
   const [randomSubGreeting, setRandomSubGreeting] = useState("");
@@ -109,13 +110,33 @@ export default function PlatformHome() {
         {/* Greeting */}
         <Box id={"greeting"}>
           <Skeleton isLoaded={!!currentUser}>
-            <Text fontSize={"4xl"}>
-              Good {new Date().getHours() < 12 ? "morning" : "afternoon"},{" "}
-              {currentUser?.displayName || currentUser?.username}.
-            </Text>
-            <Text fontSize={"xl"} color={"gray.500"}>
-              {randomSubGreeting}
-            </Text>
+            <Stack
+              direction={{ base: "column", md: "row" }}
+              spacing={8}
+              align={"center"}
+              justify={{
+                base: "center",
+                md: "flex-start",
+              }}
+            >
+              <Box
+                border={"2px solid"}
+                borderColor={useColorModeValue("gray.200", "gray.700")}
+                borderRadius={"full"}
+                overflow={"hidden"}
+              >
+                <Avatar borderRadius={0} size={"2xl"} src={currentUser?.avatar} />
+              </Box>
+              <Box>
+                <Heading fontSize={"4xl"}>
+                  Good {new Date().getHours() < 12 ? "morning" : "afternoon"},{" "}
+                  {currentUser?.displayName || currentUser?.username}.
+                </Heading>
+                <Text fontSize={"xl"} color={"gray.500"}>
+                  {randomSubGreeting}
+                </Text>
+              </Box>
+            </Stack>
           </Skeleton>
           <Box py={8}>
             <Skeleton isLoaded={!!stats.total}>
@@ -148,9 +169,9 @@ export default function PlatformHome() {
               <Skeleton isLoaded={!!stats.denied}>
                 <StatBox
                   label={"Failed Scans"}
-                  value={`${stats.denied} scan${stats.denied > 1 ? "s" : ""} (${
-                    Math.round((stats.denied / stats.total) * 100)
-                  }%)`}
+                  value={`${stats.denied} scan${
+                    stats.denied > 1 ? "s" : ""
+                  } (${Math.round((stats.denied / stats.total) * 100)}%)`}
                   helper={"Scans that were denied."}
                 />
               </Skeleton>
