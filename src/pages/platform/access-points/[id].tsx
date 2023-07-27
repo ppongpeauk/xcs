@@ -170,7 +170,7 @@ export default function PlatformAccessPoint() {
     if (!user) return;
     if (!query.id) return;
     refreshData();
-  }, [query.id]);
+  }, [query.id, user]);
 
   const getAccessGroupType = (ag: AccessGroup) => {
     if (ag.type === "organization") {
