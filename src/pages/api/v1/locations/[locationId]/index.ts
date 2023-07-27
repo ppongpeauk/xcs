@@ -213,10 +213,16 @@ export default async function handler(
     await accessPoints.deleteMany({ locationId: locationId });
 
     // Delete Access Groups
-    await organizations.updateOne(
-      { id: organization.id },
-      { $pull: { accessGroups: { locationId: locationId } } }
-    );
+    const accessGroups = organization.accessGroups;
+    for (const accessGroupId in accessGroups) {
+      const accessGroup = accessGroups[accessGroupId];
+      if (accessGroup.locationId === location.id) {
+        await organizations.updateOne(
+          { id: organization.id },
+          { $unset: { [`accessGroups.${accessGroupId}`]: "" } }
+        );
+      }
+    }
 
     // Log Deletion
     await organizations.updateOne(
