@@ -149,8 +149,12 @@ export default async function handler(
     (member: any) => member.type === "roblox-group"
   );
   for (const member of robloxMemberGroups as any) {
-    for (const roleset of member.groupRoles) {
-      allowedGroupRoles[roleset] = member;
+    for (const accessGroup of member.accessGroups) {
+      if (allowedGroups.includes(accessGroup)) {
+        for (const roleset of member.groupRoles) {
+          allowedGroupRoles[roleset] = member;
+        }
+      }
     }
   }
 
