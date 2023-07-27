@@ -68,7 +68,7 @@ export default async function handler(
     // Character limits
     if (body.name !== undefined) {
       body.name = body.name.trim();
-      if (member.role <= 2 && body.name !== location.name) {
+      if (member.role < 2 && body.name !== location.name) {
         return res.status(401).json({ message: "Unauthorized." });
       }
       if (body.name.length > 32 || body.name.length < 1) {
@@ -80,7 +80,7 @@ export default async function handler(
 
     if (body.description) {
       body.description = body.description.trim();
-      if (member.role <= 2 && body.description !== location.description) {
+      if (member.role < 2 && body.description !== location.description) {
         return res.status(401).json({ message: "Unauthorized." });
       }
       if (body.description.length > 256) {
@@ -110,7 +110,7 @@ export default async function handler(
 
       // check if user has organization permissions to change universe id
       if (
-        member.role <= 2 &&
+        member.role < 2 &&
         body.roblox.universe.id !== location.roblox.universe.id
       ) {
         return res.status(401).json({ message: "Unauthorized." });
@@ -211,6 +211,12 @@ export default async function handler(
 
     // Delete Access Points
     await accessPoints.deleteMany({ locationId: locationId });
+
+    // Delete Access Groups
+    await organizations.updateOne(
+      { id: organization.id },
+      { $pull: { accessGroups: { locationId: locationId } } }
+    );
 
     // Log Deletion
     await organizations.updateOne(

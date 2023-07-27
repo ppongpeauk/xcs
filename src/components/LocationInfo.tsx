@@ -241,7 +241,7 @@ export default function LocationInfo({
                           autoComplete="off"
                           placeholder="Location Name"
                           variant={"outline"}
-                          isDisabled={location?.self.role <= 2}
+                          isDisabled={location?.self.role < 2}
                         />
                       </InputGroup>
                     </FormControl>
@@ -258,7 +258,7 @@ export default function LocationInfo({
                           autoComplete="off"
                           placeholder="Location Description"
                           variant={"outline"}
-                          isDisabled={location?.self.role <= 2}
+                          isDisabled={location?.self.role < 2}
                           maxH={"240px"}
                         />
                       </InputGroup>
@@ -281,7 +281,7 @@ export default function LocationInfo({
                           variant={"outline"}
                           // isDisabled={true}
                           isDisabled={
-                            location?.self.role <= 2 ||
+                            location?.self.role < 2 ||
                             location?.roblox?.universe?.id !== null
                           }
                         />
@@ -302,7 +302,7 @@ export default function LocationInfo({
                           placeholder="Enabled"
                           variant={"outline"}
                           defaultChecked={location?.enabled}
-                          isDisabled={location?.self.role <= 2}
+                          isDisabled={location?.self.role < 2}
                         />
                       </InputGroup>
                     </FormControl>
@@ -318,7 +318,7 @@ export default function LocationInfo({
                     isLoading={props.isSubmitting}
                     leftIcon={<IoSave />}
                     type={"submit"}
-                    isDisabled={location?.self.role <= 2}
+                    isDisabled={location?.self.role < 2}
                   >
                     Save Changes
                   </Button>
@@ -327,7 +327,7 @@ export default function LocationInfo({
                     onClick={downloadStarterPack}
                     isLoading={packLoading}
                     leftIcon={<BsFillCloudDownloadFill />}
-                    isDisabled={location?.self.role <= 2}
+                    isDisabled={location?.self.role < 2}
                   >
                     Download Template
                   </Button>
@@ -337,7 +337,7 @@ export default function LocationInfo({
                     mb={2}
                     onClick={onDeleteDialogOpen}
                     leftIcon={<IoIosRemoveCircle />}
-                    isDisabled={location?.self.role <= 2}
+                    isDisabled={location?.self.role < 2}
                   >
                     Delete
                   </Button>
