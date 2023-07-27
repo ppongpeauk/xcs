@@ -192,11 +192,6 @@ export default async function handler(
 
     const createMongoUser = await users
       .insertOne({
-        // name: {
-        //   first: firstName,
-        //   last: lastName,
-        //   privacyLevel: 2,
-        // },
         displayName: displayName,
         email: {
           address: email,

@@ -2,18 +2,18 @@ import Footer from "@/components/Footer";
 import Nav from "@/components/Nav";
 import Section from "@/components/section";
 import {
-    Box,
-    Button,
-    Flex,
-    FormControl,
-    FormLabel,
-    Input,
-    InputGroup,
-    InputLeftElement,
-    Link,
-    Text,
-    useColorModeValue,
-    useToast,
+  Box,
+  Button,
+  Flex,
+  FormControl,
+  FormLabel,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  Link,
+  Text,
+  useColorModeValue,
+  useToast,
 } from "@chakra-ui/react";
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 import { Field, Form, Formik } from "formik";
@@ -68,7 +68,7 @@ export default function Recover() {
                 "unset",
                 useColorModeValue("gray.200", "gray.700"),
               ]}
-              rounded={"xl"}
+              rounded={"lg"}
               w={["full", "md"]}
             >
               <Box w={"full"} px={8}>

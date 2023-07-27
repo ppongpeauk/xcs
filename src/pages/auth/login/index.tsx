@@ -9,32 +9,32 @@ import Footer from "@/components/Footer";
 import Nav from "@/components/Nav";
 import Section from "@/components/section";
 import {
-    Box,
-    Button,
-    Checkbox,
-    Container,
-    Flex,
-    FormControl,
-    FormErrorMessage,
-    FormHelperText,
-    FormLabel,
-    Image,
-    Input,
-    InputGroup,
-    InputLeftElement,
-    Link,
-    Modal,
-    ModalBody,
-    ModalCloseButton,
-    ModalContent,
-    ModalFooter,
-    ModalHeader,
-    ModalOverlay,
-    Spacer,
-    Text,
-    useColorModeValue,
-    useDisclosure,
-    useToast,
+  Box,
+  Button,
+  Checkbox,
+  Container,
+  Flex,
+  FormControl,
+  FormErrorMessage,
+  FormHelperText,
+  FormLabel,
+  Image,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  Link,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Spacer,
+  Text,
+  useColorModeValue,
+  useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
 import NextLink from "next/link";
@@ -89,17 +89,17 @@ export default function Login() {
           <meta name="og:locale" content="en_US" />
         </Head>
         <Nav />
-        <Modal onClose={onClose} isOpen={isOpen} isCentered>
+        <Modal onClose={onClose} isOpen={isOpen} isCentered size={"lg"}>
           <ModalOverlay />
           <ModalContent bg={useColorModeValue("white", "gray.800")}>
-            <ModalHeader>Frequently Asked Questions</ModalHeader>
+            <ModalHeader>Frequently Asked Questions (FAQ)</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
               <>
                 <Text fontWeight={"bold"}>What is XCS?</Text>
                 <Text>
                   EVE XCS is an online access point control platform developed
-                  by Restrafes & Co. that allows organizations to manage and
+                  by RESTRAFES & CO. that allows organizations to manage and
                   control access to their facilities remotely.
                 </Text>
               </>
@@ -140,7 +140,7 @@ export default function Login() {
                   "unset",
                   useColorModeValue("gray.200", "gray.700"),
                 ]}
-                rounded={"xl"}
+                rounded={"lg"}
                 w={["full", "md"]}
               >
                 <Box w={"full"} px={8}>

@@ -135,7 +135,7 @@ export default function InvitePlatformModal({
               body: JSON.stringify({
                 maxUses: values.maxUses,
                 code: values.code,
-                senderId: values.senderId?.value?.value || currentUser?.id,
+                senderId: values.senderId?.value,
                 comment: values.comment,
               }),
             })

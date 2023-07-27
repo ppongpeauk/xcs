@@ -7,6 +7,13 @@ import { useRouter } from "next/router";
 // Authentication
 import { useAuthContext } from "@/contexts/AuthContext";
 
+// Chakra UI
+import {
+  Center,
+  Spinner,
+  useToast,
+} from "@chakra-ui/react";
+
 export default function Logout() {
   const router = useRouter();
   const { logOut } = useAuthContext();
@@ -18,9 +25,9 @@ export default function Logout() {
 
   return (
     <>
-      <p>
-        You have been logged out. You will be redirected to the home page in a few seconds.
-      </p>
+      <Center h="100vh">
+        <Spinner size={"xl"} />
+      </Center>
     </>
   );
 }
