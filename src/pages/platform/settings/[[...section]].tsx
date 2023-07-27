@@ -158,7 +158,7 @@ export default function Settings() {
                     setIndex(3);
                   }}
                 >
-                  Admin
+                  Admin Settings
                 </MenuItem>
               )}
             </MenuList>
@@ -191,7 +191,7 @@ export default function Settings() {
             </StyledTab>
             {currentUser?.platform.staff && (
               <StyledTab index={3} icon={RiAdminFill}>
-                <Text>Admin</Text>
+                <Text>Admin Settings</Text>
               </StyledTab>
             )}
           </TabList>

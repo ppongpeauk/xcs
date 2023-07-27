@@ -1,5 +1,7 @@
 import admin from "firebase-admin";
+import { getDownloadURL, getStorage } from "firebase-admin/storage";
 import { useEffect } from "react";
+const sharp = require("sharp");
 
 function b64_to_utf8(str: string) {
   return decodeURIComponent(escape(atob(str)));
@@ -7,7 +9,7 @@ function b64_to_utf8(str: string) {
 
 const serviceAccount = {
   auth_provider_x509_cert_url:
-    process.env.FIREBASE_ADMIN_auth_provider_x509_cert_url,
+  process.env.FIREBASE_ADMIN_auth_provider_x509_cert_url,
   auth_uri: process.env.FIREBASE_ADMIN_auth_uri,
   client_email: process.env.FIREBASE_ADMIN_client_email,
   client_id: process.env.FIREBASE_ADMIN_client_id,
@@ -30,7 +32,10 @@ const app = () => {
 
 app();
 
-export { admin, app };
+const bucket = getStorage().bucket("xcs-v2.appspot.com");
+// admin.storage().bucket("xcs-v2").upload("test.txt");
+
+export { admin, app, bucket };
 
 export async function tokenToID(token: string) {
   if (!token) {
@@ -43,4 +48,34 @@ export async function tokenToID(token: string) {
     console.log(error);
     return null;
   }
+}
+
+export async function uploadProfilePicture(uid: string, picture: string) {
+  // upload profile picture function
+  // picture is passed as base64 string
+
+  // convert to buffer
+  // const buffer = Buffer.from(picture, "base64");
+
+  // upload to firebase storage
+  const file = bucket.file(`profile-pictures/${uid}.jpeg`);
+
+  await file.save(picture, {
+    metadata: {
+      contentType: "image/jpeg",
+    },
+  }).then(() => {
+    console.log("Uploaded profile picture");
+  }).catch((error) => {
+    console.log(error);
+  });
+
+  // get permanent url using getDownloadURL
+  const url = await getDownloadURL(file).then((url) => {
+    return url;
+  }).catch((error) => {
+    console.log(error);
+  });
+
+  return url;
 }

@@ -1,7 +1,16 @@
 import { authToken } from "@/lib/auth";
 import clientPromise from "@/lib/mongodb";
-import { tokenToID } from "@/pages/api/firebase";
+import { tokenToID, uploadProfilePicture } from "@/pages/api/firebase";
 import { NextApiRequest, NextApiResponse } from "next";
+const sharp = require("sharp");
+
+export const config = {
+  api: {
+      bodyParser: {
+          sizeLimit: '4mb'
+      }
+  }
+}
 
 export default async function handler(
   req: NextApiRequest,
@@ -58,6 +67,26 @@ export default async function handler(
     const timestamp = new Date();
 
     req.body.lastUpdatedAt = timestamp;
+
+    // check if avatar is valid
+    if (req.body.avatar) {
+      let avatar = req.body.avatar;
+      const imageData = Buffer.from(avatar.split(",")[1], "base64");
+      const image = await sharp(imageData)
+        .resize(256, 256)
+        .jpeg({quality: 1})
+        .toBuffer();
+      // avatar = `data:image/jpeg;base64,${image.toString("base64")}`;
+
+      // upload to firebase
+      const url = await uploadProfilePicture(uid, image)
+        .then((url) => {
+          req.body.avatar = url;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
 
     await users.updateOne({ id: uid }, { $set: req.body });
 

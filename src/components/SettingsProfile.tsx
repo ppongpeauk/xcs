@@ -29,15 +29,56 @@ import { IoSave } from "react-icons/io5";
 export default function SettingsProfile() {
   const { currentUser, refreshCurrentUser, user, isAuthLoaded } =
     useAuthContext();
+
+  const defaultImage = `${process.env.NEXT_PUBLIC_ROOT_URL}/images/default-avatar.png`;
   const [image, setImage] = useState<null | undefined | string>(undefined);
   const [croppedImage, setCroppedImage] = useState<null | string>(null);
+  
   const toast = useToast();
 
   const avatarChooser = useRef<HTMLInputElement>(null);
 
+  const handleChange = useCallback( async (e: any) => {
+    console.log(e.target.files[0]);
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    
+    // check if file is an image
+    if (file.type.split("/")[0] !== "image") {
+      toast({
+        title: "File is not an image.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    reader.onloadend = () => {
+      setImage(reader.result as string);
+    }
+  }, []);
+  
+  const removeAvatar = useCallback(() => {
+    // download default avatar and set it as the image
+    fetch(defaultImage)
+      .then((res) => res.blob())
+      .then((blob) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(blob);
+        reader.onloadend = () => {
+          setImage(reader.result as string);
+        }
+      }
+    );
+    
+  }, []);
+
   useEffect(() => {
     if (!currentUser) return;
-    setCroppedImage(currentUser?.avatar);
+    setImage(currentUser?.avatar);
   }, [currentUser]);
 
   return (
@@ -61,6 +102,7 @@ export default function SettingsProfile() {
                   body: JSON.stringify({
                     displayName: values.displayName,
                     bio: values.bio,
+                    avatar: image !== currentUser?.avatar ? image : undefined,
                   }),
                 })
                   .then((res) => {
@@ -104,18 +146,17 @@ export default function SettingsProfile() {
                     w={"fit-content"}
                     h={"fit-content"}
                   >
-                    <Avatar size={"2xl"} src={croppedImage || ""} />
+                    <Avatar size={"2xl"} src={image || ""} />
                   </SkeletonCircle>
                   <VStack ml={4} align={"center"} justify={"center"}>
                     <Input
-                      isDisabled={true}
                       ref={avatarChooser}
+                      onChange={handleChange}
                       display={"none"}
                       type={"file"}
                       accept="image/*"
                     />
                     <Button
-                      isDisabled={true}
                       variant={"outline"}
                       size={"sm"}
                       onClick={() => {
@@ -125,11 +166,10 @@ export default function SettingsProfile() {
                       Choose Avatar
                     </Button>
                     <Button
-                      isDisabled={true}
                       variant={"outline"}
                       size={"sm"}
                       onClick={() => {
-                        setImage(null);
+                        removeAvatar();
                       }}
                     >
                       Remove Avatar
