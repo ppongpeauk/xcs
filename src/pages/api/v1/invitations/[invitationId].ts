@@ -50,7 +50,7 @@ export default async function handler(
       invitation.organization = organization;
     } else if (invitation?.type === "xcs") {
       if (invitation.uses >= invitation.maxUses) {
-        await invitations.deleteOne({ inviteCode: invitationId });
+        // await invitations.deleteOne({ inviteCode: invitationId });
         return res.status(404).json({
           valid: false,
           message: "This invitation has reached its maximum uses.",
