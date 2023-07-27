@@ -796,7 +796,7 @@ export default function MemberEditModal({
                                           isDisabled={
                                             ["roblox", "roblox-group"].includes(
                                               focusedMember.type
-                                            ) || focusedMember.role === 3
+                                            ) || focusedMember.role === 3 || focusedMember === clientMember
                                           }
                                           hideSelectedOptions={false}
                                           selectedOptionStyle={"check"}
