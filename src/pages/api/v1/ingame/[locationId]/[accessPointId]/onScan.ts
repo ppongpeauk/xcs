@@ -284,7 +284,9 @@ export default async function handler(
                   },
                   {
                     name: "Scan Time",
-                    value: moment(timestamp).format("LLL"),
+                    value: timestamp.toLocaleString("en-US", {
+                      timeZone: "America/New_York",
+                    }),
                   },
                 ],
                 footer: {
