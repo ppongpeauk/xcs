@@ -234,7 +234,7 @@ export default async function handler(
           verified: false,
           verifiedAt: null,
         },
-        avatar: null,
+        avatar: `${process.env.NEXT_PUBLIC_ROOT_URL}/images/default-avatar.png`,
         bio: null,
         id: firebaseUser.uid,
         createdAt: new Date(),
