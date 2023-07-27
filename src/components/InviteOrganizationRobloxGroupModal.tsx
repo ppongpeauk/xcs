@@ -92,7 +92,6 @@ export default function InviteOrganizationRobloxGroupModal({
               value: group.id,
             });
           });
-          console.log(options);
           callback(options);
         })
         .catch((error) => {
@@ -233,7 +232,6 @@ export default function InviteOrganizationRobloxGroupModal({
           accessGroups: [],
         }}
         onSubmit={(values, actions) => {
-          console.log(values);
           user.getIdToken().then((token: any) => {
             fetch(`/api/v1/organizations/${organization.id}/members`, {
               method: "POST",
