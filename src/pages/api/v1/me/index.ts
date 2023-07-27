@@ -74,7 +74,7 @@ export default async function handler(
       const imageData = Buffer.from(avatar.split(",")[1], "base64");
       const image = await sharp(imageData)
         .resize(256, 256)
-        .jpeg({quality: 1})
+        .jpeg({quality: 80})
         .toBuffer();
       // avatar = `data:image/jpeg;base64,${image.toString("base64")}`;
 
