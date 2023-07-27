@@ -32,6 +32,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
+import SettingsAdmin from "@/components/SettingsAdmin";
 import SettingsAppearance from "@/components/SettingsAppearance";
 import SettingsLinkedAccounts from "@/components/SettingsLinkedAccounts";
 import SettingsProfile from "@/components/SettingsProfile";
@@ -39,8 +40,17 @@ import { HamburgerIcon } from "@chakra-ui/icons";
 import { BiSolidUserBadge, BiSolidUserDetail } from "react-icons/bi";
 import { FaIdBadge, FaLink, FaPaintBrush } from "react-icons/fa";
 import { FiExternalLink } from "react-icons/fi";
+import { RiAdminFill } from "react-icons/ri";
 
-function StyledTab({ children, index, icon }: { children: React.ReactNode, index: number, icon?: any }) {
+function StyledTab({
+  children,
+  index,
+  icon,
+}: {
+  children: React.ReactNode;
+  index: number;
+  icon?: any;
+}) {
   const { push } = useRouter();
 
   return (
@@ -64,12 +74,10 @@ function StyledTab({ children, index, icon }: { children: React.ReactNode, index
         color: useColorModeValue("black", "gray.900"),
       }}
       onClick={() => {
-        push(`/platform/settings/${index + 1}`)
+        push(`/platform/settings/${index + 1}`);
       }}
     >
-      {
-        icon ? <Icon as={icon} mr={2} /> : null
-      }
+      {icon ? <Icon as={icon} mr={2} /> : null}
       {children}
     </Tab>
   );
@@ -113,9 +121,7 @@ export default function Settings() {
         <meta property="og:title" content="Settings" />
       </Head>
       <Container maxW={"full"} p={8}>
-        <Heading>
-          Settings
-        </Heading>
+        <Heading>Settings</Heading>
         <Box display={{ base: "block", md: "none" }} pt={4}>
           <Menu>
             <MenuButton
@@ -146,6 +152,15 @@ export default function Settings() {
               >
                 Linked Accounts
               </MenuItem>
+              {currentUser?.platform.staff && (
+                <MenuItem
+                  onClick={() => {
+                    setIndex(3);
+                  }}
+                >
+                  Admin
+                </MenuItem>
+              )}
             </MenuList>
           </Menu>
         </Box>
@@ -174,13 +189,16 @@ export default function Settings() {
             <StyledTab index={2} icon={FiExternalLink}>
               <Text>Linked Accounts</Text>
             </StyledTab>
+            {currentUser?.platform.staff && (
+              <StyledTab index={3} icon={RiAdminFill}>
+                <Text>Admin</Text>
+              </StyledTab>
+            )}
           </TabList>
 
           <TabPanels px={{ base: 0, md: 8 }}>
             <TabPanel p={0}>
-              <Heading>
-                Profile
-              </Heading>
+              <Heading>Profile</Heading>
               <Text fontSize={"md"} color={"gray.500"}>
                 This is how you appear to other users.
               </Text>
@@ -188,9 +206,7 @@ export default function Settings() {
               <SettingsProfile />
             </TabPanel>
             <TabPanel p={0}>
-              <Heading>
-                Appearance
-              </Heading>
+              <Heading>Appearance</Heading>
               <Text fontSize={"md"} color={"gray.500"}>
                 Customize the appearance of the website.
               </Text>
@@ -198,16 +214,21 @@ export default function Settings() {
               <SettingsAppearance />
             </TabPanel>
             <TabPanel p={0}>
-              <Heading>
-                Linked Accounts
-              </Heading>
+              <Heading>Linked Accounts</Heading>
               <Text fontSize={"md"} color={"gray.500"}>
                 Link your accounts to verify your identity.
               </Text>
               <Divider mt={4} mb={8} />
               <SettingsLinkedAccounts />
             </TabPanel>
-            <TabPanel p={0}></TabPanel>
+            <TabPanel p={0}>
+              <Heading>Admin Settings</Heading>
+              <Text fontSize={"md"} color={"gray.500"}>
+                Super secret admin settings.
+              </Text>
+              <Divider mt={4} mb={8} />
+              <SettingsAdmin />
+            </TabPanel>
           </TabPanels>
         </Tabs>
       </Container>

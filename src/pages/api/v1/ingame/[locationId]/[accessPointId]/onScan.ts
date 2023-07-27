@@ -238,7 +238,7 @@ export default async function handler(
           member.roblox = user?.roblox;
           member.avatar = user?.avatar;
         }
-
+        
         const avatarUrl = `${process.env.NEXT_PUBLIC_ROOT_URL}/images/logo-square.jpeg`;
         const webhookRes = await fetch(webhook.url, {
           method: "POST",
