@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import Layout from "@/layouts/PlatformLayout";
+import { ChevronRightIcon } from "@chakra-ui/icons";
 import {
   Accordion,
   AccordionButton,
@@ -7,6 +8,10 @@ import {
   AccordionItem,
   AccordionPanel,
   Box,
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbSeparator,
   Button,
   Code,
   Container,
@@ -31,22 +36,16 @@ import {
   Switch,
   Text,
   Textarea,
+  chakra,
   useClipboard,
   useColorModeValue,
-} from "@chakra-ui/react";
-import Head from "next/head";
-import { useRouter } from "next/router";
-import { useCallback, useEffect, useState } from "react";
-
-import { ChevronRightIcon } from "@chakra-ui/icons";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbSeparator,
   useDisclosure,
 } from "@chakra-ui/react";
+import Editor from "@monaco-editor/react";
+import Head from "next/head";
 import NextLink from "next/link";
+import { useRouter } from "next/router";
+import { useCallback, useEffect, useState } from "react";
 
 import { useAuthContext } from "@/contexts/AuthContext";
 
@@ -59,10 +58,13 @@ import { IoBusiness, IoClipboard, IoSave, IoTime } from "react-icons/io5";
 import { agIds, agKV, agNames } from "@/lib/utils";
 import { AccessGroup, Organization } from "@/types";
 import { AsyncSelect, CreatableSelect, Select } from "chakra-react-select";
+
+const ChakraEditor = chakra(Editor);
 export default function PlatformAccessPoint() {
   const { query, push } = useRouter();
   const { user } = useAuthContext();
   const [accessPoint, setAccessPoint] = useState<any>(null);
+  const themeBorderColor = useColorModeValue("gray.200", "gray.700");
   const toast = useToast();
   const {
     hasCopied: clipboardHasCopied,
@@ -183,55 +185,61 @@ export default function PlatformAccessPoint() {
     }
   };
 
-  const getAccessGroupOptions = useCallback((organization: Organization) => {
-    if (!organization) return [];
-    const ags =
-      Object.values(organization?.accessGroups as AccessGroup[]) || [];
-    interface Group {
-      label: string;
-      options: {
+  const getAccessGroupOptions = useCallback(
+    (organization: Organization) => {
+      if (!organization) return [];
+      const ags =
+        Object.values(organization?.accessGroups as AccessGroup[]) || [];
+      interface Group {
         label: string;
-        value: string;
-      }[];
-    }
-    let groups = [] as any;
+        options: {
+          label: string;
+          value: string;
+        }[];
+      }
+      let groups = [] as any;
 
-    ags.forEach((ag: AccessGroup) => {
-      // check if the group is an organization or if it's associated with the location
-      if (ag.type === "organization" || ag.locationId === accessPoint?.location?.id) {
-        // check if the group is already in the groups object
-        if (groups.find((g: Group) => g.label === getAccessGroupType(ag))) {
-          // if it is, add the option to the options array
-          groups
-            .find((g: Group) => g.label === getAccessGroupType(ag))
-            .options.push({
-              label: ag.name,
-              value: ag.id,
-            });
-        } else {
-          // if it's not, add the group to the groups array
-          groups.push({
-            label: getAccessGroupType(ag),
-            options: [
-              {
+      ags.forEach((ag: AccessGroup) => {
+        // check if the group is an organization or if it's associated with the location
+        if (
+          ag.type === "organization" ||
+          ag.locationId === accessPoint?.location?.id
+        ) {
+          // check if the group is already in the groups object
+          if (groups.find((g: Group) => g.label === getAccessGroupType(ag))) {
+            // if it is, add the option to the options array
+            groups
+              .find((g: Group) => g.label === getAccessGroupType(ag))
+              .options.push({
                 label: ag.name,
                 value: ag.id,
-              },
-            ],
-          });
+              });
+          } else {
+            // if it's not, add the group to the groups array
+            groups.push({
+              label: getAccessGroupType(ag),
+              options: [
+                {
+                  label: ag.name,
+                  value: ag.id,
+                },
+              ],
+            });
+          }
         }
-      }
-    });
+      });
 
-    // sort the groups so organizations are at the bottom
-    groups.sort((a: Group, b: Group) => {
-      if (a.label === "Organization") return 1;
-      if (b.label === "Organization") return -1;
-      return 0;
-    });
+      // sort the groups so organizations are at the bottom
+      groups.sort((a: Group, b: Group) => {
+        if (a.label === "Organization") return 1;
+        if (b.label === "Organization") return -1;
+        return 0;
+      });
 
-    return groups;
-  }, [accessPoint]);
+      return groups;
+    },
+    [accessPoint]
+  );
 
   return (
     <>
@@ -250,7 +258,7 @@ export default function PlatformAccessPoint() {
         onClose={onDeleteDialogClose}
         onDelete={onDelete}
       />
-      <Box maxW={"container.sm"} p={8}>
+      <Box maxW={"container.md"} p={8}>
         <Skeleton isLoaded={accessPoint}>
           <Breadcrumb
             display={{ base: "none", md: "flex" }}
@@ -329,6 +337,16 @@ export default function PlatformAccessPoint() {
               alwaysAllowedUsers: JSON.stringify(
                 accessPoint?.config?.alwaysAllowed?.users
               ),
+              scanDataDisarmed: JSON.stringify(
+                accessPoint?.config?.scanData?.disarmed || {},
+                null,
+                3
+              ),
+              scanDataReady: JSON.stringify(
+                accessPoint?.config?.scanData?.ready || {},
+                null,
+                3
+              ),
               webhookUrl: accessPoint?.config?.webhook?.url,
               webhookEventGranted: accessPoint?.config?.webhook?.eventGranted,
               webhookEventDenied: accessPoint?.config?.webhook?.eventDenied,
@@ -361,6 +379,11 @@ export default function PlatformAccessPoint() {
                         url: values.webhookUrl,
                         eventGranted: values.webhookEventGranted,
                         eventDenied: values.webhookEventDenied,
+                      },
+
+                      scanData: {
+                        disarmed: JSON.parse(values.scanDataDisarmed),
+                        ready: JSON.parse(values.scanDataReady),
                       },
                     },
                   }),
@@ -444,6 +467,33 @@ export default function PlatformAccessPoint() {
                 <Heading as={"h2"} fontSize={"xl"} fontWeight={"900"} py={2}>
                   Configuration
                 </Heading>
+                <Stack direction={{ base: "column", md: "row" }} spacing={2}>
+                  <Field name="accessGroups">
+                    {({ field, form }: any) => (
+                      <FormControl w={"fit-content"} maxW={"75%"}>
+                        <Skeleton isLoaded={accessPoint}>
+                          <FormLabel>Access Groups</FormLabel>
+                          <Select
+                            {...field}
+                            name="accessGroups"
+                            options={getAccessGroupOptions(
+                              accessPoint?.organization
+                            )}
+                            placeholder="Select an access group..."
+                            onChange={(value) => {
+                              form.setFieldValue("accessGroups", value);
+                            }}
+                            value={field?.value}
+                            isMulti
+                            closeMenuOnSelect={false}
+                            hideSelectedOptions={false}
+                            selectedOptionStyle={"check"}
+                          />
+                        </Skeleton>
+                      </FormControl>
+                    )}
+                  </Field>
+                </Stack>
                 <Accordion defaultIndex={[0]} py={2}>
                   <AccordionItem>
                     <h2>
@@ -543,7 +593,7 @@ export default function PlatformAccessPoint() {
                     <h2>
                       <AccordionButton>
                         <Box as="span" flex="1" textAlign="left">
-                          Permissions
+                          Scan Data
                         </Box>
                         <AccordionIcon />
                       </AccordionButton>
@@ -553,20 +603,23 @@ export default function PlatformAccessPoint() {
                         direction={{ base: "column", md: "row" }}
                         spacing={2}
                       >
-                        <Field name="accessGroups">
+                        {/* <Field name="accessGroupsDisarmed">
                           {({ field, form }: any) => (
                             <FormControl w={"fit-content"} maxW={"75%"}>
                               <Skeleton isLoaded={accessPoint}>
-                                <FormLabel>Access Groups</FormLabel>
+                                <FormLabel>Access Groups (Disarmed)</FormLabel>
                                 <Select
                                   {...field}
-                                  name="accessGroups"
+                                  name="accessGroupsDisarmed"
                                   options={getAccessGroupOptions(
                                     accessPoint?.organization
                                   )}
                                   placeholder="Select an access group..."
                                   onChange={(value) => {
-                                    form.setFieldValue("accessGroups", value);
+                                    form.setFieldValue(
+                                      "accessGroupsDisarmed",
+                                      value
+                                    );
                                   }}
                                   value={field?.value}
                                   isMulti
@@ -574,6 +627,98 @@ export default function PlatformAccessPoint() {
                                   hideSelectedOptions={false}
                                   selectedOptionStyle={"check"}
                                 />
+                                <FormHelperText>
+                                  These access groups will be passed when the
+                                  access point is disarmed.
+                                </FormHelperText>
+                              </Skeleton>
+                            </FormControl>
+                          )}
+                        </Field> */}
+                        <Field name="scanDataDisarmed">
+                          {({ field, form }: any) => (
+                            <FormControl>
+                              <Skeleton isLoaded={accessPoint}>
+                                <FormLabel>Scan Data (Disarmed)</FormLabel>
+                                <Box
+                                  border={"1px solid"}
+                                  borderColor={themeBorderColor}
+                                  borderRadius={"lg"}
+                                  w={"full"}
+                                  overflow={"hidden"}
+                                >
+                                  <ChakraEditor
+                                    {...field}
+                                    height="240px"
+                                    width="100%"
+                                    p={4}
+                                    language="json"
+                                    theme={useColorModeValue(
+                                      "vs-light",
+                                      "vs-dark"
+                                    )}
+                                    options={{
+                                      minimap: {
+                                        enabled: false,
+                                      },
+                                    }}
+                                    value={field?.value}
+                                    onChange={(value) => {
+                                      form.setFieldValue(
+                                        "scanDataDisarmed",
+                                        value
+                                      );
+                                    }}
+                                  />
+                                </Box>
+                                <FormHelperText>
+                                  This data will be passed when the access point
+                                  is on &quot;disarmed&quot; status.
+                                </FormHelperText>
+                              </Skeleton>
+                            </FormControl>
+                          )}
+                        </Field>
+                        <Field name="scanDataReady">
+                          {({ field, form }: any) => (
+                            <FormControl>
+                              <Skeleton isLoaded={accessPoint}>
+                                <FormLabel>Scan Data (Ready)</FormLabel>
+                                <Box
+                                  border={"1px solid"}
+                                  borderColor={themeBorderColor}
+                                  borderRadius={"lg"}
+                                  w={"full"}
+                                  overflow={"hidden"}
+                                >
+                                  <ChakraEditor
+                                    {...field}
+                                    height="240px"
+                                    width="100%"
+                                    p={4}
+                                    language="json"
+                                    theme={useColorModeValue(
+                                      "vs-light",
+                                      "vs-dark"
+                                    )}
+                                    options={{
+                                      minimap: {
+                                        enabled: false,
+                                      },
+                                    }}
+                                    value={field?.value}
+                                    onChange={(value) => {
+                                      form.setFieldValue(
+                                        "scanDataReady",
+                                        value
+                                      );
+                                    }}
+                                  />
+                                </Box>
+                                <FormHelperText>
+                                  This data will be passed when the access point
+                                  is on &quot;ready&quot; status.
+                                </FormHelperText>
                               </Skeleton>
                             </FormControl>
                           )}
@@ -591,9 +736,6 @@ export default function PlatformAccessPoint() {
                       </AccordionButton>
                     </h2>
                     <AccordionPanel>
-                      {/* <Text fontSize={"sm"} fontWeight={"500"}>
-                        Coming soon. This feature is not yet available.
-                      </Text> */}
                       <Field name="webhookUrl" w={"min-content"}>
                         {({ field, form }: any) => (
                           <FormControl w={"full"}>
@@ -669,11 +811,11 @@ export default function PlatformAccessPoint() {
                         <Text fontSize={"sm"} mb={1}>
                           Choose which events to send to the webhook.
                         </Text>
-                        <Text fontSize={"sm"}>
+                        {/* <Text fontSize={"sm"}>
                           It is not recommended to enable denied events, as this
                           will send a webhook request for every denied card scan
                           (which could be a lot).
-                        </Text>
+                        </Text> */}
                       </Box>
                     </AccordionPanel>
                   </AccordionItem>

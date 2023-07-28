@@ -134,6 +134,11 @@ export default async function handler(
           eventGranted: false,
         },
 
+        scanData: {
+          disarmed: {},
+          ready: {},
+        },
+
         colors: {
           idle: "#ff0000",
           scanning: "#00ff00",

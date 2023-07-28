@@ -568,7 +568,7 @@ export default function AccessGroupEditModal({
                                               )}
                                               options={{
                                                 minimap: {
-                                                  enabled: true,
+                                                  enabled: false,
                                                 },
                                               }}
                                               value={form.values?.scanData}

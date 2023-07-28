@@ -855,7 +855,7 @@ export default function MemberEditModal({
                                               )}
                                               options={{
                                                 minimap: {
-                                                  enabled: true,
+                                                  enabled: false,
                                                 },
                                               }}
                                               value={form.values?.scanData}
