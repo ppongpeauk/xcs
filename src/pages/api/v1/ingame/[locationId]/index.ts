@@ -50,7 +50,7 @@ export default async function handler(
   const accessPointsObject = {} as any;
   accessPoints.forEach((accessPoint) => {
     accessPointsObject[accessPoint.id] = accessPoint;
-    accessPointsObject[accessPoint.id].scanData = accessPointsObject[accessPoint.id].scanData || {
+    accessPointsObject[accessPoint.id].config.scanData = accessPointsObject[accessPoint.id].config?.scanData || {
       ready: {},
       disarmed: {},
     };
