@@ -639,7 +639,8 @@ export default function MemberEditModal({
                                   },
                                   body: JSON.stringify({
                                     type: focusedMember?.type,
-                                    name: values?.name,
+                                    name: focusedMember?.type ===
+                                    "roblox-group" ? values?.name : undefined,
                                     groupRoles: values?.robloxGroupRoles?.map(
                                       (role: any) => role?.value
                                     ),

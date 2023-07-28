@@ -83,7 +83,7 @@ export default function UserProfileNS({ user }: any) {
         )}
         <meta property="og:type" content="website" />
       </Head>
-      <UserProfile username={username} />
+      <UserProfile username={username} user={user} />
     </>
   );
 }
