@@ -243,7 +243,7 @@ export default function PlatformLocation() {
               >
                 General
               </MenuItem>
-              <MenuItem
+              {/* <MenuItem
                 as={NextLink}
                 href={`/platform/locations/${query.id}/event-logs`}
                 icon={<BiSolidTime />}
@@ -256,7 +256,7 @@ export default function PlatformLocation() {
                 icon={<BiSolidGroup />}
               >
                 Members
-              </MenuItem>
+              </MenuItem> */}
               <MenuItem
                 as={NextLink}
                 href={`/platform/locations/${query.id}/access-points`}
@@ -277,6 +277,7 @@ export default function PlatformLocation() {
           onChange={(index) => onTabChange(index)}
           maxW={"full"}
           h={"100%"}
+          isManual={true}
         >
           <TabList
             display={{ base: "none", md: "block" }}
@@ -287,14 +288,14 @@ export default function PlatformLocation() {
               <IoBusiness />
               <Text ml={2}>General</Text>
             </StyledTab>
-            <StyledTab>
+            {/* <StyledTab>
               <BiSolidTime />
               <Text ml={2}>Event Logs</Text>
             </StyledTab>
             <StyledTab>
               <BiSolidGroup />
               <Text ml={2}>Members</Text>
-            </StyledTab>
+            </StyledTab> */}
             <StyledTab>
               <MdSensors />
               <Text ml={2}>Access Points</Text>
