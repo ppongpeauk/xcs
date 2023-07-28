@@ -64,14 +64,17 @@ export default async function handler(
       }
 
       // check if name is unique, case insensitive
-      // const accessGroupNames = Object.values(organization.accessGroups).map(
-      //   (accessGroup: any) => accessGroup.name.toLowerCase()
-      // );
-      // if (
-      //   accessGroupNames.includes(name.toLowerCase())
-      // ) {
-      //   return res.status(400).json({ message: "Name must be unique." });
-      // }
+      const accessGroups = organization.accessGroups;
+      for (const accessGroupId in accessGroups) {
+        if (
+          accessGroups[accessGroupId].name.toLowerCase() === name.toLowerCase() &&
+          accessGroups[accessGroupId].type === (locationId ? "location" : "organization") &&
+          (!locationId || accessGroups[accessGroupId].locationId === locationId)
+          )
+        {
+          return res.status(400).json({ message: "Name must be unique." });
+        }
+      }
     }
 
     description = description.trim();

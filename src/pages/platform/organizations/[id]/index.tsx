@@ -325,7 +325,7 @@ export default function PlatformOrganization() {
         )}
         // filter groups to only include groups that contain locationId
         groups={Object.values(organization?.accessGroups || {}).filter(
-          (group: any) => group.locationId === undefined
+          (group: any) => group.type === "organization"
         )}
         onGroupRemove={onGroupRemove}
       />

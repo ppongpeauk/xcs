@@ -40,7 +40,7 @@ export default async function handler(
   const user = await users.findOne({ id: uid });
 
   const timestamp = new Date();
-  let { name, description, scanData, config } = req.body as any;
+  let { name, description, locationId, scanData, config } = req.body as any;
 
   // Edit Access Group
   if (req.method === "PATCH") {
@@ -61,17 +61,18 @@ export default async function handler(
           .json({ message: "Name must be between 1-32 characters." });
       }
 
-      // check if name is unique, except for the current access group
-      // const accessGroupNames = Object.values(organization.accessGroups).map(
-      //   (accessGroup: any) => accessGroup.name.toLowerCase()
-      // );
-      // if (
-      //   accessGroupNames.includes(name.toLowerCase()) &&
-      //   organization.accessGroups[accessGroupId].name.toLowerCase() !==
-      //     name.toLowerCase()
-      // ) {
-      //   return res.status(400).json({ message: "Name must be unique." });
-      // }
+      // check if name is unique, case insensitive
+      const accessGroups = organization.accessGroups;
+      for (const accessGroupId in accessGroups) {
+        if (
+          accessGroups[accessGroupId].name.toLowerCase() === name.toLowerCase() &&
+          accessGroups[accessGroupId].type === (locationId ? "location" : "organization") &&
+          (!locationId || accessGroups[accessGroupId].locationId === locationId)
+          )
+        {
+          return res.status(400).json({ message: "Name must be unique." });
+        }
+      }
     }
 
     description = description.trim();
