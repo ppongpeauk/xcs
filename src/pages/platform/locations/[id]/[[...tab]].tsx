@@ -138,12 +138,6 @@ export default function PlatformLocation() {
         route = `/platform/locations/${query.id}/general`;
         break;
       case 1:
-        route = `/platform/locations/${query.id}/event-logs`;
-        break;
-      case 2:
-        route = `/platform/locations/${query.id}/members`;
-        break;
-      case 3:
         route = `/platform/locations/${query.id}/access-points`;
         break;
       default:
