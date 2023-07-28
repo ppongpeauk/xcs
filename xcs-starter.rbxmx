@@ -2,7 +2,7 @@
 	<Meta name="ExplicitAutoJoints">true</Meta>
 	<External>null</External>
 	<External>nil</External>
-	<Item class="Model" referent="RBX9bfb4573249543a5a890a127568407b6">
+	<Item class="Model" referent="RBXb257f34c36c141c1bf2d505aa2ab9e0d">
 		<Properties>
 			<BinaryString name="AttributesSerialize"></BinaryString>
 			<token name="LevelOfDetail">0</token>
@@ -35,7 +35,7 @@
 			<BinaryString name="Tags"></BinaryString>
 			<OptionalCoordinateFrame name="WorldPivotData"></OptionalCoordinateFrame>
 		</Properties>
-		<Item class="Script" referent="RBX8bc3c7e3375e4c998182a1995d9f09fb">
+		<Item class="Script" referent="RBXf547c177991641858f3a895537ffc89a">
 			<Properties>
 				<BinaryString name="AttributesSerialize"></BinaryString>
 				<bool name="Disabled">false</bool>
@@ -72,7 +72,7 @@
 				<BinaryString name="Tags"></BinaryString>
 			</Properties>
 		</Item>
-		<Item class="ModuleScript" referent="RBX8e9c01c506f74c14b51a28bbd79fe677">
+		<Item class="ModuleScript" referent="RBXd0d2de50cfdb4cce996141f447e690f1">
 			<Properties>
 				<BinaryString name="AttributesSerialize"></BinaryString>
 				<Content name="LinkedSource"><null></null></Content>
@@ -104,7 +104,7 @@ return settings;]]></ProtectedString>
 				<int64 name="SourceAssetId">-1</int64>
 				<BinaryString name="Tags"></BinaryString>
 			</Properties>
-			<Item class="Script" referent="RBXb0d671566abf46a58ae9fe5f9e1f83c2">
+			<Item class="Script" referent="RBX5b6ef416efcf4812aa10e22efbcc06b9">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<bool name="Disabled">false</bool>
@@ -122,7 +122,7 @@ _m.init({["config"]=require(script.Parent);});
 				</Properties>
 			</Item>
 		</Item>
-		<Item class="Model" referent="RBX2459374a62824d70bd55d0bf8ced56f0">
+		<Item class="Model" referent="RBXf3002222d6584af9be6a52c9d029f858">
 			<Properties>
 				<BinaryString name="AttributesSerialize"></BinaryString>
 				<token name="LevelOfDetail">0</token>
@@ -149,7 +149,7 @@ _m.init({["config"]=require(script.Parent);});
 				<token name="ModelStreamingMode">0</token>
 				<string name="Name">Example Reader</string>
 				<bool name="NeedsPivotMigration">false</bool>
-				<Ref name="PrimaryPart">RBX6ffb17d008bf47c69e050b217a74ccda</Ref>
+				<Ref name="PrimaryPart">RBX198652eaf44e491e9163066aac521db6</Ref>
 				<float name="ScaleFactor">1</float>
 				<int64 name="SourceAssetId">-1</int64>
 				<BinaryString name="Tags"></BinaryString>
@@ -170,7 +170,7 @@ _m.init({["config"]=require(script.Parent);});
 					</CFrame>
 				</OptionalCoordinateFrame>
 			</Properties>
-			<Item class="Model" referent="RBXff63850c23044cd5ba5914beb75449ea">
+			<Item class="Model" referent="RBX180ebb2939194bc19607d06b9190c3e8">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<token name="LevelOfDetail">0</token>
@@ -218,7 +218,7 @@ _m.init({["config"]=require(script.Parent);});
 						</CFrame>
 					</OptionalCoordinateFrame>
 				</Properties>
-				<Item class="Part" referent="RBX6ffb17d008bf47c69e050b217a74ccda">
+				<Item class="Part" referent="RBX198652eaf44e491e9163066aac521db6">
 					<Properties>
 						<bool name="Anchored">true</bool>
 						<BinaryString name="AttributesSerialize"></BinaryString>
@@ -313,7 +313,7 @@ _m.init({["config"]=require(script.Parent);});
 							<Z>0.0550000034</Z>
 						</Vector3>
 					</Properties>
-					<Item class="BlockMesh" referent="RBX2dad298baaeb49a9bb94c09a26975b4d">
+					<Item class="BlockMesh" referent="RBX6a79ac491a8449b6a1a3cdb010828c92">
 						<Properties>
 							<BinaryString name="AttributesSerialize"></BinaryString>
 							<float name="Bevel">0</float>
@@ -341,7 +341,7 @@ _m.init({["config"]=require(script.Parent);});
 					</Item>
 				</Item>
 			</Item>
-			<Item class="Part" referent="RBXd35554146a2e462198cf608c66591d1d">
+			<Item class="Part" referent="RBXae900eb1241349be92ea26b5be323276">
 				<Properties>
 					<bool name="Anchored">true</bool>
 					<BinaryString name="AttributesSerialize"></BinaryString>
@@ -436,7 +436,7 @@ _m.init({["config"]=require(script.Parent);});
 						<Z>0.0550000034</Z>
 					</Vector3>
 				</Properties>
-				<Item class="BlockMesh" referent="RBX777ce80b78e340a092b451225a2ab1e5">
+				<Item class="BlockMesh" referent="RBXf3538e8e383c4770bc919432d3fa2dcf">
 					<Properties>
 						<BinaryString name="AttributesSerialize"></BinaryString>
 						<float name="Bevel">0</float>
@@ -463,7 +463,7 @@ _m.init({["config"]=require(script.Parent);});
 					</Properties>
 				</Item>
 			</Item>
-			<Item class="UnionOperation" referent="RBX7bfe702f42f44e8b89750b939239927c">
+			<Item class="UnionOperation" referent="RBX4e432fcd211245df9eaadbdf9eb0fabb">
 				<Properties>
 					<bool name="Anchored">true</bool>
 					<Content name="AssetId"><url>https://www.roblox.com//asset/?id=2915691837</url></Content>
@@ -573,7 +573,7 @@ _m.init({["config"]=require(script.Parent);});
 					</Vector3>
 				</Properties>
 			</Item>
-			<Item class="UnionOperation" referent="RBXd1403202b0ba4b6f804a9f1a8049becc">
+			<Item class="UnionOperation" referent="RBX148247e0f22a4cf699336fb346d60fe0">
 				<Properties>
 					<bool name="Anchored">true</bool>
 					<Content name="AssetId"><url>https://www.roblox.com//asset/?id=7107257336</url></Content>
@@ -682,7 +682,7 @@ _m.init({["config"]=require(script.Parent);});
 						<Z>0.194268271</Z>
 					</Vector3>
 				</Properties>
-				<Item class="Sound" referent="RBX336d9fd50488449e96246cb2314bd501">
+				<Item class="Sound" referent="RBX594e7c77dd2d460caa9bfe79f7805fb8">
 					<Properties>
 						<BinaryString name="AttributesSerialize"></BinaryString>
 						<float name="EmitterSize">10</float>
@@ -704,7 +704,7 @@ _m.init({["config"]=require(script.Parent);});
 						<float name="xmlRead_MaxDistance_3">20</float>
 					</Properties>
 				</Item>
-				<Item class="ProximityPrompt" referent="RBX9b1a73cd02674eba841ec6dcf283dbf1">
+				<Item class="ProximityPrompt" referent="RBX88886670992b4c179e57ebcdaf09f06f">
 					<Properties>
 						<string name="ActionText">Present your card</string>
 						<BinaryString name="AttributesSerialize"></BinaryString>
@@ -730,7 +730,7 @@ _m.init({["config"]=require(script.Parent);});
 					</Properties>
 				</Item>
 			</Item>
-			<Item class="Part" referent="RBX1562a1c24ee5450085ef064e3aefdf61">
+			<Item class="Part" referent="RBX6b3e3b79542b4689a96026741e50b42b">
 				<Properties>
 					<bool name="Anchored">true</bool>
 					<BinaryString name="AttributesSerialize"></BinaryString>
@@ -826,7 +826,7 @@ _m.init({["config"]=require(script.Parent);});
 					</Vector3>
 				</Properties>
 			</Item>
-			<Item class="BindableEvent" referent="RBX692dfbe948e441b3badb1338df65cbe4">
+			<Item class="BindableEvent" referent="RBX46f1599d234b4ba4b59e870c23a56cfd">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<string name="Name">API</string>
@@ -834,7 +834,7 @@ _m.init({["config"]=require(script.Parent);});
 					<BinaryString name="Tags"></BinaryString>
 				</Properties>
 			</Item>
-			<Item class="ModuleScript" referent="RBX72196216ce7d4197a9eadb13e5eba0f9">
+			<Item class="ModuleScript" referent="RBX0b25d18cb36d443aa78a116c695d96eb">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<Content name="LinkedSource"><null></null></Content>
@@ -866,15 +866,15 @@ _m.init({["config"]=require(script.Parent);});
 			--end
 			script.Parent.LED.Color = Color3.fromRGB(255, 0, 0);
 		end;
-		["accessReady"] = function(player)
+		["accessReady"] = function(metadata)
 			script.Parent.Parent.Parent.DoHold.Value = false;
 			script.Parent.LED.Color = Color3.fromRGB(255, 0, 0);
 		end;
-		["enabled"] = function()
+		["enabled"] = function(metadata)
 			script.Parent.Parent.Parent.DoHold.Value = true;
 			script.Parent.LED.Color = Color3.fromRGB(0, 255, 0);
 		end;
-		["disabled"] = function()
+		["disabled"] = function(metadata)
 			script.Parent.Parent.Parent.DoHold.Value = false;
 			script.Parent.LED.Color = Color3.fromRGB(255, 0, 0);
 		end;
@@ -893,7 +893,7 @@ return settings
 					<int64 name="SourceAssetId">-1</int64>
 					<BinaryString name="Tags"></BinaryString>
 				</Properties>
-				<Item class="Script" referent="RBX03e3669e0b1a47b9a8904e8e51a684be">
+				<Item class="Script" referent="RBX9f0164ea57f34614b21c2e762bd80ff1">
 					<Properties>
 						<BinaryString name="AttributesSerialize"></BinaryString>
 						<bool name="Disabled">false</bool>
