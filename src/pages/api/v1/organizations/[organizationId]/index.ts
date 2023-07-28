@@ -80,7 +80,7 @@ export default async function handler(
     }
 
     // roblox users
-    
+
     // make an array of roblox user and group ids
     let robloxUserIds = [];
     let robloxGroupIds = [];
@@ -96,7 +96,7 @@ export default async function handler(
     // get roblox users
     let robloxUsers = await getRobloxUsers(robloxUserIds);
     let robloxGroups = await getRobloxGroups(robloxGroupIds);
-    
+
     // add roblox users to members array
     for (const [key, value] of Object.entries(organization.members) as any) {
       if (value.type === "roblox") {
@@ -121,20 +121,23 @@ export default async function handler(
     }
 
     organization.members = members.sort((a: any, b: any) =>
-      a.role > b.role || (b.type === "roblox-group" || b.type === "roblox") ? -1 : 1
+      a.role > b.role || b.type === "roblox-group" || b.type === "roblox"
+        ? -1
+        : 1
     ); // sort by role (descending)
 
-    // add locationName to each access group
-    const accessGroups = organization.accessGroups;
-    const accessGroupIds = Object.keys(accessGroups);
-    await accessGroupIds.forEach(async (id) => {
-      const location = await locations.findOne(
-        { id: accessGroups[id].locationId },
-        { projection: { name: 1 } }
-      );
-      organization.accessGroups[id].locationName =
-        location?.name;
-    });
+    // Get Access Points
+    for (const accessGroupId in organization.accessGroups) {
+      const accessGroup = organization.accessGroups[accessGroupId];
+      if (accessGroup.locationId) {
+        const location = await locations.findOne(
+          { id: accessGroup.locationId },
+          { projection: { name: 1, id: 1 } }
+        );
+        if (location)
+          organization.accessGroups[accessGroupId].locationName = location.name;
+      }
+    }
 
     return res.status(200).json({
       organization: organization,
@@ -256,5 +259,8 @@ export default async function handler(
       .json({ message: "Successfully deleted organization!", success: true });
   }
 
-  return res.status(500).json({ message: "An unknown errror occurred. If this error persists, please contact customer support." });
+  return res.status(500).json({
+    message:
+      "An unknown errror occurred. If this error persists, please contact customer support.",
+  });
 }
