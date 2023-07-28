@@ -9,7 +9,7 @@ export default async function handler(
     const client = await clientPromise;
     const db = client.db();
 
-    const { interaction } = req.body;
+    const interaction = req.body;
 
     if (interaction.type === 1) {
       res.status(200).json({
@@ -30,4 +30,8 @@ export default async function handler(
       }
     }
   }
+
+  return res.status(500).json({
+    error: "Internal server error.",
+  });
 }
