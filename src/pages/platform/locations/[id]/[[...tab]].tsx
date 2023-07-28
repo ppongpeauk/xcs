@@ -311,13 +311,12 @@ export default function PlatformLocation() {
                 refreshData={refreshData}
               />
             </TabPanel>
-            <TabPanel p={0}>
+            {/* <TabPanel p={0}>
               <LocationEventLogs />
-              {/* <Text>Event Logs</Text> */}
             </TabPanel>
             <TabPanel p={0}>
               <Text>Members</Text>
-            </TabPanel>
+            </TabPanel> */}
             <TabPanel p={0}>
               <LocationAccessPoints
                 idToken={idToken}
