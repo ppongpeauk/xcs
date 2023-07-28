@@ -150,9 +150,7 @@ export default function PlatformLocation() {
   useEffect(() => {
     if (!query.tab) return;
     if (query.tab[0] === "general") setTabIndex(0);
-    else if (query.tab[0] === "event-logs") setTabIndex(1);
-    else if (query.tab[0] === "members") setTabIndex(2);
-    else if (query.tab[0] === "access-points") setTabIndex(3);
+    else if (query.tab[0] === "access-points") setTabIndex(1);
   }, [query.tab]);
 
   const onTabChange = (index: number) => {
