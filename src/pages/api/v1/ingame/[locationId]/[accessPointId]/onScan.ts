@@ -330,6 +330,13 @@ export default async function handler(
       organization.members[memberId]?.scanData || {}
     );
 
+    // access point scan data, access point scan data comes before everything else
+    scanData = mergician(mergicianOptions)(
+      accessPoint.config?.scanData?.ready || {},
+      accessPoint.config?.scanData?.granted || {},
+      scanData
+    );
+
     res.status(200).json({
       success: true,
       grant_type: "user_scan",
