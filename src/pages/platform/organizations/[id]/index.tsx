@@ -323,7 +323,10 @@ export default function PlatformOrganization() {
         clientMember={organization?.members.find(
           (member: any) => member.id === user?.uid
         )}
-        groups={organization?.accessGroups}
+        // filter groups to only include groups that contain locationId
+        groups={Object.values(organization?.accessGroups || {}).filter(
+          (group: any) => group.locationId === undefined
+        )}
         onGroupRemove={onGroupRemove}
       />
       <MemberEditModal

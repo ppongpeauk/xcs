@@ -23,6 +23,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { Suspense, useEffect, useState } from "react";
 
+import AccessGroupEditModal from "@/components/AccessGroupEditModal";
 import { ChevronRightIcon, DeleteIcon } from "@chakra-ui/icons";
 import {
   Breadcrumb,
@@ -40,6 +41,7 @@ import { useToast } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
 import { AiFillCheckCircle, AiFillTag } from "react-icons/ai";
 import { BsFillCloudDownloadFill } from "react-icons/bs";
+import { HiGlobeAlt } from "react-icons/hi";
 import { IoIosRemoveCircle } from "react-icons/io";
 import { IoBusiness, IoSave } from "react-icons/io5";
 import { SiRoblox } from "react-icons/si";
@@ -150,6 +152,48 @@ export default function LocationInfo({
       });
   };
 
+  const onGroupRemove = async (group: any) => {
+    await user.getIdToken().then((token: string) => {
+      fetch(`/api/v1/organizations/${location?.organization?.id}/access-groups/${group.id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((res) => {
+          if (res.status === 200) {
+            return res.json();
+          } else {
+            return res.json().then((json: any) => {
+              throw new Error(json.message);
+            });
+          }
+        })
+        .then((data) => {
+          toast({
+            title: data.message,
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+          });
+          refreshData();
+        })
+        .catch((err) => {
+          toast({
+            title: "Error",
+            description: err.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+          });
+        });
+    });
+  };
+
+  const {
+    isOpen: roleModalOpen,
+    onOpen: roleModalOnOpen,
+    onClose: roleModalOnClose,
+  } = useDisclosure();
+
   return (
     <>
       <DeleteDialog
@@ -158,6 +202,17 @@ export default function LocationInfo({
         isOpen={isDeleteDialogOpen}
         onClose={onDeleteDialogClose}
         onDelete={onDelete}
+      />
+      <AccessGroupEditModal
+        isOpen={roleModalOpen}
+        onOpen={roleModalOnOpen}
+        onClose={roleModalOnClose}
+        onRefresh={refreshData}
+        location={location}
+        organization={location?.organization}
+        clientMember={location?.self}
+        groups={location?.accessGroups}
+        onGroupRemove={onGroupRemove}
       />
       {location ? (
         <Box w={"fit-content"}>
@@ -308,6 +363,15 @@ export default function LocationInfo({
                     </FormControl>
                   )}
                 </Field>
+                <Stack
+                  direction={{ base: "column", md: "row" }}
+                  spacing={2}
+                  py={2}
+                >
+                  <Button onClick={roleModalOnOpen} leftIcon={<HiGlobeAlt />}>
+                    Manage Access Groups
+                  </Button>
+                </Stack>
                 <Stack
                   direction={{ base: "column", md: "row" }}
                   spacing={{ base: 2, md: 4 }}

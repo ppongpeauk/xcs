@@ -124,7 +124,17 @@ export default async function handler(
       a.role > b.role || (b.type === "roblox-group" || b.type === "roblox") ? -1 : 1
     ); // sort by role (descending)
 
-    console.log(organization.members);
+    // add locationName to each access group
+    const accessGroups = organization.accessGroups;
+    const accessGroupIds = Object.keys(accessGroups);
+    await accessGroupIds.forEach(async (id) => {
+      const location = await locations.findOne(
+        { id: accessGroups[id].locationId },
+        { projection: { name: 1 } }
+      );
+      organization.accessGroups[id].locationName =
+        location?.name;
+    });
 
     return res.status(200).json({
       organization: organization,

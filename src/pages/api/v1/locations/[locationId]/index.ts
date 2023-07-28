@@ -35,6 +35,15 @@ export default async function handler(
 
   let organization = await organizations.findOne({
     id: location.organizationId,
+  }, {
+    projection: {
+      id: 1,
+      name: 1,
+      description: 1,
+      members: 1,
+      avatar: 1,
+      accessGroups: 1
+    }
   });
 
   if (!organization) {
@@ -54,6 +63,17 @@ export default async function handler(
   if (req.method === "GET") {
     // Get User Permissions
     location.self = organization.members[uid as any];
+    location.organization = organization;
+    
+    // Get Access Points
+    location.accessGroups = {};
+    for (const accessGroupId in organization.accessGroups) {
+      const accessGroup = organization.accessGroups[accessGroupId];
+      if (accessGroup.locationId === location.id) {
+        location.accessGroups[accessGroupId] = accessGroup;
+      }
+    }
+    
     return res.status(200).json({ location: location });
   }
 

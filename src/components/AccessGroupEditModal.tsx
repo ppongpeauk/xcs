@@ -38,8 +38,6 @@ import {
 import Editor from "@monaco-editor/react";
 
 import DeleteDialog from "@/components/DeleteDialog";
-import InviteOrganizationModal from "@/components/InviteOrganizationModal";
-import InviteOrganizationRobloxModal from "@/components/InviteOrganizationRobloxModal";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { roleToText, textToRole } from "@/lib/utils";
 import { InfoIcon } from "@chakra-ui/icons";
@@ -78,6 +76,7 @@ export default function AccessGroupEditModal({
   clientMember,
   groups,
   organization,
+  location,
   onGroupRemove,
 }: any) {
   const { user } = useAuthContext();
@@ -139,6 +138,7 @@ export default function AccessGroupEditModal({
         isOpen={createModalOpen}
         onClose={createModalOnClose}
         organization={organization}
+        location={location}
         onCreate={(group: any) => {
           onRefresh();
           createModalOnClose();
@@ -379,6 +379,7 @@ export default function AccessGroupEditModal({
                                   },
                                   body: JSON.stringify({
                                     name: values?.name,
+                                    locationId: location?.id,
                                     description: values?.description,
                                     scanData: values?.scanData,
                                     config: {
@@ -435,87 +436,6 @@ export default function AccessGroupEditModal({
                             >
                               <Flex flexDir={"column"} mt={4} w={"full"} pb={8}>
                                 <Stack>
-                                  {/* {focusedGroup?.type !== "roblox" && (
-                                  <Field name="role">
-                                    {({ field, form }: any) => (
-                                      <FormControl w={"fit-content"}>
-                                        <MultiSelect
-                                          {...field}
-                                          label="Organization Role"
-                                          options={
-                                            focusedGroup.role < 3
-                                              ? [
-                                                  {
-                                                    label: "Member",
-                                                    value: "Member",
-                                                  },
-                                                  {
-                                                    label: "Manager",
-                                                    value: "Manager",
-                                                  },
-                                                ]
-                                              : [
-                                                  {
-                                                    label: "Owner",
-                                                    value: "Owner",
-                                                  },
-                                                ]
-                                          }
-                                          onChange={(value) => {
-                                            form.setFieldValue(
-                                              "role",
-                                              value || ("" as string)
-                                            );
-                                          }}
-                                          value={form.values?.role}
-                                          placeholder="Select a role..."
-                                          single={true}
-                                        />
-                                      </FormControl>
-                                    )}
-                                  </Field>
-                                )}
-                                <Field name="accessGroups">
-                                  {({ field, form }: any) => (
-                                    <FormControl w={"fit-content"}>
-                                      <MultiSelect
-                                        {...field}
-                                        label="Access Groups"
-                                        options={
-                                          Object.keys(
-                                            groups || {}
-                                          ).map((accessGroup: any) => {
-                                            const name =
-                                              groups[
-                                                accessGroup
-                                              ]?.name || "Option";
-
-                                            return {
-                                              label: name,
-                                              value: name,
-                                            };
-                                          }) || [
-                                            {
-                                              label: "Option",
-                                              value: "Option",
-                                            },
-                                          ]
-                                        }
-                                        onChange={(value) => {
-                                          form.setFieldValue(
-                                            "accessGroups",
-                                            value as string[]
-                                          );
-                                        }}
-                                        value={form.values?.accessGroups}
-                                        placeholder="Select an access group..."
-                                        single={false}
-                                        autoComplete={"off"}
-                                        autoCorrect={"off"}
-                                      />
-                                    </FormControl>
-                                  )}
-                                </Field> */}
                                   <Stack
                                     direction={{
                                       base: "column",

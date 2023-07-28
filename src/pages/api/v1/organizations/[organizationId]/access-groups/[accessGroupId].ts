@@ -62,16 +62,16 @@ export default async function handler(
       }
 
       // check if name is unique, except for the current access group
-      const accessGroupNames = Object.values(organization.accessGroups).map(
-        (accessGroup: any) => accessGroup.name.toLowerCase()
-      );
-      if (
-        accessGroupNames.includes(name.toLowerCase()) &&
-        organization.accessGroups[accessGroupId].name.toLowerCase() !==
-          name.toLowerCase()
-      ) {
-        return res.status(400).json({ message: "Name must be unique." });
-      }
+      // const accessGroupNames = Object.values(organization.accessGroups).map(
+      //   (accessGroup: any) => accessGroup.name.toLowerCase()
+      // );
+      // if (
+      //   accessGroupNames.includes(name.toLowerCase()) &&
+      //   organization.accessGroups[accessGroupId].name.toLowerCase() !==
+      //     name.toLowerCase()
+      // ) {
+      //   return res.status(400).json({ message: "Name must be unique." });
+      // }
     }
 
     description = description.trim();

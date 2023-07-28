@@ -183,21 +183,21 @@ export default function PlatformAccessPoint() {
     }
   };
 
-  const getAccessGroupOptions = useCallback(
-    (organization: Organization) => {
-      if (!organization) return [];
-      const ags =
-        Object.values(organization?.accessGroups as AccessGroup[]) || [];
-      interface Group {
+  const getAccessGroupOptions = useCallback((organization: Organization) => {
+    if (!organization) return [];
+    const ags =
+      Object.values(organization?.accessGroups as AccessGroup[]) || [];
+    interface Group {
+      label: string;
+      options: {
         label: string;
-        options: {
-          label: string;
-          value: string;
-        }[];
-      }
-      let groups = [] as any;
+        value: string;
+      }[];
+    }
+    let groups = [] as any;
 
-      ags.forEach((ag: AccessGroup) => {
+    ags.forEach((ag: AccessGroup) => {
+      if (!ag.locationId || ag.locationId === accessPoint?.location?.id) {
         // check if the group is already in the groups object
         if (groups.find((g: Group) => g.label === getAccessGroupType(ag))) {
           // if it is, add the option to the options array
@@ -219,19 +219,18 @@ export default function PlatformAccessPoint() {
             ],
           });
         }
-      });
+      }
+    });
 
-      // sort the groups so organizations are at the bottom
-      groups.sort((a: Group, b: Group) => {
-        if (a.label === "Organization") return 1;
-        if (b.label === "Organization") return -1;
-        return 0;
-      });
+    // sort the groups so organizations are at the bottom
+    groups.sort((a: Group, b: Group) => {
+      if (a.label === "Organization") return 1;
+      if (b.label === "Organization") return -1;
+      return 0;
+    });
 
-      return groups;
-    },
-    []
-  );
+    return groups;
+  }, []);
 
   return (
     <>
@@ -354,7 +353,7 @@ export default function PlatformAccessPoint() {
                         // users: JSON.parse(values.alwaysAllowedUsers),
                         groups: values?.accessGroups?.map(
                           (ag: any) => ag?.value
-                        )
+                        ),
                       },
 
                       webhook: {
@@ -561,7 +560,9 @@ export default function PlatformAccessPoint() {
                                 <Select
                                   {...field}
                                   name="accessGroups"
-                                  options={getAccessGroupOptions(accessPoint?.organization)}
+                                  options={getAccessGroupOptions(
+                                    accessPoint?.organization
+                                  )}
                                   placeholder="Select an access group..."
                                   onChange={(value) => {
                                     form.setFieldValue("accessGroups", value);

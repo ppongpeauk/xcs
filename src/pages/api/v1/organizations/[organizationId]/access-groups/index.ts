@@ -46,8 +46,9 @@ export default async function handler(
       });
     }
 
-    let { name, description, scanData } = req.body as {
+    let { name, description, locationId, scanData } = req.body as {
       name: string;
+      locationId?: string;
       description: string;
       scanData: string;
     };
@@ -63,14 +64,14 @@ export default async function handler(
       }
 
       // check if name is unique, case insensitive
-      const accessGroupNames = Object.values(organization.accessGroups).map(
-        (accessGroup: any) => accessGroup.name.toLowerCase()
-      );
-      if (
-        accessGroupNames.includes(name.toLowerCase())
-      ) {
-        return res.status(400).json({ message: "Name must be unique." });
-      }
+      // const accessGroupNames = Object.values(organization.accessGroups).map(
+      //   (accessGroup: any) => accessGroup.name.toLowerCase()
+      // );
+      // if (
+      //   accessGroupNames.includes(name.toLowerCase())
+      // ) {
+      //   return res.status(400).json({ message: "Name must be unique." });
+      // }
     }
 
     description = description.trim();
@@ -84,7 +85,8 @@ export default async function handler(
 
     // Create Access Group
     const accessGroup = {
-      type: "organization",
+      type: locationId ? "location" : "organization",
+      locationId: locationId || undefined,
       id,
       name,
       description,

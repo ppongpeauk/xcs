@@ -70,6 +70,20 @@ export default async function handler(
       id: accessPoint.locationId,
     });
 
+    // add locationName to each access group
+    const accessGroups = out.accessPoint.organization.accessGroups;
+    const accessGroupIds = Object.keys(accessGroups);
+    await accessGroupIds.forEach(async (id) => {
+      if (accessGroups[id].locationId === out.accessPoint.location.id) {
+        const location = await locations.findOne(
+          { id: accessGroups[id].locationId },
+          { projection: { name: 1 } }
+        );
+        out.accessPoint.organization.accessGroups[id].locationName =
+          location?.name;
+      }
+    });
+
     const regularMembers = Object.keys(organization.members).filter(
       (member) => {
         if (organization?.members[member].type !== "roblox") {
@@ -172,9 +186,12 @@ export default async function handler(
 
     // send webhook a test request if it's a new webhook url
     if (body.config?.webhook?.url && !accessPoint.config?.webhook?.url) {
-      const location = await locations.findOne({
-        id: accessPoint.locationId,
-      }, { projection: { name: 1 }});
+      const location = await locations.findOne(
+        {
+          id: accessPoint.locationId,
+        },
+        { projection: { name: 1 } }
+      );
 
       const avatarUrl = `${process.env.NEXT_PUBLIC_ROOT_URL}/images/logo-square.jpeg`;
       const webhook = body.config.webhook;
@@ -211,16 +228,19 @@ export default async function handler(
                 {
                   name: "Organization",
                   value: organization?.name,
-                }
+                },
               ],
             },
           ],
         }),
       }).then((data) => {
         if (!data.ok || data.status !== 204) {
-          return res.status(400).json({ message: "Unable to verify webhook. Ensure your URL is correct and try again." });
+          return res.status(400).json({
+            message:
+              "Unable to verify webhook. Ensure your URL is correct and try again.",
+          });
         }
-      })
+      });
     }
 
     const timestamp = new Date();

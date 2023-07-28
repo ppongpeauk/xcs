@@ -26,11 +26,13 @@ export default function CreateAccessGroupDialog({
   isOpen,
   onClose,
   organization,
+  location,
   onCreate,
 }: {
   isOpen: boolean;
   onClose: () => void;
   organization: any;
+  location?: any;
   onCreate: (location: any) => void;
 }) {
   const toast = useToast();
@@ -52,6 +54,7 @@ export default function CreateAccessGroupDialog({
               },
               body: JSON.stringify({
                 name: values.name,
+                locationId: location?.id,
                 description: values.description,
                 scanData: {}
               }),
