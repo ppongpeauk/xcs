@@ -197,7 +197,8 @@ export default function PlatformAccessPoint() {
     let groups = [] as any;
 
     ags.forEach((ag: AccessGroup) => {
-      if (!ag.locationId || ag.locationId === accessPoint?.location?.id) {
+      // check if the group is an organization or if it's associated with the location
+      if (ag.type === "organization" || ag.locationId === accessPoint?.location?.id) {
         // check if the group is already in the groups object
         if (groups.find((g: Group) => g.label === getAccessGroupType(ag))) {
           // if it is, add the option to the options array
@@ -230,7 +231,7 @@ export default function PlatformAccessPoint() {
     });
 
     return groups;
-  }, []);
+  }, [accessPoint]);
 
   return (
     <>
