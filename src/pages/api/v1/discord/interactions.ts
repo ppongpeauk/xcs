@@ -12,7 +12,7 @@ export default async function handler(
     const interaction = req.body;
 
     if (interaction.type === 1) {
-      res.status(200).json({
+      return res.status(200).json({
         type: 1,
       });
     }
@@ -21,7 +21,7 @@ export default async function handler(
       const { name, options } = interaction.data;
 
       if (name === "ping") {
-        res.status(200).json({
+        return res.status(200).json({
           type: 4,
           data: {
             content: "Pong!",
