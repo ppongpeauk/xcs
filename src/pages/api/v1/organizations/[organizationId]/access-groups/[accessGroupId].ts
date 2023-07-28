@@ -63,11 +63,12 @@ export default async function handler(
 
       // check if name is unique, case insensitive
       const accessGroups = organization.accessGroups;
-      for (const accessGroupId in accessGroups) {
+      for (const groupId in accessGroups) {
         if (
-          accessGroups[accessGroupId].name.toLowerCase() === name.toLowerCase() &&
-          accessGroups[accessGroupId].type === (locationId ? "location" : "organization") &&
-          (!locationId || accessGroups[accessGroupId].locationId === locationId)
+          accessGroups[groupId].name.toLowerCase() === name.toLowerCase() &&
+          accessGroups[groupId].type === (locationId ? "location" : "organization") &&
+          (!locationId || accessGroups[groupId].locationId === locationId) &&
+          accessGroupId !== groupId
           )
         {
           return res.status(400).json({ message: "Name must be unique." });
