@@ -50,6 +50,10 @@ export default async function handler(
   const accessPointsObject = {} as any;
   accessPoints.forEach((accessPoint) => {
     accessPointsObject[accessPoint.id] = accessPoint;
+    accessPointsObject[accessPoint.id].scanData = accessPointsObject[accessPoint.id].scanData || {
+      ready: {},
+      disarmed: {},
+    };
   });
   
   return res.status(200).json({ success: true, accessPoints: accessPointsObject });
