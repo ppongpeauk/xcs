@@ -38,7 +38,7 @@ const handler = async (
   switch (name) {
     case "ping":
       return res.status(200).json(PING_COMMAND_RESPONSE);
-    case "xcs":
+    case "xcs-role":
       // get XCS role
       const mongoClient = await clientPromise;
       const db = mongoClient.db(process.env.MONGODB_DB as string);
