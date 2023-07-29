@@ -59,7 +59,7 @@ const handler = async (
           }
         ).then((res) => {
           if (res.status !== 204) {
-            throw new Error("Failed to grant XCS role.");
+            return "Something went wrong while granting the XCS role."
           } else {
             return "You have been granted the XCS role.";
           }
