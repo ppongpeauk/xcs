@@ -194,7 +194,7 @@ export default async function handler(
       .insertOne({
         displayName: displayName,
         email: {
-          address: email,
+          address: email.trim().toLowerCase(),
           privacyLevel: 2,
           verified: false,
         },

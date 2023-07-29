@@ -108,8 +108,10 @@ export default function Login() {
                 <Text fontWeight={"bold"}>What is my login?</Text>
                 <Text>
                   Your login for Restrafes XCS is the email address that was used to
-                  invite you to the platform. If you are unsure of your login or
-                  did not receive an invitation, please your sponsor or
+                  invite you to the platform.
+                  
+                  If you are unsure of your login or
+                  did not receive an invitation, please contact your sponsor or
                   email xcs@restrafes.co for assistance.
                 </Text>
               </>

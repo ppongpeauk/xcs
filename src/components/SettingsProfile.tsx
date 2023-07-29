@@ -33,18 +33,18 @@ export default function SettingsProfile() {
   const defaultImage = `${process.env.NEXT_PUBLIC_ROOT_URL}/images/default-avatar.png`;
   const [image, setImage] = useState<null | undefined | string>(undefined);
   const [croppedImage, setCroppedImage] = useState<null | string>(null);
-  
+
   const toast = useToast();
 
   const avatarChooser = useRef<HTMLInputElement>(null);
 
-  const handleChange = useCallback( async (e: any) => {
+  const handleChange = useCallback(async (e: any) => {
     console.log(e.target.files[0]);
     const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
     reader.readAsDataURL(file);
-    
+
     // check if file is an image
     if (file.type.split("/")[0] !== "image") {
       toast({
@@ -58,9 +58,9 @@ export default function SettingsProfile() {
 
     reader.onloadend = () => {
       setImage(reader.result as string);
-    }
+    };
   }, []);
-  
+
   const removeAvatar = useCallback(() => {
     // download default avatar and set it as the image
     fetch(defaultImage)
@@ -70,10 +70,8 @@ export default function SettingsProfile() {
         reader.readAsDataURL(blob);
         reader.onloadend = () => {
           setImage(reader.result as string);
-        }
-      }
-    );
-    
+        };
+      });
   }, []);
 
   useEffect(() => {
@@ -90,6 +88,7 @@ export default function SettingsProfile() {
               displayName: currentUser?.displayName,
               username: currentUser?.username,
               bio: currentUser?.bio,
+              email: currentUser?.email?.address,
             }}
             onSubmit={(values, actions) => {
               user.getIdToken().then((token: string) => {
@@ -102,6 +101,10 @@ export default function SettingsProfile() {
                   body: JSON.stringify({
                     displayName: values.displayName,
                     bio: values.bio,
+                    email:
+                      values.email !== currentUser?.email?.address
+                        ? values.email
+                        : undefined,
                     avatar: image !== currentUser?.avatar ? image : undefined,
                   }),
                 })
@@ -211,6 +214,22 @@ export default function SettingsProfile() {
                     )}
                   </Field>
                 </HStack>
+                <Field name="email">
+                  {({ field, form }: any) => (
+                    <FormControl>
+                      <FormLabel>Email Address</FormLabel>
+                      <InputGroup mb={2}>
+                        <Input
+                          {...field}
+                          type="email"
+                          autoComplete="off"
+                          placeholder="Email Address"
+                          variant={"outline"}
+                        />
+                      </InputGroup>
+                    </FormControl>
+                  )}
+                </Field>
                 <Field name="bio">
                   {({ field, form }: any) => (
                     <FormControl>

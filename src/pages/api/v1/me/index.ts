@@ -1,6 +1,6 @@
 import { authToken } from "@/lib/auth";
 import clientPromise from "@/lib/mongodb";
-import { tokenToID, uploadProfilePicture } from "@/pages/api/firebase";
+import { admin, tokenToID, uploadProfilePicture } from "@/pages/api/firebase";
 import { NextApiRequest, NextApiResponse } from "next";
 const sharp = require("sharp");
 
@@ -67,6 +67,30 @@ export default async function handler(
     const timestamp = new Date();
 
     req.body.lastUpdatedAt = timestamp;
+
+    if (req.body.email) {
+      req.body.email = req.body.email.trim().toLowerCase();
+
+      // check if email is already in use
+      const emailExists = await users.findOne({
+        "email.address": req.body.email,
+      });
+      if (emailExists) {
+        return res.status(400).json({
+          message: "Email is already in use.",
+        });
+      }
+
+      await admin.auth().updateUser(uid, {
+        email: req.body.email,
+      });
+
+      // update emailVerified to false
+      await admin.auth().updateUser(uid, {
+        emailVerified: false,
+      });
+      await users.updateOne({ id: uid }, { $set: { "email.address": req.body.email, "email.verified": false } });
+    }
 
     // check if avatar is valid
     if (req.body.avatar) {
