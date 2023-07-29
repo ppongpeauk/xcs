@@ -54,19 +54,16 @@ const handler = async (
           {
             method: "PUT",
             headers: {
-              Authorization: `Bot ${process.env.DISCORD_TOKEN}`
+              Authorization: `Bot ${process.env.DISCORD_TOKEN}`,
+              "X-Audit-Log-Reason": "XCS role granted via /xcs command",
             },
           }
-        ).then((res) => {
-          if (res.status !== 204) {
-            return "Something went wrong while granting the XCS role."
+        ).then((ret) => {
+          if (ret.status !== 204) {
+            return res.status(200).json({ ...BASE_RESPONSE, data: { content: "Something went wrong." } });
           } else {
-            return "You have been granted the XCS role.";
+            return res.status(200).json({ ...BASE_RESPONSE, data: { content: "You have been granted the XCS role." } });
           }
-        }).then((message) => {
-          return res.status(200).json({ ...BASE_RESPONSE, data: { content: message } });
-        }).catch((err) => {
-          return res.status(200).json({ ...BASE_RESPONSE, data: { content: err } });
         });
       }
 
