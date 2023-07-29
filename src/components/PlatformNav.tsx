@@ -451,7 +451,7 @@ export default function PlatformNav({
             href={"/platform/home"}
             display={{ base: "flex", md: "none" }}
             position={"relative"}
-            w={"64px"}
+            w={"96px"}
             h={"100%"}
           >
             <NextImage

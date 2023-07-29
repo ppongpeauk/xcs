@@ -30,7 +30,7 @@ export default function Home() {
       >
         <Flex flexBasis={1} flexGrow={2} order={[2, 1]} w={"full"}>
           <NextImage
-            src={"/images/hero5.jpeg"}
+            src={"/images/hero4.jpeg"}
             alt={"Home Image"}
             fill={true}
             style={{
