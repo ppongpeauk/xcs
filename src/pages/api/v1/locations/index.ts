@@ -74,7 +74,11 @@ export default async function handler(
       })
       .toArray();
 
-    if (ownedOrganizations.length >= 3) {
+    const organizationOwner = await users.findOne({
+      id: organization.ownerId,
+    });
+
+    if (ownedOrganizations.length >= 3 && !organizationOwner?.platform?.staff) {
       return res.status(403).json({
         message:
           "This organization has reached the maximum amount of locations. " +
@@ -124,7 +128,7 @@ export default async function handler(
           id: null,
           name: null,
           thumbnail: null,
-        }
+        },
       },
       enabled: true,
       createdAt: timestamp,

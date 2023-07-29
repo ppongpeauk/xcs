@@ -70,7 +70,7 @@ export default async function handler(
         organizationLimit = 1;
     }
 
-    if (ownedOrganizations.length >= organizationLimit) {
+    if (ownedOrganizations.length >= organizationLimit && !user?.platform?.staff) {
       return capError();
     }
 
