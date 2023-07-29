@@ -32,7 +32,6 @@ const handler = async (
 ) => {
   const {
     data: { name, options },
-    user: { id },
   } = interaction;
 
   switch (name) {
@@ -40,16 +39,18 @@ const handler = async (
       return res.status(200).json(PING_COMMAND_RESPONSE);
     case "xcs-role":
       // get XCS role
+      const discordId = interaction.member.user.id;
+      
       const mongoClient = await clientPromise;
       const db = mongoClient.db(process.env.MONGODB_DB as string);
       const users = db.collection("users");
-
-      const user = await users.findOne({ "discord.id": id });
+      const user = await users.findOne({ "discord.id": discordId });
+      
       if (!user) {
         return res.status(200).json(XCS_ROLE_DENIED_RESPONSE);
       } else {
         await fetch(
-          `https://discord.com/api/guilds/${guildId}/members/${id}/roles/${roleId}`,
+          `https://discord.com/api/guilds/${guildId}/members/${discordId}/roles/${roleId}`,
           {
             method: "PUT",
             headers: {
