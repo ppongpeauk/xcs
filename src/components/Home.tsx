@@ -1,13 +1,13 @@
 import Section from "@/components/section";
 import {
-    Box,
-    Container,
-    Divider,
-    Flex,
-    Heading,
-    Image,
-    Text,
-    useColorModeValue,
+  Box,
+  Container,
+  Divider,
+  Flex,
+  Heading,
+  Image,
+  Text,
+  useColorModeValue,
 } from "@chakra-ui/react";
 
 // import { Familjen_Grotesk, Manrope } from "next/font/google";
@@ -63,7 +63,7 @@ export default function Home() {
               as={"h1"}
               fontSize={"4xl"}
               fontWeight={"bolder"}
-              letterSpacing={"tighter"}
+              letterSpacing={"tight"}
             >
               Streamlined access control is here.
             </Text>

@@ -1,24 +1,24 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import Layout from "@/layouts/PlatformLayout";
 import {
-    Avatar,
-    Box,
-    Button,
-    Code,
-    Container,
-    Flex,
-    FormControl,
-    FormLabel,
-    HStack,
-    Heading,
-    IconButton,
-    Image,
-    InputGroup,
-    Skeleton,
-    Stack,
-    Text,
-    useColorModeValue,
-    useDisclosure,
+  Avatar,
+  Box,
+  Button,
+  Code,
+  Container,
+  Flex,
+  FormControl,
+  FormLabel,
+  HStack,
+  Heading,
+  IconButton,
+  Image,
+  InputGroup,
+  Skeleton,
+  Stack,
+  Text,
+  useColorModeValue,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { AsyncSelect, CreatableSelect, Select } from "chakra-react-select";
 import Head from "next/head";
@@ -138,21 +138,22 @@ export default function PlatformLocations() {
           align={"flex-end"}
           spacing={4}
         >
-          <FormControl w={{
-            base: "unset",
-            md: "384px",
-          }}>
+          <FormControl
+            w={{
+              base: "unset",
+              md: "384px",
+            }}
+          >
             <FormLabel>Organization</FormLabel>
             <>
               <Select
-                value={{
-                  label: selectedOrganization?.name,
-                  value: selectedOrganization?.id
-                } as any}
-                onChange={(e: {
-                  label: string;
-                  value: string;
-                }) => {
+                value={
+                  {
+                    label: selectedOrganization?.name,
+                    value: selectedOrganization?.id,
+                  } as any
+                }
+                onChange={(e: { label: string; value: string }) => {
                   const organization = organizations.find(
                     (organization: any) => organization.id === e.value
                   );
@@ -180,11 +181,41 @@ export default function PlatformLocations() {
 
         <Box>
           {locationsLoading ? (
-            <Stack>
-              <Skeleton height={4} width={"50%"} />
-              <Skeleton height={4} width={"50%"} />
-              <Skeleton height={4} width={"50%"} />
-            </Stack>
+            <Flex
+              as={Stack}
+              direction={"row"}
+              h={"full"}
+              spacing={4}
+              overflow={"auto"}
+              flexWrap={"wrap"}
+            >
+              {
+                Array.from({ length: 6 }).map((_, i) => (
+                  <Box
+                    key={i}
+                    as={Skeleton}
+                    w={{ base: "full", md: "384px" }}
+                    h={"max-content"}
+                    py={4}
+                    px={8}
+                    borderWidth={1}
+                    borderRadius={"xl"}
+                    borderColor={useColorModeValue("gray.200", "gray.700")}
+                  >
+                    <HStack p={2} w={"full"}>
+                      <Box flexGrow={1}>
+                        <Text fontSize={"2xl"} fontWeight={"bold"}>
+                          Loading...
+                        </Text>
+                        <Text color={"gray.500"}>0 Members</Text>
+                        <Text color={"gray.500"}>Owned by</Text>
+                        <Text>Organization</Text>
+                      </Box>
+                    </HStack>
+                  </Box>
+                )) as any
+              }
+            </Flex>
           ) : organizations.length === 0 ? (
             <Text>You are currently not a member of any organization.</Text>
           ) : (
@@ -233,7 +264,9 @@ export default function PlatformLocations() {
                           <Text fontSize={"xl"} fontWeight={"bold"}>
                             {location?.name}
                           </Text>
-                          <Text color={"gray.500"}>{location?.roblox?.place?.name}</Text>
+                          <Text color={"gray.500"}>
+                            {location?.roblox?.place?.name}
+                          </Text>
                           {location?.description ? (
                             <Text>{location?.description}</Text>
                           ) : (
