@@ -4,7 +4,6 @@ import { APIApplicationCommandInteraction } from "discord-api-types/v8"
 import { NextApiRequest, NextApiResponse } from "next"
 import nacl from "tweetnacl"
 
-// Your public key can be found on your application in the Developer Portal
 const publicKey = process.env.DISCORD_PUBLIC_KEY
 
 if (!publicKey) {
