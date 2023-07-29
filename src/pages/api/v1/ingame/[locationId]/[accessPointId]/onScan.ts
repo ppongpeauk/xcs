@@ -97,7 +97,10 @@ export default async function handler(
 
   // get all access groups that are open to everyone
   const openAccessGroups = Object.keys(organization.accessGroups).filter(
-    (groupId) => organization.accessGroups[groupId]?.config?.openToEveryone
+    (groupId) =>
+      (organization.accessGroups[groupId].type === "organization" ||
+      organization.accessGroups[groupId].locationId === locationId) &&
+      organization.accessGroups[groupId]?.config?.openToEveryone
   );
 
   // get all organization members that belong to allowed groups
@@ -238,7 +241,7 @@ export default async function handler(
           member.roblox = user?.roblox;
           member.avatar = user?.avatar;
         }
-        
+
         const avatarUrl = `${process.env.NEXT_PUBLIC_ROOT_URL}/images/logo-square.jpeg`;
         const webhookRes = await fetch(webhook.url, {
           method: "POST",
