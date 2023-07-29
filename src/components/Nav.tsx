@@ -101,7 +101,7 @@ export default function Nav({ type }: { type?: string }) {
               filter: useColorModeValue("opacity(0.5)", "brightness(0.5)"),
             }}
           >
-            <Flex position={"relative"} w={"172px"} h={"100%"}>
+            <Flex position={"relative"} w={"128px"} h={"100%"}>
               <NextImage
                 src={useColorModeValue(
                   "/images/logo-black.png",
@@ -109,7 +109,7 @@ export default function Nav({ type }: { type?: string }) {
                 )}
                 priority={true}
                 fill={true}
-                quality={48}
+                quality={64}
                 alt={"Restrafes XCS"}
                 style={{
                   objectFit: "contain",
@@ -123,7 +123,7 @@ export default function Nav({ type }: { type?: string }) {
         <HStack
           align={"center"}
           h={"100%"}
-          px={[4, 8]}
+          px={[4, 12]}
           // borderLeft={"1px solid"}
           // borderColor={useColorModeValue("gray.200", "gray.700")}
           spacing={2}

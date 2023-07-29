@@ -323,7 +323,7 @@ export default function PlatformNav({
               filter: useColorModeValue("opacity(0.5)", "brightness(0.5)"),
             }}
           >
-            <Flex position={"relative"} w={"172px"} h={"100%"}>
+            <Flex position={"relative"} w={"128px"} h={"100%"}>
               <NextImage
                 src={useColorModeValue(
                   "/images/logo-black.png",
@@ -331,7 +331,7 @@ export default function PlatformNav({
                 )}
                 priority={true}
                 fill={true}
-                quality={48}
+                quality={64}
                 alt={"Restrafes XCS"}
                 style={{
                   objectFit: "contain",
@@ -470,7 +470,7 @@ export default function PlatformNav({
           </Flex>
           <Spacer />
 
-          <HStack align={"center"} justify={"flex-end"} spacing={4}>
+          <HStack align={"center"} justify={"flex-end"} spacing={4} px={4}>
             {/* Notifications */}
             {/* <Popover>
               <PopoverTrigger>
