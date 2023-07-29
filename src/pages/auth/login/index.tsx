@@ -99,7 +99,7 @@ export default function Login() {
                 <Text fontWeight={"bold"}>What is Restrafes XCS?</Text>
                 <Text>
                   Restrafes XCS is an online access point control platform developed
-                  by RESTRAFES & CO. that allows organizations to manage and
+                  by RESTRAFES & CO that allows organizations to manage and
                   control access to their facilities remotely.
                 </Text>
               </>

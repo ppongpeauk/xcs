@@ -59,15 +59,18 @@ export default function Home() {
           h={"full"}
         >
           <Section>
-            <Text
+            <Heading
               as={"h1"}
-              fontSize={"4xl"}
+              size={"xl"}
               fontWeight={"bolder"}
               letterSpacing={"tight"}
+              pb={2}
             >
               Streamlined access control is here.
-            </Text>
-            <Text fontSize={"xl"}>
+            </Heading>
+            <Text
+              fontSize={"xl"}
+            >
               Restrafes XCS is a new way to manage your building&apos;s access
               control.
             </Text>
@@ -79,33 +82,34 @@ export default function Home() {
         minH={"50vh"}
         borderBottom={"1px solid"}
         borderColor={useColorModeValue("gray.300", "gray.700")}
-        py={12}
+        py={16}
       >
         <Box
-          px={[8, 8, 32]}
+          px={{ base: 8, md: 16, lg: 32 }}
           flexGrow={1}
           flexBasis={1}
-          display={["none", "block"]}
+          display={{ base: "none", md: "block" }}
         >
-          <Text fontSize={"4xl"} pb={2}>
+          <Heading size={"xl"} fontWeight={"400"} pb={2}>
             Qu&apos;est-ce que Restrafes XCS?
-          </Text>
+          </Heading>
         </Box>
-        <Box px={[8, 8, 32]} flexGrow={1} flexBasis={1}>
-          <Text fontSize={"4xl"} pb={2}>
+        <Box px={{ base: 8, md: 16, lg: 32 }} flexGrow={1} flexBasis={1}>
+          <Heading size={"xl"} fontWeight={"400"} pb={2}>
             What is Restrafes XCS?
-          </Text>
+          </Heading>
           <Text fontSize={"xl"}>
-            Restrafes XCS is a powerful access control system designed to help you
-            manage access points for your building. With Restrafes XCS, you can easily
-            and securely control who has access to your property, including
-            employees and visitors. The system is highly customizable, allowing
-            you to set access levels and permissions for different users, and
-            offers a range of advanced features such as real-time monitoring,
-            reporting, and integration with other security systems. Whether
-            you&apos;re looking to enhance the security of your business,
-            school, or residential property, Restrafes XCS provides the flexibility
-            and reliability you need to manage access with confidence.
+            Restrafes XCS is a powerful access control system designed to help
+            you manage access points for your building. With Restrafes XCS, you
+            can easily and securely control who has access to your property,
+            including employees and visitors. The system is highly customizable,
+            allowing you to set access levels and permissions for different
+            users, and offers a range of advanced features such as real-time
+            monitoring, reporting, and integration with other security systems.
+            Whether you&apos;re looking to enhance the security of your
+            business, school, or residential property, Restrafes XCS provides
+            the flexibility and reliability you need to manage access with
+            confidence.
           </Text>
         </Box>
       </Flex>

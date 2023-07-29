@@ -1,24 +1,24 @@
 import { useAuthContext } from "@/contexts/AuthContext";
 import Layout from "@/layouts/PlatformLayout";
 import {
-    Avatar,
-    Box,
-    Card,
-    CardHeader,
-    Container,
-    Flex,
-    Heading,
-    SimpleGrid,
-    Skeleton,
-    Stack,
-    Stat,
-    StatArrow,
-    StatGroup,
-    StatHelpText,
-    StatLabel,
-    StatNumber,
-    Text,
-    useColorModeValue,
+  Avatar,
+  Box,
+  Card,
+  CardHeader,
+  Container,
+  Flex,
+  Heading,
+  SimpleGrid,
+  Skeleton,
+  Stack,
+  Stat,
+  StatArrow,
+  StatGroup,
+  StatHelpText,
+  StatLabel,
+  StatNumber,
+  Text,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import Head from "next/head";
 import { Suspense, useEffect, useState } from "react";
@@ -119,15 +119,8 @@ export default function PlatformHome() {
                 md: "flex-start",
               }}
             >
-              <Box
-                border={"2px solid"}
-                borderColor={useColorModeValue("gray.200", "gray.700")}
-                borderRadius={"full"}
-                overflow={"hidden"}
-              >
-                <Avatar borderRadius={0} size={"2xl"} src={currentUser?.avatar} />
-              </Box>
-              <Box>
+              <Avatar size={"2xl"} src={currentUser?.avatar} />
+              <Box textAlign={{ base: "center", md: "left" }}>
                 <Heading fontSize={"4xl"}>
                   Good {new Date().getHours() < 12 ? "morning" : "afternoon"},{" "}
                   {currentUser?.displayName || currentUser?.username}.
