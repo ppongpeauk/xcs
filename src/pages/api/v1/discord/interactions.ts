@@ -53,7 +53,7 @@ const handler = async (
           {
             method: "PUT",
             headers: {
-              Authorization: `Bot ${process.env.DISCORD_BOT_TOKEN}`,
+              Authorization: `Bot ${process.env.DISCORD_TOKEN}`,
               "X-Audit-Log-Reason": "XCS role granted via /xcs command",
             },
           }
