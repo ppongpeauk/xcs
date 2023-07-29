@@ -24,7 +24,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse): Promise<void>
 
   // reject if id is missing
   if (!id) {
-    res.status(400).json({ success: false, error: "Missing id parameter" });
+    res.status(200).json({ success: false, error: "Missing id parameter" });
     return;
   }
 
