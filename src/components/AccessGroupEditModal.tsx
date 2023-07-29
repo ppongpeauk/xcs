@@ -305,7 +305,7 @@ export default function AccessGroupEditModal({
                         </>
                       )}
                     </Tbody>
-                    {filteredGroups?.length < 1 && (
+                    {(!groups.length || !filteredGroups.length) && (
                       <TableCaption>No access groups found.</TableCaption>
                     )}
                   </Table>
