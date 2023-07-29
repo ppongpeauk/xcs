@@ -112,6 +112,8 @@ export default async function handler(
         });
     }
 
+    delete req.body.email;
+
     await users.updateOne({ id: uid }, { $set: req.body });
 
     return res
