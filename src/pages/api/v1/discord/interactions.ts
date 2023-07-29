@@ -49,7 +49,7 @@ const handler = async (
       if (!user) {
         return res.status(200).json(XCS_ROLE_DENIED_RESPONSE);
       } else {
-        await fetch(
+        const ret = await fetch(
           `https://discord.com/api/guilds/${guildId}/members/${discordId}/roles/${roleId}`,
           {
             method: "PUT",
@@ -58,15 +58,15 @@ const handler = async (
               "X-Audit-Log-Reason": "XCS role granted via /xcs command",
             },
           }
-        ).then((ret) => {
-          if (ret.status !== 204) {
-            return res.status(200).json({ ...BASE_RESPONSE, data: { content: "Something went wrong." } });
-          } else {
-            return res.status(200).json({ ...BASE_RESPONSE, data: { content: "You have been granted the XCS role." } });
-          }
-        });
+        ).then((ret) => ret);
+        
+        if (ret.status !== 204) {
+          return res.status(200).json({ ...BASE_RESPONSE, data: { content: "Something went wrong." } });
+        } else {
+          return res.status(200).json({ ...BASE_RESPONSE, data: { content: "You have been granted the XCS role." } });
+        }
       }
-
+      break;
     default:
       return res.status(200).json(INVALID_COMMAND_RESPONSE);
   }
