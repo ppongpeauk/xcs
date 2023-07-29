@@ -243,6 +243,17 @@ export default async function handler(
       });
     }
 
+    try {
+      body.config.scanData.disarmed = JSON.parse(body?.config?.scanData?.disarmed || "{}");
+      body.config.scanData.ready = JSON.parse(body?.config?.scanData?.ready || "{}");
+      body.config.scanData.granted = JSON.parse(body?.config?.scanData?.granted || "{}");
+      body.config.scanData.denied = JSON.parse(body?.config?.scanData?.denied || "{}");
+    } catch (err) {
+      return res.status(400).json({
+        message: "Unable to parse scan data. Check your JSON and try again.",
+      });
+    }
+
     const timestamp = new Date();
 
     body.updatedAt = timestamp;

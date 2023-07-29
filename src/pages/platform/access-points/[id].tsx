@@ -382,8 +382,8 @@ export default function PlatformAccessPoint() {
                       },
 
                       scanData: {
-                        disarmed: JSON.parse(values.scanDataDisarmed),
-                        ready: JSON.parse(values.scanDataReady),
+                        disarmed: values.scanDataDisarmed,
+                        ready: values.scanDataReady,
                       },
                     },
                   }),
