@@ -54,8 +54,7 @@ const handler = async (
           {
             method: "PUT",
             headers: {
-              Authorization: `Bot ${process.env.DISCORD_TOKEN}`,
-              "X-Audit-Log-Reason": "XCS role granted via /xcs command",
+              Authorization: `Bot ${process.env.DISCORD_TOKEN}`
             },
           }
         ).then((res) => {
@@ -67,7 +66,7 @@ const handler = async (
         }).then((message) => {
           return res.status(200).json({ ...BASE_RESPONSE, data: { content: message } });
         }).catch((err) => {
-          return res.status(200).json({ ...BASE_RESPONSE, data: { content: err.message } });
+          return res.status(200).json({ ...BASE_RESPONSE, data: { content: err } });
         });
       }
 
