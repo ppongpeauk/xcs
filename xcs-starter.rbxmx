@@ -2,7 +2,7 @@
 	<Meta name="ExplicitAutoJoints">true</Meta>
 	<External>null</External>
 	<External>nil</External>
-	<Item class="Model" referent="RBXb257f34c36c141c1bf2d505aa2ab9e0d">
+	<Item class="Model" referent="RBX4d645240ae5a4facb8f160e539759ddc">
 		<Properties>
 			<BinaryString name="AttributesSerialize"></BinaryString>
 			<token name="LevelOfDetail">0</token>
@@ -35,7 +35,7 @@
 			<BinaryString name="Tags"></BinaryString>
 			<OptionalCoordinateFrame name="WorldPivotData"></OptionalCoordinateFrame>
 		</Properties>
-		<Item class="Script" referent="RBXf547c177991641858f3a895537ffc89a">
+		<Item class="Script" referent="RBX121872831e884b74b53f845637322661">
 			<Properties>
 				<BinaryString name="AttributesSerialize"></BinaryString>
 				<bool name="Disabled">false</bool>
@@ -72,7 +72,7 @@
 				<BinaryString name="Tags"></BinaryString>
 			</Properties>
 		</Item>
-		<Item class="ModuleScript" referent="RBXd0d2de50cfdb4cce996141f447e690f1">
+		<Item class="ModuleScript" referent="RBX8403d280dfa047b4ba975944418838b7">
 			<Properties>
 				<BinaryString name="AttributesSerialize"></BinaryString>
 				<Content name="LinkedSource"><null></null></Content>
@@ -85,6 +85,9 @@ Restrafes XCS - Access Control
 RESTRAFES & CO.
 
 ---------------------------------------------------
+
+This is the configuration file for the entire location-
+and should be placed in ServerScriptService.
 
 This script has been automatically configured for {{locationName}}.
 To configure access points for this location, visit:
@@ -104,7 +107,7 @@ return settings;]]></ProtectedString>
 				<int64 name="SourceAssetId">-1</int64>
 				<BinaryString name="Tags"></BinaryString>
 			</Properties>
-			<Item class="Script" referent="RBX5b6ef416efcf4812aa10e22efbcc06b9">
+			<Item class="Script" referent="RBX0fccd25de4de4967900d717c7a374bfd">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<bool name="Disabled">false</bool>
@@ -122,7 +125,7 @@ _m.init({["config"]=require(script.Parent);});
 				</Properties>
 			</Item>
 		</Item>
-		<Item class="Model" referent="RBXf3002222d6584af9be6a52c9d029f858">
+		<Item class="Model" referent="RBX43ee9f503f0c48edaa5de5791d38eabd">
 			<Properties>
 				<BinaryString name="AttributesSerialize"></BinaryString>
 				<token name="LevelOfDetail">0</token>
@@ -149,7 +152,7 @@ _m.init({["config"]=require(script.Parent);});
 				<token name="ModelStreamingMode">0</token>
 				<string name="Name">Example Reader</string>
 				<bool name="NeedsPivotMigration">false</bool>
-				<Ref name="PrimaryPart">RBX198652eaf44e491e9163066aac521db6</Ref>
+				<Ref name="PrimaryPart">RBXacfaf64eefef41c3b53ba18d470980a0</Ref>
 				<float name="ScaleFactor">1</float>
 				<int64 name="SourceAssetId">-1</int64>
 				<BinaryString name="Tags"></BinaryString>
@@ -170,7 +173,7 @@ _m.init({["config"]=require(script.Parent);});
 					</CFrame>
 				</OptionalCoordinateFrame>
 			</Properties>
-			<Item class="Model" referent="RBX180ebb2939194bc19607d06b9190c3e8">
+			<Item class="Model" referent="RBX8d0d77e0f4b745fdb3ec8f5b5ad2cf48">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<token name="LevelOfDetail">0</token>
@@ -218,7 +221,7 @@ _m.init({["config"]=require(script.Parent);});
 						</CFrame>
 					</OptionalCoordinateFrame>
 				</Properties>
-				<Item class="Part" referent="RBX198652eaf44e491e9163066aac521db6">
+				<Item class="Part" referent="RBXacfaf64eefef41c3b53ba18d470980a0">
 					<Properties>
 						<bool name="Anchored">true</bool>
 						<BinaryString name="AttributesSerialize"></BinaryString>
@@ -313,7 +316,7 @@ _m.init({["config"]=require(script.Parent);});
 							<Z>0.0550000034</Z>
 						</Vector3>
 					</Properties>
-					<Item class="BlockMesh" referent="RBX6a79ac491a8449b6a1a3cdb010828c92">
+					<Item class="BlockMesh" referent="RBX4f4d2fde9932436ebac53984b25b0310">
 						<Properties>
 							<BinaryString name="AttributesSerialize"></BinaryString>
 							<float name="Bevel">0</float>
@@ -341,7 +344,7 @@ _m.init({["config"]=require(script.Parent);});
 					</Item>
 				</Item>
 			</Item>
-			<Item class="Part" referent="RBXae900eb1241349be92ea26b5be323276">
+			<Item class="Part" referent="RBX86e57929a36c4fc59c37bc7fe74bd61f">
 				<Properties>
 					<bool name="Anchored">true</bool>
 					<BinaryString name="AttributesSerialize"></BinaryString>
@@ -436,7 +439,7 @@ _m.init({["config"]=require(script.Parent);});
 						<Z>0.0550000034</Z>
 					</Vector3>
 				</Properties>
-				<Item class="BlockMesh" referent="RBXf3538e8e383c4770bc919432d3fa2dcf">
+				<Item class="BlockMesh" referent="RBX1059f3841f3842b9a4b8ff456b6ff58c">
 					<Properties>
 						<BinaryString name="AttributesSerialize"></BinaryString>
 						<float name="Bevel">0</float>
@@ -463,7 +466,7 @@ _m.init({["config"]=require(script.Parent);});
 					</Properties>
 				</Item>
 			</Item>
-			<Item class="UnionOperation" referent="RBX4e432fcd211245df9eaadbdf9eb0fabb">
+			<Item class="UnionOperation" referent="RBX54d849193a0646a1a987f80cfed059ef">
 				<Properties>
 					<bool name="Anchored">true</bool>
 					<Content name="AssetId"><url>https://www.roblox.com//asset/?id=2915691837</url></Content>
@@ -573,7 +576,7 @@ _m.init({["config"]=require(script.Parent);});
 					</Vector3>
 				</Properties>
 			</Item>
-			<Item class="UnionOperation" referent="RBX148247e0f22a4cf699336fb346d60fe0">
+			<Item class="UnionOperation" referent="RBXecc2f1bb805448928554cf98b68a586f">
 				<Properties>
 					<bool name="Anchored">true</bool>
 					<Content name="AssetId"><url>https://www.roblox.com//asset/?id=7107257336</url></Content>
@@ -682,7 +685,7 @@ _m.init({["config"]=require(script.Parent);});
 						<Z>0.194268271</Z>
 					</Vector3>
 				</Properties>
-				<Item class="Sound" referent="RBX594e7c77dd2d460caa9bfe79f7805fb8">
+				<Item class="Sound" referent="RBXc3c182f2a8784654806b7ada1c572813">
 					<Properties>
 						<BinaryString name="AttributesSerialize"></BinaryString>
 						<float name="EmitterSize">10</float>
@@ -704,7 +707,7 @@ _m.init({["config"]=require(script.Parent);});
 						<float name="xmlRead_MaxDistance_3">20</float>
 					</Properties>
 				</Item>
-				<Item class="ProximityPrompt" referent="RBX88886670992b4c179e57ebcdaf09f06f">
+				<Item class="ProximityPrompt" referent="RBXfdef422cb8eb4c02bbbbaa2228ad3ffc">
 					<Properties>
 						<string name="ActionText">Present your card</string>
 						<BinaryString name="AttributesSerialize"></BinaryString>
@@ -730,7 +733,7 @@ _m.init({["config"]=require(script.Parent);});
 					</Properties>
 				</Item>
 			</Item>
-			<Item class="Part" referent="RBX6b3e3b79542b4689a96026741e50b42b">
+			<Item class="Part" referent="RBXe25d7df0105e447b933f5ca8078d4c57">
 				<Properties>
 					<bool name="Anchored">true</bool>
 					<BinaryString name="AttributesSerialize"></BinaryString>
@@ -826,7 +829,7 @@ _m.init({["config"]=require(script.Parent);});
 					</Vector3>
 				</Properties>
 			</Item>
-			<Item class="BindableEvent" referent="RBX46f1599d234b4ba4b59e870c23a56cfd">
+			<Item class="BindableEvent" referent="RBX791bbfbd96174496a49e9e082a15b34d">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<string name="Name">API</string>
@@ -834,13 +837,44 @@ _m.init({["config"]=require(script.Parent);});
 					<BinaryString name="Tags"></BinaryString>
 				</Properties>
 			</Item>
-			<Item class="ModuleScript" referent="RBX0b25d18cb36d443aa78a116c695d96eb">
+			<Item class="ModuleScript" referent="RBX34a1781453c740faa07d54f1d529459b">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<Content name="LinkedSource"><null></null></Content>
 					<string name="Name">config</string>
 					<string name="ScriptGuid">{742e823c-fb80-46d9-b6c0-9b072ecda594}</string>
-					<ProtectedString name="Source"><![CDATA[local settings = {
+					<ProtectedString name="Source"><![CDATA[--[[
+
+Restrafes XCS - Access Control
+
+RESTRAFES & CO.
+
+---------------------------------------------------
+
+This is the configuration file for an individual access point.
+
+[Main Settings]
+
+model: The model that the access point is located in.
+accessPointId: The ID of the access point.
+sounds (optional): The sounds that will play when a player is granted or denied access.
+accessDeniedTimer (optional): The amount of time (in seconds) that the access point will be disabled for after a failed scan.
+
+[Event Settings]
+
+events.ready: The event that will fire when the access point is ready to scan.
+events.pending: The event that will fire when the access point is processing a scan.
+events.granted: The event that will fire when a player is granted access.
+events.denied: The event that will fire when a player is denied access.
+events.disarmed: The event that will fire when the access point is disarmed.
+events.disabled: The event that will fire when the access point is disabled.
+
+The scan data that is passed through each event can be configured on the platform website
+(https://xcs.restrafes.co).
+
+--]]
+
+local settings = {
 	["model"] = script.Parent;
 	["accessPointId"] = "";
 	["sounds"] = {
@@ -849,43 +883,35 @@ _m.init({["config"]=require(script.Parent);});
 	};
 	["accessDeniedTimer"] = 2;
 	["events"] = {
-		["accessPending"] = function(player)
-			script.Parent.LED.Color = Color3.fromRGB(0, 255, 0);
+		["ready"] = function(scanData)
+			script.Parent.LED.Color = Color3.fromRGB(255, 0, 0);
 		end;
-		["accessGranted"] = function(player, metadata)
+		["pending"] = function(player)
+			script.Parent.LED.Color = Color3.fromRGB(0, 255, 0);
+			task.wait(0.25)
+			script.Parent.LED.Color = Color3.fromRGB(255, 0, 0);
+		end;
+		["granted"] = function(player, scanData)
 			script.Parent.LED.Color = Color3.fromRGB(255, 0, 0)
-			wait(0.25)
+			task.wait(0.25)
 			script.Parent.LED.Color = Color3.fromRGB(0, 255, 0)
 		end;
-		["accessDenied"] = function(player, metadata)
-			--for i=1,4 do
-			--	script.Parent.LED.Color = Color3.fromRGB(255, 0, 0);
-			--	wait(0.25);
-			--	script.Parent.LED.Color = Color3.fromRGB(0, 255, 0);
-			--	wait(0.25);
-			--end
+		["denied"] = function(player, scanData)
 			script.Parent.LED.Color = Color3.fromRGB(255, 0, 0);
 		end;
-		["accessReady"] = function(metadata)
-			script.Parent.Parent.Parent.DoHold.Value = false;
-			script.Parent.LED.Color = Color3.fromRGB(255, 0, 0);
-		end;
-		["enabled"] = function(metadata)
-			script.Parent.Parent.Parent.DoHold.Value = true;
+		["disarmed"] = function(scanData)
 			script.Parent.LED.Color = Color3.fromRGB(0, 255, 0);
 		end;
-		["disabled"] = function(metadata)
-			script.Parent.Parent.Parent.DoHold.Value = false;
-			script.Parent.LED.Color = Color3.fromRGB(255, 0, 0);
+		["disabled"] = function(scanData)
+			while true do
+				script.Parent.LED.Color = Color3.fromRGB(255, 0, 0);
+				task.wait(0.5);
+				script.Parent.LED.Color = Color3.fromRGB(0, 255, 0);
+				task.wait(0.5);
+			end
 		end;
 	};
-	--[[
-	["_legacy_indicators"] = {
-		["LEDR"]={[0]="Really black",[1]="Really red"};
-		["LEDG"]={[0]="Really black",[1]="Lime green"};
-		["LEDS"]={[0]="Really black",[1]="Institutional white"};
-	};
-	--]]
+	["evolution"] = 0x1;
 };
 
 return settings
@@ -893,7 +919,7 @@ return settings
 					<int64 name="SourceAssetId">-1</int64>
 					<BinaryString name="Tags"></BinaryString>
 				</Properties>
-				<Item class="Script" referent="RBX9f0164ea57f34614b21c2e762bd80ff1">
+				<Item class="Script" referent="RBX77a4390efb5144eea20e9b0c688f4117">
 					<Properties>
 						<BinaryString name="AttributesSerialize"></BinaryString>
 						<bool name="Disabled">false</bool>

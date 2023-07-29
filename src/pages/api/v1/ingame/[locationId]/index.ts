@@ -21,13 +21,13 @@ export default async function handler(
 
   // check if API key is empty
   if (!apiKey) {
-    return res.status(401).json({ success: false, message: "No API key provided" });
+    return res.status(401).json({ success: false, message: "No API key was provided." });
   }
 
   // get location
   const location = await dbLocations.findOne({ id: locationId });
   if (!location) {
-    return res.status(404).json({ success: false, message: "Location not found" });
+    return res.status(404).json({ success: false, message: "Location not found." });
   }
 
   // get organization
@@ -35,12 +35,12 @@ export default async function handler(
     id: location.organizationId,
   });
   if (!organization) {
-    return res.status(404).json({ success: false, message: "Organization not found" });
+    return res.status(404).json({ success: false, message: "Organization not found." });
   }
 
   // check API key
   if (!(apiKey in organization.apiKeys)) {
-    return res.status(401).json({ success: false, message: "Invalid API key" });
+    return res.status(401).json({ success: false, message: "An invalid API key was provided." });
   }
 
   // get access points
