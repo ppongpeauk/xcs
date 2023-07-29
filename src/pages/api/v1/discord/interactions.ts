@@ -1,74 +1,40 @@
 import clientPromise from "@/lib/mongodb";
+import withDiscordInteraction from "@/middlewares/discord";
 import { NextApiRequest, NextApiResponse } from "next";
 const nacl = require("tweetnacl");
 
 const publicKey = process.env.DISCORD_PUBLIC_KEY as string;
+const BASE_RESPONSE = { type: 4 }
+const INVALID_COMMAND_RESPONSE = { ...BASE_RESPONSE, data: { content: "Command not found." } }
+const PING_COMMAND_RESPONSE = { ...BASE_RESPONSE, data: { content: "Pong!" } }
 
+// disable body parsing, need the raw body as per https://discord.com/developers/docs/interactions/slash-commands#security-and-authorization
 export const config = {
   api: {
     bodyParser: false,
   },
 };
 
-async function getRawBody(readable: NodeJS.ReadableStream) {
-  const chunks = [];
-  for await (const chunk of readable) {
-    chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk);
-  }
-  return Buffer.concat(chunks);
-}
+const handler = async (
+  _: NextApiRequest,
+  res: NextApiResponse,
+  interaction: any
+) => {
+  const {
+    data: { name, options },
+  } = interaction;
 
-
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method === "POST") {
-    const client = await clientPromise;
-    const db = client.db();
-
-    const signature = req.headers["X-Signature-Ed25519"] as any;
-    const timestamp = req.headers["X-Signature-Timestamp"] as any;
-    const rawBody = await getRawBody(req);
-    const interaction = JSON.parse(Buffer.from(rawBody).toString("utf8"));
-
-    if (!signature || !timestamp) {
-      return res.status(401).json({
-        error: "Unauthorized",
-      });
-    }
-
-    const isVerified = nacl.sign.detached.verify(
-      Buffer.from(timestamp + rawBody),
-      Buffer.from(signature, 'hex'),
-      Buffer.from(publicKey, 'hex')
-    );
-    
-    if (!isVerified) {
-      return res.status(401).end("Invalid request signature.");
-    }    
-
-    if (interaction.type === 1) {
+  switch (name) {
+    case "ping":
+      return res.status(200).json(PING_COMMAND_RESPONSE);
+    case "echo":
       return res.status(200).json({
-        type: 1,
+        ...BASE_RESPONSE,
+        data: {
+          content: options[0].value,
+        },
       });
-    }
-
-    if (interaction.type === 2) {
-      const { name, options } = interaction.data;
-
-      if (name === "ping") {
-        return res.status(200).json({
-          type: 4,
-          data: {
-            content: "Pong!",
-          },
-        });
-      }
-    }
   }
+};
 
-  return res.status(500).json({
-    error: "Internal server error.",
-  });
-}
+export default withDiscordInteraction(handler);

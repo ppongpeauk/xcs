@@ -33,6 +33,7 @@
     "chakra-react-select": "^4.7.0",
     "class-variance-authority": "^0.6.1",
     "clsx": "^1.2.1",
+    "discord-api-types": "^0.37.50",
     "eslint": "8.44.0",
     "eslint-config-next": "13.4.7",
     "firebase": "^9.23.0",
