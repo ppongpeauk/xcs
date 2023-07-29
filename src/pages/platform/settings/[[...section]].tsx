@@ -115,8 +115,8 @@ export default function Settings() {
   return (
     <>
       <Head>
-        <title>EVE XCS – Settings</title>
-        <meta property="og:site_name" content="EVE XCS" />
+        <title>Restrafes XCS – Settings</title>
+        <meta property="og:site_name" content="Restrafes XCS" />
         <meta property="og:type" content="website" />
         <meta property="og:title" content="Settings" />
       </Head>

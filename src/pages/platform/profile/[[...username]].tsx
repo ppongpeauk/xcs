@@ -51,7 +51,7 @@ export default function UserProfileNS({ user }: any) {
   return (
     <>
       <Head>
-        <meta property="og:site_name" content="EVE XCS" />
+        <meta property="og:site_name" content="Restrafes XCS" />
         {user ? (
           <>
             <meta
@@ -64,7 +64,7 @@ export default function UserProfileNS({ user }: any) {
             />
             <meta
               property="og:description"
-              content={`Join ${user?.displayName || user.name.first} and a community of architects in managing access points effortlessly on EVE XCS.`}
+              content={`Join ${user?.displayName || user.name.first} and a community of architects in managing access points effortlessly on Restrafes XCS.`}
             />
             <meta property="og:image" content={user.avatar} />
           </>
@@ -77,7 +77,7 @@ export default function UserProfileNS({ user }: any) {
             />
             <meta
               property="og:description"
-              content={`Join a community of architects in managing access points effortlessly on EVE XCS.`}
+              content={`Join a community of architects in managing access points effortlessly on Restrafes XCS.`}
             />
           </>
         )}

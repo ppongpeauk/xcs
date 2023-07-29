@@ -50,12 +50,12 @@ export default function Invite({ invite }: any) {
   return (
     <>
       <Head>
-        <title>EVE XCS – Invitation</title>
+        <title>Restrafes XCS – Invitation</title>
 
         {invite ? (
           <>
-            <meta name="og:site_name" content={"EVE XCS"} />
-            <meta name="og:title" content={"EVE XCS - Invitation"} />
+            <meta name="og:site_name" content={"Restrafes XCS"} />
+            <meta name="og:title" content={"Restrafes XCS - Invitation"} />
             <meta
               name="og:url"
               content={`https://xcs.restrafes.co/invite/${query.id}`}

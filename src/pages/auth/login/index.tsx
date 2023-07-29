@@ -77,28 +77,28 @@ export default function Login() {
     !user && (
       <>
         <Head>
-          <title>EVE XCS – Login</title>
-          <meta name="description" content="EVE XCS - Login" />
+          <title>Restrafes XCS – Login</title>
+          <meta name="description" content="Restrafes XCS - Login" />
           <link rel="icon" href="/favicon.ico" />
-          <meta name="og:site_name" content="EVE XCS" />
-          <meta name="og:title" content="EVE XCS - Login" />
-          <meta name="og:description" content="Authenticate into EVE XCS." />
+          <meta name="og:site_name" content="Restrafes XCS" />
+          <meta name="og:title" content="Restrafes XCS - Login" />
+          <meta name="og:description" content="Authenticate into Restrafes XCS." />
           <meta name="og:type" content="website" />
           <meta name="og:url" content="https://xcs.restrafes.co/login" />
           <meta property="og:image" content="/images/logo-square.jpeg" />
           <meta name="og:locale" content="en_US" />
         </Head>
         <Nav />
-        <Modal onClose={onClose} isOpen={isOpen} isCentered size={"lg"}>
+        <Modal onClose={onClose} isOpen={isOpen} isCentered size={"md"}>
           <ModalOverlay />
           <ModalContent bg={useColorModeValue("white", "gray.800")}>
             <ModalHeader>Frequently Asked Questions (FAQ)</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
               <>
-                <Text fontWeight={"bold"}>What is XCS?</Text>
+                <Text fontWeight={"bold"}>What is Restrafes XCS?</Text>
                 <Text>
-                  EVE XCS is an online access point control platform developed
+                  Restrafes XCS is an online access point control platform developed
                   by RESTRAFES & CO. that allows organizations to manage and
                   control access to their facilities remotely.
                 </Text>
@@ -107,10 +107,9 @@ export default function Login() {
               <>
                 <Text fontWeight={"bold"}>What is my login?</Text>
                 <Text>
-                  Your login for EVE XCS is the email address that was used to
+                  Your login for Restrafes XCS is the email address that was used to
                   invite you to the platform. If you are unsure of your login or
-                  did not receive an invitation, please contact the authorized
-                  member of your organization who manages access control or
+                  did not receive an invitation, please your sponsor or
                   email xcs@restrafes.co for assistance.
                 </Text>
               </>

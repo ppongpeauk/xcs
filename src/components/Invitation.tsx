@@ -66,7 +66,7 @@ export default function Invitation({ invite }: { invite: any }) {
   return (
     <>
       <Head>
-        <title>EVE XCS – Invitation</title>
+        <title>Restrafes XCS – Invitation</title>
       </Head>
       <Container maxW={"container.lg"} h={"100dvh"}>
         <Flex
@@ -83,7 +83,7 @@ export default function Invitation({ invite }: { invite: any }) {
                 "/images/logo-black.png",
                 "/images/logo-white.png"
               )}
-              alt={"EVE XCS Logo"}
+              alt={"Restrafes XCS Logo"}
               w={"auto"}
               h={"24px"}
               objectFit={"contain"}
@@ -205,7 +205,7 @@ export default function Invitation({ invite }: { invite: any }) {
                     <Text fontSize={"sm"} my={2}>
                       By accepting this invitation, you agree to the{" "}
                       <Text as={"span"} fontWeight={"bold"}>
-                        EVE XCS
+                        Restrafes XCS
                       </Text>{" "}
                       <Text
                         as={"span"}

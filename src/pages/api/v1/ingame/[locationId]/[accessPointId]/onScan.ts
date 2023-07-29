@@ -257,7 +257,7 @@ export default async function handler(
                   url: member?.avatar || avatarUrl,
                 },
                 author: {
-                  name: "RESTRAFES XCS",
+                  name: "Restrafes XCS",
                   url: "https://xcs.restrafes.co",
                   icon_url: avatarUrl,
                 },

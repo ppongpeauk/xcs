@@ -6,9 +6,9 @@ export default function PlatformEventLogs() {
   return (
     <>
       <Head>
-        <title>EVE XCS – Event Logs</title>
-        <meta property="og:title" content="EVE XCS - Event Logs" />
-        <meta property="og:site_name" content="EVE XCS" />
+        <title>Restrafes XCS – Event Logs</title>
+        <meta property="og:title" content="Restrafes XCS - Event Logs" />
+        <meta property="og:site_name" content="Restrafes XCS" />
         <meta property="og:url" content="https://xcs.restrafes.co" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="/images/logo-square.jpeg" />

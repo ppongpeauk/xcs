@@ -1,13 +1,13 @@
 import Section from "@/components/section";
 import {
-  Box,
-  Container,
-  Divider,
-  Flex,
-  Heading,
-  Image,
-  Text,
-  useColorModeValue,
+    Box,
+    Container,
+    Divider,
+    Flex,
+    Heading,
+    Image,
+    Text,
+    useColorModeValue,
 } from "@chakra-ui/react";
 
 // import { Familjen_Grotesk, Manrope } from "next/font/google";
@@ -68,7 +68,7 @@ export default function Home() {
               Streamlined access control is here.
             </Text>
             <Text fontSize={"xl"}>
-              EVE XCS is a new way to manage your building&apos;s access
+              Restrafes XCS is a new way to manage your building&apos;s access
               control.
             </Text>
           </Section>
@@ -88,23 +88,23 @@ export default function Home() {
           display={["none", "block"]}
         >
           <Text fontSize={"4xl"} pb={2}>
-            Qu&apos;est-ce que EVE XCS?
+            Qu&apos;est-ce que Restrafes XCS?
           </Text>
         </Box>
         <Box px={[8, 8, 32]} flexGrow={1} flexBasis={1}>
           <Text fontSize={"4xl"} pb={2}>
-            What is EVE XCS?
+            What is Restrafes XCS?
           </Text>
           <Text fontSize={"xl"}>
-            EVE XCS is a powerful access control system designed to help you
-            manage access points for your building. With EVE XCS, you can easily
+            Restrafes XCS is a powerful access control system designed to help you
+            manage access points for your building. With Restrafes XCS, you can easily
             and securely control who has access to your property, including
             employees and visitors. The system is highly customizable, allowing
             you to set access levels and permissions for different users, and
             offers a range of advanced features such as real-time monitoring,
             reporting, and integration with other security systems. Whether
             you&apos;re looking to enhance the security of your business,
-            school, or residential property, EVE XCS provides the flexibility
+            school, or residential property, Restrafes XCS provides the flexibility
             and reliability you need to manage access with confidence.
           </Text>
         </Box>
@@ -125,7 +125,7 @@ export default function Home() {
             className={"overflow-hidden"}
           >
             <Text as={"h3"} fontSize={["0.5em", "0.25em"]}>
-              EVE XCS<Box as={"span"} mx={8}></Box>
+              Restrafes XCS<Box as={"span"} mx={8}></Box>
             </Text>
           </Marquee>
           <Marquee
@@ -134,7 +134,7 @@ export default function Home() {
             className={"overflow-hidden"}
           >
             <Text as={"h3"} fontSize={["0.5em", "0.25em"]} fontWeight={"900"}>
-              EVE XCS<Box as={"span"} mx={8}></Box>
+              Restrafes XCS<Box as={"span"} mx={8}></Box>
             </Text>
           </Marquee>
         </Flex>

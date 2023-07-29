@@ -1,24 +1,24 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import Layout from "@/layouts/PlatformLayout";
 import {
-  Avatar,
-  Box,
-  Button,
-  Code,
-  Container,
-  Flex,
-  FormControl,
-  FormLabel,
-  HStack,
-  Heading,
-  IconButton,
-  Image,
-  InputGroup,
-  Skeleton,
-  Stack,
-  Text,
-  useColorModeValue,
-  useDisclosure,
+    Avatar,
+    Box,
+    Button,
+    Code,
+    Container,
+    Flex,
+    FormControl,
+    FormLabel,
+    HStack,
+    Heading,
+    IconButton,
+    Image,
+    InputGroup,
+    Skeleton,
+    Stack,
+    Text,
+    useColorModeValue,
+    useDisclosure,
 } from "@chakra-ui/react";
 import { AsyncSelect, CreatableSelect, Select } from "chakra-react-select";
 import Head from "next/head";
@@ -112,9 +112,9 @@ export default function PlatformLocations() {
   return (
     <>
       <Head>
-        <title>EVE XCS – Locations</title>
-        <meta property="og:title" content="EVE XCS - Manage Locations" />
-        <meta property="og:site_name" content="EVE XCS" />
+        <title>Restrafes XCS – Locations</title>
+        <meta property="og:title" content="Restrafes XCS - Manage Locations" />
+        <meta property="og:site_name" content="Restrafes XCS" />
         <meta property="og:url" content="https://xcs.restrafes.co" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="/images/logo-square.jpeg" />

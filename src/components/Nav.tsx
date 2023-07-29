@@ -101,7 +101,7 @@ export default function Nav({ type }: { type?: string }) {
               filter: useColorModeValue("opacity(0.5)", "brightness(0.5)"),
             }}
           >
-            <Flex position={"relative"} w={"128px"} h={"100%"}>
+            <Flex position={"relative"} w={"172px"} h={"100%"}>
               <NextImage
                 src={useColorModeValue(
                   "/images/logo-black.png",
@@ -109,7 +109,8 @@ export default function Nav({ type }: { type?: string }) {
                 )}
                 priority={true}
                 fill={true}
-                alt={"EVE XCS"}
+                quality={48}
+                alt={"Restrafes XCS"}
                 style={{
                   objectFit: "contain",
                 }}

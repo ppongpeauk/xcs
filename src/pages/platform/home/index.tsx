@@ -1,24 +1,24 @@
 import { useAuthContext } from "@/contexts/AuthContext";
 import Layout from "@/layouts/PlatformLayout";
 import {
-  Avatar,
-  Box,
-  Card,
-  CardHeader,
-  Container,
-  Flex,
-  Heading,
-  SimpleGrid,
-  Skeleton,
-  Stack,
-  Stat,
-  StatArrow,
-  StatGroup,
-  StatHelpText,
-  StatLabel,
-  StatNumber,
-  Text,
-  useColorModeValue,
+    Avatar,
+    Box,
+    Card,
+    CardHeader,
+    Container,
+    Flex,
+    Heading,
+    SimpleGrid,
+    Skeleton,
+    Stack,
+    Stat,
+    StatArrow,
+    StatGroup,
+    StatHelpText,
+    StatLabel,
+    StatNumber,
+    Text,
+    useColorModeValue,
 } from "@chakra-ui/react";
 import Head from "next/head";
 import { Suspense, useEffect, useState } from "react";
@@ -99,9 +99,9 @@ export default function PlatformHome() {
   return (
     <>
       <Head>
-        <title>EVE XCS – Home</title>
-        <meta property="og:title" content="EVE XCS - Platform Home" />
-        <meta property="og:site_name" content="EVE XCS" />
+        <title>Restrafes XCS – Home</title>
+        <meta property="og:title" content="Restrafes XCS - Platform Home" />
+        <meta property="og:site_name" content="Restrafes XCS" />
         <meta property="og:url" content="https://xcs.restrafes.co" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="/images/logo-square.jpeg" />

@@ -323,7 +323,7 @@ export default function PlatformNav({
               filter: useColorModeValue("opacity(0.5)", "brightness(0.5)"),
             }}
           >
-            <Flex position={"relative"} w={"128px"} h={"100%"}>
+            <Flex position={"relative"} w={"172px"} h={"100%"}>
               <NextImage
                 src={useColorModeValue(
                   "/images/logo-black.png",
@@ -331,7 +331,8 @@ export default function PlatformNav({
                 )}
                 priority={true}
                 fill={true}
-                alt={"EVE XCS"}
+                quality={48}
+                alt={"Restrafes XCS"}
                 style={{
                   objectFit: "contain",
                 }}
@@ -450,7 +451,7 @@ export default function PlatformNav({
             href={"/platform/home"}
             display={{ base: "flex", md: "none" }}
             position={"relative"}
-            w={"128px"}
+            w={"64px"}
             h={"100%"}
           >
             <NextImage
@@ -460,7 +461,8 @@ export default function PlatformNav({
               )}
               priority={true}
               fill={true}
-              alt={"EVE XCS"}
+              quality={50}
+              alt={"Restrafes XCS"}
               style={{
                 objectFit: "contain",
               }}

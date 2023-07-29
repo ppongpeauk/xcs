@@ -74,12 +74,12 @@ export default function Activate() {
   return (
     <>
       <Head>
-        <title>EVE XCS – Activate Account</title>
-        <meta name="description" content="EVE XCS - Activate Account" />
+        <title>Restrafes XCS – Activate Account</title>
+        <meta name="description" content="Restrafes XCS - Activate Account" />
         <link rel="icon" href="/favicon.ico" />
-        <meta name="og:site_name" content="EVE XCS" />
-        <meta name="og:title" content="EVE XCS - Activate Account" />
-        <meta name="og:description" content="Activate your EVE XCS account." />
+        <meta name="og:site_name" content="Restrafes XCS" />
+        <meta name="og:title" content="Restrafes XCS - Activate Account" />
+        <meta name="og:description" content="Activate your Restrafes XCS account." />
         <meta name="og:type" content="website" />
         <meta name="og:url" content="https://xcs.restrafes.co" />
         <meta property="og:image" content="/images/logo-square.jpeg" />

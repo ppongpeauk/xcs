@@ -7,14 +7,14 @@ import { useRouter } from "next/router";
 import Footer from "@/components/Footer";
 import PlatformNav from "@/components/PlatformNav";
 import {
-  Alert,
-  AlertDescription,
-  AlertIcon,
-  AlertTitle,
-  Box,
-  Flex,
-  Stack,
-  useToast,
+    Alert,
+    AlertDescription,
+    AlertIcon,
+    AlertTitle,
+    Box,
+    Flex,
+    Stack,
+    useToast,
 } from "@chakra-ui/react";
 
 // Authentication
@@ -82,7 +82,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   <PlatformAlert
                     title={"Action needed"}
                     description={
-                      "Please verify your email address to continue using EVE XCS."
+                      "Please verify your email address to continue using Restrafes XCS."
                     }
                     isClosable={true}
                     button={{
@@ -102,7 +102,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   <PlatformAlert
                     title={"Action needed"}
                     description={
-                      "Please verify your Roblox account to continue using EVE XCS."
+                      "Please verify your Roblox account to continue using Restrafes XCS."
                     }
                     isClosable={true}
                     button={{

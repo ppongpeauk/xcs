@@ -1,29 +1,29 @@
 // Components
 import {
-  Box,
-  Button,
-  Center,
-  Code,
-  Container,
-  Flex,
-  Heading,
-  Link,
-  Skeleton,
-  Spacer,
-  Stack,
-  Step,
-  StepDescription,
-  StepIcon,
-  StepIndicator,
-  StepNumber,
-  StepSeparator,
-  StepStatus,
-  StepTitle,
-  Stepper,
-  Text,
-  useColorModeValue,
-  useSteps,
-  useToast,
+    Box,
+    Button,
+    Center,
+    Code,
+    Container,
+    Flex,
+    Heading,
+    Link,
+    Skeleton,
+    Spacer,
+    Stack,
+    Step,
+    StepDescription,
+    StepIcon,
+    StepIndicator,
+    StepNumber,
+    StepSeparator,
+    StepStatus,
+    StepTitle,
+    Stepper,
+    Text,
+    useColorModeValue,
+    useSteps,
+    useToast,
 } from "@chakra-ui/react";
 
 import Head from "next/head";
@@ -140,7 +140,7 @@ export default function Verify() {
   return (
     <>
       <Head>
-        <title>EVE XCS – Verification</title>
+        <title>Restrafes XCS – Verification</title>
       </Head>
       <Container maxW={"container.lg"} p={8}>
         <Text as={"h1"} fontSize={"4xl"} fontWeight={"900"}>
@@ -183,7 +183,7 @@ export default function Verify() {
                 </Text>
                 <Text>
                   Welcome to the verification process. In just a few steps you
-                  will be able to start using the EVE XCS platform.
+                  will be able to start using the Restrafes XCS platform.
                 </Text>
                 <Spacer />
                 <Stack spacing={2} pt={8}>

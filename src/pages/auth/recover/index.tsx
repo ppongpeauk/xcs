@@ -2,18 +2,18 @@ import Footer from "@/components/Footer";
 import Nav from "@/components/Nav";
 import Section from "@/components/section";
 import {
-  Box,
-  Button,
-  Flex,
-  FormControl,
-  FormLabel,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  Link,
-  Text,
-  useColorModeValue,
-  useToast,
+    Box,
+    Button,
+    Flex,
+    FormControl,
+    FormLabel,
+    Input,
+    InputGroup,
+    InputLeftElement,
+    Link,
+    Text,
+    useColorModeValue,
+    useToast,
 } from "@chakra-ui/react";
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 import { Field, Form, Formik } from "formik";
@@ -36,12 +36,12 @@ export default function Recover() {
   return (
     <>
       <Head>
-        <title>EVE XCS – Recover Account</title>
-        <meta name="description" content="EVE XCS - Recover Account" />
+        <title>Restrafes XCS – Recover Account</title>
+        <meta name="description" content="Restrafes XCS - Recover Account" />
         <link rel="icon" href="/favicon.ico" />
-        <meta name="og:site_name" content="EVE XCS" />
-        <meta name="og:title" content="EVE XCS - Recover Account" />
-        <meta name="og:description" content="Recover your EVE XCS account." />
+        <meta name="og:site_name" content="Restrafes XCS" />
+        <meta name="og:title" content="Restrafes XCS - Recover Account" />
+        <meta name="og:description" content="Recover your Restrafes XCS account." />
         <meta name="og:type" content="website" />
         <meta name="og:url" content="https://xcs.restrafes.co" />
         <meta property="og:image" content="/images/logo-square.jpeg" />

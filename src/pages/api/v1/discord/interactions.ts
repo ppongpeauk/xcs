@@ -51,7 +51,10 @@ const handler = async (
       const mongoClient = await clientPromise;
       const db = mongoClient.db(process.env.MONGODB_DB as string);
       const users = db.collection("users");
-      const user = await users.findOne({ "discord.id": discordId });
+      const user = await users.findOne(
+        { "discord.id": discordId },
+        { projection: { id: 1 } }
+      );
 
       if (!user) {
         return res.status(200).json(XCS_ROLE_DENIED_RESPONSE);

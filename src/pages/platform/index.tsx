@@ -8,7 +8,7 @@ export default function PlatformIndex() {
   return (
     <>
       <Head>
-        <title>EVE XCS – Platform Index</title>
+        <title>Restrafes XCS – Platform Index</title>
       </Head>
       <Container maxW={"full"} p={8}>
 

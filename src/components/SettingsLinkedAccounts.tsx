@@ -168,7 +168,7 @@ export default function SettingsLinkedAccounts() {
             <>
               <Text>
                 You have not linked your Roblox account. Please link one to use
-                EVE XCS.
+                Restrafes XCS.
               </Text>
               <ButtonGroup mt={4}>
                 <Button
