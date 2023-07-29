@@ -7,7 +7,7 @@ const roleId = "1127011693868896346";
 const guildId = "1127003608366460978";
 const publicKey = process.env.DISCORD_PUBLIC_KEY as string;
 
-const BASE_RESPONSE = { type: 4 };
+const BASE_RESPONSE = { type: 4, flags: 1 << 6 };
 const INVALID_COMMAND_RESPONSE = {
   ...BASE_RESPONSE,
   data: { content: "Command not found." },
@@ -40,12 +40,19 @@ const handler = async (
     case "xcs-role":
       // get XCS role
       const discordId = interaction.member.user.id;
-      
+
+      if (interaction.member.roles.includes(roleId)) {
+        return res.status(200).json({
+          ...BASE_RESPONSE,
+          data: { content: "You already have the XCS role." },
+        });
+      }
+
       const mongoClient = await clientPromise;
       const db = mongoClient.db(process.env.MONGODB_DB as string);
       const users = db.collection("users");
       const user = await users.findOne({ "discord.id": discordId });
-      
+
       if (!user) {
         return res.status(200).json(XCS_ROLE_DENIED_RESPONSE);
       } else {
@@ -59,11 +66,17 @@ const handler = async (
             },
           }
         ).then((ret) => ret);
-        
+
         if (ret.status !== 204) {
-          return res.status(200).json({ ...BASE_RESPONSE, data: { content: "Something went wrong." } });
+          return res.status(200).json({
+            ...BASE_RESPONSE,
+            data: { content: "Something went wrong." },
+          });
         } else {
-          return res.status(200).json({ ...BASE_RESPONSE, data: { content: "You have been granted the XCS role." } });
+          return res.status(200).json({
+            ...BASE_RESPONSE,
+            data: { content: "You have been granted the XCS role." },
+          });
         }
       }
       break;
