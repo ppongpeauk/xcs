@@ -878,8 +878,8 @@ local settings = {
 	["model"] = script.Parent;
 	["accessPointId"] = "";
 	["sounds"] = {
-		["accessGranted"] = "rbxassetid://138093550";
-		["accessDenied"] = "rbxassetid://138093550";
+		["granted"] = "rbxassetid://138093550";
+		["denied"] = "rbxassetid://138093550";
 	};
 	["accessDeniedTimer"] = 2;
 	["events"] = {
