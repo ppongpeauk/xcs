@@ -1,6 +1,6 @@
-import { useAuthContext } from "@/contexts/AuthContext";
-import { useRouter } from "next/router";
-import { useEffect, useMemo, useState } from "react";
+import { useAuthContext } from '@/contexts/AuthContext';
+import { useRouter } from 'next/router';
+import { useEffect, useMemo, useState } from 'react';
 
 export default function RobloxOauth2() {
   const { query, push } = useRouter();
@@ -11,37 +11,39 @@ export default function RobloxOauth2() {
   }, [query.code]);
 
   useEffect(() => {
-    if (!user || !code) return;
-    
-    user.getIdToken().then((token: string) => {
-      fetch('/api/v1/me/roblox', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          code: code
+    if (!user || !query) return;
+
+    if (!code) {
+      push('/platform/settings/3?robloxLinked=false');
+    } else {
+      user
+        .getIdToken()
+        .then((token: string) => {
+          fetch('/api/v1/me/roblox', {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              code: code
+            })
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              if (data.success) {
+                refreshCurrentUser();
+                push('/platform/settings/3?robloxLinked=true');
+              } else {
+                push('/platform/settings/3?robloxLinked=false');
+              }
+            });
         })
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.success) {
-            refreshCurrentUser();
-            push('/platform/settings/3?robloxLinked=true');
-          } else {
-            push('/platform/settings/3?robloxLinked=false');
-          }
-        }
-      );
-    })
-    .catch((err: any) => {
-      console.log(err);
-    });
+        .catch((err: any) => {
+          console.log(err);
+        });
+    }
   }, [user, code]);
 
-  return (
-    <>
-    </>
-  )
+  return <></>;
 }

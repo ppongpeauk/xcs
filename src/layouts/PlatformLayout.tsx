@@ -100,7 +100,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     button={{
                       text: 'Verify Roblox account',
                       onClick: async () => {
-                        push('/platform/verify');
+                        push(`https://apis.roblox.com/oauth/v1/authorize?client_id=${process.env.NEXT_PUBLIC_ROBLOX_CLIENT_ID}&redirect_uri=${process.env.NEXT_PUBLIC_ROOT_URL}/platform/verify/oauth2/roblox&scope=openid profile&response_type=code`);
                       }
                     }}
                   />
