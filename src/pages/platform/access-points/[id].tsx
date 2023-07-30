@@ -260,15 +260,18 @@ export default function PlatformAccessPoint() {
           accessPoints?.forEach((accessPoint: any) => {
             res = [...res, ...(accessPoint?.tags || [])];
           });
+          res = [...new Set(res as any) as any];
           setTags(res);
-          setTagsOptions(
-            res.map((value: any) => {
-              return {
-                value,
-                label: value
-              };
-            })
-          );
+          setTagsOptions([
+            ...(new Set(
+              res.map((value: string) => {
+                return {
+                  value,
+                  label: value as string
+                };
+              })
+            ) as any)
+          ]);
         })
         .catch((err) => {
           toast({
@@ -541,12 +544,15 @@ export default function PlatformAccessPoint() {
                           options={tagsOptions}
                           placeholder="Select a tag..."
                           onChange={(value) => {
-                            form.setFieldValue('tags', value.map((v: any) => {
-                              return {
-                                label: v.value,
-                                value: v.value
-                              };
-                            }));
+                            form.setFieldValue(
+                              'tags',
+                              value.map((v: any) => {
+                                return {
+                                  label: v.value,
+                                  value: v.value
+                                };
+                              })
+                            );
                           }}
                           value={field?.value}
                           isMulti

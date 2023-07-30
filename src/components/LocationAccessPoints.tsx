@@ -54,15 +54,18 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
     accessPoints?.accessPoints?.forEach((accessPoint: any) => {
       res = [...res, ...(accessPoint?.tags || [])];
     });
+    res = [...new Set(res as any) as any];
     setTags(res);
-    setTagsOptions(
-      res.map((value: any) => {
-        return {
-          value,
-          label: value
-        };
-      })
-    );
+    setTagsOptions([
+      ...(new Set(
+        res.map((value: string) => {
+          return {
+            value,
+            label: value as string
+          };
+        })
+      ) as any)
+    ]);
   }, [accessPoints]);
 
   useEffect(() => {
@@ -204,15 +207,26 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
                       fontSize={'xl'}
                       fontWeight={'bold'}
                       noOfLines={1}
+                      mb={1}
                     >
                       {accessPoint?.name}
                     </Text>
-                    <Code
-                      fontSize={'xs'}
-                      mt={2}
-                    >
-                      {accessPoint.id}
-                    </Code>
+                    {accessPoint?.tags?.length ? (
+                      <Flex
+                        flexWrap={'wrap'}
+                        py={1}
+                      >
+                        {accessPoint?.tags?.map((tag: string) => (
+                          <Badge
+                            key={tag}
+                            mr={1}
+                            colorScheme={'purple'}
+                          >
+                            {tag}
+                          </Badge>
+                        ))}
+                      </Flex>
+                    ) : <></>}
                     <HStack
                       align={'center'}
                       justify={'flex-start'}
