@@ -233,7 +233,7 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
                       >
                         <Badge
                           mr={1}
-                          colorScheme={'purple'}
+                          colorScheme={'gray'}
                         >
                           No Tags
                         </Badge>
