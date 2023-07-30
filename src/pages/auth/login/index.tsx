@@ -191,7 +191,6 @@ export default function Login() {
                     initialValues={{
                       email: '',
                       password: '',
-                      showPassword: false
                     }}
                     onSubmit={(values, actions) => {
                       signInWithEmailAndPassword(auth, values.email, values.password)
@@ -262,7 +261,7 @@ export default function Login() {
                                 </InputLeftElement>
                                 <Input
                                   {...field}
-                                  type={props.values.showPassword ? 'text' : 'password'}
+                                  type={'password'}
                                   placeholder="Password"
                                   variant={'outline'}
                                 />
@@ -270,13 +269,6 @@ export default function Login() {
                             </FormControl>
                           )}
                         </Field>
-                        {/* <Field name="showPassword">
-                          {({ field, form }: any) => (
-                            <FormControl my={2} flexDir="row">
-                              <Checkbox {...field}>Show Password</Checkbox>
-                            </FormControl>
-                          )}
-                        </Field> */}
                         <Button
                           my={2}
                           w={'full'}

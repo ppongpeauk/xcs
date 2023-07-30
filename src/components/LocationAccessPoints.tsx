@@ -8,6 +8,8 @@ import {
   Code,
   Container,
   Flex,
+  FormControl,
+  FormLabel,
   Grid,
   GridItem,
   HStack,
@@ -26,13 +28,17 @@ import { AiFillWarning } from 'react-icons/ai';
 import { BiSolidLock, BiSolidLockOpen } from 'react-icons/bi';
 import { MdOutlineAddCircle } from 'react-icons/md';
 
+import { CreatableSelect, Select } from 'chakra-react-select';
 import moment from 'moment';
 import NextLink from 'next/link';
 
-import CreateAccessPointDialog from './CreateAccessPointDialog';
+import CreateAccessPointDialog from '@/components/CreateAccessPointDialog';
 
 export default function LocationAccessPoints({ idToken, location, refreshData }: any) {
   const [accessPoints, setAccessPoints] = useState<any>(null);
+  const [selectedTags, setSelectedTags] = useState<any>([]);
+  const [tags, setTags] = useState<any>([]);
+  const [tagsOptions, setTagsOptions] = useState<any>([]); // [{ value: 'tag', label: 'tag' }
   const toast = useToast();
 
   const {
@@ -40,6 +46,24 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
     onOpen: onCreateAccessPointModalOpen,
     onClose: onCreateAccessPointModalClose
   } = useDisclosure();
+
+  // get tags
+  useEffect(() => {
+    if (!accessPoints) return;
+    let res = [] as string[];
+    accessPoints?.accessPoints?.forEach((accessPoint: any) => {
+      res = [...res, ...(accessPoint?.tags || [])];
+    });
+    setTags(res);
+    setTagsOptions(
+      res.map((value: any) => {
+        return {
+          value,
+          label: value
+        };
+      })
+    );
+  }, [accessPoints]);
 
   useEffect(() => {
     if (!location) return;
@@ -93,6 +117,23 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
         >
           Create
         </Button>
+        <Box w={'256px'}>
+          <FormControl>
+            {/* <FormLabel>Filter by tag</FormLabel> */}
+            <Select
+              options={tagsOptions}
+              placeholder="Select a tag..."
+              onChange={(value) => {
+                setSelectedTags(value);
+              }}
+              value={selectedTags}
+              isMulti
+              closeMenuOnSelect={false}
+              hideSelectedOptions={false}
+              selectedOptionStyle={'check'}
+            />
+          </FormControl>
+        </Box>
       </Stack>
       <Flex
         as={Stack}
@@ -143,70 +184,75 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
                   </Box>
                 ))
               : null}
-            {accessPoints?.accessPoints?.map((accessPoint: any) => (
-              <Flex
-                key={accessPoint.id}
-                w={{ base: 'full', md: '384px' }}
-                h={'max-content'}
-                p={6}
-                borderWidth={1}
-                borderRadius={'xl'}
-                borderColor={useColorModeValue('gray.200', 'gray.700')}
-              >
-                <Box flexGrow={1}>
-                  <Text
-                    fontSize={'xl'}
-                    fontWeight={'bold'}
-                    noOfLines={1}
-                  >
-                    {accessPoint?.name}
-                  </Text>
-                  <Code
-                    fontSize={'xs'}
-                    mt={2}
-                  >
-                    {accessPoint.id}
-                  </Code>
-                  <HStack
-                    align={'center'}
-                    justify={'flex-start'}
-                    fontSize={'xl'}
-                    mt={2}
-                  >
-                    {accessPoint?.config?.active ? (
-                      <Badge colorScheme={'green'}>Active</Badge>
-                    ) : (
-                      <Badge colorScheme={'red'}>Inactive</Badge>
-                    )}
-                    {accessPoint?.config?.armed ? (
-                      <Badge colorScheme={'blue'}>Armed</Badge>
-                    ) : (
-                      <Badge colorScheme={'red'}>Not Armed</Badge>
-                    )}
-                  </HStack>
-                  {accessPoint.description ? (
-                    <Text pt={2}>{accessPoint.description}</Text>
-                  ) : (
+            {accessPoints?.accessPoints
+              ?.filter(
+                (accessPoint: any) =>
+                  !selectedTags.length || selectedTags.some((tag: any) => accessPoint?.tags?.includes(tag.value))
+              )
+              .map((accessPoint: any) => (
+                <Flex
+                  key={accessPoint.id}
+                  w={{ base: 'full', md: '384px' }}
+                  h={'max-content'}
+                  p={6}
+                  borderWidth={1}
+                  borderRadius={'xl'}
+                  borderColor={useColorModeValue('gray.200', 'gray.700')}
+                >
+                  <Box flexGrow={1}>
                     <Text
-                      pt={2}
-                      color={'gray.500'}
+                      fontSize={'xl'}
+                      fontWeight={'bold'}
+                      noOfLines={1}
                     >
-                      No description available.
+                      {accessPoint?.name}
                     </Text>
-                  )}
-                  <Stack pt={4}>
-                    <Button
-                      as={NextLink}
-                      href={`/platform/access-points/${accessPoint.id}`}
-                      variant={'solid'}
-                      w={'full'}
+                    <Code
+                      fontSize={'xs'}
+                      mt={2}
                     >
-                      View
-                    </Button>
-                  </Stack>
-                </Box>
-              </Flex>
-            ))}
+                      {accessPoint.id}
+                    </Code>
+                    <HStack
+                      align={'center'}
+                      justify={'flex-start'}
+                      fontSize={'xl'}
+                      mt={2}
+                    >
+                      {accessPoint?.config?.active ? (
+                        <Badge colorScheme={'green'}>Active</Badge>
+                      ) : (
+                        <Badge colorScheme={'red'}>Inactive</Badge>
+                      )}
+                      {accessPoint?.config?.armed ? (
+                        <Badge colorScheme={'blue'}>Armed</Badge>
+                      ) : (
+                        <Badge colorScheme={'red'}>Not Armed</Badge>
+                      )}
+                    </HStack>
+                    {accessPoint.description ? (
+                      <Text pt={2}>{accessPoint.description}</Text>
+                    ) : (
+                      <Text
+                        pt={2}
+                        color={'gray.500'}
+                      >
+                        No description available.
+                      </Text>
+                    )}
+                    <Stack pt={4}>
+                      <Button
+                        as={NextLink}
+                        href={`/platform/access-points/${accessPoint.id}`}
+                        variant={'solid'}
+                        w={'full'}
+                      >
+                        View
+                      </Button>
+                    </Stack>
+                  </Box>
+                </Flex>
+              ))}
           </Flex>
         ) : (
           <Text>

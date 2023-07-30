@@ -39,9 +39,9 @@ import {
   chakra,
   useClipboard,
   useColorModeValue,
-  useDisclosure
+  useDisclosure,
+  useToast
 } from '@chakra-ui/react';
-import { useToast } from '@chakra-ui/react';
 
 import { ChevronRightIcon } from '@chakra-ui/icons';
 
@@ -71,6 +71,8 @@ export default function PlatformAccessPoint() {
   const [accessPoint, setAccessPoint] = useState<any>(null);
   const themeBorderColor = useColorModeValue('gray.200', 'gray.700');
   const [accessGroupOptions, setAccessGroupOptions] = useState<any>([]);
+  const [tags, setTags] = useState<any>([]);
+  const [tagsOptions, setTagsOptions] = useState<any>([]); // [{ value: 'tag', label: 'tag' }
   const toast = useToast();
   const {
     hasCopied: clipboardHasCopied,
@@ -240,6 +242,46 @@ export default function PlatformAccessPoint() {
     getAccessGroupOptions(accessPoint?.organization);
   }, [accessPoint, getAccessGroupOptions]);
 
+  useEffect(() => {
+    if (!accessPoint) return;
+
+    user.getIdToken().then(async (idToken: any) => {
+      await fetch(`/api/v1/locations/${accessPoint.locationId}/access-points`, {
+        method: 'GET',
+        headers: { Authorization: `Bearer ${idToken}` }
+      })
+        .then((res) => {
+          if (res.status === 200) return res.json();
+          throw new Error(`Failed to fetch access points. (${res.status})`);
+        })
+        .then((data) => {
+          let accessPoints = data.accessPoints;
+          let res = [] as string[];
+          accessPoints?.forEach((accessPoint: any) => {
+            res = [...res, ...(accessPoint?.tags || [])];
+          });
+          setTags(res);
+          setTagsOptions(
+            res.map((value: any) => {
+              return {
+                value,
+                label: value
+              };
+            })
+          );
+        })
+        .catch((err) => {
+          toast({
+            title: 'Error',
+            description: err.message,
+            status: 'error',
+            duration: 5000,
+            isClosable: true
+          });
+        });
+    });
+  }, [accessPoint]);
+
   return (
     <>
       <Head>
@@ -345,6 +387,11 @@ export default function PlatformAccessPoint() {
             enableReinitialize={true}
             initialValues={{
               name: accessPoint?.name,
+              tags:
+                accessPoint?.tags?.map((tag: string) => ({
+                  label: tag,
+                  value: tag
+                })) || [],
               description: accessPoint?.description,
               active: accessPoint?.config?.active,
               armed: accessPoint?.config?.armed,
@@ -373,6 +420,7 @@ export default function PlatformAccessPoint() {
                   body: JSON.stringify({
                     name: values.name,
                     description: values.description || '',
+                    tags: values.tags.map((tag: any) => tag.value),
 
                     config: {
                       active: values.active,
@@ -477,6 +525,30 @@ export default function PlatformAccessPoint() {
                             maxH={'240px'}
                           />
                         </InputGroup>
+                      </Skeleton>
+                    </FormControl>
+                  )}
+                </Field>
+                <Field name="tags">
+                  {({ field, form }: any) => (
+                    <FormControl
+                      w={'240px'}
+                      maxW={'540px'}
+                    >
+                      <Skeleton isLoaded={accessPoint}>
+                        <FormLabel>Tags</FormLabel>
+                        <CreatableSelect
+                          options={tagsOptions}
+                          placeholder="Select a tag..."
+                          onChange={(value) => {
+                            form.setFieldValue('tags', value);
+                          }}
+                          value={field?.value}
+                          isMulti
+                          closeMenuOnSelect={false}
+                          hideSelectedOptions={false}
+                          selectedOptionStyle={'check'}
+                        />
                       </Skeleton>
                     </FormControl>
                   )}

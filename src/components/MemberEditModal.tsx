@@ -4,6 +4,7 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Avatar,
   Badge,
+  Box,
   Button,
   ButtonGroup,
   Flex,
@@ -28,13 +29,13 @@ import {
   SkeletonText,
   Spacer,
   Stack,
+  Table, TableCaption, TableContainer, Tbody, Td, Text, Tfoot, Th, Thead, Tr,
   VStack,
   chakra,
   useColorModeValue,
   useDisclosure,
   useToast
 } from '@chakra-ui/react';
-import { Box, Table, TableCaption, TableContainer, Tbody, Td, Text, Tfoot, Th, Thead, Tr } from '@chakra-ui/react';
 
 import { AiFillEdit } from 'react-icons/ai';
 import { FaIdBadge } from 'react-icons/fa';
@@ -90,7 +91,6 @@ export default function MemberEditModal({
   } = useDisclosure();
 
   const { isOpen: inviteModalOpen, onOpen: inviteModalOnOpen, onClose: inviteModalOnClose } = useDisclosure();
-
   const { isOpen: robloxModalOpen, onOpen: robloxModalOnOpen, onClose: robloxModalOnClose } = useDisclosure();
 
   const {

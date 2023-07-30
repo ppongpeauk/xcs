@@ -247,6 +247,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         $set: {
           name: body.name,
           description: body.description,
+          tags: body.tags,
           updatedAt: timestamp,
           config: body.config
         }
