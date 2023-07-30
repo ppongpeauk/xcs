@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import {
   Avatar,
   Badge,
+  Box,
   Button,
   Flex,
   FormControl,
@@ -28,15 +29,17 @@ import {
   Spacer,
   Stack,
   Switch,
+  Table, TableCaption, TableContainer, Tbody, Td, Text,
   Textarea,
+  Tfoot, Th, Thead,
   Tooltip,
+  Tr,
   VStack,
   chakra,
   useColorModeValue,
   useDisclosure,
   useToast
 } from '@chakra-ui/react';
-import { Box, Table, TableCaption, TableContainer, Tbody, Td, Text, Tfoot, Th, Thead, Tr } from '@chakra-ui/react';
 
 import { InfoIcon } from '@chakra-ui/icons';
 

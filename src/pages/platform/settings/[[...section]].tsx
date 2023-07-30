@@ -95,21 +95,42 @@ export default function Settings() {
   }, [query]);
 
   useEffect(() => {
-    if (!query.discordLinked) return;
-    if (query.discordLinked === 'true') {
-      toast({
-        title: 'Successfully linked your Discord account.',
-        status: 'success',
-        duration: 5000,
-        isClosable: true
-      });
-    } else {
-      toast({
-        title: 'There was an error linking your Discord account.',
-        status: 'error',
-        duration: 5000,
-        isClosable: true
-      });
+    console.log(query);
+    // discord linked
+    if (query.discordLinked !== undefined) {
+      if (query.discordLinked === 'true') {
+        toast({
+          title: 'Successfully linked your Discord account.',
+          status: 'success',
+          duration: 5000,
+          isClosable: true
+        });
+      } else {
+        toast({
+          title: 'There was an error linking your Discord account.',
+          status: 'error',
+          duration: 5000,
+          isClosable: true
+        });
+      }
+    }
+    // roblox linked
+    if (query.robloxLinked !== undefined) {
+      if (query.robloxLinked === 'true') {
+        toast({
+          title: 'Successfully linked your Roblox account.',
+          status: 'success',
+          duration: 5000,
+          isClosable: true
+        });
+      } else {
+        toast({
+          title: 'There was an error linking your Roblox account.',
+          status: 'error',
+          duration: 5000,
+          isClosable: true
+        });
+      }
     }
   }, [query]);
 
