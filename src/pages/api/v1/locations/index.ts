@@ -1,7 +1,6 @@
 import { tokenToID } from '@/pages/api/firebase';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { generate as generateString } from 'randomstring';
-import { v4 as uuidv4 } from 'uuid';
 
 import clientPromise from '@/lib/mongodb';
 
