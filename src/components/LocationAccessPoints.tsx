@@ -234,6 +234,7 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
                       >
                         <Badge
                           mr={1}
+                          mb={1}
                           colorScheme={'gray'}
                         >
                           No Tags
@@ -244,7 +245,7 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
                       align={'center'}
                       justify={'flex-start'}
                       fontSize={'xl'}
-                      mt={2}
+                      mt={1}
                     >
                       {accessPoint?.config?.active ? (
                         <Badge colorScheme={'green'}>Active</Badge>
