@@ -229,11 +229,11 @@ export default function Invitation({ invite }: { invite: any }) {
                       >
                         <Link
                           as={NextLink}
-                          href={'/terms'}
+                          href={'/legal/terms'}
                           textDecor={'underline'}
                           textUnderlineOffset={4}
                         >
-                          Terms of Service
+                          Terms of Use
                         </Link>
                       </Text>{' '}
                       and{' '}
@@ -244,7 +244,7 @@ export default function Invitation({ invite }: { invite: any }) {
                       >
                         <Link
                           as={NextLink}
-                          href={'/privacy'}
+                          href={'/legal/privacy'}
                           textDecor={'underline'}
                           textUnderlineOffset={4}
                         >

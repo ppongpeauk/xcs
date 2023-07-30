@@ -1,21 +1,129 @@
-import {
-  Box,
-  Container,
-  Flex,
-  Heading,
-  Text,
-  useColorModeValue,
-} from '@chakra-ui/react';
+import Footer from '@/components/Footer';
+import Nav from '@/components/Nav';
+import { Box, Container, Flex, Heading, Link, ListItem, OrderedList, Text, useColorModeValue } from '@chakra-ui/react';
 
 import { forwardRef } from 'react';
 
 export default function Terms() {
   return (
-    <Container maxW={"container.md"} py={8}>
-      <Heading as="h1" size="xl" mb={5}>
-        Terms of Use
-      </Heading>
+    <>
+      <Nav />
+      <Container
+        maxW={'container.md'}
+        py={16}
+      >
+        <Heading
+          as="h1"
+          size="2xl"
+          mb={4}
+        >
+          Terms of Use
+        </Heading>
+        <Box>
+          <Text pb={4}>
+            These terms of use govern your use of the Restrafes XCS website, products, and services (collectively
+            &quot;Services&quot;) available at <Link href="https://xcs.restrafes.co">xcs.restrafes.co</Link>. By
+            accessing or using the Services, you agree to be bound by these terms. If you do not agree to these terms,
+            do not access or use the Services.
+          </Text>
 
-    </Container>
-  )
+          <OrderedList>
+            <ListItem>
+              <Text as="span">
+                You must be at least 13 years old to use the Services. If you are under 18 years old, you may only use
+                the Services with the consent and supervision of a parent or legal guardian.
+              </Text>
+            </ListItem>
+
+            <ListItem>
+              <Text as="span">
+                To access certain features and functions, you may be required to register and create an account. When
+                you register, you agree to provide accurate and complete information about yourself. You are solely
+                responsible for activity that occurs under your account. You must safeguard your account credentials and
+                notify us immediately of any unauthorized use.
+              </Text>
+            </ListItem>
+
+            <ListItem>
+              <Text as="span">
+                The Services contain copyrighted material, trademarks and other proprietary information including text,
+                software, photos, videos, graphics and logos. This intellectual property is owned by Restrafes XCS or
+                its licensors and protected by copyright and other laws. All rights are reserved. You may not modify,
+                publish, transmit, distribute, publicly perform or display, sell or create derivative works of such
+                content.
+              </Text>
+            </ListItem>
+
+            <ListItem>
+              <Text as="span">
+                You agree not to use the Services for any unlawful purpose or in a manner inconsistent with these terms.
+                You must comply with all applicable laws and regulations. You agree not to upload or transmit any
+                content that infringes the rights of others. Any unauthorized or prohibited use may result in
+                termination of your account and access to the Services.
+              </Text>
+            </ListItem>
+
+            <ListItem>
+              <Text as="span">
+                We reserve the right to terminate your account or access to the Services at any time without notice for
+                any reason. You may cancel your account at any time by contacting us at{' '}
+                <Link href="mailto:xcs@restrafes.co">xcs@restrafes.co</Link>. Upon any termination, your right to use
+                the Services will immediately cease.
+              </Text>
+            </ListItem>
+
+            <ListItem>
+              <Text as="span">
+                THE SERVICES ARE PROVIDED &quot;AS IS&quot; WITHOUT WARRANTY OF ANY KIND. WE DISCLAIM ALL WARRANTIES,
+                EXPRESS OR IMPLIED, INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND
+                NON-INFRINGEMENT.
+              </Text>
+            </ListItem>
+
+            <ListItem>
+              <Text as="span">
+                WE WILL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, CONSEQUENTIAL, SPECIAL OR EXEMPLARY DAMAGES ARISING
+                OUT OF OR IN CONNECTION WITH THE USE OF THE SERVICES. OUR TOTAL CUMULATIVE LIABILITY ARISING FROM YOUR
+                USE OF THE SERVICES WILL NOT EXCEED $100. THIS LIMITATION OF LIABILITY APPLIES TO ALL DAMAGES OF ANY
+                KIND, INCLUDING COMPENSATORY, DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES, LOSS OF DATA, INCOME OR PROFIT,
+                LOSS OF OR DAMAGE TO PROPERTY AND CLAIMS OF THIRD PARTIES. SOME JURISDICTIONS DO NOT ALLOW THE EXCLUSION
+                OR LIMITATION OF INCIDENTAL OR CONSEQUENTIAL DAMAGES, SO THE ABOVE LIMITATION OR EXCLUSION MAY NOT APPLY
+                TO YOU.
+              </Text>
+            </ListItem>
+
+            <ListItem>
+              <Text as="span">
+                We reserve the right to modify these terms from time to time. Your continued use of the Services
+                constitutes acceptance of any modifications. You should review these terms periodically for updates.
+              </Text>
+            </ListItem>
+
+            <ListItem>
+              <Text as="span">
+                These terms are governed by the laws of the State of Delaware without regard to conflict of law
+                principles. Any dispute arising from these terms shall be resolved exclusively in the state or federal
+                courts located in Delaware.
+              </Text>
+            </ListItem>
+
+            <ListItem>
+              <Text as="span">
+                These terms constitute the entire agreement between you and Restrafes XCS with respect to your use of
+                the Services. They supersede any prior agreements.
+              </Text>
+            </ListItem>
+
+            <ListItem>
+              <Text as="span">
+                If you have any questions about these terms or the Services, please contact us at:{' '}
+                <Link href="mailto:xcs@restrafes.co">xcs@restrafes.co</Link>
+              </Text>
+            </ListItem>
+          </OrderedList>
+        </Box>
+      </Container>
+      <Footer />
+    </>
+  );
 }

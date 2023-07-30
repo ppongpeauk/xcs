@@ -13,7 +13,7 @@ export default function Footer() {
         top={0}
         flexDir={'column'}
         w={'100%'}
-        h={'6rem'}
+        h={'7rem'}
         border={'1px solid'}
         borderLeft={{ base: '1px solid', md: 'unset' }}
         borderColor={useColorModeValue('gray.300', 'gray.700')}
@@ -32,6 +32,28 @@ export default function Footer() {
           </Text>{' '}
           All rights reserved.
         </Text>
+        <Flex align={'center'} justify={'center'}>
+          <Link
+            as={NextLink}
+            href={'/legal/terms'}
+            fontSize={'sm'}
+          >
+            Terms of Use
+          </Link>
+          <Divider
+            orientation={'vertical'}
+            mx={2}
+            h={'1rem'}
+            borderColor={useColorModeValue('gray.300', 'gray.700')}
+          />
+          <Link
+            as={NextLink}
+            href={'/legal/privacy'}
+            fontSize={'sm'}
+          >
+            Privacy Policy
+          </Link>
+        </Flex>
         <Text
           color={'gray.400'}
           fontSize={'xs'}

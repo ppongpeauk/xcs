@@ -137,19 +137,19 @@ export default function CreateOrganizationDialog({
                     <Text as={'span'}>
                       <Link
                         as={NextLink}
-                        href={'/terms'}
+                        href={'/legal/terms'}
                         textDecor={'underline'}
                         textUnderlineOffset={4}
                         whiteSpace={'nowrap'}
                       >
-                        Terms of Service
+                        Terms of Use
                       </Link>
                     </Text>{' '}
                     and{' '}
                     <Text as={'span'}>
                       <Link
                         as={NextLink}
-                        href={'/privacy'}
+                        href={'/legal/privacy'}
                         textDecor={'underline'}
                         textUnderlineOffset={4}
                         whiteSpace={'nowrap'}
