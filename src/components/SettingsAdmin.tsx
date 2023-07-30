@@ -1,5 +1,5 @@
-import InvitePlatformModal from "@/components/InvitePlatformModal";
-import { useAuthContext } from "@/contexts/AuthContext";
+import { useCallback, useEffect, useRef, useState } from 'react';
+
 import {
   Avatar,
   Box,
@@ -22,17 +22,21 @@ import {
   Textarea,
   VStack,
   useDisclosure,
-  useToast,
-} from "@chakra-ui/react";
-import { Field, Form, Formik } from "formik";
-import { useRouter } from "next/router";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { AiOutlineUser } from "react-icons/ai";
-import { IoSave } from "react-icons/io5";
+  useToast
+} from '@chakra-ui/react';
+
+import { AiOutlineUser } from 'react-icons/ai';
+import { IoSave } from 'react-icons/io5';
+
+import { Field, Form, Formik } from 'formik';
+import { useRouter } from 'next/router';
+
+import { useAuthContext } from '@/contexts/AuthContext';
+
+import InvitePlatformModal from '@/components/InvitePlatformModal';
 
 export default function SettingsProfile() {
-  const { currentUser, refreshCurrentUser, user, isAuthLoaded } =
-    useAuthContext();
+  const { currentUser, refreshCurrentUser, user, isAuthLoaded } = useAuthContext();
   const toast = useToast();
   const { push } = useRouter();
 
@@ -40,12 +44,12 @@ export default function SettingsProfile() {
     if (!currentUser) return;
     if (!currentUser?.platform?.staff) {
       toast({
-        title: "You are not authorized to view this page.",
-        status: "error",
+        title: 'You are not authorized to view this page.',
+        status: 'error',
         duration: 3000,
-        isClosable: true,
+        isClosable: true
       });
-      push("/platform/settings/1");
+      push('/platform/settings/1');
       return;
     }
   }, [currentUser, push, toast]);
@@ -53,7 +57,7 @@ export default function SettingsProfile() {
   const {
     isOpen: platformInviteModalOpen,
     onOpen: platformInviteModalOnOpen,
-    onClose: platformInviteModalOnClose,
+    onClose: platformInviteModalOnClose
   } = useDisclosure();
 
   return (
@@ -65,12 +69,19 @@ export default function SettingsProfile() {
         onCreate={() => {}}
       />
       {isAuthLoaded && currentUser && (
-        <Box w={"fit-content"}>
-          <Heading as={"h2"} size={"lg"}>
+        <Box w={'fit-content'}>
+          <Heading
+            as={'h2'}
+            size={'lg'}
+          >
             Platform
           </Heading>
           <Flex py={4}>
-            <Button mb={2} leftIcon={<AiOutlineUser />} onClick={platformInviteModalOnOpen}>
+            <Button
+              mb={2}
+              leftIcon={<AiOutlineUser />}
+              onClick={platformInviteModalOnOpen}
+            >
               Create Registration Invite
             </Button>
           </Flex>

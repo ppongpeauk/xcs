@@ -1,10 +1,12 @@
-import { auth } from "@/lib/firebase";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from 'react';
 
-import { useToast } from "@chakra-ui/react";
-import { getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
-import { useRouter } from "next/router";
-import { useAuthState } from "react-firebase-hooks/auth";
+import { useToast } from '@chakra-ui/react';
+
+import { getAuth, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { useRouter } from 'next/router';
+import { useAuthState } from 'react-firebase-hooks/auth';
+
+import { auth } from '@/lib/firebase';
 
 const AuthContext = createContext(null);
 
@@ -12,11 +14,7 @@ export function useAuthContext() {
   return useContext(AuthContext) as any;
 }
 
-export default function AuthProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, loading, error] = useAuthState(auth);
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [isAuthLoaded, setIsAuthLoaded] = useState<boolean>(false);
@@ -27,8 +25,8 @@ export default function AuthProvider({
     setIsAuthLoaded(false);
     if (user) {
       user.getIdToken().then((token) => {
-        fetch("/api/v1/me", {
-          headers: { authorization: `Bearer ${token}` },
+        fetch('/api/v1/me', {
+          headers: { authorization: `Bearer ${token}` }
         })
           .then((res) => {
             if (res.status === 200) {
@@ -44,15 +42,14 @@ export default function AuthProvider({
           })
           .catch((err) => {
             toast({
-              title: "An error occurred while fetching your user data.",
-              description:
-                "Please try again later. If this issue persists, please contact customer support.",
-              status: "error",
+              title: 'An error occurred while fetching your user data.',
+              description: 'Please try again later. If this issue persists, please contact customer support.',
+              status: 'error',
               duration: 16000,
-              isClosable: true,
+              isClosable: true
             });
             setTimeout(() => {
-              push("/auth/logout");
+              push('/auth/logout');
             }, 1000);
           });
       });
@@ -99,14 +96,10 @@ export default function AuthProvider({
     logOut,
     signOut,
     signInWithEmailAndPassword,
-    isAuthLoaded,
+    isAuthLoaded
   } as any;
 
-  return (
-    <AuthContext.Provider value={values as any}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={values as any}>{children}</AuthContext.Provider>;
 }
 
 export { AuthContext, AuthProvider };

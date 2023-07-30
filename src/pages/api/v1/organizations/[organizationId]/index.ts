@@ -1,42 +1,37 @@
-import { authToken } from "@/lib/auth";
-import clientPromise from "@/lib/mongodb";
-import { getRobloxGroups, getRobloxUsers } from "@/lib/utils";
-import { tokenToID } from "@/pages/api/firebase";
-import { NextApiRequest, NextApiResponse } from "next";
+import { tokenToID } from '@/pages/api/firebase';
+import { NextApiRequest, NextApiResponse } from 'next';
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+import { authToken } from '@/lib/auth';
+import clientPromise from '@/lib/mongodb';
+import { getRobloxGroups, getRobloxUsers } from '@/lib/utils';
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   // Organization ID
   const { organizationId } = req.query as { organizationId: string };
 
   const uid = await authToken(req);
   if (!uid) {
-    return res.status(401).json({ message: "Unauthorized." });
+    return res.status(401).json({ message: 'Unauthorized.' });
   }
 
   const mongoClient = await clientPromise;
   const db = mongoClient.db(process.env.MONGODB_DB as string);
-  const organizations = db.collection("organizations");
-  const locations = db.collection("locations");
-  const invitations = db.collection("invitations");
-  const accessPoints = db.collection("accessPoints");
-  const users = db.collection("users");
-  let organization = (await organizations.findOne(
-    { id: organizationId },
-    { projection: { apiKeys: 0 } }
-  )) as any;
+  const organizations = db.collection('organizations');
+  const locations = db.collection('locations');
+  const invitations = db.collection('invitations');
+  const accessPoints = db.collection('accessPoints');
+  const users = db.collection('users');
+  let organization = (await organizations.findOne({ id: organizationId }, { projection: { apiKeys: 0 } })) as any;
 
   if (!organization) {
-    return res.status(404).json({ message: "Organization not found" });
+    return res.status(404).json({ message: 'Organization not found' });
   }
 
   if (!organization.members[uid]) {
-    return res.status(401).json({ message: "Unauthorized." });
+    return res.status(401).json({ message: 'Unauthorized.' });
   }
 
-  if (req.method === "GET") {
+  if (req.method === 'GET') {
     organization.user = organization.members[uid];
 
     // Find owner of organization
@@ -53,7 +48,7 @@ export default async function handler(
 
     // xcs users
     for (const [key, value] of Object.entries(organization.members) as any) {
-      if (!["roblox", "roblox-group"].includes(value.type)) {
+      if (!['roblox', 'roblox-group'].includes(value.type)) {
         let member = await users.findOne(
           { id: key },
           {
@@ -63,17 +58,17 @@ export default async function handler(
               id: 1,
               displayName: 1,
               username: 1,
-              avatar: 1,
-            },
+              avatar: 1
+            }
           }
         );
         members.push({
-          type: "user",
+          type: 'user',
           id: key,
           displayName: member?.displayName,
           username: member?.username,
           avatar: member?.avatar,
-          ...value,
+          ...value
         });
       }
       if (members.length > 99) break;
@@ -86,9 +81,9 @@ export default async function handler(
     let robloxGroupIds = [];
 
     for (const [key, value] of Object.entries(organization.members) as any) {
-      if (value.type === "roblox") {
+      if (value.type === 'roblox') {
         robloxUserIds.push(value.id);
-      } else if (value.type === "roblox-group") {
+      } else if (value.type === 'roblox-group') {
         robloxGroupIds.push(value.id);
       }
     }
@@ -99,55 +94,49 @@ export default async function handler(
 
     // add roblox users to members array
     for (const [key, value] of Object.entries(organization.members) as any) {
-      if (value.type === "roblox") {
+      if (value.type === 'roblox') {
         members.push({
           id: key,
           displayName: robloxUsers[value.id].displayName,
           username: robloxUsers[value.id].name,
           avatar: robloxUsers[value.id].avatar,
-          ...value,
+          ...value
         });
-      } else if (value.type === "roblox-group") {
+      } else if (value.type === 'roblox-group') {
         members.push({
           id: key,
           displayName: robloxGroups[value.id].name,
           username: robloxGroups[value.id].name,
           avatar: robloxGroups[value.id].avatar,
           roleset: robloxGroups[value.id].roles,
-          ...value,
+          ...value
         });
       }
       if (members.length > 99) break;
     }
 
     organization.members = members.sort((a: any, b: any) =>
-      a.role > b.role || b.type === "roblox-group" || b.type === "roblox"
-        ? -1
-        : 1
+      a.role > b.role || b.type === 'roblox-group' || b.type === 'roblox' ? -1 : 1
     ); // sort by role (descending)
 
     // Get Access Points
     for (const accessGroupId in organization.accessGroups) {
       const accessGroup = organization.accessGroups[accessGroupId];
       if (accessGroup.locationId) {
-        const location = await locations.findOne(
-          { id: accessGroup.locationId },
-          { projection: { name: 1, id: 1 } }
-        );
-        if (location)
-          organization.accessGroups[accessGroupId].locationName = location.name;
+        const location = await locations.findOne({ id: accessGroup.locationId }, { projection: { name: 1, id: 1 } });
+        if (location) organization.accessGroups[accessGroupId].locationName = location.name;
       }
     }
 
     return res.status(200).json({
-      organization: organization,
+      organization: organization
     });
   }
 
   // Updating Location Data
-  if (req.method === "PUT") {
+  if (req.method === 'PUT') {
     if (!req.body) {
-      return res.status(400).json({ message: "No body provided" });
+      return res.status(400).json({ message: 'No body provided' });
     }
 
     let body = req.body as any;
@@ -156,18 +145,14 @@ export default async function handler(
     if (body.name !== undefined) {
       body.name = body.name.trim();
       if (body.name.length > 32 || body.name.length < 3) {
-        return res
-          .status(400)
-          .json({ message: "Name must be between 3-32 characters." });
+        return res.status(400).json({ message: 'Name must be between 3-32 characters.' });
       }
     }
 
     if (body.description) {
       body.description = body.description.trim();
       if (body.description.length > 256) {
-        return res
-          .status(400)
-          .json({ message: "Description must be less than 256 characters." });
+        return res.status(400).json({ message: 'Description must be less than 256 characters.' });
       }
     }
 
@@ -184,9 +169,7 @@ export default async function handler(
     if (body.name) {
       body.name = body.name.trim();
       if (body.name.length > 32 || body.name.length < 3) {
-        return res
-          .status(400)
-          .json({ message: "Name must be between 3-32 characters." });
+        return res.status(400).json({ message: 'Name must be between 3-32 characters.' });
       }
     }
 
@@ -194,7 +177,7 @@ export default async function handler(
       body.description = body.description.trim();
       if (body.description.length >= 256) {
         return res.status(400).json({
-          message: "Description must be less than or equal to 256 characters.",
+          message: 'Description must be less than or equal to 256 characters.'
         });
       }
     }
@@ -203,14 +186,12 @@ export default async function handler(
     if (body.name) {
       const checkName = await organizations.findOne(
         {
-          name: { $regex: new RegExp(`^${body.name}$`, "i") },
+          name: { $regex: new RegExp(`^${body.name}$`, 'i') }
         },
         { projection: { id: 1 } }
       );
       if (checkName && checkName.id !== organization.id) {
-        return res
-          .status(400)
-          .json({ message: "This name is taken. Please choose another." });
+        return res.status(400).json({ message: 'This name is taken. Please choose another.' });
       }
     }
 
@@ -224,22 +205,20 @@ export default async function handler(
       {
         $push: {
           logs: {
-            type: "organization-updated",
+            type: 'organization-updated',
             performer: uid,
             timestamp: timestamp,
-            data: body,
-          },
-        },
+            data: body
+          }
+        }
       }
     );
 
-    return res
-      .status(200)
-      .json({ message: "Successfully updated organization!", success: true });
+    return res.status(200).json({ message: 'Successfully updated organization!', success: true });
   }
 
   // Deleting Organization Data
-  if (req.method === "DELETE") {
+  if (req.method === 'DELETE') {
     const timestamp = new Date();
 
     // Delete Organization
@@ -254,13 +233,10 @@ export default async function handler(
     // Delete All Access Points in Organization
     await accessPoints.deleteMany({ organizationId: organizationId });
 
-    return res
-      .status(200)
-      .json({ message: "Successfully deleted organization!", success: true });
+    return res.status(200).json({ message: 'Successfully deleted organization!', success: true });
   }
 
   return res.status(500).json({
-    message:
-      "An unknown errror occurred. If this error persists, please contact customer support.",
+    message: 'An unknown errror occurred. If this error persists, please contact customer support.'
   });
 }

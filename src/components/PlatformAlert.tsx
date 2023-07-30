@@ -8,14 +8,14 @@ import {
   CloseButton,
   Flex,
   Stack,
-  useDisclosure,
-} from "@chakra-ui/react";
+  useDisclosure
+} from '@chakra-ui/react';
 
 export default function PlatformAlert({
   title,
   description,
   isClosable = true,
-  button,
+  button
 }: {
   title: string;
   description: string;
@@ -26,41 +26,49 @@ export default function PlatformAlert({
     onClick: () => void;
   };
 }) {
-  const {
-    isOpen: isVisible,
-    onClose,
-    onOpen,
-  } = useDisclosure({ defaultIsOpen: true });
+  const { isOpen: isVisible, onClose, onOpen } = useDisclosure({ defaultIsOpen: true });
 
   return (
     isVisible && (
       <>
-        <Alert status={"error"} backdropFilter={"blur(24px)"}>
+        <Alert
+          status={'error'}
+          backdropFilter={'blur(24px)'}
+        >
           <AlertIcon />
           <Stack
             pl={{ base: 0, md: 2 }}
-            direction={["column", "row"]}
-            align={"center"}
-            justify={"space-between"}
-            w={"full"}
+            direction={['column', 'row']}
+            align={'center'}
+            justify={'space-between'}
+            w={'full'}
           >
-            <Box w={"full"} h={"full"}>
+            <Box
+              w={'full'}
+              h={'full'}
+            >
               <AlertTitle>{title}</AlertTitle>
               <AlertDescription>{description}</AlertDescription>
             </Box>
-            <Stack direction={"row"} h={"full"}>
+            <Stack
+              direction={'row'}
+              h={'full'}
+            >
               {button && (
                 <Button
                   onClick={button.onClick}
-                  variant={"solid"}
-                  size={"sm"}
+                  variant={'solid'}
+                  size={'sm'}
                   isLoading={button.isLoading}
                 >
                   {button.text}
                 </Button>
               )}
               {isClosable && (
-                <CloseButton onClick={onClose} position={"relative"} />
+                <CloseButton
+                  onClick={onClose}
+                  position={'relative'}
+                />
               )}
             </Stack>
           </Stack>

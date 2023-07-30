@@ -1,24 +1,22 @@
-import { authToken } from "@/lib/auth";
-import clientPromise from "@/lib/mongodb";
-import { tokenToID } from "@/pages/api/firebase";
-import { NextApiRequest, NextApiResponse } from "next";
+import { tokenToID } from '@/pages/api/firebase';
+import { NextApiRequest, NextApiResponse } from 'next';
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+import { authToken } from '@/lib/auth';
+import clientPromise from '@/lib/mongodb';
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const uid = await authToken(req);
   if (!uid) {
-    return res.status(401).json({ message: "Unauthorized." });
+    return res.status(401).json({ message: 'Unauthorized.' });
   }
 
   const mongoClient = await clientPromise;
   const db = mongoClient.db(process.env.MONGODB_DB as string);
-  const organizations = db.collection("organizations");
-  const invitations = db.collection("invitations");
+  const organizations = db.collection('organizations');
+  const invitations = db.collection('invitations');
 
   // Joining an organization with an invite code
-  if (req.method === "POST") {
+  if (req.method === 'POST') {
     let { inviteCode } = req.body as {
       inviteCode: string;
     };
@@ -28,26 +26,26 @@ export default async function handler(
     }
 
     const inviteCodeData = await invitations.findOne({
-      inviteCode: inviteCode,
+      inviteCode: inviteCode
     });
 
     if (!inviteCodeData) {
       return res.status(404).json({
         success: false,
         valid: false,
-        message: "Invalid invite code.",
+        message: 'Invalid invite code.'
       });
     }
 
     const organization = await organizations.findOne({
-      id: inviteCodeData.organizationId,
+      id: inviteCodeData.organizationId
     });
 
     if (!organization) {
       return res.status(404).json({
         success: false,
         valid: false,
-        message: "Invalid invite code.",
+        message: 'Invalid invite code.'
       });
     }
 
@@ -56,7 +54,7 @@ export default async function handler(
       return res.status(400).json({
         success: false,
         valid: false,
-        message: "You are already in this organization.",
+        message: 'You are already in this organization.'
       });
     }
 
@@ -68,12 +66,12 @@ export default async function handler(
       {
         $push: {
           logs: {
-            type: "user-joined",
+            type: 'user-joined',
             performer: inviteCodeData.creatorId,
             target: uid,
-            timestamp: timestamp,
-          },
-        },
+            timestamp: timestamp
+          }
+        }
       }
     );
 
@@ -83,14 +81,14 @@ export default async function handler(
       {
         $set: {
           [`members.${uid}`]: {
-            type: "user",
+            type: 'user',
             id: uid,
             role: inviteCodeData.role || 1,
             accessGroups: [],
             joinedAt: new Date().getTime(),
-            updatedAt: new Date().getTime(),
-          },
-        },
+            updatedAt: new Date().getTime()
+          }
+        }
       }
     );
 
@@ -102,9 +100,9 @@ export default async function handler(
     return res.status(200).json({
       message: `Successfully joined ${organization.name}!`,
       success: true,
-      organizationId: organization.id,
+      organizationId: organization.id
     });
   }
 
-  return res.status(500).json({ message: "An unknown error has occurred." });
+  return res.status(500).json({ message: 'An unknown error has occurred.' });
 }

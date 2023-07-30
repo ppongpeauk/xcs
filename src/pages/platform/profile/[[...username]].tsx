@@ -1,57 +1,58 @@
 // Components
-import { Container, Heading } from "@chakra-ui/react";
+import { useEffect } from 'react';
 
-// Layouts
-import UserProfile from "@/components/PlatformProfile";
-import Layout from "@/layouts/PlatformLayout";
+import { Container, Heading } from '@chakra-ui/react';
+
+import Head from 'next/head';
+import { useRouter } from 'next/router';
 
 // Authentication
-import { useAuthContext } from "@/contexts/AuthContext";
-import Head from "next/head";
-import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useAuthContext } from '@/contexts/AuthContext';
+
+import Layout from '@/layouts/PlatformLayout';
+
+// Layouts
+import UserProfile from '@/components/PlatformProfile';
 
 // Get profile data
 export async function getServerSideProps({ query }: any) {
   if (!query.username) {
     return {
       props: {
-        user: null,
-      },
+        user: null
+      }
     };
   }
 
-  const user = await fetch(
-    `${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/users/${query.username}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
+  const user = await fetch(`${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/users/${query.username}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
     }
-  )
+  })
     .then((res) => res.json())
     .then((ret) => {
       return ret?.user;
     });
   return {
     props: {
-      user: user ? user : null,
-    },
+      user: user ? user : null
+    }
   };
 }
 export default function UserProfileNS({ user }: any) {
   const { query, push } = useRouter();
   const { currentUser } = useAuthContext();
   let { username: queryUsername } = query;
-  const username = queryUsername?.length
-    ? queryUsername[0]
-    : currentUser?.username;
+  const username = queryUsername?.length ? queryUsername[0] : currentUser?.username;
 
   return (
     <>
       <Head>
-        <meta property="og:site_name" content="Restrafes XCS" />
+        <meta
+          property="og:site_name"
+          content="Restrafes XCS"
+        />
         {user ? (
           <>
             <meta
@@ -64,13 +65,21 @@ export default function UserProfileNS({ user }: any) {
             />
             <meta
               property="og:description"
-              content={`Join ${user?.displayName || user.name.first} and a community of architects in managing access points effortlessly on Restrafes XCS.`}
+              content={`Join ${
+                user?.displayName || user.name.first
+              } and a community of architects in managing access points effortlessly on Restrafes XCS.`}
             />
-            <meta property="og:image" content={user.avatar} />
+            <meta
+              property="og:image"
+              content={user.avatar}
+            />
           </>
         ) : (
           <>
-            <meta property="og:title" content={`Your Profile`} />
+            <meta
+              property="og:title"
+              content={`Your Profile`}
+            />
             <meta
               property="og:url"
               content={`https://xcs.restrafes.co/platform/profile`}
@@ -81,9 +90,15 @@ export default function UserProfileNS({ user }: any) {
             />
           </>
         )}
-        <meta property="og:type" content="website" />
+        <meta
+          property="og:type"
+          content="website"
+        />
       </Head>
-      <UserProfile username={username} user={user} />
+      <UserProfile
+        username={username}
+        user={user}
+      />
     </>
   );
 }

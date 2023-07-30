@@ -73,14 +73,12 @@
     {
       "id": "GRP_001",
       "name": "Managers",
-      "scanData": {
-      }
+      "scanData": {}
     },
     {
       "id": "GRP_002",
       "name": "Employees",
-      "scanData": {
-      }
+      "scanData": {}
     }
   ]
 }

@@ -1,54 +1,48 @@
-import { authToken } from "@/lib/auth";
-import clientPromise from "@/lib/mongodb";
-import { tokenToID } from "@/pages/api/firebase";
-import { NextApiRequest, NextApiResponse } from "next";
-import { generate as generateString } from "randomstring";
+import { tokenToID } from '@/pages/api/firebase';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { generate as generateString } from 'randomstring';
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method === "POST") {
+import { authToken } from '@/lib/auth';
+import clientPromise from '@/lib/mongodb';
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method === 'POST') {
     let { name } = req.body as {
       name: string;
     };
 
     const uid = await authToken(req);
     if (!uid) {
-      return res.status(401).json({ message: "Unauthorized." });
+      return res.status(401).json({ message: 'Unauthorized.' });
     }
 
     const mongoClient = await clientPromise;
     const db = mongoClient.db(process.env.MONGODB_DB as string);
-    const organizations = db.collection("organizations");
-    const users = db.collection("users");
-    const user = await users.findOne(
-      { id: uid },
-      { projection: { id: 1, platform: 1, roblox: 1 } }
-    );
+    const organizations = db.collection('organizations');
+    const users = db.collection('users');
+    const user = await users.findOne({ id: uid }, { projection: { id: 1, platform: 1, roblox: 1 } });
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: 'User not found' });
     }
 
     if (!user.roblox.verified) {
       return res.status(403).json({
-        message:
-          "You must link your Roblox account before creating an organization.",
+        message: 'You must link your Roblox account before creating an organization.'
       });
     }
 
     // Check if user has less than 1 organization owned
     const ownedOrganizations = await organizations
       .find({
-        [`members.${uid}.role`]: 3,
+        [`members.${uid}.role`]: 3
       })
       .toArray();
 
     const capError = () => {
       return res.status(403).json({
         message:
-          "You have reached the maximum amount of organizations you can own. Upgrade your account to create more organizations.",
+          'You have reached the maximum amount of organizations you can own. Upgrade your account to create more organizations.'
       });
     };
 
@@ -78,9 +72,7 @@ export default async function handler(
     if (name !== undefined) {
       name = name.trim();
       if (name.length > 32 || name.length < 3) {
-        return res
-          .status(400)
-          .json({ message: "Name must be between 3-32 characters." });
+        return res.status(400).json({ message: 'Name must be between 3-32 characters.' });
       }
     }
 
@@ -88,14 +80,12 @@ export default async function handler(
     if (name) {
       const checkName = await organizations.findOne(
         {
-          name: { $regex: new RegExp(`^${name}$`, "i") },
+          name: { $regex: new RegExp(`^${name}$`, 'i') }
         },
         { projection: { _id: 1 } }
       );
       if (checkName) {
-        return res
-          .status(400)
-          .json({ message: "This name is taken. Please choose another." });
+        return res.status(400).json({ message: 'This name is taken. Please choose another.' });
       }
     }
 
@@ -104,31 +94,31 @@ export default async function handler(
     // const id = uuidv4();
     const id = generateString({
       length: 16,
-      charset: "alphanumeric",
-      capitalization: "lowercase",
+      charset: 'alphanumeric',
+      capitalization: 'lowercase'
     });
 
     await organizations.insertOne({
       id: id,
       isPersonal: false,
       name: name,
-      description: "",
-      avatar: "",
+      description: '',
+      avatar: '',
       members: {
         [uid]: {
-          type: "user",
+          type: 'user',
           id: uid,
           role: 3,
           accessGroups: [],
-          joinedAt: timestamp,
-        },
+          joinedAt: timestamp
+        }
       },
       accessGroups: {},
       invitations: [],
       logs: [],
       apiKeys: {},
       createdAt: timestamp,
-      updatedAt: timestamp,
+      updatedAt: timestamp
     });
 
     await organizations.updateOne(
@@ -136,20 +126,20 @@ export default async function handler(
       {
         $push: {
           logs: {
-            type: "organization-created",
+            type: 'organization-created',
             performer: uid,
-            timestamp: timestamp,
-          },
-        },
+            timestamp: timestamp
+          }
+        }
       }
     );
 
     return res.status(200).json({
-      message: "Successfully created an organization!",
+      message: 'Successfully created an organization!',
       success: true,
-      organizationId: id,
+      organizationId: id
     });
   }
 
-  return res.status(500).json({ message: "An unknown error has occurred." });
+  return res.status(500).json({ message: 'An unknown error has occurred.' });
 }

@@ -1,23 +1,23 @@
-import { extendTheme, type ThemeConfig } from "@chakra-ui/react";
+import { type ThemeConfig, extendTheme } from '@chakra-ui/react';
 
 const config: ThemeConfig = {
   useSystemColorMode: true,
-  initialColorMode: "dark",
+  initialColorMode: 'dark'
 };
 
 const theme = {
   components: {
     Skeleton: {
       baseStyle: {
-        borderRadius: "lg",
-      },
+        borderRadius: 'lg'
+      }
     }
   },
   fonts: {
-    heading: "var(--font-familjen)",
-    body: "var(--font-familjen)",
+    heading: 'var(--font-familjen)',
+    body: 'var(--font-familjen)'
   },
-  config,
+  config
 };
 
 export default extendTheme(theme);

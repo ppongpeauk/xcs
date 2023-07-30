@@ -1,3 +1,1 @@
-export const blacklist = {
-  
-}
+export const blacklist = {};

@@ -1,4 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+import { useEffect, useState } from 'react';
+
 import {
   Badge,
   Box,
@@ -17,38 +19,34 @@ import {
   Text,
   useColorModeValue,
   useDisclosure,
-  useToast,
-} from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+  useToast
+} from '@chakra-ui/react';
 
-import NextLink from "next/link";
-import { MdOutlineAddCircle } from "react-icons/md";
-import CreateAccessPointDialog from "./CreateAccessPointDialog";
+import { AiFillWarning } from 'react-icons/ai';
+import { BiSolidLock, BiSolidLockOpen } from 'react-icons/bi';
+import { MdOutlineAddCircle } from 'react-icons/md';
 
-import moment from "moment";
-import { AiFillWarning } from "react-icons/ai";
-import { BiSolidLock, BiSolidLockOpen } from "react-icons/bi";
+import moment from 'moment';
+import NextLink from 'next/link';
 
-export default function LocationAccessPoints({
-  idToken,
-  location,
-  refreshData,
-}: any) {
+import CreateAccessPointDialog from './CreateAccessPointDialog';
+
+export default function LocationAccessPoints({ idToken, location, refreshData }: any) {
   const [accessPoints, setAccessPoints] = useState<any>(null);
   const toast = useToast();
 
   const {
     isOpen: isCreateAccessPointModalOpen,
     onOpen: onCreateAccessPointModalOpen,
-    onClose: onCreateAccessPointModalClose,
+    onClose: onCreateAccessPointModalClose
   } = useDisclosure();
 
   useEffect(() => {
     if (!location) return;
 
     fetch(`/api/v1/locations/${location.id}/access-points`, {
-      method: "GET",
-      headers: { Authorization: `Bearer ${idToken}` },
+      method: 'GET',
+      headers: { Authorization: `Bearer ${idToken}` }
     })
       .then((res) => {
         if (res.status === 200) return res.json();
@@ -59,11 +57,11 @@ export default function LocationAccessPoints({
       })
       .catch((err) => {
         toast({
-          title: "Error",
+          title: 'Error',
           description: err.message,
-          status: "error",
+          status: 'error',
           duration: 5000,
-          isClosable: true,
+          isClosable: true
         });
       });
   }, [location]);
@@ -76,10 +74,18 @@ export default function LocationAccessPoints({
         location={location}
         onCreate={refreshData}
       />
-      <Text as={"h1"} fontSize={"4xl"} fontWeight={"900"} mb={2}>
+      <Text
+        as={'h1'}
+        fontSize={'4xl'}
+        fontWeight={'900'}
+        mb={2}
+      >
         Access Points
       </Text>
-      <Stack mb={4} direction={{ base: "column", md: "row" }}>
+      <Stack
+        mb={4}
+        direction={{ base: 'column', md: 'row' }}
+      >
         <Button
           leftIcon={<MdOutlineAddCircle />}
           onClick={onCreateAccessPointModalOpen}
@@ -90,41 +96,47 @@ export default function LocationAccessPoints({
       </Stack>
       <Flex
         as={Stack}
-        direction={"row"}
-        h={"full"}
+        direction={'row'}
+        h={'full'}
         spacing={4}
-        overflow={"auto"}
-        flexWrap={"wrap"}
+        overflow={'auto'}
+        flexWrap={'wrap'}
       >
         {accessPoints && accessPoints?.accessPoints?.length > 0 ? (
           <Flex
             as={Stack}
-            direction={"row"}
-            h={"full"}
+            direction={'row'}
+            h={'full'}
             spacing={4}
-            overflow={"auto"}
-            flexWrap={"wrap"}
+            overflow={'auto'}
+            flexWrap={'wrap'}
           >
             {!accessPoints
               ? Array.from({ length: 6 }).map((_, i) => (
                   <Box
                     key={i}
                     as={Skeleton}
-                    w={{ base: "full", md: "384px" }}
-                    h={"max-content"}
+                    w={{ base: 'full', md: '384px' }}
+                    h={'max-content'}
                     py={4}
                     px={8}
                     borderWidth={1}
-                    borderRadius={"xl"}
-                    borderColor={useColorModeValue("gray.200", "gray.700")}
+                    borderRadius={'xl'}
+                    borderColor={useColorModeValue('gray.200', 'gray.700')}
                   >
-                    <HStack p={2} w={"full"}>
+                    <HStack
+                      p={2}
+                      w={'full'}
+                    >
                       <Box flexGrow={1}>
-                        <Text fontSize={"2xl"} fontWeight={"bold"}>
+                        <Text
+                          fontSize={'2xl'}
+                          fontWeight={'bold'}
+                        >
                           Loading...
                         </Text>
-                        <Text color={"gray.500"}>0 Members</Text>
-                        <Text color={"gray.500"}>Owned by</Text>
+                        <Text color={'gray.500'}>0 Members</Text>
+                        <Text color={'gray.500'}>Owned by</Text>
                         <Text>Organization</Text>
                       </Box>
                     </HStack>
@@ -134,52 +146,60 @@ export default function LocationAccessPoints({
             {accessPoints?.accessPoints?.map((accessPoint: any) => (
               <Flex
                 key={accessPoint.id}
-                w={{ base: "full", md: "384px" }}
-                h={"max-content"}
+                w={{ base: 'full', md: '384px' }}
+                h={'max-content'}
                 p={6}
                 borderWidth={1}
-                borderRadius={"xl"}
-                borderColor={useColorModeValue("gray.200", "gray.700")}
+                borderRadius={'xl'}
+                borderColor={useColorModeValue('gray.200', 'gray.700')}
               >
                 <Box flexGrow={1}>
-                  <Text fontSize={"xl"} fontWeight={"bold"} noOfLines={1}>
+                  <Text
+                    fontSize={'xl'}
+                    fontWeight={'bold'}
+                    noOfLines={1}
+                  >
                     {accessPoint?.name}
                   </Text>
-                  <Code fontSize={"xs"} mt={2}>{accessPoint.id}</Code>
+                  <Code
+                    fontSize={'xs'}
+                    mt={2}
+                  >
+                    {accessPoint.id}
+                  </Code>
                   <HStack
-                    align={"center"}
-                    justify={"flex-start"}
-                    fontSize={"xl"}
+                    align={'center'}
+                    justify={'flex-start'}
+                    fontSize={'xl'}
                     mt={2}
                   >
                     {accessPoint?.config?.active ? (
-                      <Badge colorScheme={"green"}>Active</Badge>
+                      <Badge colorScheme={'green'}>Active</Badge>
                     ) : (
-                      <Badge colorScheme={"red"}>Inactive</Badge>
+                      <Badge colorScheme={'red'}>Inactive</Badge>
                     )}
                     {accessPoint?.config?.armed ? (
-                      <Badge colorScheme={"blue"}>Armed</Badge>
+                      <Badge colorScheme={'blue'}>Armed</Badge>
                     ) : (
-                      <Badge colorScheme={"red"}>Not Armed</Badge>
+                      <Badge colorScheme={'red'}>Not Armed</Badge>
                     )}
                   </HStack>
-                  {
-                    accessPoint.description ? (
-                      <Text pt={2}>
-                        {accessPoint.description}
-                      </Text>
-                    ) : (
-                      <Text pt={2} color={"gray.500"}>
-                        No description available.
-                      </Text>
-                    )
-                  }
+                  {accessPoint.description ? (
+                    <Text pt={2}>{accessPoint.description}</Text>
+                  ) : (
+                    <Text
+                      pt={2}
+                      color={'gray.500'}
+                    >
+                      No description available.
+                    </Text>
+                  )}
                   <Stack pt={4}>
                     <Button
                       as={NextLink}
                       href={`/platform/access-points/${accessPoint.id}`}
-                      variant={"solid"}
-                      w={"full"}
+                      variant={'solid'}
+                      w={'full'}
                     >
                       View
                     </Button>
@@ -190,23 +210,23 @@ export default function LocationAccessPoints({
           </Flex>
         ) : (
           <Text>
-            This location does not have any access points yet.{" "}
+            This location does not have any access points yet.{' '}
             {accessPoints?.self?.role >= 2 ? (
               <>
-                <Text as={"span"}>
+                <Text as={'span'}>
                   <Button
-                    variant={"link"}
-                    color={"unset"}
-                    textDecor={"underline"}
+                    variant={'link'}
+                    color={'unset'}
+                    textDecor={'underline'}
                     textUnderlineOffset={4}
                     onClick={onCreateAccessPointModalOpen}
                     _hover={{
-                      color: useColorModeValue("gray.600", "gray.400"),
+                      color: useColorModeValue('gray.600', 'gray.400')
                     }}
                   >
                     Create one
                   </Button>
-                </Text>{" "}
+                </Text>{' '}
                 to get started.
               </>
             ) : (

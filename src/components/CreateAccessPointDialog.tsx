@@ -1,4 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+import { useCallback, useRef } from 'react';
+
 import {
   Button,
   FormControl,
@@ -15,19 +17,20 @@ import {
   Textarea,
   VStack,
   useColorModeValue,
-  useToast,
-} from "@chakra-ui/react";
-import { Field, Form, Formik } from "formik";
+  useToast
+} from '@chakra-ui/react';
 
-import { useAuthContext } from "@/contexts/AuthContext";
-import { getRandomAccessPointName } from "@/lib/utils";
-import { useCallback, useRef } from "react";
+import { Field, Form, Formik } from 'formik';
+
+import { getRandomAccessPointName } from '@/lib/utils';
+
+import { useAuthContext } from '@/contexts/AuthContext';
 
 export default function CreateAccessPointDialog({
   isOpen,
   onClose,
   location,
-  onCreate,
+  onCreate
 }: {
   isOpen: boolean;
   onClose: () => void;
@@ -44,20 +47,20 @@ export default function CreateAccessPointDialog({
   return (
     <>
       <Formik
-        initialValues={{ name: "", description: "" }}
+        initialValues={{ name: '', description: '' }}
         onSubmit={(values, actions) => {
           user.getIdToken().then((token: any) => {
             fetch(`/api/v1/locations/${location.id}/access-points`, {
-              method: "POST",
+              method: 'POST',
               headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`
               },
               body: JSON.stringify({
                 name: values.name,
                 description: values.description,
-                locationId: location.id,
-              }),
+                locationId: location.id
+              })
             })
               .then((res) => {
                 if (res.status === 200) {
@@ -71,20 +74,20 @@ export default function CreateAccessPointDialog({
               .then((data) => {
                 toast({
                   title: data.message,
-                  status: "success",
+                  status: 'success',
                   duration: 5000,
-                  isClosable: true,
+                  isClosable: true
                 });
                 onClose();
                 onCreate(data.accessPointId);
               })
               .catch((error) => {
                 toast({
-                  title: "There was an error creating the access point.",
+                  title: 'There was an error creating the access point.',
                   description: error.message,
-                  status: "error",
+                  status: 'error',
                   duration: 5000,
-                  isClosable: true,
+                  isClosable: true
                 });
               })
               .finally(() => {
@@ -94,10 +97,15 @@ export default function CreateAccessPointDialog({
         }}
       >
         {(props) => (
-          <Modal isOpen={isOpen} onClose={onClose} isCentered initialFocusRef={initialRef}>
+          <Modal
+            isOpen={isOpen}
+            onClose={onClose}
+            isCentered
+            initialFocusRef={initialRef}
+          >
             <ModalOverlay />
             <Form>
-              <ModalContent bg={useColorModeValue("white", "gray.800")}>
+              <ModalContent bg={useColorModeValue('white', 'gray.800')}>
                 <ModalHeader pb={2}>Create Access Point</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody pb={4}>
@@ -109,10 +117,10 @@ export default function CreateAccessPointDialog({
                           <Input
                             {...field}
                             ref={initialRef}
-                            variant={"outline"}
-                            placeholder={namePlaceholder || "Access Point Name"}
-                            autoComplete={"off"}
-                            autoCorrect={"off"}
+                            variant={'outline'}
+                            placeholder={namePlaceholder || 'Access Point Name'}
+                            autoComplete={'off'}
+                            autoCorrect={'off'}
                           />
                         </FormControl>
                       )}
@@ -123,29 +131,35 @@ export default function CreateAccessPointDialog({
                           <FormLabel>Description</FormLabel>
                           <Textarea
                             {...field}
-                            variant={"outline"}
-                            placeholder={"Access Point Description"}
-                            maxH={"200px"}
+                            variant={'outline'}
+                            placeholder={'Access Point Description'}
+                            maxH={'200px'}
                           />
                         </FormControl>
                       )}
                     </Field>
                   </VStack>
-                  <Text fontSize={"sm"} pt={2}>
-                    This access point will be created under the{" "}
-                    <Text as={"span"} fontWeight={"bold"}>
+                  <Text
+                    fontSize={'sm'}
+                    pt={2}
+                  >
+                    This access point will be created under the{' '}
+                    <Text
+                      as={'span'}
+                      fontWeight={'bold'}
+                    >
                       {location?.name}
-                    </Text>{" "}
+                    </Text>{' '}
                     location.
                   </Text>
                 </ModalBody>
 
                 <ModalFooter>
                   <Button
-                    colorScheme={"blue"}
+                    colorScheme={'blue'}
                     mr={3}
                     isLoading={props.isSubmitting}
-                    type={"submit"}
+                    type={'submit'}
                   >
                     Create
                   </Button>

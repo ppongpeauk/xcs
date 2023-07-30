@@ -1,4 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+import { useRef } from 'react';
+
 import {
   Button,
   FormControl,
@@ -15,19 +17,19 @@ import {
   Textarea,
   VStack,
   useColorModeValue,
-  useToast,
-} from "@chakra-ui/react";
-import { Field, Form, Formik } from "formik";
+  useToast
+} from '@chakra-ui/react';
 
-import { useAuthContext } from "@/contexts/AuthContext";
-import { useRef } from "react";
+import { Field, Form, Formik } from 'formik';
+
+import { useAuthContext } from '@/contexts/AuthContext';
 
 export default function CreateAccessGroupDialog({
   isOpen,
   onClose,
   organization,
   location,
-  onCreate,
+  onCreate
 }: {
   isOpen: boolean;
   onClose: () => void;
@@ -43,21 +45,21 @@ export default function CreateAccessGroupDialog({
   return (
     <>
       <Formik
-        initialValues={{ name: "", description: "", scanData: {} }}
+        initialValues={{ name: '', description: '', scanData: {} }}
         onSubmit={(values, actions) => {
           user.getIdToken().then((token: any) => {
             fetch(`/api/v1/organizations/${organization.id}/access-groups`, {
-              method: "POST",
+              method: 'POST',
               headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`
               },
               body: JSON.stringify({
                 name: values.name,
                 locationId: location?.id,
                 description: values.description,
                 scanData: {}
-              }),
+              })
             })
               .then((res) => {
                 if (res.status === 200) {
@@ -71,20 +73,20 @@ export default function CreateAccessGroupDialog({
               .then((data) => {
                 toast({
                   title: data.message,
-                  status: "success",
+                  status: 'success',
                   duration: 5000,
-                  isClosable: true,
+                  isClosable: true
                 });
                 onClose();
                 onCreate(data.id);
               })
               .catch((error) => {
                 toast({
-                  title: "There was an error creating the access group.",
+                  title: 'There was an error creating the access group.',
                   description: error.message,
-                  status: "error",
+                  status: 'error',
                   duration: 5000,
-                  isClosable: true,
+                  isClosable: true
                 });
               })
               .finally(() => {
@@ -94,10 +96,15 @@ export default function CreateAccessGroupDialog({
         }}
       >
         {(props) => (
-          <Modal isOpen={isOpen} onClose={onClose} isCentered initialFocusRef={initialRef}>
+          <Modal
+            isOpen={isOpen}
+            onClose={onClose}
+            isCentered
+            initialFocusRef={initialRef}
+          >
             <ModalOverlay />
             <Form>
-              <ModalContent bg={useColorModeValue("white", "gray.800")}>
+              <ModalContent bg={useColorModeValue('white', 'gray.800')}>
                 <ModalHeader pb={2}>Create Access Group</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody pb={4}>
@@ -108,12 +115,12 @@ export default function CreateAccessGroupDialog({
                           <FormLabel>Name</FormLabel>
                           <Input
                             {...field}
-                            type={"text"}
-                            variant={"outline"}
-                            placeholder={"Access Group Name"}
+                            type={'text'}
+                            variant={'outline'}
+                            placeholder={'Access Group Name'}
                             ref={initialRef}
-                            autoComplete={"off"}
-                            autoCorrect={"off"}
+                            autoComplete={'off'}
+                            autoCorrect={'off'}
                           />
                         </FormControl>
                       )}
@@ -124,11 +131,11 @@ export default function CreateAccessGroupDialog({
                           <FormLabel>Short Description</FormLabel>
                           <Textarea
                             {...field}
-                            variant={"outline"}
-                            placeholder={"Access Group Short Description"}
-                            maxH={"1rem"}
-                            autoComplete={"off"}
-                            autoCorrect={"off"}
+                            variant={'outline'}
+                            placeholder={'Access Group Short Description'}
+                            maxH={'1rem'}
+                            autoComplete={'off'}
+                            autoCorrect={'off'}
                           />
                         </FormControl>
                       )}
@@ -138,10 +145,10 @@ export default function CreateAccessGroupDialog({
 
                 <ModalFooter>
                   <Button
-                    colorScheme={"blue"}
+                    colorScheme={'blue'}
                     mr={3}
                     isLoading={props.isSubmitting}
-                    type={"submit"}
+                    type={'submit'}
                   >
                     Create
                   </Button>

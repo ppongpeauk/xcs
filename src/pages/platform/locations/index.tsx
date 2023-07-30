@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import Layout from "@/layouts/PlatformLayout";
+import { useCallback, useEffect, useState } from 'react';
+
 import {
   Avatar,
   Box,
@@ -18,19 +19,24 @@ import {
   Stack,
   Text,
   useColorModeValue,
-  useDisclosure,
-} from "@chakra-ui/react";
-import { AsyncSelect, CreatableSelect, Select } from "chakra-react-select";
-import Head from "next/head";
-import NextLink from "next/link";
-import { useRouter } from "next/router";
-import { useCallback, useEffect, useState } from "react";
+  useDisclosure
+} from '@chakra-ui/react';
 
-import CreateLocationDialog from "@/components/CreateLocationDialog";
-import { useAuthContext } from "@/contexts/AuthContext";
-import moment from "moment";
-import { FaBuilding, FaUserAlt } from "react-icons/fa";
-import { MdOutlineAddCircle } from "react-icons/md";
+import { FaBuilding, FaUserAlt } from 'react-icons/fa';
+import { MdOutlineAddCircle } from 'react-icons/md';
+
+import { AsyncSelect, CreatableSelect, Select } from 'chakra-react-select';
+import moment from 'moment';
+import Head from 'next/head';
+import NextLink from 'next/link';
+import { useRouter } from 'next/router';
+
+import { useAuthContext } from '@/contexts/AuthContext';
+
+import Layout from '@/layouts/PlatformLayout';
+
+import CreateLocationDialog from '@/components/CreateLocationDialog';
+
 export default function PlatformLocations() {
   const { query, push } = useRouter();
 
@@ -40,8 +46,7 @@ export default function PlatformLocations() {
 
   // Fetch organizations
   const [organizations, setOrganizations] = useState<any>([]);
-  const [organizationsLoading, setOrganizationsLoading] =
-    useState<boolean>(true);
+  const [organizationsLoading, setOrganizationsLoading] = useState<boolean>(true);
 
   const [selectedOrganization, setSelectedOrganization] = useState<any>(null);
 
@@ -51,15 +56,15 @@ export default function PlatformLocations() {
   const {
     isOpen: isCreateLocationModalOpen,
     onOpen: onCreateLocationModalOpen,
-    onClose: onCreateLocationModalClose,
+    onClose: onCreateLocationModalClose
   } = useDisclosure();
 
   useEffect(() => {
     if (!idToken) return;
     setOrganizationsLoading(true);
-    fetch("/api/v1/me/organizations", {
-      method: "GET",
-      headers: { Authorization: `Bearer ${idToken}` },
+    fetch('/api/v1/me/organizations', {
+      method: 'GET',
+      headers: { Authorization: `Bearer ${idToken}` }
     })
       .then((res) => res.json())
       .then((data) => {
@@ -77,8 +82,8 @@ export default function PlatformLocations() {
     if (!selectedOrganization) return;
     setLocationsLoading(true);
     fetch(`/api/v1/organizations/${selectedOrganization.id}/locations`, {
-      method: "GET",
-      headers: { Authorization: `Bearer ${idToken}` },
+      method: 'GET',
+      headers: { Authorization: `Bearer ${idToken}` }
     })
       .then((res) => res.json())
       .then((data) => {
@@ -96,9 +101,7 @@ export default function PlatformLocations() {
 
   useEffect(() => {
     if (!query.organization) return;
-    const organization = organizations.find(
-      (organization: any) => organization.id === query.organization
-    );
+    const organization = organizations.find((organization: any) => organization.id === query.organization);
     setSelectedOrganization(organization);
   }, [organizations, query.organization]);
 
@@ -113,11 +116,26 @@ export default function PlatformLocations() {
     <>
       <Head>
         <title>Restrafes XCS – Locations</title>
-        <meta property="og:title" content="Restrafes XCS - Manage Locations" />
-        <meta property="og:site_name" content="Restrafes XCS" />
-        <meta property="og:url" content="https://xcs.restrafes.co" />
-        <meta property="og:type" content="website" />
-        <meta property="og:image" content="/images/logo-square.jpeg" />
+        <meta
+          property="og:title"
+          content="Restrafes XCS - Manage Locations"
+        />
+        <meta
+          property="og:site_name"
+          content="Restrafes XCS"
+        />
+        <meta
+          property="og:url"
+          content="https://xcs.restrafes.co"
+        />
+        <meta
+          property="og:type"
+          content="website"
+        />
+        <meta
+          property="og:image"
+          content="/images/logo-square.jpeg"
+        />
       </Head>
       <CreateLocationDialog
         isOpen={isCreateLocationModalOpen}
@@ -127,22 +145,29 @@ export default function PlatformLocations() {
           push(`/platform/locations/${id}`);
         }}
       />
-      <Container maxW={"full"} p={8}>
-        <Text as={"h1"} fontSize={"4xl"} fontWeight={"900"}>
+      <Container
+        maxW={'full'}
+        p={8}
+      >
+        <Text
+          as={'h1'}
+          fontSize={'4xl'}
+          fontWeight={'900'}
+        >
           Locations
         </Text>
         <HStack
-          display={"flex"}
+          display={'flex'}
           py={4}
-          justify={"flex-start"}
-          align={"flex-end"}
+          justify={'flex-start'}
+          align={'flex-end'}
           spacing={4}
         >
           <FormControl
             w={{
-              base: "unset",
-              md: "256px",
-              lg: "384px",
+              base: 'unset',
+              md: '256px',
+              lg: '384px'
             }}
           >
             <FormLabel>Organization</FormLabel>
@@ -151,20 +176,18 @@ export default function PlatformLocations() {
                 value={
                   {
                     label: selectedOrganization?.name,
-                    value: selectedOrganization?.id,
+                    value: selectedOrganization?.id
                   } as any
                 }
                 onChange={(e: { label: string; value: string }) => {
-                  const organization = organizations.find(
-                    (organization: any) => organization.id === e.value
-                  );
+                  const organization = organizations.find((organization: any) => organization.id === e.value);
                   setSelectedOrganization(organization);
                 }}
                 isReadOnly={organizationsLoading}
                 options={
                   organizations.map((organization: any) => ({
                     label: organization.name,
-                    value: organization.id,
+                    value: organization.id
                   })) || []
                 }
                 selectedOptionStyle="check"
@@ -184,32 +207,38 @@ export default function PlatformLocations() {
           {locationsLoading ? (
             <Flex
               as={Stack}
-              direction={"row"}
-              h={"full"}
+              direction={'row'}
+              h={'full'}
               spacing={4}
-              overflow={"auto"}
-              flexWrap={"wrap"}
+              overflow={'auto'}
+              flexWrap={'wrap'}
             >
               {
                 Array.from({ length: 6 }).map((_, i) => (
                   <Box
                     key={i}
                     as={Skeleton}
-                    w={{ base: "full", md: "384px" }}
-                    h={"max-content"}
+                    w={{ base: 'full', md: '384px' }}
+                    h={'max-content'}
                     py={4}
                     px={8}
                     borderWidth={1}
-                    borderRadius={"xl"}
-                    borderColor={useColorModeValue("gray.200", "gray.700")}
+                    borderRadius={'xl'}
+                    borderColor={useColorModeValue('gray.200', 'gray.700')}
                   >
-                    <HStack p={2} w={"full"}>
+                    <HStack
+                      p={2}
+                      w={'full'}
+                    >
                       <Box flexGrow={1}>
-                        <Text fontSize={"2xl"} fontWeight={"bold"}>
+                        <Text
+                          fontSize={'2xl'}
+                          fontWeight={'bold'}
+                        >
                           Loading...
                         </Text>
-                        <Text color={"gray.500"}>0 Members</Text>
-                        <Text color={"gray.500"}>Owned by</Text>
+                        <Text color={'gray.500'}>0 Members</Text>
+                        <Text color={'gray.500'}>Owned by</Text>
                         <Text>Organization</Text>
                       </Box>
                     </HStack>
@@ -223,81 +252,86 @@ export default function PlatformLocations() {
             <Flex>
               {locations.length === 0 ? (
                 <Text>
-                  This organization does not have any locations yet.{" "}
-                  <Text as={"span"}>
+                  This organization does not have any locations yet.{' '}
+                  <Text as={'span'}>
                     <Button
-                      variant={"link"}
-                      color={"unset"}
-                      textDecor={"underline"}
+                      variant={'link'}
+                      color={'unset'}
+                      textDecor={'underline'}
                       textUnderlineOffset={4}
                       onClick={onCreateLocationModalOpen}
                       _hover={{
-                        color: useColorModeValue("gray.600", "gray.400"),
+                        color: useColorModeValue('gray.600', 'gray.400')
                       }}
                     >
                       Create one
                     </Button>
-                  </Text>{" "}
+                  </Text>{' '}
                   to get started.
                 </Text>
               ) : (
                 <Stack
-                  direction={{ base: "column", md: "row" }}
-                  w={"full"}
+                  direction={{ base: 'column', md: 'row' }}
+                  w={'full'}
                   spacing={4}
                 >
                   {locations?.map((location: any) => (
                     <Flex
                       key={location.id}
-                      w={{ base: "full", md: "384px" }}
-                      h={"auto"}
+                      w={{ base: 'full', md: '384px' }}
+                      h={'auto'}
                       p={6}
                       borderWidth={1}
-                      borderRadius={"xl"}
-                      borderColor={useColorModeValue("gray.200", "gray.700")}
+                      borderRadius={'xl'}
+                      borderColor={useColorModeValue('gray.200', 'gray.700')}
                       mr={4}
-                      align={"center"}
-                      justify={"space-between"}
-                      flexDir={"column"}
+                      align={'center'}
+                      justify={'space-between'}
+                      flexDir={'column'}
                     >
-                      <HStack px={2} w={"full"}>
+                      <HStack
+                        px={2}
+                        w={'full'}
+                      >
                         <Box flexGrow={1}>
-                          <Text fontSize={"xl"} fontWeight={"bold"}>
+                          <Text
+                            fontSize={'xl'}
+                            fontWeight={'bold'}
+                          >
                             {location?.name}
                           </Text>
-                          <Text color={"gray.500"}>
-                            {location?.roblox?.place?.name}
-                          </Text>
+                          <Text color={'gray.500'}>{location?.roblox?.place?.name}</Text>
                           {location?.description ? (
                             <Text>{location?.description}</Text>
                           ) : (
-                            <Text color={"gray.500"}>
-                              No description available.
-                            </Text>
+                            <Text color={'gray.500'}>No description available.</Text>
                           )}
                         </Box>
                         {location?.roblox?.place && (
                           <Avatar
                             as={NextLink}
                             href={`https://www.roblox.com/games/${location?.roblox?.place?.rootPlaceId}/game`}
-                            target={"_blank"}
-                            alignSelf={"flex-start"}
+                            target={'_blank'}
+                            alignSelf={'flex-start'}
                             name={location?.roblox?.place?.name}
                             src={location?.roblox?.place?.thumbnail}
                             aspectRatio={1 / 1}
-                            borderRadius={"md"}
-                            overflow={"hidden"}
-                            objectFit={"cover"}
-                            size={"lg"}
+                            borderRadius={'md'}
+                            overflow={'hidden'}
+                            objectFit={'cover'}
+                            size={'lg'}
                           />
                         )}
                       </HStack>
-                      <Stack pt={4} w={"full"}>
+                      <Stack
+                        pt={4}
+                        w={'full'}
+                      >
                         <Button
                           as={NextLink}
                           href={`/platform/locations/${location?.id}`}
-                          variant={"solid"}
-                          w={"full"}
+                          variant={'solid'}
+                          w={'full'}
                         >
                           View
                         </Button>

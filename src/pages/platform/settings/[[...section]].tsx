@@ -1,4 +1,6 @@
 // Components
+import { useEffect, useState } from 'react';
+
 import {
   Avatar,
   Box,
@@ -20,64 +22,63 @@ import {
   Text,
   useColorModeValue,
   useDisclosure,
-  useToast,
-} from "@chakra-ui/react";
+  useToast
+} from '@chakra-ui/react';
 
-// Layouts
-import Layout from "@/layouts/PlatformLayout";
+import { HamburgerIcon } from '@chakra-ui/icons';
+
+import { BiSolidUserBadge, BiSolidUserDetail } from 'react-icons/bi';
+import { FaIdBadge, FaLink, FaPaintBrush } from 'react-icons/fa';
+import { FiExternalLink } from 'react-icons/fi';
+import { RiAdminFill } from 'react-icons/ri';
+
+import Head from 'next/head';
+import { useRouter } from 'next/router';
 
 // Authentication
-import { useAuthContext } from "@/contexts/AuthContext";
-import Head from "next/head";
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useAuthContext } from '@/contexts/AuthContext';
 
-import SettingsAdmin from "@/components/SettingsAdmin";
-import SettingsAppearance from "@/components/SettingsAppearance";
-import SettingsLinkedAccounts from "@/components/SettingsLinkedAccounts";
-import SettingsProfile from "@/components/SettingsProfile";
-import { HamburgerIcon } from "@chakra-ui/icons";
-import { BiSolidUserBadge, BiSolidUserDetail } from "react-icons/bi";
-import { FaIdBadge, FaLink, FaPaintBrush } from "react-icons/fa";
-import { FiExternalLink } from "react-icons/fi";
-import { RiAdminFill } from "react-icons/ri";
+// Layouts
+import Layout from '@/layouts/PlatformLayout';
 
-function StyledTab({
-  children,
-  index,
-  icon,
-}: {
-  children: React.ReactNode;
-  index: number;
-  icon?: any;
-}) {
+import SettingsAdmin from '@/components/SettingsAdmin';
+import SettingsAppearance from '@/components/SettingsAppearance';
+import SettingsLinkedAccounts from '@/components/SettingsLinkedAccounts';
+import SettingsProfile from '@/components/SettingsProfile';
+
+function StyledTab({ children, index, icon }: { children: React.ReactNode; index: number; icon?: any }) {
   const { push } = useRouter();
 
   return (
     <Tab
-      w={"200px"}
-      fontSize={["sm", "md"]}
-      color={"unset"}
-      justifyContent={"left"}
-      border={"none"}
-      rounded={"lg"}
-      fontWeight={"bold"}
+      w={'200px'}
+      fontSize={['sm', 'md']}
+      color={'unset'}
+      justifyContent={'left'}
+      border={'none'}
+      rounded={'lg'}
+      fontWeight={'bold'}
       _hover={{
-        bg: useColorModeValue("gray.100", "gray.700"),
+        bg: useColorModeValue('gray.100', 'gray.700')
       }}
       _active={{
-        bg: useColorModeValue("gray.200", "gray.600"),
-        color: useColorModeValue("gray.900", "white"),
+        bg: useColorModeValue('gray.200', 'gray.600'),
+        color: useColorModeValue('gray.900', 'white')
       }}
       _selected={{
-        bg: useColorModeValue("gray.100", "#fff"),
-        color: useColorModeValue("black", "gray.900"),
+        bg: useColorModeValue('gray.100', '#fff'),
+        color: useColorModeValue('black', 'gray.900')
       }}
       onClick={() => {
         push(`/platform/settings/${index + 1}`);
       }}
     >
-      {icon ? <Icon as={icon} mr={2} /> : null}
+      {icon ? (
+        <Icon
+          as={icon}
+          mr={2}
+        />
+      ) : null}
       {children}
     </Tab>
   );
@@ -95,19 +96,19 @@ export default function Settings() {
 
   useEffect(() => {
     if (!query.discordLinked) return;
-    if (query.discordLinked === "true") {
+    if (query.discordLinked === 'true') {
       toast({
-        title: "Successfully linked your Discord account.",
-        status: "success",
+        title: 'Successfully linked your Discord account.',
+        status: 'success',
         duration: 5000,
-        isClosable: true,
+        isClosable: true
       });
     } else {
       toast({
-        title: "There was an error linking your Discord account.",
-        status: "error",
+        title: 'There was an error linking your Discord account.',
+        status: 'error',
         duration: 5000,
-        isClosable: true,
+        isClosable: true
       });
     }
   }, [query]);
@@ -116,19 +117,34 @@ export default function Settings() {
     <>
       <Head>
         <title>Restrafes XCS – Settings</title>
-        <meta property="og:site_name" content="Restrafes XCS" />
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content="Settings" />
+        <meta
+          property="og:site_name"
+          content="Restrafes XCS"
+        />
+        <meta
+          property="og:type"
+          content="website"
+        />
+        <meta
+          property="og:title"
+          content="Settings"
+        />
       </Head>
-      <Container maxW={"full"} p={8}>
+      <Container
+        maxW={'full'}
+        p={8}
+      >
         <Heading>Settings</Heading>
-        <Box display={{ base: "block", md: "none" }} pt={4}>
+        <Box
+          display={{ base: 'block', md: 'none' }}
+          pt={4}
+        >
           <Menu>
             <MenuButton
               as={IconButton}
               icon={<HamburgerIcon />}
-              aria-label={"Menu"}
-              w={"full"}
+              aria-label={'Menu'}
+              w={'full'}
             />
             <MenuList>
               <MenuItem
@@ -166,31 +182,43 @@ export default function Settings() {
         </Box>
         <Tabs
           py={4}
-          orientation={"vertical"}
-          variant={"line"}
+          orientation={'vertical'}
+          variant={'line'}
           isLazy={true}
-          maxW={"full"}
-          h={"100%"}
+          maxW={'full'}
+          h={'100%'}
           index={index}
           onChange={setIndex}
           isManual={true}
         >
           <TabList
-            display={{ base: "none", md: "block" }}
-            h={"100%"}
-            border={"none"}
+            display={{ base: 'none', md: 'block' }}
+            h={'100%'}
+            border={'none'}
           >
-            <StyledTab index={0} icon={BiSolidUserDetail}>
+            <StyledTab
+              index={0}
+              icon={BiSolidUserDetail}
+            >
               <Text>Profile</Text>
             </StyledTab>
-            <StyledTab index={1} icon={FaPaintBrush}>
+            <StyledTab
+              index={1}
+              icon={FaPaintBrush}
+            >
               <Text>Appearance</Text>
             </StyledTab>
-            <StyledTab index={2} icon={FiExternalLink}>
+            <StyledTab
+              index={2}
+              icon={FiExternalLink}
+            >
               <Text>Linked Accounts</Text>
             </StyledTab>
             {currentUser?.platform.staff && (
-              <StyledTab index={3} icon={RiAdminFill}>
+              <StyledTab
+                index={3}
+                icon={RiAdminFill}
+              >
                 <Text>Admin Settings</Text>
               </StyledTab>
             )}
@@ -199,34 +227,58 @@ export default function Settings() {
           <TabPanels px={{ base: 0, md: 8 }}>
             <TabPanel p={0}>
               <Heading>Profile</Heading>
-              <Text fontSize={"md"} color={"gray.500"}>
+              <Text
+                fontSize={'md'}
+                color={'gray.500'}
+              >
                 This is how you appear to other users.
               </Text>
-              <Divider mt={4} mb={8} />
+              <Divider
+                mt={4}
+                mb={8}
+              />
               <SettingsProfile />
             </TabPanel>
             <TabPanel p={0}>
               <Heading>Appearance</Heading>
-              <Text fontSize={"md"} color={"gray.500"}>
+              <Text
+                fontSize={'md'}
+                color={'gray.500'}
+              >
                 Customize the appearance of the website.
               </Text>
-              <Divider mt={4} mb={8} />
+              <Divider
+                mt={4}
+                mb={8}
+              />
               <SettingsAppearance />
             </TabPanel>
             <TabPanel p={0}>
               <Heading>Linked Accounts</Heading>
-              <Text fontSize={"md"} color={"gray.500"}>
+              <Text
+                fontSize={'md'}
+                color={'gray.500'}
+              >
                 Link your accounts to verify your identity.
               </Text>
-              <Divider mt={4} mb={8} />
+              <Divider
+                mt={4}
+                mb={8}
+              />
               <SettingsLinkedAccounts />
             </TabPanel>
             <TabPanel p={0}>
               <Heading>Admin Settings</Heading>
-              <Text fontSize={"md"} color={"gray.500"}>
+              <Text
+                fontSize={'md'}
+                color={'gray.500'}
+              >
                 Super secret admin settings.
               </Text>
-              <Divider mt={4} mb={8} />
+              <Divider
+                mt={4}
+                mb={8}
+              />
               <SettingsAdmin />
             </TabPanel>
           </TabPanels>

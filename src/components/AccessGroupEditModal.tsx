@@ -1,4 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+import { useEffect, useRef, useState } from 'react';
+
 import {
   Avatar,
   Badge,
@@ -32,39 +34,31 @@ import {
   chakra,
   useColorModeValue,
   useDisclosure,
-  useToast,
-} from "@chakra-ui/react";
+  useToast
+} from '@chakra-ui/react';
+import { Box, Table, TableCaption, TableContainer, Tbody, Td, Text, Tfoot, Th, Thead, Tr } from '@chakra-ui/react';
 
-import Editor from "@monaco-editor/react";
+import { InfoIcon } from '@chakra-ui/icons';
 
-import DeleteDialog from "@/components/DeleteDialog";
-import { useAuthContext } from "@/contexts/AuthContext";
-import { roleToText, textToRole } from "@/lib/utils";
-import { InfoIcon } from "@chakra-ui/icons";
-import {
-  Box,
-  Table,
-  TableCaption,
-  TableContainer,
-  Tbody,
-  Td,
-  Text,
-  Tfoot,
-  Th,
-  Thead,
-  Tr,
-} from "@chakra-ui/react";
-import { AsyncSelect, CreatableSelect, Select } from "chakra-react-select";
-import { Field, Form, Formik } from "formik";
-import moment from "moment";
-import { useEffect, useRef, useState } from "react";
-import { AiFillEdit } from "react-icons/ai";
-import { IoIosCreate, IoIosRemoveCircle } from "react-icons/io";
-import { IoSave } from "react-icons/io5";
-import { MdEditSquare } from "react-icons/md";
-import { RiMailAddFill } from "react-icons/ri";
-import { SiRoblox } from "react-icons/si";
-import CreateAccessGroupDialog from "./CreateAccessGroupDialog";
+import { AiFillEdit } from 'react-icons/ai';
+import { IoIosCreate, IoIosRemoveCircle } from 'react-icons/io';
+import { IoSave } from 'react-icons/io5';
+import { MdEditSquare } from 'react-icons/md';
+import { RiMailAddFill } from 'react-icons/ri';
+import { SiRoblox } from 'react-icons/si';
+
+import Editor from '@monaco-editor/react';
+import { AsyncSelect, CreatableSelect, Select } from 'chakra-react-select';
+import { Field, Form, Formik } from 'formik';
+import moment from 'moment';
+
+import { roleToText, textToRole } from '@/lib/utils';
+
+import { useAuthContext } from '@/contexts/AuthContext';
+
+import DeleteDialog from '@/components/DeleteDialog';
+
+import CreateAccessGroupDialog from './CreateAccessGroupDialog';
 
 const ChakraEditor = chakra(Editor);
 
@@ -77,12 +71,12 @@ export default function AccessGroupEditModal({
   groups,
   organization,
   location,
-  onGroupRemove,
+  onGroupRemove
 }: any) {
   const { user } = useAuthContext();
   const toast = useToast();
   const [focusedGroup, setFocusedGroup] = useState<any>(null);
-  const themeBorderColor = useColorModeValue("gray.200", "gray.700");
+  const themeBorderColor = useColorModeValue('gray.200', 'gray.700');
 
   const groupSearchRef = useRef<any>(null);
   const [filteredGroups, setFilteredGroups] = useState<any>([]);
@@ -92,21 +86,15 @@ export default function AccessGroupEditModal({
   const {
     isOpen: deleteGroupDialogOpen,
     onOpen: deleteGroupDialogOnOpen,
-    onClose: deleteGroupDialogOnClose,
+    onClose: deleteGroupDialogOnClose
   } = useDisclosure();
 
-  const {
-    isOpen: createModalOpen,
-    onOpen: createModalOnOpen,
-    onClose: createModalOnClose,
-  } = useDisclosure();
+  const { isOpen: createModalOpen, onOpen: createModalOnOpen, onClose: createModalOnClose } = useDisclosure();
 
   const filterGroups = (query: string) => {
     if (!query) return groups;
     return Object.keys(groups)
-      .filter((group: any) =>
-        groups[group].name.toLowerCase().includes(query.toLowerCase())
-      )
+      .filter((group: any) => groups[group].name.toLowerCase().includes(query.toLowerCase()))
       .map((group: any) => groups[group]);
   };
 
@@ -152,26 +140,34 @@ export default function AccessGroupEditModal({
       >
         <ModalOverlay />
         <ModalContent
-          maxW={{ base: "full", lg: "container.xl" }}
-          bg={useColorModeValue("white", "gray.800")}
+          maxW={{ base: 'full', lg: 'container.xl' }}
+          bg={useColorModeValue('white', 'gray.800')}
           h="100%"
         >
           <ModalHeader>Manage Access Groups</ModalHeader>
           <ModalCloseButton />
-          <ModalBody w={"full"} pb={0} h="100%">
+          <ModalBody
+            w={'full'}
+            pb={0}
+            h="100%"
+          >
             <VStack
               w="100%"
               h="100%"
               overflow={{
-                base: "auto",
-                xl: "hidden",
+                base: 'auto',
+                xl: 'hidden'
               }}
             >
-              <Stack w="100%" mb={4} direction={{ base: "column", md: "row" }}>
-                <FormControl w={{ base: "full", md: "300px" }}>
+              <Stack
+                w="100%"
+                mb={4}
+                direction={{ base: 'column', md: 'row' }}
+              >
+                <FormControl w={{ base: 'full', md: '300px' }}>
                   <FormLabel>Search Access Group</FormLabel>
                   <Input
-                    placeholder={"Search for an access group..."}
+                    placeholder={'Search for an access group...'}
                     ref={groupSearchRef}
                     onChange={(e) => {
                       if (e.target?.value) {
@@ -185,8 +181,8 @@ export default function AccessGroupEditModal({
                 <Spacer />
                 <Button
                   alignSelf={{
-                    base: "normal",
-                    md: "flex-end",
+                    base: 'normal',
+                    md: 'flex-end'
                   }}
                   onClick={createModalOnOpen}
                   leftIcon={<IoIosCreate />}
@@ -195,20 +191,20 @@ export default function AccessGroupEditModal({
                 </Button>
               </Stack>
               <Flex
-                w={"full"}
-                justify={"space-between"}
-                flexDir={{ base: "column", xl: "row" }}
+                w={'full'}
+                justify={'space-between'}
+                flexDir={{ base: 'column', xl: 'row' }}
                 h="full"
                 overflow="auto"
               >
                 <TableContainer
                   py={2}
-                  minH={{ base: "320px", xl: "100%" }}
-                  overflowY={"auto"}
+                  minH={{ base: '320px', xl: '100%' }}
+                  overflowY={'auto'}
                   flexGrow={1}
                   px={4}
                 >
-                  <Table size={{ base: "sm", md: "sm" }}>
+                  <Table size={{ base: 'sm', md: 'sm' }}>
                     <Thead>
                       <Tr>
                         <Th>Name</Th>
@@ -223,34 +219,30 @@ export default function AccessGroupEditModal({
                               <Box my={2}>
                                 <Text
                                   fontWeight="bold"
-                                  alignItems={"center"}
-                                  display={"flex"}
+                                  alignItems={'center'}
+                                  display={'flex'}
                                 >
                                   {filteredGroups[group].name}
-                                  {filteredGroups[group].config
-                                    ?.openToEveryone && (
-                                    <Badge as={"span"} ml={2}>
+                                  {filteredGroups[group].config?.openToEveryone && (
+                                    <Badge
+                                      as={'span'}
+                                      ml={2}
+                                    >
                                       Everyone
                                     </Badge>
                                   )}
                                   <Badge
-                                    as={"span"}
+                                    as={'span'}
                                     ml={2}
-                                    colorScheme={
-                                      filteredGroups[group].config?.active
-                                        ? "green"
-                                        : "red"
-                                    }
+                                    colorScheme={filteredGroups[group].config?.active ? 'green' : 'red'}
                                   >
-                                    {filteredGroups[group].config?.active
-                                      ? "Active"
-                                      : "Inactive"}
+                                    {filteredGroups[group].config?.active ? 'Active' : 'Inactive'}
                                   </Badge>
                                 </Text>
                                 {filteredGroups[group].description && (
                                   <Text
-                                    color={"gray.500"}
-                                    maxW={"384px"}
+                                    color={'gray.500'}
+                                    maxW={'384px'}
                                     isTruncated
                                   >
                                     {filteredGroups[group].description}
@@ -313,38 +305,47 @@ export default function AccessGroupEditModal({
                 {/* Edit Group */}
                 <Skeleton
                   isLoaded={organization}
-                  rounded={"lg"}
+                  rounded={'lg'}
                   minW={{
-                    base: "unset",
-                    sm: "unset",
-                    lg: "512px",
+                    base: 'unset',
+                    sm: 'unset',
+                    lg: '512px'
                   }}
                   flexBasis={1}
                 >
                   <Flex
                     p={6}
-                    rounded={"lg"}
-                    border={"1px solid"}
+                    rounded={'lg'}
+                    border={'1px solid'}
                     borderColor={themeBorderColor}
                     //minH={{ base: "unset", xl: "512px" }}
                     //maxH={{ base: "unset", xl: "512px" }}
-                    h={"full"}
-                    overflowY={"auto"}
+                    h={'full'}
+                    overflowY={'auto'}
                   >
                     {!focusedGroup || !organization ? (
-                      <Text m={"auto"} color={"gray.500"}>
+                      <Text
+                        m={'auto'}
+                        color={'gray.500'}
+                      >
                         Select an access group to manage.
                       </Text>
                     ) : (
-                      <Flex flexDir={"column"} w={"full"}>
+                      <Flex
+                        flexDir={'column'}
+                        w={'full'}
+                      >
                         {/* Header */}
-                        <Flex align={"center"} h={"fit-content"}>
-                          <Flex flexDir={"column"}>
-                            <Flex align={"center"}>
+                        <Flex
+                          align={'center'}
+                          h={'fit-content'}
+                        >
+                          <Flex flexDir={'column'}>
+                            <Flex align={'center'}>
                               <Text
-                                as={"h2"}
-                                fontSize={"2xl"}
-                                fontWeight={"bold"}
+                                as={'h2'}
+                                fontSize={'2xl'}
+                                fontWeight={'bold'}
                               >
                                 {focusedGroup?.name}
                               </Text>
@@ -356,40 +357,31 @@ export default function AccessGroupEditModal({
                           enableReinitialize={true}
                           initialValues={{
                             name: focusedGroup?.name,
-                            description: focusedGroup?.description || "",
-                            scanData: JSON.stringify(
-                              focusedGroup?.scanData,
-                              null,
-                              3
-                            ),
+                            description: focusedGroup?.description || '',
+                            scanData: JSON.stringify(focusedGroup?.scanData, null, 3),
                             // config
                             configActive: focusedGroup?.config?.active,
-                            configOpenToEveryone:
-                              focusedGroup?.config?.openToEveryone,
+                            configOpenToEveryone: focusedGroup?.config?.openToEveryone
                           }}
                           onSubmit={(values, actions) => {
                             user.getIdToken().then((token: string) => {
-                              fetch(
-                                `/api/v1/organizations/${organization?.id}/access-groups/${focusedGroup?.id}`,
-                                {
-                                  method: "PATCH",
-                                  headers: {
-                                    Authorization: `Bearer ${token}`,
-                                    "Content-Type": "application/json",
-                                  },
-                                  body: JSON.stringify({
-                                    name: values?.name,
-                                    locationId: location?.id,
-                                    description: values?.description,
-                                    scanData: values?.scanData,
-                                    config: {
-                                      active: values?.configActive,
-                                      openToEveryone:
-                                        values?.configOpenToEveryone,
-                                    },
-                                  }),
-                                }
-                              )
+                              fetch(`/api/v1/organizations/${organization?.id}/access-groups/${focusedGroup?.id}`, {
+                                method: 'PATCH',
+                                headers: {
+                                  Authorization: `Bearer ${token}`,
+                                  'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                  name: values?.name,
+                                  locationId: location?.id,
+                                  description: values?.description,
+                                  scanData: values?.scanData,
+                                  config: {
+                                    active: values?.configActive,
+                                    openToEveryone: values?.configOpenToEveryone
+                                  }
+                                })
+                              })
                                 .then((res) => {
                                   if (res.status === 200) {
                                     return res.json();
@@ -402,20 +394,19 @@ export default function AccessGroupEditModal({
                                 .then((data) => {
                                   toast({
                                     title: data.message,
-                                    status: "success",
+                                    status: 'success',
                                     duration: 5000,
-                                    isClosable: true,
+                                    isClosable: true
                                   });
                                   onRefresh();
                                 })
                                 .catch((error) => {
                                   toast({
-                                    title:
-                                      "There was an error updating the access group.",
+                                    title: 'There was an error updating the access group.',
                                     description: error.message,
-                                    status: "error",
+                                    status: 'error',
                                     duration: 5000,
-                                    isClosable: true,
+                                    isClosable: true
                                   });
                                 })
                                 .finally(() => {
@@ -427,32 +418,37 @@ export default function AccessGroupEditModal({
                           {(props) => (
                             <Form
                               style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                width: "100%",
-                                height: "100%",
-                                justifyContent: "space-between",
+                                display: 'flex',
+                                flexDirection: 'column',
+                                width: '100%',
+                                height: '100%',
+                                justifyContent: 'space-between'
                               }}
                             >
-                              <Flex flexDir={"column"} mt={4} w={"full"} pb={8}>
+                              <Flex
+                                flexDir={'column'}
+                                mt={4}
+                                w={'full'}
+                                pb={8}
+                              >
                                 <Stack>
                                   <Stack
                                     direction={{
-                                      base: "column",
-                                      md: "column",
+                                      base: 'column',
+                                      md: 'column'
                                     }}
                                   >
                                     <Field name="name">
                                       {({ field, form }: any) => (
-                                        <FormControl w={"fit-content"}>
+                                        <FormControl w={'fit-content'}>
                                           <FormLabel>Name</FormLabel>
                                           <Input
                                             {...field}
-                                            type={"text"}
-                                            variant={"outline"}
-                                            placeholder={"Access Group Name"}
-                                            autoComplete={"off"}
-                                            autoCorrect={"off"}
+                                            type={'text'}
+                                            variant={'outline'}
+                                            placeholder={'Access Group Name'}
+                                            autoComplete={'off'}
+                                            autoCorrect={'off'}
                                           />
                                         </FormControl>
                                       )}
@@ -460,18 +456,14 @@ export default function AccessGroupEditModal({
                                     <Field name="description">
                                       {({ field, form }: any) => (
                                         <FormControl>
-                                          <FormLabel>
-                                            Short Description
-                                          </FormLabel>
+                                          <FormLabel>Short Description</FormLabel>
                                           <Input
                                             {...field}
-                                            type={"text"}
-                                            variant={"outline"}
-                                            placeholder={
-                                              "Access Group Short Description"
-                                            }
-                                            autoComplete={"off"}
-                                            autoCorrect={"off"}
+                                            type={'text'}
+                                            variant={'outline'}
+                                            placeholder={'Access Group Short Description'}
+                                            autoComplete={'off'}
+                                            autoCorrect={'off'}
                                           />
                                         </FormControl>
                                       )}
@@ -479,66 +471,51 @@ export default function AccessGroupEditModal({
                                   </Stack>
                                   <Stack
                                     direction={{
-                                      base: "column",
-                                      md: "row",
+                                      base: 'column',
+                                      md: 'row'
                                     }}
                                     py={2}
-                                    w={"fit-content"}
+                                    w={'fit-content'}
                                   >
                                     <Field name="configActive">
                                       {({ field, form }: any) => (
-                                        <FormControl w={"fit-content"}>
+                                        <FormControl w={'fit-content'}>
                                           <FormLabel>Active</FormLabel>
                                           <InputGroup>
                                             <Switch
                                               {...field}
                                               placeholder="Active"
-                                              variant={"outline"}
-                                              width={"fit-content"}
-                                              isChecked={
-                                                form.values?.configActive
-                                              }
+                                              variant={'outline'}
+                                              width={'fit-content'}
+                                              isChecked={form.values?.configActive}
                                               onChange={(e) => {
-                                                form.setFieldValue(
-                                                  "configActive",
-                                                  e.target.checked
-                                                );
+                                                form.setFieldValue('configActive', e.target.checked);
                                               }}
                                             />
                                           </InputGroup>
-                                          <FormHelperText>
-                                            Whether or not this access group is
-                                            active.
-                                          </FormHelperText>
+                                          <FormHelperText>Whether or not this access group is active.</FormHelperText>
                                         </FormControl>
                                       )}
                                     </Field>
                                     <Field name="configOpenToEveryone">
                                       {({ field, form }: any) => (
-                                        <FormControl w={"fit-content"}>
+                                        <FormControl w={'fit-content'}>
                                           <FormLabel>Everyone</FormLabel>
                                           <InputGroup>
                                             <Switch
                                               {...field}
-                                              colorScheme={"red"}
+                                              colorScheme={'red'}
                                               placeholder="Everyone"
-                                              variant={"outline"}
-                                              width={"fit-content"}
-                                              isChecked={
-                                                form.values
-                                                  ?.configOpenToEveryone
-                                              }
+                                              variant={'outline'}
+                                              width={'fit-content'}
+                                              isChecked={form.values?.configOpenToEveryone}
                                               onChange={(e) => {
-                                                form.setFieldValue(
-                                                  "configOpenToEveryone",
-                                                  e.target.checked
-                                                );
+                                                form.setFieldValue('configOpenToEveryone', e.target.checked);
                                               }}
                                             />
                                           </InputGroup>
                                           <FormHelperText>
-                                            Whether or not this access group is
-                                            open to everyone.
+                                            Whether or not this access group is open to everyone.
                                           </FormHelperText>
                                         </FormControl>
                                       )}
@@ -546,15 +523,15 @@ export default function AccessGroupEditModal({
                                   </Stack>
                                   <Field name="scanData">
                                     {({ field, form }: any) => (
-                                      <FormControl w={"fit-content"}>
+                                      <FormControl w={'fit-content'}>
                                         <FormLabel>Scan Data</FormLabel>
                                         <InputGroup>
                                           <Box
-                                            border={"1px solid"}
+                                            border={'1px solid'}
                                             borderColor={themeBorderColor}
-                                            borderRadius={"lg"}
-                                            w={"full"}
-                                            overflow={"hidden"}
+                                            borderRadius={'lg'}
+                                            w={'full'}
+                                            overflow={'hidden'}
                                           >
                                             <ChakraEditor
                                               {...field}
@@ -562,31 +539,23 @@ export default function AccessGroupEditModal({
                                               width="100%"
                                               p={4}
                                               language="json"
-                                              theme={useColorModeValue(
-                                                "vs-light",
-                                                "vs-dark"
-                                              )}
+                                              theme={useColorModeValue('vs-light', 'vs-dark')}
                                               options={{
                                                 minimap: {
-                                                  enabled: false,
-                                                },
+                                                  enabled: false
+                                                }
                                               }}
                                               value={form.values?.scanData}
                                               onChange={(value) => {
-                                                form.setFieldValue(
-                                                  "scanData",
-                                                  value
-                                                );
+                                                form.setFieldValue('scanData', value);
                                               }}
                                             />
                                           </Box>
                                         </InputGroup>
                                         <FormHelperText>
-                                          This is the data that will be returned
-                                          when a user under this access group
-                                          scans their card. (User scan data
-                                          takes priority over access group scan
-                                          data when it is merged.)
+                                          This is the data that will be returned when a user under this access group
+                                          scans their card. (User scan data takes priority over access group scan data
+                                          when it is merged.)
                                         </FormHelperText>
                                       </FormControl>
                                     )}
@@ -594,11 +563,14 @@ export default function AccessGroupEditModal({
                                 </Stack>
                               </Flex>
                               <Portal containerRef={editButtonsRef}>
-                                <Stack direction={"row"} spacing={4}>
+                                <Stack
+                                  direction={'row'}
+                                  spacing={4}
+                                >
                                   <Button
                                     isLoading={props.isSubmitting}
                                     leftIcon={<IoSave />}
-                                    type={"submit"}
+                                    type={'submit'}
                                     onClick={() => {
                                       props.handleSubmit();
                                     }}
@@ -631,9 +603,15 @@ export default function AccessGroupEditModal({
             </VStack>
           </ModalBody>
           <ModalFooter>
-            <Stack direction={{ base: "column", md: "row" }} spacing={4}>
+            <Stack
+              direction={{ base: 'column', md: 'row' }}
+              spacing={4}
+            >
               <Box ref={editButtonsRef} />
-              <Button colorScheme="blue" onClick={onClose}>
+              <Button
+                colorScheme="blue"
+                onClick={onClose}
+              >
                 Close
               </Button>
             </Stack>

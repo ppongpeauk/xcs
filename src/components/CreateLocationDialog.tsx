@@ -1,4 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+import { useRef } from 'react';
+
 import {
   Button,
   FormControl,
@@ -15,18 +17,18 @@ import {
   Textarea,
   VStack,
   useColorModeValue,
-  useToast,
-} from "@chakra-ui/react";
-import { Field, Form, Formik } from "formik";
+  useToast
+} from '@chakra-ui/react';
 
-import { useAuthContext } from "@/contexts/AuthContext";
-import { useRef } from "react";
+import { Field, Form, Formik } from 'formik';
+
+import { useAuthContext } from '@/contexts/AuthContext';
 
 export default function CreateLocationDialog({
   isOpen,
   onClose,
   selectedOrganization,
-  onCreate,
+  onCreate
 }: {
   isOpen: boolean;
   onClose: () => void;
@@ -41,20 +43,20 @@ export default function CreateLocationDialog({
   return (
     <>
       <Formik
-        initialValues={{ name: "", description: "" }}
+        initialValues={{ name: '', description: '' }}
         onSubmit={(values, actions) => {
           user.getIdToken().then((token: any) => {
-            fetch("/api/v1/locations", {
-              method: "POST",
+            fetch('/api/v1/locations', {
+              method: 'POST',
               headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`
               },
               body: JSON.stringify({
                 name: values.name,
                 description: values.description,
-                organizationId: selectedOrganization.id,
-              }),
+                organizationId: selectedOrganization.id
+              })
             })
               .then((res) => {
                 if (res.status === 200) {
@@ -68,20 +70,20 @@ export default function CreateLocationDialog({
               .then((data) => {
                 toast({
                   title: data.message,
-                  status: "success",
+                  status: 'success',
                   duration: 5000,
-                  isClosable: true,
+                  isClosable: true
                 });
                 onClose();
                 onCreate(data.locationId);
               })
               .catch((error) => {
                 toast({
-                  title: "There was an error creating the location.",
+                  title: 'There was an error creating the location.',
                   description: error.message,
-                  status: "error",
+                  status: 'error',
                   duration: 5000,
-                  isClosable: true,
+                  isClosable: true
                 });
               })
               .finally(() => {
@@ -91,10 +93,14 @@ export default function CreateLocationDialog({
         }}
       >
         {(props) => (
-          <Modal isOpen={isOpen} onClose={onClose} isCentered>
+          <Modal
+            isOpen={isOpen}
+            onClose={onClose}
+            isCentered
+          >
             <ModalOverlay />
             <Form>
-              <ModalContent bg={useColorModeValue("white", "gray.800")}>
+              <ModalContent bg={useColorModeValue('white', 'gray.800')}>
                 <ModalHeader pb={2}>Create Location</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody pb={4}>
@@ -105,8 +111,8 @@ export default function CreateLocationDialog({
                           <FormLabel>Name</FormLabel>
                           <Input
                             {...field}
-                            variant={"outline"}
-                            placeholder={"Location Name"}
+                            variant={'outline'}
+                            placeholder={'Location Name'}
                           />
                         </FormControl>
                       )}
@@ -130,29 +136,35 @@ export default function CreateLocationDialog({
                           <FormLabel>Description</FormLabel>
                           <Textarea
                             {...field}
-                            variant={"outline"}
-                            placeholder={"Location Description"}
-                            maxH={"200px"}
+                            variant={'outline'}
+                            placeholder={'Location Description'}
+                            maxH={'200px'}
                           />
                         </FormControl>
                       )}
                     </Field>
                   </VStack>
-                  <Text fontSize={"sm"} pt={2}>
-                    This location will be created under the{" "}
-                    <Text as={"span"} fontWeight={"bold"}>
+                  <Text
+                    fontSize={'sm'}
+                    pt={2}
+                  >
+                    This location will be created under the{' '}
+                    <Text
+                      as={'span'}
+                      fontWeight={'bold'}
+                    >
                       {selectedOrganization?.name}
-                    </Text>{" "}
+                    </Text>{' '}
                     organization.
                   </Text>
                 </ModalBody>
 
                 <ModalFooter>
                   <Button
-                    colorScheme={"blue"}
+                    colorScheme={'blue'}
                     mr={3}
                     isLoading={props.isSubmitting}
-                    type={"submit"}
+                    type={'submit'}
                   >
                     Create
                   </Button>

@@ -1,38 +1,29 @@
 /* eslint-disable react/no-children-prop */
-
 // Next
-import { useRouter } from "next/router";
+import { useEffect, useState } from 'react';
 
-// Components
-import Footer from "@/components/Footer";
-import PlatformNav from "@/components/PlatformNav";
-import {
-    Alert,
-    AlertDescription,
-    AlertIcon,
-    AlertTitle,
-    Box,
-    Flex,
-    Stack,
-    useToast,
-} from "@chakra-ui/react";
+import { Alert, AlertDescription, AlertIcon, AlertTitle, Box, Flex, Stack, useToast } from '@chakra-ui/react';
+
+import firebase from 'firebase/app';
+import { sendEmailVerification } from 'firebase/auth';
+import { usePathname } from 'next/navigation';
+import { useRouter } from 'next/router';
+import { useAuthState } from 'react-firebase-hooks/auth';
+
+import { auth } from '@/lib/firebase';
 
 // Authentication
-import { useAuthContext } from "@/contexts/AuthContext";
-import { useEffect, useState } from "react";
+import { useAuthContext } from '@/contexts/AuthContext';
 
-import PlatformAlert from "@/components/PlatformAlert";
-import { auth } from "@/lib/firebase";
-import firebase from "firebase/app";
-import { sendEmailVerification } from "firebase/auth";
-import { usePathname } from "next/navigation";
-import { useAuthState } from "react-firebase-hooks/auth";
+// Components
+import Footer from '@/components/Footer';
+import PlatformAlert from '@/components/PlatformAlert';
+import PlatformNav from '@/components/PlatformNav';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { user, currentUser, isAuthLoaded } = useAuthContext();
   const [firebaseUser, loading, error] = useAuthState(auth);
-  const [sendVerificationEmailLoading, setSendVerificationEmailLoading] =
-    useState<boolean>(false);
+  const [sendVerificationEmailLoading, setSendVerificationEmailLoading] = useState<boolean>(false);
   const { push } = useRouter();
   const pathname = usePathname();
   const toast = useToast();
@@ -43,13 +34,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     // if (pathname.startsWith("/platform/profile")) return;
     setTimeout(() => {
       if (!firebaseUser) {
-        push("/auth/login?redirect=" + window.location.pathname);
+        push('/auth/login?redirect=' + window.location.pathname);
         toast({
-          title: "You are not logged in",
-          description: "Please log in to continue.",
-          status: "error",
+          title: 'You are not logged in',
+          description: 'Please log in to continue.',
+          status: 'error',
           duration: 5000,
-          isClosable: true,
+          isClosable: true
         });
       }
     }, 500);
@@ -60,19 +51,24 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <>
       <PlatformNav />
       <Box
-        as={"main"}
-        pos={"relative"}
-        left={{ base: 0, md: "240px" }}
-        w={{ base: "100vw", md: "calc(100vw - 240px)" }}
+        as={'main'}
+        pos={'relative'}
+        left={{ base: 0, md: '240px' }}
+        w={{ base: '100%', md: 'calc(100% - 240px)' }}
         flexGrow={1}
       >
-        <Flex pos={"sticky"} top={"6rem"} flexGrow={1} zIndex={1}>
+        <Flex
+          pos={'sticky'}
+          top={'6rem'}
+          flexGrow={1}
+          zIndex={1}
+        >
           <Stack
-            id={"alerts"}
-            backdropFilter={"blur(24px)"}
+            id={'alerts'}
+            backdropFilter={'blur(24px)'}
             spacing={0}
-            w={"full"}
-            h={"full"}
+            w={'full'}
+            h={'full'}
           >
             {/* Email not verified */}
             {currentUser && (
@@ -80,36 +76,32 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 {/* Email not verified */}
                 {!user?.emailVerified && (
                   <PlatformAlert
-                    title={"Action needed"}
-                    description={
-                      "Please verify your email address to continue using Restrafes XCS."
-                    }
+                    title={'Action needed'}
+                    description={'Please verify your email address to continue using Restrafes XCS.'}
                     isClosable={true}
                     button={{
-                      text: "Resend verification email",
+                      text: 'Resend verification email',
                       isLoading: sendVerificationEmailLoading,
                       onClick: async () => {
                         setSendVerificationEmailLoading(true);
                         await sendEmailVerification(user).finally(() => {
                           setSendVerificationEmailLoading(false);
                         });
-                      },
+                      }
                     }}
                   />
                 )}
                 {/* Roblox account not verified */}
                 {!currentUser?.roblox.verified && (
                   <PlatformAlert
-                    title={"Action needed"}
-                    description={
-                      "Please verify your Roblox account to continue using Restrafes XCS."
-                    }
+                    title={'Action needed'}
+                    description={'Please verify your Roblox account to continue using Restrafes XCS.'}
                     isClosable={true}
                     button={{
-                      text: "Verify Roblox account",
+                      text: 'Verify Roblox account',
                       onClick: async () => {
-                        push("/platform/verify");
-                      },
+                        push('/platform/verify');
+                      }
                     }}
                   />
                 )}
@@ -117,7 +109,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             )}
           </Stack>
         </Flex>
-        <Box minH={"calc(100vh - 6rem)"}>{children}</Box>
+        <Box minH={'calc(100vh - 6rem)'}>{children}</Box>
       </Box>
     </>
   );

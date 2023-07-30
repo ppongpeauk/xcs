@@ -1,4 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+import { useRef } from 'react';
+
 import {
   Button,
   FormControl,
@@ -15,18 +17,18 @@ import {
   Textarea,
   VStack,
   useColorModeValue,
-  useToast,
-} from "@chakra-ui/react";
-import { Field, Form, Formik } from "formik";
+  useToast
+} from '@chakra-ui/react';
 
-import { useAuthContext } from "@/contexts/AuthContext";
-import { useRef } from "react";
+import { Field, Form, Formik } from 'formik';
+
+import { useAuthContext } from '@/contexts/AuthContext';
 
 export default function JoinOrganizationDialog({
   isOpen,
   onClose,
   onJoin,
-  initialValue = "",
+  initialValue = ''
 }: {
   isOpen: boolean;
   onClose: () => void;
@@ -44,21 +46,18 @@ export default function JoinOrganizationDialog({
         initialValues={{ inviteCode: initialValue }}
         onSubmit={(values, actions) => {
           // Handle Links
-          values.inviteCode = values.inviteCode.replace(
-            `${process.env.NEXT_PUBLIC_ROOT_URL}/invitation/`,
-            ""
-          );
+          values.inviteCode = values.inviteCode.replace(`${process.env.NEXT_PUBLIC_ROOT_URL}/invitation/`, '');
 
           user.getIdToken().then((token: any) => {
-            fetch("/api/v1/organizations/join", {
-              method: "POST",
+            fetch('/api/v1/organizations/join', {
+              method: 'POST',
               headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`
               },
               body: JSON.stringify({
-                inviteCode: values.inviteCode,
-              }),
+                inviteCode: values.inviteCode
+              })
             })
               .then((res) => {
                 if (res.status === 200) {
@@ -72,20 +71,20 @@ export default function JoinOrganizationDialog({
               .then((data) => {
                 toast({
                   title: data.message,
-                  status: "success",
+                  status: 'success',
                   duration: 5000,
-                  isClosable: true,
+                  isClosable: true
                 });
                 onClose();
                 onJoin(data.organizationId);
               })
               .catch((error) => {
                 toast({
-                  title: "There was an error joining the organization.",
+                  title: 'There was an error joining the organization.',
                   description: error.message,
-                  status: "error",
+                  status: 'error',
                   duration: 5000,
-                  isClosable: true,
+                  isClosable: true
                 });
               })
               .finally(() => {
@@ -95,10 +94,14 @@ export default function JoinOrganizationDialog({
         }}
       >
         {(props) => (
-          <Modal isOpen={isOpen} onClose={onClose} isCentered>
+          <Modal
+            isOpen={isOpen}
+            onClose={onClose}
+            isCentered
+          >
             <ModalOverlay />
             <Form>
-              <ModalContent bg={useColorModeValue("white", "gray.800")}>
+              <ModalContent bg={useColorModeValue('white', 'gray.800')}>
                 <ModalHeader>Join Organization</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody pb={4}>
@@ -109,24 +112,27 @@ export default function JoinOrganizationDialog({
                           <FormLabel>Invite Code</FormLabel>
                           <Input
                             {...field}
-                            variant={"outline"}
-                            placeholder={"Invite Code"}
+                            variant={'outline'}
+                            placeholder={'Invite Code'}
                           />
                         </FormControl>
                       )}
                     </Field>
                   </VStack>
-                  <Text mt={2} fontSize={"sm"}>
+                  <Text
+                    mt={2}
+                    fontSize={'sm'}
+                  >
                     Have an invite code? Enter it here to join an organization.
                   </Text>
                 </ModalBody>
 
                 <ModalFooter>
                   <Button
-                    colorScheme={"blue"}
+                    colorScheme={'blue'}
                     mr={3}
                     isLoading={props.isSubmitting}
-                    type={"submit"}
+                    type={'submit'}
                   >
                     Join
                   </Button>

@@ -1,11 +1,9 @@
-import clientPromise from "@/lib/mongodb";
-import { tokenToID } from "@/pages/api/firebase";
-import { NextApiRequest, NextApiResponse } from "next";
+import { tokenToID } from '@/pages/api/firebase';
+import { NextApiRequest, NextApiResponse } from 'next';
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+import clientPromise from '@/lib/mongodb';
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   // Location ID
   const { locationId } = req.query as { locationId: string };
 
@@ -13,46 +11,49 @@ export default async function handler(
   const authHeader = req.headers.authorization;
 
   // Bearer Token
-  const token = authHeader?.split(" ")[1];
+  const token = authHeader?.split(' ')[1];
 
   // Verify Token
   const uid = await tokenToID(token as string);
   if (!uid) {
-    return res.status(401).json({ message: "Unauthorized." });
+    return res.status(401).json({ message: 'Unauthorized.' });
   }
 
   const mongoClient = await clientPromise;
   const db = mongoClient.db(process.env.MONGODB_DB as string);
-  const locations = db.collection("locations");
-  const organizations = db.collection("organizations");
-  const accessPoints = db.collection("accessPoints");
+  const locations = db.collection('locations');
+  const organizations = db.collection('organizations');
+  const accessPoints = db.collection('accessPoints');
 
   let location = (await locations.findOne({ id: locationId })) as any;
 
   if (!location) {
-    return res.status(404).json({ message: "Location not found" });
+    return res.status(404).json({ message: 'Location not found' });
   }
 
-  let organization = await organizations.findOne({
-    id: location.organizationId,
-  }, {
-    projection: {
-      id: 1,
-      name: 1,
-      description: 1,
-      members: 1,
-      avatar: 1,
-      accessGroups: 1
+  let organization = await organizations.findOne(
+    {
+      id: location.organizationId
+    },
+    {
+      projection: {
+        id: 1,
+        name: 1,
+        description: 1,
+        members: 1,
+        avatar: 1,
+        accessGroups: 1
+      }
     }
-  });
+  );
 
   if (!organization) {
-    return res.status(404).json({ message: "Organization not found" });
+    return res.status(404).json({ message: 'Organization not found' });
   }
 
   let member = organization.members[uid as any];
   if (!member) {
-    return res.status(401).json({ message: "Unauthorized." });
+    return res.status(401).json({ message: 'Unauthorized.' });
   }
 
   // Append Organization Data to Location
@@ -60,11 +61,11 @@ export default async function handler(
   delete location.organization.invitations;
 
   // Fetching Location Data
-  if (req.method === "GET") {
+  if (req.method === 'GET') {
     // Get User Permissions
     location.self = organization.members[uid as any];
     location.organization = organization;
-    
+
     // Get Access Points
     location.accessGroups = {};
     for (const accessGroupId in organization.accessGroups) {
@@ -73,14 +74,14 @@ export default async function handler(
         location.accessGroups[accessGroupId] = accessGroup;
       }
     }
-    
+
     return res.status(200).json({ location: location });
   }
 
   // Updating Location Data
-  if (req.method === "PUT") {
+  if (req.method === 'PUT') {
     if (!req.body) {
-      return res.status(400).json({ message: "No body provided" });
+      return res.status(400).json({ message: 'No body provided' });
     }
 
     let body = req.body as any;
@@ -89,63 +90,51 @@ export default async function handler(
     if (body.name !== undefined) {
       body.name = body.name.trim();
       if (member.role < 2 && body.name !== location.name) {
-        return res.status(401).json({ message: "Unauthorized." });
+        return res.status(401).json({ message: 'Unauthorized.' });
       }
       if (body.name.length > 32 || body.name.length < 1) {
-        return res
-          .status(400)
-          .json({ message: "Name must be between 1-32 characters." });
+        return res.status(400).json({ message: 'Name must be between 1-32 characters.' });
       }
     }
 
     if (body.description) {
       body.description = body.description.trim();
       if (member.role < 2 && body.description !== location.description) {
-        return res.status(401).json({ message: "Unauthorized." });
+        return res.status(401).json({ message: 'Unauthorized.' });
       }
       if (body.description.length > 256) {
-        return res
-          .status(400)
-          .json({ message: "Description must be less than 256 characters." });
+        return res.status(400).json({ message: 'Description must be less than 256 characters.' });
       }
     }
 
     // nullify empty universe id
-    if (body.roblox.universe.id === "") {
+    if (body.roblox.universe.id === '') {
       body.roblox.universe.id = null;
     }
 
     // prevent changing universe id if already set on the server
-    if (
-      location.roblox.universe.id !== null &&
-      location.roblox.universe.id != body.roblox.universe.id
-    ) {
-      return res
-        .status(400)
-        .json({ message: "You cannot change the universe ID once set." });
+    if (location.roblox.universe.id !== null && location.roblox.universe.id != body.roblox.universe.id) {
+      return res.status(400).json({ message: 'You cannot change the universe ID once set.' });
     }
 
     if (body.roblox.universe.id) {
       body.roblox.universe.id = body.roblox.universe.id.trim();
 
       // check if user has organization permissions to change universe id
-      if (
-        member.role < 2 &&
-        body.roblox.universe.id !== location.roblox.universe.id
-      ) {
-        return res.status(401).json({ message: "Unauthorized." });
+      if (member.role < 2 && body.roblox.universe.id !== location.roblox.universe.id) {
+        return res.status(401).json({ message: 'Unauthorized.' });
       }
 
       // check if another location is using the same universe
       const otherLocation = await locations.findOne(
         {
-          "roblox.universe.id": body.roblox.universe.id,
+          'roblox.universe.id': body.roblox.universe.id
         },
         { projection: { id: 1 } }
       );
 
       if (otherLocation && otherLocation.id !== location.id) {
-        return res.status(400).json({ message: "Universe ID already in use." });
+        return res.status(400).json({ message: 'Universe ID already in use.' });
       }
     }
 
@@ -153,9 +142,7 @@ export default async function handler(
     if (body.roblox.universe.id || location.roblox.universe.id) {
       // fetch experience details
       const robloxResponse = await fetch(
-        `${
-          process.env.NEXT_PUBLIC_ROOT_URL
-        }/api/v1/roblox/games/v1/games?universeIds=${
+        `${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/roblox/games/v1/games?universeIds=${
           body.roblox.universe.id || location.roblox.universe.id
         }`
       )
@@ -163,16 +150,14 @@ export default async function handler(
         .then((res) => res.data);
 
       if (!robloxResponse || robloxResponse.length === 0) {
-        return res.status(400).json({ message: "Invalid universe ID." });
+        return res.status(400).json({ message: 'Invalid universe ID.' });
       }
 
       const place = robloxResponse[0];
       body.roblox.place = place;
 
       const thumbnailResponse = await fetch(
-        `${
-          process.env.NEXT_PUBLIC_ROOT_URL
-        }/api/v1/roblox/thumbnails/v1/games/icons?universeIds=${
+        `${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/roblox/thumbnails/v1/games/icons?universeIds=${
           body.roblox.universe.id || location.roblox.universe.id
         }&returnPolicy=PlaceHolder&size=256x256&format=Jpeg&isCircular=false`
       )
@@ -196,22 +181,20 @@ export default async function handler(
       {
         $push: {
           logs: {
-            type: "location-updated",
+            type: 'location-updated',
             performer: uid,
             timestamp: timestamp,
             location: locationId,
-            data: body,
-          },
-        },
+            data: body
+          }
+        }
       }
     );
-    return res
-      .status(200)
-      .json({ message: "Successfully updated location!", success: true });
+    return res.status(200).json({ message: 'Successfully updated location!', success: true });
   }
 
   // Deleting Location Data
-  if (req.method === "DELETE") {
+  if (req.method === 'DELETE') {
     const timestamp = new Date();
 
     // Delete Location
@@ -222,10 +205,7 @@ export default async function handler(
     for (const apiKeyId in apiKeys) {
       const apiKey = apiKeys[apiKeyId];
       if (apiKey.locationId === location.id) {
-        await organizations.updateOne(
-          { id: organization.id },
-          { $unset: { [`apiKeys.${apiKeyId}`]: "" } }
-        );
+        await organizations.updateOne({ id: organization.id }, { $unset: { [`apiKeys.${apiKeyId}`]: '' } });
       }
     }
 
@@ -237,10 +217,7 @@ export default async function handler(
     for (const accessGroupId in accessGroups) {
       const accessGroup = accessGroups[accessGroupId];
       if (accessGroup.locationId === location.id) {
-        await organizations.updateOne(
-          { id: organization.id },
-          { $unset: { [`accessGroups.${accessGroupId}`]: "" } }
-        );
+        await organizations.updateOne({ id: organization.id }, { $unset: { [`accessGroups.${accessGroupId}`]: '' } });
       }
     }
 
@@ -250,19 +227,17 @@ export default async function handler(
       {
         $push: {
           logs: {
-            type: "location_deleted",
+            type: 'location_deleted',
             performer: uid,
             timestamp: timestamp,
-            locationId: locationId,
-          },
-        },
+            locationId: locationId
+          }
+        }
       }
     );
 
-    return res
-      .status(200)
-      .json({ message: "Successfully deleted location!", success: true });
+    return res.status(200).json({ message: 'Successfully deleted location!', success: true });
   }
 
-  return res.status(500).json({ message: "An unknown error has occurred." });
+  return res.status(500).json({ message: 'An unknown error has occurred.' });
 }

@@ -1,24 +1,22 @@
-import { authToken } from "@/lib/auth";
-import clientPromise from "@/lib/mongodb";
-import { tokenToID } from "@/pages/api/firebase";
-import { NextApiRequest, NextApiResponse } from "next";
+import { tokenToID } from '@/pages/api/firebase';
+import { NextApiRequest, NextApiResponse } from 'next';
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+import { authToken } from '@/lib/auth';
+import clientPromise from '@/lib/mongodb';
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const uid = await authToken(req);
   if (!uid) {
-    return res.status(401).json({ message: "Unauthorized." });
+    return res.status(401).json({ message: 'Unauthorized.' });
   }
 
   const mongoClient = await clientPromise;
   const db = mongoClient.db(process.env.MONGODB_DB as string);
-  const users = db.collection("users");
+  const users = db.collection('users');
   const user = await users.findOne({ id: uid });
 
   if (!user) {
-    return res.status(404).json({ message: "User not found" });
+    return res.status(404).json({ message: 'User not found' });
   }
 
   // compatibility
@@ -30,33 +28,33 @@ export default async function handler(
           discord: {
             verified: false,
             id: null,
-            username: null,
-          },
-        },
+            username: null
+          }
+        }
       }
     );
   }
 
   const timestamp = new Date();
 
-  if (req.method === "POST") {
+  if (req.method === 'POST') {
     const { code } = req.body;
 
     // generate token using code
     // see: https://discord.com/developers/docs/topics/oauth2
-    const tokenResponse = await fetch("https://discord.com/api/oauth2/token", {
-      method: "POST",
+    const tokenResponse = await fetch('https://discord.com/api/oauth2/token', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
+        'Content-Type': 'application/x-www-form-urlencoded'
       },
       body: new URLSearchParams({
         client_id: process.env.DISCORD_CLIENT_ID as string,
         client_secret: process.env.DISCORD_CLIENT_SECRET as string,
-        grant_type: "authorization_code",
-        scope: "identify",
+        grant_type: 'authorization_code',
+        scope: 'identify',
         code: code,
-        redirect_uri: `${process.env.NEXT_PUBLIC_ROOT_URL}/platform/settings/discord`,
-      }).toString(),
+        redirect_uri: `${process.env.NEXT_PUBLIC_ROOT_URL}/platform/settings/discord`
+      }).toString()
     }).then((res) => res.json());
 
     if (tokenResponse.error) {
@@ -65,11 +63,11 @@ export default async function handler(
     }
 
     // get user info using token
-    const userResponse = await fetch("https://discord.com/api/oauth2/@me", {
-      method: "GET",
+    const userResponse = await fetch('https://discord.com/api/oauth2/@me', {
+      method: 'GET',
       headers: {
-        Authorization: `Bearer ${tokenResponse.access_token}`,
-      },
+        Authorization: `Bearer ${tokenResponse.access_token}`
+      }
     }).then((res) => res.json());
 
     if (userResponse.error) {
@@ -79,7 +77,7 @@ export default async function handler(
 
     // unlink accounts using discord id
     await users.updateMany(
-      { "discord.id": userResponse.user.id },
+      { 'discord.id': userResponse.user.id },
       {
         $set: {
           lastUpdatedAt: timestamp,
@@ -87,9 +85,9 @@ export default async function handler(
             verified: false,
             id: null,
             username: null,
-            discriminator: null,
-          },
-        },
+            discriminator: null
+          }
+        }
       }
     );
 
@@ -104,25 +102,22 @@ export default async function handler(
             verifiedAt: timestamp,
             id: userResponse.user.id,
             username: userResponse.user.username,
-            discriminator:
-              userResponse.user.discriminator !== "0"
-                ? userResponse.user.discriminator
-                : null,
-          },
-        },
+            discriminator: userResponse.user.discriminator !== '0' ? userResponse.user.discriminator : null
+          }
+        }
       }
     );
 
     return res.status(200).json({
       success: true,
-      message: "You've successfully linked your Discord account.",
+      message: "You've successfully linked your Discord account."
     });
   }
 
-  if (req.method === "DELETE") {
+  if (req.method === 'DELETE') {
     if (!user.discord.verified) {
       return res.status(400).json({
-        message: "You are not linked.",
+        message: 'You are not linked.'
       });
     }
 
@@ -134,9 +129,9 @@ export default async function handler(
           discord: {
             verified: false,
             id: null,
-            username: null,
-          },
-        },
+            username: null
+          }
+        }
       }
     );
 
@@ -145,20 +140,20 @@ export default async function handler(
       {
         $push: {
           logs: {
-            type: "account_unlink",
+            type: 'account_unlink',
             performer: uid,
             timestamp: timestamp,
-            data: "discord",
-          },
-        },
+            data: 'discord'
+          }
+        }
       }
     );
 
     return res.status(200).json({
       message: "You've successfully unlinked your Discord account.",
-      success: true,
+      success: true
     });
   }
 
-  return res.status(500).json({ message: "Something went really wrong." });
+  return res.status(500).json({ message: 'Something went really wrong.' });
 }

@@ -1,46 +1,44 @@
-import clientPromise from "@/lib/mongodb";
-import { admin, app, tokenToID } from "@/pages/api/firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { NextApiRequest, NextApiResponse } from "next";
-import { generate as generateString } from "randomstring";
-import { v4 as uuidv4 } from "uuid";
+import { admin, app, tokenToID } from '@/pages/api/firebase';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { generate as generateString } from 'randomstring';
+import { v4 as uuidv4 } from 'uuid';
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method === "GET") {
+import clientPromise from '@/lib/mongodb';
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method === 'GET') {
     let { activationCode } = req.query as { activationCode: string };
 
     const mongoClient = await clientPromise;
     const db = mongoClient.db(process.env.MONGODB_DB as string);
-    const invitations = db.collection("invitations");
+    const invitations = db.collection('invitations');
     const invitation = await invitations.findOne({
-      type: "xcs",
-      inviteCode: activationCode,
+      type: 'xcs',
+      inviteCode: activationCode
     });
 
     if (!invitation) {
       return res.status(404).json({
         valid: false,
-        message: "Invalid activation code.",
+        message: 'Invalid activation code.'
       });
     }
 
     if (invitation?.uses >= invitation?.maxUses) {
       return res.status(403).json({
         valid: false,
-        message: `This activation code has reached its maximum uses.`,
+        message: `This activation code has reached its maximum uses.`
       });
     }
 
     return res.status(200).json({
       valid: true,
-      message: "Valid activation code.",
+      message: 'Valid activation code.'
     });
   }
 
-  if (req.method === "POST") {
+  if (req.method === 'POST') {
     let { activationCode } = req.query as { activationCode: string };
 
     let { displayName, email, username, password } = req.body as {
@@ -52,27 +50,26 @@ export default async function handler(
 
     const mongoClient = await clientPromise;
     const db = mongoClient.db(process.env.MONGODB_DB as string);
-    const invitations = db.collection("invitations");
-    const users = db.collection("users");
+    const invitations = db.collection('invitations');
+    const users = db.collection('users');
 
     let invitation = await invitations.findOne(
       {
-        type: "xcs",
-        inviteCode: activationCode,
+        type: 'xcs',
+        inviteCode: activationCode
       },
       { projection: { _id: 0, uses: 1, maxUses: 1 } }
     );
 
     if (!invitation) {
       return res.status(404).json({
-        message:
-          "Invalid activation code. This code may have already been used.",
+        message: 'Invalid activation code. This code may have already been used.'
       });
     }
 
     if (invitation?.uses !== 0 && invitation?.uses >= invitation?.maxUses) {
       return res.status(403).json({
-        message: `This activation code has reached its maximum uses.`,
+        message: `This activation code has reached its maximum uses.`
       });
     }
 
@@ -87,13 +84,13 @@ export default async function handler(
       !activationCode
     ) {
       return res.status(400).json({
-        message: "Missing one or more required fields.",
+        message: 'Missing one or more required fields.'
       });
     }
 
     if (displayName.length > 32) {
       return res.status(400).json({
-        message: "Display name must be less than 32 characters.",
+        message: 'Display name must be less than 32 characters.'
       });
     }
 
@@ -111,33 +108,32 @@ export default async function handler(
 
     if (username.length > 32) {
       return res.status(400).json({
-        message: "Username must be less than 32 characters.",
+        message: 'Username must be less than 32 characters.'
       });
     }
 
     if (password.length < 8) {
       return res.status(400).json({
-        message: "Password must be at least 8 characters.",
+        message: 'Password must be at least 8 characters.'
       });
     }
 
     const usernameRegex = /^[a-zA-Z0-9_.]+$/;
     if (!usernameRegex.test(username)) {
       return res.status(400).json({
-        message:
-          "Username must only contain letters, numbers, and underscores.",
+        message: 'Username must only contain letters, numbers, and underscores.'
       });
     }
 
     // Check if username is taken
     await users
       .findOne({
-        username,
+        username
       })
       .then((user) => {
         if (user) {
           return res.status(400).json({
-            message: "Username is already taken.",
+            message: 'Username is already taken.'
           });
         }
       });
@@ -149,7 +145,7 @@ export default async function handler(
       .createUser({
         email,
         password,
-        emailVerified: false,
+        emailVerified: false
       })
       .then((userRecord) => {
         return userRecord;
@@ -161,30 +157,29 @@ export default async function handler(
     if (firebaseUser.code) {
       firebaseError = firebaseUser;
       switch (firebaseError.code) {
-        case "auth/email-already-exists":
+        case 'auth/email-already-exists':
           return res.status(400).json({
-            message: "An account with this email address already exists.",
+            message: 'An account with this email address already exists.'
           });
           break;
-        case "auth/invalid-email":
+        case 'auth/invalid-email':
           return res.status(400).json({
-            message: "Invalid email address.",
+            message: 'Invalid email address.'
           });
           break;
-        case "auth/operation-not-allowed":
+        case 'auth/operation-not-allowed':
           return res.status(400).json({
-            message: "Email/password accounts are not enabled.",
+            message: 'Email/password accounts are not enabled.'
           });
           break;
-        case "auth/weak-password":
+        case 'auth/weak-password':
           return res.status(400).json({
-            message: "Password is too weak.",
+            message: 'Password is too weak.'
           });
           break;
         default:
           return res.status(500).json({
-            message:
-              "An unknown error has occurred while creating your account.",
+            message: 'An unknown error has occurred while creating your account.'
           });
           break;
       }
@@ -196,60 +191,57 @@ export default async function handler(
         email: {
           address: email.trim().toLowerCase(),
           privacyLevel: 2,
-          verified: false,
+          verified: false
         },
         username: username.toLowerCase(),
         notifications: {
           email: {
             enabled: true,
-            frequency: "daily",
-          },
+            frequency: 'daily'
+          }
         },
         alerts: [
           {
-            title: "Email address not verified",
+            title: 'Email address not verified',
             description: `Your email address has not been verified. Please check your email for a verification link.`,
-            type: "warning",
+            type: 'warning',
             action: {
-              title: "Verify email",
-              url: `${process.env.NEXT_PUBLIC_ROOT_URL}/platform/onboarding/verify-email`,
-            },
-          },
+              title: 'Verify email',
+              url: `${process.env.NEXT_PUBLIC_ROOT_URL}/platform/onboarding/verify-email`
+            }
+          }
         ],
         platform: {
-          membership: "basic",
+          membership: 'basic'
         },
         payment: {
-          customerId: null,
+          customerId: null
         },
         roblox: {
           id: null,
           username: null,
           verified: false,
-          verifiedAt: null,
+          verifiedAt: null
         },
         discord: {
           id: null,
           username: null,
           verified: false,
-          verifiedAt: null,
+          verifiedAt: null
         },
         avatar: `${process.env.NEXT_PUBLIC_ROOT_URL}/images/default-avatar.png`,
         bio: null,
         id: firebaseUser.uid,
         createdAt: new Date(),
-        updatedAt: new Date(),
+        updatedAt: new Date()
       })
       .then(async (result) => {
         if (invitation?.uses + 1 >= invitation?.maxUses) {
           await invitations.deleteOne({
-            inviteCode: activationCode,
+            inviteCode: activationCode
           });
         } else {
-          await invitations.updateOne(
-            { inviteCode: activationCode },
-            { $inc: { uses: 1 } }
-          );
+          await invitations.updateOne({ inviteCode: activationCode }, { $inc: { uses: 1 } });
         }
       })
       .catch((error) => {
@@ -258,10 +250,10 @@ export default async function handler(
       });
 
     return res.status(200).json({
-      message: "Successfully registered! You may now login.",
-      success: true,
+      message: 'Successfully registered! You may now login.',
+      success: true
     });
   }
 
-  return res.status(500).json({ message: "An unknown error has occurred." });
+  return res.status(500).json({ message: 'An unknown error has occurred.' });
 }

@@ -1,4 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+import { useRef, useState } from 'react';
+
 import {
   Button,
   Checkbox,
@@ -27,21 +29,22 @@ import {
   VStack,
   useClipboard,
   useColorModeValue,
-  useToast,
-} from "@chakra-ui/react";
-import { AsyncSelect, CreatableSelect, Select } from "chakra-react-select";
-import { Field, Form, Formik } from "formik";
+  useToast
+} from '@chakra-ui/react';
 
-import { useAuthContext } from "@/contexts/AuthContext";
-import { textToRole } from "@/lib/utils";
-import NextLink from "next/link";
-import { useRef, useState } from "react";
+import { AsyncSelect, CreatableSelect, Select } from 'chakra-react-select';
+import { Field, Form, Formik } from 'formik';
+import NextLink from 'next/link';
+
+import { textToRole } from '@/lib/utils';
+
+import { useAuthContext } from '@/contexts/AuthContext';
 
 export default function InvitePlatformModal({
   isOpen,
   onOpen,
   onClose,
-  onCreate,
+  onCreate
 }: {
   isOpen: boolean;
   onOpen: () => void;
@@ -52,11 +55,7 @@ export default function InvitePlatformModal({
   const { currentUser, user } = useAuthContext();
   const [inviteCode, setInviteCode] = useState<string | null>(null);
   const senderRef = useRef<any>(null);
-  const {
-    setValue: setClipboardValue,
-    onCopy: onClipboardCopy,
-    hasCopied: clipboardHasCopied,
-  } = useClipboard("");
+  const { setValue: setClipboardValue, onCopy: onClipboardCopy, hasCopied: clipboardHasCopied } = useClipboard('');
 
   const onModalClose = () => {
     onClose();
@@ -66,10 +65,10 @@ export default function InvitePlatformModal({
   const copyInviteLink = () => {
     onClipboardCopy();
     toast({
-      title: "Copied invite link to clipboard!",
-      status: "success",
+      title: 'Copied invite link to clipboard!',
+      status: 'success',
       duration: 5000,
-      isClosable: true,
+      isClosable: true
     });
   };
 
@@ -80,11 +79,11 @@ export default function InvitePlatformModal({
     }
     await user.getIdToken().then((token: any) => {
       fetch(`/api/v1/admin/search-users/${encodeURIComponent(inputValue)}`, {
-        method: "GET",
+        method: 'GET',
         headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
       })
         .then((res) => {
           if (res.status === 200) {
@@ -99,45 +98,51 @@ export default function InvitePlatformModal({
           callback(
             data.map((user: any) => ({
               label: `${user.displayName} (${user.username})`,
-              value: user.id,
+              value: user.id
             }))
           );
         })
         .catch((error) => {
           toast({
-            title: "There was an error searching for users.",
+            title: 'There was an error searching for users.',
             description: error.message,
-            status: "error",
+            status: 'error',
             duration: 5000,
-            isClosable: true,
+            isClosable: true
           });
         });
-    }
-    );
+    });
   };
 
   return (
     <>
       <Formik
         enableReinitialize={true}
-        initialValues={{ code: "", senderId: null as {
-          label: string;
-          value: string;
-        } | any, maxUses: 1, comment: "" }}
+        initialValues={{
+          code: '',
+          senderId: null as
+            | {
+                label: string;
+                value: string;
+              }
+            | any,
+          maxUses: 1,
+          comment: ''
+        }}
         onSubmit={(values, actions) => {
           user.getIdToken().then((token: any) => {
             fetch(`/api/v1/admin/invite-link/create`, {
-              method: "POST",
+              method: 'POST',
               headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`
               },
               body: JSON.stringify({
                 maxUses: values.maxUses,
                 code: values.code,
                 senderId: values.senderId?.value,
-                comment: values.comment,
-              }),
+                comment: values.comment
+              })
             })
               .then((res) => {
                 if (res.status === 200) {
@@ -151,25 +156,23 @@ export default function InvitePlatformModal({
               .then((data) => {
                 toast({
                   title: data.message,
-                  status: "success",
+                  status: 'success',
                   duration: 5000,
-                  isClosable: true,
+                  isClosable: true
                 });
                 setInviteCode(data.code);
-                setClipboardValue(
-                  `${process.env.NEXT_PUBLIC_ROOT_URL}/invitation/${data.code}`
-                );
+                setClipboardValue(`${process.env.NEXT_PUBLIC_ROOT_URL}/invitation/${data.code}`);
                 actions.resetForm();
                 onCreate(data.code);
                 // onClose();
               })
               .catch((error) => {
                 toast({
-                  title: "There was an error creating the invitation.",
+                  title: 'There was an error creating the invitation.',
                   description: error.message,
-                  status: "error",
+                  status: 'error',
                   duration: 5000,
-                  isClosable: true,
+                  isClosable: true
                 });
               })
               .finally(() => {
@@ -179,10 +182,14 @@ export default function InvitePlatformModal({
         }}
       >
         {(props) => (
-          <Modal isOpen={isOpen} onClose={onModalClose} isCentered>
+          <Modal
+            isOpen={isOpen}
+            onClose={onModalClose}
+            isCentered
+          >
             <ModalOverlay />
             <Form>
-              <ModalContent bg={useColorModeValue("white", "gray.800")}>
+              <ModalContent bg={useColorModeValue('white', 'gray.800')}>
                 <ModalHeader pb={2}>Create Invitation Link</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody pb={4}>
@@ -195,7 +202,7 @@ export default function InvitePlatformModal({
                               <FormLabel>Custom Invite Code</FormLabel>
                               <Input
                                 {...field}
-                                variant={"outline"}
+                                variant={'outline'}
                                 autoComplete="off"
                                 placeholder="Custom Invite Code (optional)"
                               />
@@ -204,18 +211,18 @@ export default function InvitePlatformModal({
                         </Field>
                         <Field name="maxUses">
                           {({ field, form }: any) => (
-                            <FormControl w={"full"}>
+                            <FormControl w={'full'}>
                               <FormLabel>Maximum Uses</FormLabel>
                               <InputGroup>
                                 <NumberInput
                                   {...field}
                                   autoComplete="off"
                                   placeholder="Maximum Uses"
-                                  variant={"outline"}
+                                  variant={'outline'}
                                   min={1}
                                   defaultValue={1}
                                   onChange={(value) => {
-                                    form.setFieldValue("maxUses", value);
+                                    form.setFieldValue('maxUses', value);
                                   }}
                                 >
                                   <NumberInputField />
@@ -242,20 +249,16 @@ export default function InvitePlatformModal({
                                 closeMenuOnSelect={true}
                                 isClearable={true}
                                 size="md"
-                                noOptionsMessage={() =>
-                                  "No search results found."
-                                }
+                                noOptionsMessage={() => 'No search results found.'}
                                 loadOptions={(inputValue, callback) => {
                                   getUserSearchResults(inputValue, callback);
                                 }}
                                 onChange={(value) => {
-                                  form.setFieldValue("senderId", value);
+                                  form.setFieldValue('senderId', value);
                                 }}
                                 value={field.value || []}
                               />
-                              <FormHelperText>
-                                If left blank, you will be the sender.
-                              </FormHelperText>
+                              <FormHelperText>If left blank, you will be the sender.</FormHelperText>
                             </FormControl>
                           )}
                         </Field>
@@ -265,7 +268,7 @@ export default function InvitePlatformModal({
                               <FormLabel>Comment</FormLabel>
                               <Input
                                 {...field}
-                                variant={"outline"}
+                                variant={'outline'}
                                 autoComplete="off"
                                 placeholder="Comment"
                               />
@@ -291,20 +294,20 @@ export default function InvitePlatformModal({
                         <FormControl>
                           <FormLabel>Invitation Link</FormLabel>
                           <Input
-                            variant={"outline"}
+                            variant={'outline'}
                             value={`${process.env.NEXT_PUBLIC_ROOT_URL}/invitation/${inviteCode}`}
                             isReadOnly={true}
                             onFocus={(e) => e.target.select()}
                           />
                         </FormControl>
-                        <Text>
-                          Share this link with the people you want to invite to
-                          the platform.
-                        </Text>
+                        <Text>Share this link with the people you want to invite to the platform.</Text>
                       </>
                     )}
                   </VStack>
-                  <Text fontSize={"sm"} pt={2}>
+                  <Text
+                    fontSize={'sm'}
+                    pt={2}
+                  >
                     All invitation links expire after 14 days.
                   </Text>
                 </ModalBody>
@@ -313,9 +316,9 @@ export default function InvitePlatformModal({
                   {!inviteCode ? (
                     <HStack>
                       <Button
-                        colorScheme={"blue"}
+                        colorScheme={'blue'}
                         isLoading={props.isSubmitting}
-                        type={"submit"}
+                        type={'submit'}
                       >
                         Create Link
                       </Button>
@@ -323,8 +326,11 @@ export default function InvitePlatformModal({
                     </HStack>
                   ) : (
                     <HStack>
-                      <Button colorScheme={"blue"} onClick={copyInviteLink}>
-                        {!clipboardHasCopied ? "Copy Link" : "Copied!"}
+                      <Button
+                        colorScheme={'blue'}
+                        onClick={copyInviteLink}
+                      >
+                        {!clipboardHasCopied ? 'Copy Link' : 'Copied!'}
                       </Button>
                       <Button onClick={onModalClose}>Close</Button>
                     </HStack>

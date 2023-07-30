@@ -1,4 +1,5 @@
-import { useAuthContext } from "@/contexts/AuthContext";
+import { useCallback, useEffect, useRef, useState } from 'react';
+
 import {
   Avatar,
   Box,
@@ -19,16 +20,18 @@ import {
   Text,
   Textarea,
   VStack,
-  useToast,
-} from "@chakra-ui/react";
-import { Field, Form, Formik } from "formik";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { AiOutlineUser } from "react-icons/ai";
-import { IoSave } from "react-icons/io5";
+  useToast
+} from '@chakra-ui/react';
+
+import { AiOutlineUser } from 'react-icons/ai';
+import { IoSave } from 'react-icons/io5';
+
+import { Field, Form, Formik } from 'formik';
+
+import { useAuthContext } from '@/contexts/AuthContext';
 
 export default function SettingsProfile() {
-  const { currentUser, refreshCurrentUser, user, isAuthLoaded } =
-    useAuthContext();
+  const { currentUser, refreshCurrentUser, user, isAuthLoaded } = useAuthContext();
 
   const defaultImage = `${process.env.NEXT_PUBLIC_ROOT_URL}/images/default-avatar.png`;
   const [image, setImage] = useState<null | undefined | string>(undefined);
@@ -46,12 +49,12 @@ export default function SettingsProfile() {
     reader.readAsDataURL(file);
 
     // check if file is an image
-    if (file.type.split("/")[0] !== "image") {
+    if (file.type.split('/')[0] !== 'image') {
       toast({
-        title: "File is not an image.",
-        status: "error",
+        title: 'File is not an image.',
+        status: 'error',
         duration: 3000,
-        isClosable: true,
+        isClosable: true
       });
       return;
     }
@@ -82,31 +85,28 @@ export default function SettingsProfile() {
   return (
     <>
       {isAuthLoaded && currentUser && (
-        <Box w={"fit-content"}>
+        <Box w={'fit-content'}>
           <Formik
             initialValues={{
               displayName: currentUser?.displayName,
               username: currentUser?.username,
               bio: currentUser?.bio,
-              email: currentUser?.email?.address,
+              email: currentUser?.email?.address
             }}
             onSubmit={(values, actions) => {
               user.getIdToken().then((token: string) => {
-                fetch("/api/v1/me", {
-                  method: "PATCH",
+                fetch('/api/v1/me', {
+                  method: 'PATCH',
                   headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
                   },
                   body: JSON.stringify({
                     displayName: values.displayName,
                     bio: values.bio,
-                    email:
-                      values.email !== currentUser?.email?.address
-                        ? values.email
-                        : undefined,
-                    avatar: image !== currentUser?.avatar ? image : undefined,
-                  }),
+                    email: values.email !== currentUser?.email?.address ? values.email : undefined,
+                    avatar: image !== currentUser?.avatar ? image : undefined
+                  })
                 })
                   .then((res) => {
                     if (res.status === 200) {
@@ -120,19 +120,19 @@ export default function SettingsProfile() {
                   .then((data) => {
                     toast({
                       title: data.message,
-                      status: "success",
+                      status: 'success',
                       duration: 3000,
-                      isClosable: true,
+                      isClosable: true
                     });
                     refreshCurrentUser();
                   })
                   .catch((err) => {
                     toast({
-                      title: "There was a problem while updating your profile.",
+                      title: 'There was a problem while updating your profile.',
                       description: err.message,
-                      status: "error",
+                      status: 'error',
                       duration: 3000,
-                      isClosable: true,
+                      isClosable: true
                     });
                   })
                   .finally(() => {
@@ -143,25 +143,35 @@ export default function SettingsProfile() {
           >
             {(props) => (
               <Form>
-                <Flex id={"avatar-picker"} mb={4}>
+                <Flex
+                  id={'avatar-picker'}
+                  mb={4}
+                >
                   <SkeletonCircle
                     isLoaded={!!isAuthLoaded}
-                    w={"fit-content"}
-                    h={"fit-content"}
+                    w={'fit-content'}
+                    h={'fit-content'}
                   >
-                    <Avatar size={"2xl"} src={image || ""} />
+                    <Avatar
+                      size={'2xl'}
+                      src={image || ''}
+                    />
                   </SkeletonCircle>
-                  <VStack ml={4} align={"center"} justify={"center"}>
+                  <VStack
+                    ml={4}
+                    align={'center'}
+                    justify={'center'}
+                  >
                     <Input
                       ref={avatarChooser}
                       onChange={handleChange}
-                      display={"none"}
-                      type={"file"}
+                      display={'none'}
+                      type={'file'}
                       accept="image/*"
                     />
                     <Button
-                      variant={"outline"}
-                      size={"sm"}
+                      variant={'outline'}
+                      size={'sm'}
                       onClick={() => {
                         avatarChooser.current?.click();
                       }}
@@ -169,8 +179,8 @@ export default function SettingsProfile() {
                       Choose Avatar
                     </Button>
                     <Button
-                      variant={"outline"}
-                      size={"sm"}
+                      variant={'outline'}
+                      size={'sm'}
                       onClick={() => {
                         removeAvatar();
                       }}
@@ -182,7 +192,7 @@ export default function SettingsProfile() {
                 <HStack>
                   <Field name="displayName">
                     {({ field, form }: any) => (
-                      <FormControl w={"fit-content"}>
+                      <FormControl w={'fit-content'}>
                         <FormLabel>Display Name</FormLabel>
                         <InputGroup mb={2}>
                           <Input
@@ -190,7 +200,7 @@ export default function SettingsProfile() {
                             type="text"
                             autoComplete="off"
                             placeholder="Display Name"
-                            variant={"outline"}
+                            variant={'outline'}
                           />
                         </InputGroup>
                       </FormControl>
@@ -198,7 +208,7 @@ export default function SettingsProfile() {
                   </Field>
                   <Field name="username">
                     {({ field, form }: any) => (
-                      <FormControl w={"fit-content"}>
+                      <FormControl w={'fit-content'}>
                         <FormLabel>Username</FormLabel>
                         <InputGroup mb={2}>
                           <Input
@@ -207,7 +217,7 @@ export default function SettingsProfile() {
                             type="text"
                             autoComplete="off"
                             placeholder="Username"
-                            variant={"outline"}
+                            variant={'outline'}
                           />
                         </InputGroup>
                       </FormControl>
@@ -224,7 +234,7 @@ export default function SettingsProfile() {
                           type="email"
                           autoComplete="off"
                           placeholder="Email Address"
-                          variant={"outline"}
+                          variant={'outline'}
                         />
                       </InputGroup>
                     </FormControl>
@@ -240,7 +250,7 @@ export default function SettingsProfile() {
                           type="text"
                           autoComplete="off"
                           placeholder="Bio"
-                          variant={"outline"}
+                          variant={'outline'}
                         />
                       </InputGroup>
                     </FormControl>
@@ -262,7 +272,7 @@ export default function SettingsProfile() {
                   )}
                 </Field> */}
                 <Stack
-                  direction={{ base: "column", md: "row" }}
+                  direction={{ base: 'column', md: 'row' }}
                   spacing={{ base: 2, md: 4 }}
                   pt={2}
                 >
@@ -270,7 +280,7 @@ export default function SettingsProfile() {
                     mb={2}
                     isLoading={props.isSubmitting}
                     leftIcon={<IoSave />}
-                    type={"submit"}
+                    type={'submit'}
                   >
                     Save Changes
                   </Button>

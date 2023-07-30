@@ -1,4 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+
 import {
   Avatar,
   Badge,
@@ -30,45 +32,33 @@ import {
   chakra,
   useColorModeValue,
   useDisclosure,
-  useToast,
-} from "@chakra-ui/react";
+  useToast
+} from '@chakra-ui/react';
+import { Box, Table, TableCaption, TableContainer, Tbody, Td, Text, Tfoot, Th, Thead, Tr } from '@chakra-ui/react';
 
-import Editor from "@monaco-editor/react";
+import { AiFillEdit } from 'react-icons/ai';
+import { FaIdBadge } from 'react-icons/fa';
+import { IoIosRemoveCircle } from 'react-icons/io';
+import { IoSave } from 'react-icons/io5';
+import { MdEditSquare } from 'react-icons/md';
+import { RiMailAddFill } from 'react-icons/ri';
+import { SiRoblox } from 'react-icons/si';
 
-import DeleteDialog from "@/components/DeleteDialog";
-import InviteOrganizationModal from "@/components/InviteOrganizationModal";
-import InviteOrganizationRobloxGroupModal from "@/components/InviteOrganizationRobloxGroupModal";
-import InviteOrganizationRobloxModal from "@/components/InviteOrganizationRobloxModal";
+import { AccessGroup, Organization } from '@/types';
+import Editor from '@monaco-editor/react';
+import { AsyncSelect, CreatableSelect, Select } from 'chakra-react-select';
+import { Field, Form, Formik } from 'formik';
+import moment from 'moment';
+import NextLink from 'next/link';
 
-import { useAuthContext } from "@/contexts/AuthContext";
-import { agIds, agKV, agNames, roleToText, textToRole } from "@/lib/utils";
-import { AccessGroup, Organization } from "@/types";
-import {
-  Box,
-  Table,
-  TableCaption,
-  TableContainer,
-  Tbody,
-  Td,
-  Text,
-  Tfoot,
-  Th,
-  Thead,
-  Tr,
-} from "@chakra-ui/react";
-import { AsyncSelect, CreatableSelect, Select } from "chakra-react-select";
-import { Field, Form, Formik } from "formik";
-import { get } from "http";
-import moment from "moment";
-import NextLink from "next/link";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { AiFillEdit } from "react-icons/ai";
-import { FaIdBadge } from "react-icons/fa";
-import { IoIosRemoveCircle } from "react-icons/io";
-import { IoSave } from "react-icons/io5";
-import { MdEditSquare } from "react-icons/md";
-import { RiMailAddFill } from "react-icons/ri";
-import { SiRoblox } from "react-icons/si";
+import { agIds, agKV, agNames, roleToText, textToRole } from '@/lib/utils';
+
+import { useAuthContext } from '@/contexts/AuthContext';
+
+import DeleteDialog from '@/components/DeleteDialog';
+import InviteOrganizationModal from '@/components/InviteOrganizationModal';
+import InviteOrganizationRobloxGroupModal from '@/components/InviteOrganizationRobloxGroupModal';
+import InviteOrganizationRobloxModal from '@/components/InviteOrganizationRobloxModal';
 
 const ChakraEditor = chakra(Editor);
 
@@ -80,51 +70,46 @@ export default function MemberEditModal({
   clientMember,
   members,
   organization,
-  onMemberRemove,
+  onMemberRemove
 }: any) {
   const { user } = useAuthContext();
   const toast = useToast();
-  
-  const themeBorderColor = useColorModeValue("gray.200", "gray.700");
+
+  const themeBorderColor = useColorModeValue('gray.200', 'gray.700');
   const [filteredMembers, setFilteredMembers] = useState<any>(null);
   const [focusedMember, setFocusedMember] = useState<any>(null);
   const [accessGroupOptions, setAccessGroupOptions] = useState<any>(null);
-  
+
   const memberSearchRef = useRef<any>(null);
   const editButtonsRef = useRef<any>(null);
 
   const {
     isOpen: deleteUserDialogOpen,
     onOpen: deleteUserDialogOnOpen,
-    onClose: deleteUserDialogOnClose,
+    onClose: deleteUserDialogOnClose
   } = useDisclosure();
 
-  const {
-    isOpen: inviteModalOpen,
-    onOpen: inviteModalOnOpen,
-    onClose: inviteModalOnClose,
-  } = useDisclosure();
+  const { isOpen: inviteModalOpen, onOpen: inviteModalOnOpen, onClose: inviteModalOnClose } = useDisclosure();
 
-  const {
-    isOpen: robloxModalOpen,
-    onOpen: robloxModalOnOpen,
-    onClose: robloxModalOnClose,
-  } = useDisclosure();
+  const { isOpen: robloxModalOpen, onOpen: robloxModalOnOpen, onClose: robloxModalOnClose } = useDisclosure();
 
   const {
     isOpen: robloxGroupModalOpen,
     onOpen: robloxGroupModalOnOpen,
-    onClose: robloxGroupModalOnClose,
+    onClose: robloxGroupModalOnClose
   } = useDisclosure();
 
-  const filterMembers = (query: string) => {
-    if (!query) return members;
-    return members.filter(
-      (member: any) =>
-        member.displayName.toLowerCase().includes(query.toLowerCase()) ||
-        member.username.toLowerCase().includes(query.toLowerCase())
-    );
-  };
+  const filterMembers = useCallback(
+    (query: string) => {
+      if (!query) return members;
+      return members.filter(
+        (member: any) =>
+          member.displayName.toLowerCase().includes(query.toLowerCase()) ||
+          member.username.toLowerCase().includes(query.toLowerCase())
+      );
+    },
+    [members]
+  );
 
   useEffect(() => {
     setFilteredMembers(members);
@@ -133,30 +118,25 @@ export default function MemberEditModal({
   useEffect(() => {
     if (!organization) return;
     setFilteredMembers(filterMembers(memberSearchRef?.current?.value));
-    setFocusedMember(
-      organization.members.find(
-        (member: any) => member.id === focusedMember?.id
-      )
-    );
+    setFocusedMember(organization.members.find((member: any) => member.id === focusedMember?.id));
     getAccessGroupOptions(organization);
   }, [organization]);
 
-  const getAccessGroupType = (ag: AccessGroup) => {
-    if (ag.type === "organization") {
-      return "Organization";
-    } else if (ag.type === "location") {
+  const getAccessGroupType = useCallback((ag: AccessGroup) => {
+    if (ag.type === 'organization') {
+      return 'Organization';
+    } else if (ag.type === 'location') {
       // TODO: get location name
-      return ag.locationName || ag.locationId || "Unknown";
+      return ag.locationName || ag.locationId || 'Unknown';
     } else {
       return ag.type;
     }
-  };
+  }, []);
 
   const getAccessGroupOptions = useCallback(
     (organization: Organization) => {
       if (!organization) return [];
-      const ags =
-        Object.values(organization?.accessGroups as AccessGroup[]) || [];
+      const ags = Object.values(organization?.accessGroups as AccessGroup[]) || [];
       interface Group {
         label: string;
         options: {
@@ -174,7 +154,7 @@ export default function MemberEditModal({
             .find((g: Group) => g.label === getAccessGroupType(ag))
             .options.push({
               label: ag.name,
-              value: ag.id,
+              value: ag.id
             });
         } else {
           // if it's not, add the group to the groups array
@@ -183,17 +163,17 @@ export default function MemberEditModal({
             options: [
               {
                 label: ag.name,
-                value: ag.id,
-              },
-            ],
+                value: ag.id
+              }
+            ]
           });
         }
       });
 
       // sort the groups so organizations are at the bottom
       groups.sort((a: Group, b: Group) => {
-        if (a.label === "Organization") return 1;
-        if (b.label === "Organization") return -1;
+        if (a.label === 'Organization') return 1;
+        if (b.label === 'Organization') return -1;
         return 0;
       });
 
@@ -253,19 +233,30 @@ export default function MemberEditModal({
       >
         <ModalOverlay />
         <ModalContent
-          maxW={{ base: "full", lg: "container.xl" }}
-          bg={useColorModeValue("white", "gray.800")}
+          maxW={{ base: 'full', lg: 'container.xl' }}
+          bg={useColorModeValue('white', 'gray.800')}
           h="100%"
         >
           <ModalHeader>Manage Members</ModalHeader>
           <ModalCloseButton />
-          <ModalBody w={"full"} py={0} h="100%">
-            <VStack w="100%" h="100%">
-              <Stack w="100%" mb={2} direction={{ base: "column", md: "row" }}>
-                <FormControl w={{ base: "full", md: "300px" }}>
+          <ModalBody
+            w={'full'}
+            py={0}
+            h="100%"
+          >
+            <VStack
+              w="100%"
+              h="100%"
+            >
+              <Stack
+                w="100%"
+                mb={2}
+                direction={{ base: 'column', md: 'row' }}
+              >
+                <FormControl w={{ base: 'full', md: '300px' }}>
                   <FormLabel>Search Member</FormLabel>
                   <Input
-                    placeholder={"Search for a member..."}
+                    placeholder={'Search for a member...'}
                     ref={memberSearchRef}
                     onChange={(e) => {
                       if (e.target?.value) {
@@ -279,8 +270,8 @@ export default function MemberEditModal({
                 <Spacer />
                 <Button
                   alignSelf={{
-                    base: "normal",
-                    md: "flex-end",
+                    base: 'normal',
+                    md: 'flex-end'
                   }}
                   onClick={inviteModalOnOpen}
                   leftIcon={<RiMailAddFill />}
@@ -290,8 +281,8 @@ export default function MemberEditModal({
                 </Button>
                 <Button
                   alignSelf={{
-                    base: "normal",
-                    md: "flex-end",
+                    base: 'normal',
+                    md: 'flex-end'
                   }}
                   onClick={robloxModalOnOpen}
                   leftIcon={<SiRoblox />}
@@ -300,7 +291,7 @@ export default function MemberEditModal({
                   Add Roblox User
                 </Button>
                 <Button
-                  alignSelf={{ base: "normal", md: "flex-end" }}
+                  alignSelf={{ base: 'normal', md: 'flex-end' }}
                   onClick={robloxGroupModalOnOpen}
                   leftIcon={<SiRoblox />}
                   isDisabled={clientMember?.role < 2}
@@ -309,21 +300,21 @@ export default function MemberEditModal({
                 </Button>
               </Stack>
               <Flex
-                w={"full"}
+                w={'full'}
                 flexGrow={1}
                 h="auto"
-                justify={"space-between"}
-                flexDir={{ base: "column", xl: "row" }}
+                justify={'space-between'}
+                flexDir={{ base: 'column', xl: 'row' }}
                 overflow="auto"
               >
                 <TableContainer
                   py={2}
-                  minH={{ base: "320px", xl: "100%" }}
-                  overflowY={"auto"}
+                  minH={{ base: '320px', xl: '100%' }}
+                  overflowY={'auto'}
                   flexGrow={1}
                   px={4}
                 >
-                  <Table size={{ base: "sm", md: "sm" }}>
+                  <Table size={{ base: 'sm', md: 'sm' }}>
                     <Thead>
                       <Tr>
                         <Th>Member</Th>
@@ -336,56 +327,54 @@ export default function MemberEditModal({
                         (filteredMembers || []).map((member: any) => (
                           <Tr key={member?.id}>
                             <Td>
-                              <Flex align={"center"} my={2}>
+                              <Flex
+                                align={'center'}
+                                my={2}
+                              >
                                 <Avatar
                                   size="md"
                                   src={member?.avatar}
                                   mr={4}
-                                  bg={"gray.300"}
-                                  borderRadius={
-                                    member?.type === "roblox-group"
-                                      ? "lg"
-                                      : "full"
-                                  }
+                                  bg={'gray.300'}
+                                  borderRadius={member?.type === 'roblox-group' ? 'lg' : 'full'}
                                 />
 
-                                <Flex flexDir={"column"}>
-                                  {member.type === "roblox" ? (
+                                <Flex flexDir={'column'}>
+                                  {member.type === 'roblox' ? (
                                     <>
                                       <Flex
-                                        flexDir={"column"}
-                                        justify={"center"}
+                                        flexDir={'column'}
+                                        justify={'center'}
                                       >
-                                        <Flex align={"center"}>
+                                        <Flex align={'center'}>
                                           <Icon
-                                            size={"sm"}
+                                            size={'sm'}
                                             as={SiRoblox}
                                             mr={1}
                                           />
-                                          <Text fontWeight="bold">
-                                            {member?.displayName}
-                                          </Text>
+                                          <Text fontWeight="bold">{member?.displayName}</Text>
                                         </Flex>
-                                        <Text fontSize="sm" color="gray.500">
+                                        <Text
+                                          fontSize="sm"
+                                          color="gray.500"
+                                        >
                                           @{member?.username}
                                         </Text>
                                       </Flex>
                                     </>
-                                  ) : member.type === "roblox-group" ? (
+                                  ) : member.type === 'roblox-group' ? (
                                     <>
-                                      <Flex align={"center"}>
+                                      <Flex align={'center'}>
                                         <Icon
-                                          size={"sm"}
+                                          size={'sm'}
                                           as={SiRoblox}
                                           mr={1}
                                         />
-                                        <Text fontWeight="bold">
-                                          {member?.name}
-                                        </Text>
+                                        <Text fontWeight="bold">{member?.name}</Text>
                                       </Flex>
                                       <Text
                                         fontSize="sm"
-                                        fontWeight={"500"}
+                                        fontWeight={'500'}
                                         color="gray.500"
                                       >
                                         {member?.groupName}
@@ -394,40 +383,46 @@ export default function MemberEditModal({
                                   ) : (
                                     <>
                                       <Flex
-                                        flexDir={"column"}
-                                        justify={"center"}
+                                        flexDir={'column'}
+                                        justify={'center'}
                                       >
-                                        <Flex align={"center"}>
-                                          <Text fontWeight="bold">
-                                            {member?.displayName}
-                                          </Text>
+                                        <Flex align={'center'}>
+                                          <Text fontWeight="bold">{member?.displayName}</Text>
                                         </Flex>
-                                        <Text fontSize="sm" color="gray.500">
+                                        <Text
+                                          fontSize="sm"
+                                          color="gray.500"
+                                        >
                                           @{member?.username}
                                         </Text>
                                       </Flex>
                                     </>
                                   )}
-                                  <Text fontSize="sm" color="gray.500">
-                                    Joined{" "}
-                                    {moment(member?.joinedAt).format(
-                                      "MMMM Do YYYY"
-                                    )}
+                                  <Text
+                                    fontSize="sm"
+                                    color="gray.500"
+                                  >
+                                    Joined {moment(member?.joinedAt).format('MMMM Do YYYY')}
                                   </Text>
-                                  {member?.type === "roblox-group" && (
-                                    <Flex flexWrap={"wrap"} pt={1}>
+                                  {member?.type === 'roblox-group' && (
+                                    <Flex
+                                      flexWrap={'wrap'}
+                                      pt={1}
+                                    >
                                       {!member?.groupRoles?.length && (
-                                        <Badge m={0.5} colorScheme={"red"}>
+                                        <Badge
+                                          m={0.5}
+                                          colorScheme={'red'}
+                                        >
                                           Roles Not Configured
                                         </Badge>
                                       )}
                                       {member?.groupRoles?.map((role: any) => (
-                                        <Badge key={role} m={0.5}>
-                                          {
-                                            member?.roleset?.find(
-                                              (r: any) => r.id === role
-                                            )?.name
-                                          }
+                                        <Badge
+                                          key={role}
+                                          m={0.5}
+                                        >
+                                          {member?.roleset?.find((r: any) => r.id === role)?.name}
                                         </Badge>
                                       ))}
                                     </Flex>
@@ -472,10 +467,16 @@ export default function MemberEditModal({
                           {Array.from(Array(8).keys()).map((i) => (
                             <Tr key={i}>
                               <Td>
-                                <Flex align={"center"}>
-                                  <SkeletonCircle size="10" mr={4} />
-                                  <Flex flexDir={"column"}>
-                                    <SkeletonText noOfLines={2} spacing="4" />
+                                <Flex align={'center'}>
+                                  <SkeletonCircle
+                                    size="10"
+                                    mr={4}
+                                  />
+                                  <Flex flexDir={'column'}>
+                                    <SkeletonText
+                                      noOfLines={2}
+                                      spacing="4"
+                                    />
                                   </Flex>
                                 </Flex>
                               </Td>
@@ -498,19 +499,17 @@ export default function MemberEditModal({
                         </>
                       )}
                     </Tbody>
-                    {filteredMembers?.length < 1 && (
-                      <TableCaption>No members found.</TableCaption>
-                    )}
+                    {filteredMembers?.length < 1 && <TableCaption>No members found.</TableCaption>}
                   </Table>
                 </TableContainer>
                 {/* Edit Member */}
                 <Skeleton
                   isLoaded={organization}
-                  rounded={"lg"}
+                  rounded={'lg'}
                   minW={{
-                    base: "unset",
-                    sm: "unset",
-                    lg: "512px",
+                    base: 'unset',
+                    sm: 'unset',
+                    lg: '512px'
                   }}
                   flexBasis={1}
                   h="full"
@@ -518,75 +517,82 @@ export default function MemberEditModal({
                   <Flex
                     //mt={2}
                     p={6}
-                    rounded={"lg"}
-                    border={"1px solid"}
+                    rounded={'lg'}
+                    border={'1px solid'}
                     borderColor={themeBorderColor}
                     //minH={{ base: "unset", xl: "512px" }}
                     //maxH={{ base: "unset", xl: "512px" }}
-                    h={"full"}
-                    overflowY={"auto"}
+                    h={'full'}
+                    overflowY={'auto'}
                   >
                     {!focusedMember || !organization ? (
-                      <Text m={"auto"} color={"gray.500"}>
+                      <Text
+                        m={'auto'}
+                        color={'gray.500'}
+                      >
                         Select a member to manage.
                       </Text>
                     ) : (
-                      <Flex flexDir={"column"} w={"full"}>
+                      <Flex
+                        flexDir={'column'}
+                        w={'full'}
+                      >
                         {/* Header */}
-                        <Flex align={"center"} h={"fit-content"}>
+                        <Flex
+                          align={'center'}
+                          h={'fit-content'}
+                        >
                           <Avatar
-                            size={"xl"}
+                            size={'xl'}
                             src={focusedMember?.avatar}
                             mr={4}
-                            bg={"gray.300"}
-                            borderRadius={
-                              focusedMember?.type === "roblox-group"
-                                ? "lg"
-                                : "full"
-                            }
+                            bg={'gray.300'}
+                            borderRadius={focusedMember?.type === 'roblox-group' ? 'lg' : 'full'}
                           />
-                          <Flex flexDir={"column"}>
-                            <Flex align={"center"}>
-                              {focusedMember.type.startsWith("roblox") && (
+                          <Flex flexDir={'column'}>
+                            <Flex align={'center'}>
+                              {focusedMember.type.startsWith('roblox') && (
                                 <Icon
-                                  size={"sm"}
+                                  size={'sm'}
                                   as={SiRoblox}
                                   mr={2}
-                                  h={"full"}
+                                  h={'full'}
                                 />
                               )}
                               <Text
-                                as={"h2"}
-                                fontSize={"xl"}
-                                fontWeight={"bold"}
+                                as={'h2'}
+                                fontSize={'xl'}
+                                fontWeight={'bold'}
                               >
-                                {focusedMember?.name ||
-                                  focusedMember?.displayName}
+                                {focusedMember?.name || focusedMember?.displayName}
                               </Text>
                             </Flex>
-                            <Text fontSize={"sm"} color={"gray.500"}>
-                              Joined{" "}
-                              {moment(focusedMember?.joinedAt).format(
-                                "MMMM Do YYYY"
-                              )}
+                            <Text
+                              fontSize={'sm'}
+                              color={'gray.500'}
+                            >
+                              Joined {moment(focusedMember?.joinedAt).format('MMMM Do YYYY')}
                             </Text>
-                            <Text fontSize={"sm"} color={"gray.500"}>
+                            <Text
+                              fontSize={'sm'}
+                              color={'gray.500'}
+                            >
                               {roleToText(focusedMember?.role)}
                             </Text>
                             {
                               <Button
                                 as={NextLink}
                                 href={
-                                  focusedMember?.type === "user"
+                                  focusedMember?.type === 'user'
                                     ? `/platform/profile/${focusedMember?.username}`
-                                    : focusedMember?.type === "roblox"
+                                    : focusedMember?.type === 'roblox'
                                     ? `https://www.roblox.com/users/${focusedMember?.id}/profile`
                                     : `https://www.roblox.com/groups/${focusedMember?.id}/group`
                                 }
-                                size={"sm"}
+                                size={'sm'}
                                 mt={2}
-                                target={"_blank"}
-                                w={"fit-content"}
+                                target={'_blank'}
+                                w={'fit-content'}
                                 px={8}
                               >
                                 View Profile
@@ -598,65 +604,45 @@ export default function MemberEditModal({
                         <Formik
                           enableReinitialize={true}
                           initialValues={{
-                            name:
-                              focusedMember?.name || focusedMember?.displayName,
+                            name: focusedMember?.name || focusedMember?.displayName,
                             role: {
                               label: roleToText(focusedMember?.role),
-                              value: focusedMember?.role,
+                              value: focusedMember?.role
                             },
                             robloxGroupRoles:
                               focusedMember?.groupRoles?.map((role: any) => ({
-                                label:
-                                  focusedMember?.roleset?.find(
-                                    (r: any) => r.id === role
-                                  )?.name || "Unknown",
-                                value: role || "Unknown",
+                                label: focusedMember?.roleset?.find((r: any) => r.id === role)?.name || 'Unknown',
+                                value: role || 'Unknown'
                               })) || [],
-                            accessGroups: focusedMember?.accessGroups.map(
-                              (ag: AccessGroup) => ({
-                                label: Object.values(
-                                  organization?.accessGroups as AccessGroup[]
-                                ).find((oag: any) => oag.id === ag)?.name,
-                                value: ag,
-                              })
-                            ),
-                            scanData: JSON.stringify(
-                              focusedMember?.scanData,
-                              null,
-                              3
-                            ),
+                            accessGroups: focusedMember?.accessGroups.map((ag: AccessGroup) => ({
+                              label: Object.values(organization?.accessGroups as AccessGroup[]).find(
+                                (oag: any) => oag.id === ag
+                              )?.name,
+                              value: ag
+                            })),
+                            scanData: JSON.stringify(focusedMember?.scanData, null, 3)
                           }}
                           onSubmit={(values, actions) => {
                             user.getIdToken().then((token: string) => {
                               fetch(
-                                `/api/v1/organizations/${
-                                  organization?.id
-                                }/members/${
-                                  focusedMember?.formattedId ||
-                                  focusedMember?.id
+                                `/api/v1/organizations/${organization?.id}/members/${
+                                  focusedMember?.formattedId || focusedMember?.id
                                 }`,
                                 {
-                                  method: "PATCH",
+                                  method: 'PATCH',
                                   headers: {
                                     Authorization: `Bearer ${token}`,
-                                    "Content-Type": "application/json",
+                                    'Content-Type': 'application/json'
                                   },
                                   body: JSON.stringify({
                                     type: focusedMember?.type,
-                                    name:
-                                      focusedMember?.type === "roblox-group"
-                                        ? values?.name
-                                        : undefined,
-                                    groupRoles: values?.robloxGroupRoles?.map(
-                                      (role: any) => role?.value
-                                    ),
+                                    name: focusedMember?.type === 'roblox-group' ? values?.name : undefined,
+                                    groupRoles: values?.robloxGroupRoles?.map((role: any) => role?.value),
                                     role: values?.role?.value,
-                                    scanData: values?.scanData || "{}",
+                                    scanData: values?.scanData || '{}',
 
-                                    accessGroups: values?.accessGroups?.map(
-                                      (ag: any) => ag?.value
-                                    ),
-                                  }),
+                                    accessGroups: values?.accessGroups?.map((ag: any) => ag?.value)
+                                  })
                                 }
                               )
                                 .then((res) => {
@@ -671,20 +657,19 @@ export default function MemberEditModal({
                                 .then((data) => {
                                   toast({
                                     title: data.message,
-                                    status: "success",
+                                    status: 'success',
                                     duration: 5000,
-                                    isClosable: true,
+                                    isClosable: true
                                   });
                                   onRefresh();
                                 })
                                 .catch((error) => {
                                   toast({
-                                    title:
-                                      "There was an error updating the member.",
+                                    title: 'There was an error updating the member.',
                                     description: error.message,
-                                    status: "error",
+                                    status: 'error',
                                     duration: 5000,
-                                    isClosable: true,
+                                    isClosable: true
                                   });
                                 })
                                 .finally(() => {
@@ -696,14 +681,19 @@ export default function MemberEditModal({
                           {(props) => (
                             <Form
                               style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                width: "100%",
-                                height: "100%",
-                                justifyContent: "space-between",
+                                display: 'flex',
+                                flexDirection: 'column',
+                                width: '100%',
+                                height: '100%',
+                                justifyContent: 'space-between'
                               }}
                             >
-                              <Flex flexDir={"column"} mt={4} w={"full"} pb={8}>
+                              <Flex
+                                flexDir={'column'}
+                                mt={4}
+                                w={'full'}
+                                pb={8}
+                              >
                                 <Stack>
                                   <Field name="name">
                                     {({ field, form }: any) => (
@@ -714,15 +704,12 @@ export default function MemberEditModal({
                                           name="name"
                                           placeholder="Name"
                                           value={field?.value}
-                                          isDisabled={
-                                            focusedMember?.type !==
-                                            "roblox-group"
-                                          }
+                                          isDisabled={focusedMember?.type !== 'roblox-group'}
                                         />
                                       </FormControl>
                                     )}
                                   </Field>
-                                  {focusedMember.type === "roblox-group" && (
+                                  {focusedMember.type === 'roblox-group' && (
                                     <Field name="robloxGroupRoles">
                                       {({ field, form }: any) => (
                                         <FormControl>
@@ -730,24 +717,19 @@ export default function MemberEditModal({
                                           <Select
                                             {...field}
                                             name="robloxGroupRoles"
-                                            options={focusedMember.roleset?.map(
-                                              (role: any) => ({
-                                                label: role.name,
-                                                value: role.id,
-                                              })
-                                            )}
+                                            options={focusedMember.roleset?.map((role: any) => ({
+                                              label: role.name,
+                                              value: role.id
+                                            }))}
                                             placeholder="Select group roles..."
                                             onChange={(value) => {
-                                              form.setFieldValue(
-                                                "robloxGroupRoles",
-                                                value
-                                              );
+                                              form.setFieldValue('robloxGroupRoles', value);
                                             }}
                                             value={field?.value}
                                             isMulti
                                             closeMenuOnSelect={false}
                                             hideSelectedOptions={false}
-                                            selectedOptionStyle={"check"}
+                                            selectedOptionStyle={'check'}
                                           />
                                         </FormControl>
                                       )}
@@ -756,8 +738,8 @@ export default function MemberEditModal({
                                   <Field name="role">
                                     {({ field, form }: any) => (
                                       <FormControl
-                                        w={"fit-content"}
-                                        minW={"240px"}
+                                        w={'fit-content'}
+                                        minW={'240px'}
                                       >
                                         <FormLabel>Organization Role</FormLabel>
                                         <Select
@@ -765,50 +747,42 @@ export default function MemberEditModal({
                                           name="role"
                                           options={
                                             focusedMember.role < 3
-                                              ? [
-                                                  "roblox",
-                                                  "roblox-group",
-                                                ].includes(focusedMember.type)
+                                              ? ['roblox', 'roblox-group'].includes(focusedMember.type)
                                                 ? [
                                                     {
-                                                      label: "Guest",
-                                                      value: 1,
-                                                    },
+                                                      label: 'Guest',
+                                                      value: 1
+                                                    }
                                                   ]
                                                 : [
                                                     {
-                                                      label: "Member",
-                                                      value: 1,
+                                                      label: 'Member',
+                                                      value: 1
                                                     },
                                                     {
-                                                      label: "Manager",
-                                                      value: 2,
-                                                    },
+                                                      label: 'Manager',
+                                                      value: 2
+                                                    }
                                                   ]
                                               : [
                                                   {
-                                                    label: "Owner",
-                                                    value: 3,
-                                                  },
+                                                    label: 'Owner',
+                                                    value: 3
+                                                  }
                                                 ]
                                           }
                                           placeholder="Select a role..."
                                           onChange={(value) => {
-                                            form.setFieldValue(
-                                              "role",
-                                              value || ("" as string)
-                                            );
+                                            form.setFieldValue('role', value || ('' as string));
                                           }}
                                           value={field?.value}
                                           isDisabled={
-                                            ["roblox", "roblox-group"].includes(
-                                              focusedMember.type
-                                            ) ||
+                                            ['roblox', 'roblox-group'].includes(focusedMember.type) ||
                                             focusedMember.role === 3 ||
                                             focusedMember === clientMember
                                           }
                                           hideSelectedOptions={false}
-                                          selectedOptionStyle={"check"}
+                                          selectedOptionStyle={'check'}
                                         />
                                       </FormControl>
                                     )}
@@ -823,15 +797,12 @@ export default function MemberEditModal({
                                           options={accessGroupOptions || []}
                                           placeholder="Select an access group..."
                                           onChange={(value) => {
-                                            form.setFieldValue(
-                                              "accessGroups",
-                                              value
-                                            );
+                                            form.setFieldValue('accessGroups', value);
                                           }}
                                           value={field?.value}
                                           isMulti
                                           closeMenuOnSelect={false}
-                                          selectedOptionStyle={"check"}
+                                          selectedOptionStyle={'check'}
                                           hideSelectedOptions={false}
                                         />
                                       </FormControl>
@@ -839,15 +810,15 @@ export default function MemberEditModal({
                                   </Field>
                                   <Field name="scanData">
                                     {({ field, form }: any) => (
-                                      <FormControl w={"full"}>
+                                      <FormControl w={'full'}>
                                         <FormLabel>Scan Data</FormLabel>
                                         <InputGroup>
                                           <Box
-                                            border={"1px solid"}
+                                            border={'1px solid'}
                                             borderColor={themeBorderColor}
-                                            borderRadius={"lg"}
-                                            w={"full"}
-                                            overflow={"hidden"}
+                                            borderRadius={'lg'}
+                                            w={'full'}
+                                            overflow={'hidden'}
                                           >
                                             <ChakraEditor
                                               {...field}
@@ -855,31 +826,22 @@ export default function MemberEditModal({
                                               width="100%"
                                               p={4}
                                               language="json"
-                                              theme={useColorModeValue(
-                                                "vs-light",
-                                                "vs-dark"
-                                              )}
+                                              theme={useColorModeValue('vs-light', 'vs-dark')}
                                               options={{
                                                 minimap: {
-                                                  enabled: false,
-                                                },
+                                                  enabled: false
+                                                }
                                               }}
                                               value={form.values?.scanData}
                                               onChange={(value) => {
-                                                form.setFieldValue(
-                                                  "scanData",
-                                                  value
-                                                );
+                                                form.setFieldValue('scanData', value);
                                               }}
                                             />
                                           </Box>
                                         </InputGroup>
                                         <FormHelperText>
-                                          This is the data that will be returned
-                                          when this member scans their card.
-                                          (User scan data takes priority over
-                                          access group scan data when it is
-                                          merged.)
+                                          This is the data that will be returned when this member scans their card.
+                                          (User scan data takes priority over access group scan data when it is merged.)
                                         </FormHelperText>
                                       </FormControl>
                                     )}
@@ -888,11 +850,14 @@ export default function MemberEditModal({
                               </Flex>
 
                               <Portal containerRef={editButtonsRef}>
-                                <Stack direction={"row"} spacing={4}>
+                                <Stack
+                                  direction={'row'}
+                                  spacing={4}
+                                >
                                   <Button
                                     isLoading={props.isSubmitting}
                                     leftIcon={<IoSave />}
-                                    type={"submit"}
+                                    type={'submit'}
                                     onClick={() => {
                                       props.handleSubmit();
                                     }}
@@ -931,12 +896,15 @@ export default function MemberEditModal({
           </ModalBody>
           <ModalFooter>
             <Stack
-              direction={{ base: "column", md: "row" }}
+              direction={{ base: 'column', md: 'row' }}
               pt={{ base: 2, md: 0 }}
               spacing={4}
             >
               <Box ref={editButtonsRef} />
-              <Button colorScheme="blue" onClick={onClose}>
+              <Button
+                colorScheme="blue"
+                onClick={onClose}
+              >
                 Close
               </Button>
             </Stack>

@@ -1,5 +1,5 @@
-import { useAuthContext } from "@/contexts/AuthContext";
-import Layout from "@/layouts/PlatformLayout";
+import { Suspense, useEffect, useState } from 'react';
+
 import {
   Avatar,
   Box,
@@ -18,27 +18,23 @@ import {
   StatLabel,
   StatNumber,
   Text,
-  useColorModeValue,
-} from "@chakra-ui/react";
-import Head from "next/head";
-import { Suspense, useEffect, useState } from "react";
+  useColorModeValue
+} from '@chakra-ui/react';
+
+import Head from 'next/head';
+
+import { useAuthContext } from '@/contexts/AuthContext';
+
+import Layout from '@/layouts/PlatformLayout';
 
 // import { Stat } from "@/components/Stat";
 
-function StatBox({
-  label,
-  value,
-  helper,
-}: {
-  label: string;
-  value: string;
-  helper?: string;
-}) {
+function StatBox({ label, value, helper }: { label: string; value: string; helper?: string }) {
   return (
     <Box
-      borderRadius={"lg"}
-      border={"1px solid"}
-      borderColor={useColorModeValue("gray.200", "gray.700")}
+      borderRadius={'lg'}
+      border={'1px solid'}
+      borderColor={useColorModeValue('gray.200', 'gray.700')}
       p={4}
     >
       <Stat>
@@ -53,35 +49,35 @@ export default function PlatformHome() {
   const { currentUser, user } = useAuthContext();
   const [stats, setStats] = useState({ total: 0, granted: 0, denied: 0 });
   const randomSubGreetings = [
-    "Securing your facility starts here.",
-    "Building trust through access.",
-    "Managing access with ease.",
-    "Security made simple.",
-    "Where security meets flexibility.",
-    "Take control of your entry points.",
-    "Custom access when you need it.",
-    "Secured access for all.",
-    "Grant access with confidence.",
-    "Your access authority.",
-    "Empowering you with access control.",
-    "Expert security at your fingertips.",
-    "Intelligent access management.",
-    "Seamless security, happy users.",
-    "Making security seamless.",
-    "The intersection of access and trust.",
-    "Balancing security and convenience.",
-    "Let us handle access so you can focus on your work.",
+    'Securing your facility starts here.',
+    'Building trust through access.',
+    'Managing access with ease.',
+    'Security made simple.',
+    'Where security meets flexibility.',
+    'Take control of your entry points.',
+    'Custom access when you need it.',
+    'Secured access for all.',
+    'Grant access with confidence.',
+    'Your access authority.',
+    'Empowering you with access control.',
+    'Expert security at your fingertips.',
+    'Intelligent access management.',
+    'Seamless security, happy users.',
+    'Making security seamless.',
+    'The intersection of access and trust.',
+    'Balancing security and convenience.',
+    'Let us handle access so you can focus on your work.'
   ];
 
-  const [randomSubGreeting, setRandomSubGreeting] = useState("");
+  const [randomSubGreeting, setRandomSubGreeting] = useState('');
 
   useEffect(() => {
     if (!user) return;
     user.getIdToken().then((token: string) => {
-      fetch("/api/v1/statistics/total-scans", {
+      fetch('/api/v1/statistics/total-scans', {
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
+          Authorization: `Bearer ${token}`
+        }
       })
         .then((res) => res.json())
         .then((data) => {
@@ -91,41 +87,63 @@ export default function PlatformHome() {
   }, [user]);
 
   useEffect(() => {
-    setRandomSubGreeting(
-      randomSubGreetings[Math.floor(Math.random() * randomSubGreetings.length)]
-    );
+    setRandomSubGreeting(randomSubGreetings[Math.floor(Math.random() * randomSubGreetings.length)]);
   }, []);
 
   return (
     <>
       <Head>
         <title>Restrafes XCS – Home</title>
-        <meta property="og:title" content="Restrafes XCS - Platform Home" />
-        <meta property="og:site_name" content="Restrafes XCS" />
-        <meta property="og:url" content="https://xcs.restrafes.co" />
-        <meta property="og:type" content="website" />
-        <meta property="og:image" content="/images/logo-square.jpeg" />
+        <meta
+          property="og:title"
+          content="Restrafes XCS - Platform Home"
+        />
+        <meta
+          property="og:site_name"
+          content="Restrafes XCS"
+        />
+        <meta
+          property="og:url"
+          content="https://xcs.restrafes.co"
+        />
+        <meta
+          property="og:type"
+          content="website"
+        />
+        <meta
+          property="og:image"
+          content="/images/logo-square.jpeg"
+        />
       </Head>
-      <Container maxW={"full"} p={8}>
+      <Container
+        maxW={'full'}
+        p={8}
+      >
         {/* Greeting */}
-        <Box id={"greeting"}>
+        <Box id={'greeting'}>
           <Skeleton isLoaded={!!currentUser}>
             <Stack
-              direction={{ base: "column", md: "row" }}
+              direction={{ base: 'column', md: 'row' }}
               spacing={8}
-              align={"center"}
+              align={'center'}
               justify={{
-                base: "center",
-                md: "flex-start",
+                base: 'center',
+                md: 'flex-start'
               }}
             >
-              <Avatar size={"2xl"} src={currentUser?.avatar} />
-              <Box textAlign={{ base: "center", md: "left" }}>
-                <Heading fontSize={"4xl"}>
-                  Good {new Date().getHours() < 12 ? "morning" : "afternoon"},{" "}
+              <Avatar
+                size={'2xl'}
+                src={currentUser?.avatar}
+              />
+              <Box textAlign={{ base: 'center', md: 'left' }}>
+                <Heading fontSize={'4xl'}>
+                  Good {new Date().getHours() < 12 ? 'morning' : 'afternoon'},{' '}
                   {currentUser?.displayName || currentUser?.username}.
                 </Heading>
-                <Text fontSize={"xl"} color={"gray.500"}>
+                <Text
+                  fontSize={'xl'}
+                  color={'gray.500'}
+                >
                   {randomSubGreeting}
                 </Text>
               </Box>
@@ -133,39 +151,42 @@ export default function PlatformHome() {
           </Skeleton>
           <Box py={8}>
             <Skeleton isLoaded={!!stats.total}>
-              <Heading fontSize={"3xl"} mb={4}>
+              <Heading
+                fontSize={'3xl'}
+                mb={4}
+              >
                 Global Statistics
               </Heading>
             </Skeleton>
             <SimpleGrid
               columns={{ base: 1, md: 3 }}
-              gap={{ base: "5", md: "6" }}
-              maxW={"720px"}
+              gap={{ base: '5', md: '6' }}
+              maxW={'720px'}
             >
               <Skeleton isLoaded={!!stats.total}>
                 {/* <Stat label={"Total"} value={`${stats.total} scans total`} /> */}
                 <StatBox
-                  label={"Total Scans"}
+                  label={'Total Scans'}
                   value={`${stats.total} scans`}
-                  helper={"Since the beginning of time."}
+                  helper={'Since the beginning of time.'}
                 />
               </Skeleton>
               <Skeleton isLoaded={!!stats.granted}>
                 <StatBox
-                  label={"Successful Scans"}
-                  value={`${stats.granted} scan${
-                    stats.granted > 1 ? "s" : ""
-                  } (${Math.round((stats.granted / stats.total) * 100)}%)`}
-                  helper={"Scans that were successful."}
+                  label={'Successful Scans'}
+                  value={`${stats.granted} scan${stats.granted > 1 ? 's' : ''} (${Math.round(
+                    (stats.granted / stats.total) * 100
+                  )}%)`}
+                  helper={'Scans that were successful.'}
                 />
               </Skeleton>
               <Skeleton isLoaded={!!stats.denied}>
                 <StatBox
-                  label={"Failed Scans"}
-                  value={`${stats.denied} scan${
-                    stats.denied > 1 ? "s" : ""
-                  } (${Math.round((stats.denied / stats.total) * 100)}%)`}
-                  helper={"Scans that were denied."}
+                  label={'Failed Scans'}
+                  value={`${stats.denied} scan${stats.denied > 1 ? 's' : ''} (${Math.round(
+                    (stats.denied / stats.total) * 100
+                  )}%)`}
+                  helper={'Scans that were denied.'}
                 />
               </Skeleton>
             </SimpleGrid>

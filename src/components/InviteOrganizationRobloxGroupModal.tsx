@@ -1,4 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+import { useCallback, useEffect, useRef, useState } from 'react';
+
 import {
   Button,
   Flex,
@@ -20,9 +22,8 @@ import {
   Textarea,
   VStack,
   useColorModeValue,
-  useToast,
-} from "@chakra-ui/react";
-
+  useToast
+} from '@chakra-ui/react';
 import {
   Menu,
   MenuButton,
@@ -31,24 +32,23 @@ import {
   MenuItem,
   MenuItemOption,
   MenuList,
-  MenuOptionGroup,
-} from "@chakra-ui/react";
+  MenuOptionGroup
+} from '@chakra-ui/react';
 
-import { Field, Form, Formik } from "formik";
+import { AiFillCheckCircle } from 'react-icons/ai';
 
-import { useAuthContext } from "@/contexts/AuthContext";
-import { AccessGroup, Organization } from "@/types";
-import { AsyncSelect, CreatableSelect, Select } from "chakra-react-select";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { AccessGroup, Organization } from '@/types';
+import { AsyncSelect, CreatableSelect, Select } from 'chakra-react-select';
+import { Field, Form, Formik } from 'formik';
 
-import { AiFillCheckCircle } from "react-icons/ai";
+import { useAuthContext } from '@/contexts/AuthContext';
 
 export default function InviteOrganizationRobloxGroupModal({
   isOpen,
   onClose,
   onAdd,
   organization,
-  accessGroupOptions,
+  accessGroupOptions
 }: {
   isOpen: boolean;
   onClose: () => void;
@@ -63,7 +63,7 @@ export default function InviteOrganizationRobloxGroupModal({
 
   const [groupRoles, setGroupRoles] = useState<any>([]);
   const [groupSearchResults, setGroupSearchResults] = useState<any>([]);
-  const [lastGroupId, setLastGroupId] = useState<any>("");
+  const [lastGroupId, setLastGroupId] = useState<any>('');
   const groupIdRef = useRef<any>(null);
   const groupRolesRef = useRef<any>(null);
   const groupNameRef = useRef<any>(null);
@@ -72,10 +72,10 @@ export default function InviteOrganizationRobloxGroupModal({
   const getGroupSearchResults = (value: string, callback: any) => {
     user.getIdToken().then((token: any) => {
       fetch(`/api/v1/roblox/group-search/${encodeURIComponent(value)}`, {
-        method: "GET",
+        method: 'GET',
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
       })
         .then((res) => {
           if (res.status === 200) {
@@ -91,18 +91,18 @@ export default function InviteOrganizationRobloxGroupModal({
           data.forEach((group: any) => {
             options.push({
               label: group.name,
-              value: group.id,
+              value: group.id
             });
           });
           callback(options);
         })
         .catch((error) => {
           toast({
-            title: "There was an error fetching Roblox group search results.",
+            title: 'There was an error fetching Roblox group search results.',
             description: error.message,
-            status: "error",
+            status: 'error',
             duration: 5000,
-            isClosable: true,
+            isClosable: true
           });
           callback([]);
         });
@@ -115,10 +115,10 @@ export default function InviteOrganizationRobloxGroupModal({
     if (!groupId) return;
     user.getIdToken().then((token: any) => {
       fetch(`/api/v1/roblox/group-roles/${groupId}`, {
-        method: "GET",
+        method: 'GET',
         headers: {
-          "Content-Type": "application/json",
-        },
+          'Content-Type': 'application/json'
+        }
       })
         .then((res) => {
           if (res.status === 200) {
@@ -134,28 +134,28 @@ export default function InviteOrganizationRobloxGroupModal({
             data.map((role: any) => {
               return {
                 label: role.name,
-                value: role.id,
+                value: role.id
               };
             })
           );
           if (lastGroupId !== groupId) {
-            formRef.current.setFieldValue("robloxGroupRoles", []);
+            formRef.current.setFieldValue('robloxGroupRoles', []);
           }
           toast({
-            title: "Successfully fetched group roles.",
-            status: "success",
+            title: 'Successfully fetched group roles.',
+            status: 'success',
             duration: 5000,
-            isClosable: true,
+            isClosable: true
           });
           setLastGroupId(groupId);
         })
         .catch((error) => {
           toast({
-            title: "There was an error fetching Roblox group roles.",
+            title: 'There was an error fetching Roblox group roles.',
             description: error.message,
-            status: "error",
+            status: 'error',
             duration: 5000,
-            isClosable: true,
+            isClosable: true
           });
         });
     });
@@ -167,31 +167,27 @@ export default function InviteOrganizationRobloxGroupModal({
         innerRef={formRef}
         enableReinitialize={true}
         initialValues={{
-          name: "",
-          robloxGroupId: "" as any,
+          name: '',
+          robloxGroupId: '' as any,
           robloxGroupRoles: [],
-          accessGroups: [],
+          accessGroups: []
         }}
         onSubmit={(values, actions) => {
           user.getIdToken().then((token: any) => {
             fetch(`/api/v1/organizations/${organization.id}/members`, {
-              method: "POST",
+              method: 'POST',
               headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`
               },
               body: JSON.stringify({
-                type: "roblox-group",
-                name: values.name || "Group",
+                type: 'roblox-group',
+                name: values.name || 'Group',
                 robloxGroupId: values.robloxGroupId?.value,
-                robloxGroupRoles: values.robloxGroupRoles?.map(
-                  (role: any) => role.value
-                ),
+                robloxGroupRoles: values.robloxGroupRoles?.map((role: any) => role.value),
                 // get access group ids from names
-                accessGroups: values?.accessGroups.map(
-                  (accessGroup: any) => accessGroup.value
-                ),
-              }),
+                accessGroups: values?.accessGroups.map((accessGroup: any) => accessGroup.value)
+              })
             })
               .then((res) => {
                 if (res.status === 200) {
@@ -205,9 +201,9 @@ export default function InviteOrganizationRobloxGroupModal({
               .then((data) => {
                 toast({
                   title: data.message,
-                  status: "success",
+                  status: 'success',
                   duration: 5000,
-                  isClosable: true,
+                  isClosable: true
                 });
                 onClose();
                 onAdd();
@@ -215,12 +211,11 @@ export default function InviteOrganizationRobloxGroupModal({
               })
               .catch((error) => {
                 toast({
-                  title:
-                    "There was an error adding a Roblox group to your organization.",
+                  title: 'There was an error adding a Roblox group to your organization.',
                   description: error.message,
-                  status: "error",
+                  status: 'error',
                   duration: 5000,
-                  isClosable: true,
+                  isClosable: true
                 });
               })
               .finally(() => {
@@ -230,10 +225,15 @@ export default function InviteOrganizationRobloxGroupModal({
         }}
       >
         {(props) => (
-          <Modal isOpen={isOpen} onClose={onClose} isCentered allowPinchZoom>
+          <Modal
+            isOpen={isOpen}
+            onClose={onClose}
+            isCentered
+            allowPinchZoom
+          >
             <ModalOverlay />
             <Form>
-              <ModalContent bg={useColorModeValue("white", "gray.800")}>
+              <ModalContent bg={useColorModeValue('white', 'gray.800')}>
                 <ModalHeader pb={2}>Add Roblox Group</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody pb={4}>
@@ -244,19 +244,19 @@ export default function InviteOrganizationRobloxGroupModal({
                           <FormLabel>Name</FormLabel>
                           <Input
                             {...field}
-                            type={"username"}
-                            variant={"outline"}
-                            placeholder={"Name"}
-                            autoComplete={"off"}
-                            autoCorrect={"off"}
-                            spellCheck={"false"}
+                            type={'username'}
+                            variant={'outline'}
+                            placeholder={'Name'}
+                            autoComplete={'off'}
+                            autoCorrect={'off'}
+                            spellCheck={'false'}
                           />
                         </FormControl>
                       )}
                     </Field>
                     <Stack
-                      direction={{ base: "column", md: "column" }}
-                      w={"full"}
+                      direction={{ base: 'column', md: 'column' }}
+                      w={'full'}
                     >
                       <Field name="robloxGroupId">
                         {({ field, form }: any) => (
@@ -272,14 +272,12 @@ export default function InviteOrganizationRobloxGroupModal({
                               closeMenuOnSelect={true}
                               isClearable={true}
                               size="md"
-                              noOptionsMessage={() =>
-                                "No search results found."
-                              }
+                              noOptionsMessage={() => 'No search results found.'}
                               loadOptions={(inputValue, callback) => {
                                 getGroupSearchResults(inputValue, callback);
                               }}
                               onChange={(value) => {
-                                form.setFieldValue("robloxGroupId", value);
+                                form.setFieldValue('robloxGroupId', value);
                                 fetchGroupRoles(value);
                               }}
                               value={field.value || []}
@@ -293,10 +291,10 @@ export default function InviteOrganizationRobloxGroupModal({
                             <FormLabel>Group Roles</FormLabel>
                             <Select
                               {...field}
-                              variant={"outline"}
+                              variant={'outline'}
                               options={groupRoles}
                               onChange={(value) => {
-                                form.setFieldValue("robloxGroupRoles", value);
+                                form.setFieldValue('robloxGroupRoles', value);
                               }}
                               value={field.value || []}
                               placeholder="Select group roles..."
@@ -315,17 +313,17 @@ export default function InviteOrganizationRobloxGroupModal({
                           <FormLabel>Access Groups</FormLabel>
                           <Select
                             {...field}
-                            variant={"outline"}
+                            variant={'outline'}
                             options={accessGroupOptions}
                             onChange={(value) => {
-                              form.setFieldValue("accessGroups", value);
+                              form.setFieldValue('accessGroups', value);
                             }}
                             value={field.value || []}
                             placeholder="Select an access group..."
                             isMulti
                             closeMenuOnSelect={false}
                             hideSelectedOptions={false}
-                            selectedOptionStyle={"check"}
+                            selectedOptionStyle={'check'}
                           />
                         </FormControl>
                       )}
@@ -335,10 +333,10 @@ export default function InviteOrganizationRobloxGroupModal({
 
                 <ModalFooter>
                   <Button
-                    colorScheme={"blue"}
+                    colorScheme={'blue'}
                     mr={3}
                     isLoading={props.isSubmitting}
-                    type={"submit"}
+                    type={'submit'}
                   >
                     Add Roblox Group
                   </Button>

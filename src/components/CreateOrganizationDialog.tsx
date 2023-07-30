@@ -1,4 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+import { useRef } from 'react';
+
 import {
   Button,
   FormControl,
@@ -16,18 +18,18 @@ import {
   Textarea,
   VStack,
   useColorModeValue,
-  useToast,
-} from "@chakra-ui/react";
-import { Field, Form, Formik } from "formik";
+  useToast
+} from '@chakra-ui/react';
 
-import { useAuthContext } from "@/contexts/AuthContext";
-import NextLink from "next/link";
-import { useRef } from "react";
+import { Field, Form, Formik } from 'formik';
+import NextLink from 'next/link';
+
+import { useAuthContext } from '@/contexts/AuthContext';
 
 export default function CreateOrganizationDialog({
   isOpen,
   onClose,
-  onCreate,
+  onCreate
 }: {
   isOpen: boolean;
   onClose: () => void;
@@ -41,18 +43,18 @@ export default function CreateOrganizationDialog({
   return (
     <>
       <Formik
-        initialValues={{ name: "" }}
+        initialValues={{ name: '' }}
         onSubmit={(values, actions) => {
           user.getIdToken().then((token: any) => {
-            fetch("/api/v1/organizations", {
-              method: "POST",
+            fetch('/api/v1/organizations', {
+              method: 'POST',
               headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`
               },
               body: JSON.stringify({
-                name: values.name,
-              }),
+                name: values.name
+              })
             })
               .then((res) => {
                 if (res.status === 200) {
@@ -66,20 +68,20 @@ export default function CreateOrganizationDialog({
               .then((data) => {
                 toast({
                   title: data.message,
-                  status: "success",
+                  status: 'success',
                   duration: 5000,
-                  isClosable: true,
+                  isClosable: true
                 });
                 onClose();
                 onCreate(data.organizationId);
               })
               .catch((error) => {
                 toast({
-                  title: "There was an error creating the organization.",
+                  title: 'There was an error creating the organization.',
                   description: error.message,
-                  status: "error",
+                  status: 'error',
                   duration: 5000,
-                  isClosable: true,
+                  isClosable: true
                 });
               })
               .finally(() => {
@@ -89,10 +91,14 @@ export default function CreateOrganizationDialog({
         }}
       >
         {(props) => (
-          <Modal isOpen={isOpen} onClose={onClose} isCentered>
+          <Modal
+            isOpen={isOpen}
+            onClose={onClose}
+            isCentered
+          >
             <ModalOverlay />
             <Form>
-              <ModalContent bg={useColorModeValue("white", "gray.800")}>
+              <ModalContent bg={useColorModeValue('white', 'gray.800')}>
                 <ModalHeader pb={2}>Create Organization</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody pb={4}>
@@ -103,8 +109,8 @@ export default function CreateOrganizationDialog({
                           <FormLabel>Name</FormLabel>
                           <Input
                             {...field}
-                            variant={"outline"}
-                            placeholder={"Organization Name"}
+                            variant={'outline'}
+                            placeholder={'Organization Name'}
                           />
                         </FormControl>
                       )}
@@ -123,27 +129,30 @@ export default function CreateOrganizationDialog({
                       )}
                     </Field> */}
                   </VStack>
-                  <Text fontSize={"sm"} pt={2}>
-                    By creating an organization, you agree to our{" "}
-                    <Text as={"span"}>
+                  <Text
+                    fontSize={'sm'}
+                    pt={2}
+                  >
+                    By creating an organization, you agree to our{' '}
+                    <Text as={'span'}>
                       <Link
                         as={NextLink}
-                        href={"/terms"}
-                        textDecor={"underline"}
+                        href={'/terms'}
+                        textDecor={'underline'}
                         textUnderlineOffset={4}
-                        whiteSpace={"nowrap"}
+                        whiteSpace={'nowrap'}
                       >
                         Terms of Service
                       </Link>
-                    </Text>{" "}
-                    and{" "}
-                    <Text as={"span"}>
+                    </Text>{' '}
+                    and{' '}
+                    <Text as={'span'}>
                       <Link
                         as={NextLink}
-                        href={"/privacy"}
-                        textDecor={"underline"}
+                        href={'/privacy'}
+                        textDecor={'underline'}
                         textUnderlineOffset={4}
-                        whiteSpace={"nowrap"}
+                        whiteSpace={'nowrap'}
                       >
                         Privacy Policy
                       </Link>
@@ -154,10 +163,10 @@ export default function CreateOrganizationDialog({
 
                 <ModalFooter>
                   <Button
-                    colorScheme={"blue"}
+                    colorScheme={'blue'}
                     mr={3}
                     isLoading={props.isSubmitting}
-                    type={"submit"}
+                    type={'submit'}
                   >
                     Create
                   </Button>

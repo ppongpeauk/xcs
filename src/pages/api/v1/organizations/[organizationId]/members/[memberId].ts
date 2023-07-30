@@ -1,12 +1,10 @@
-import { authToken } from "@/lib/auth";
-import clientPromise from "@/lib/mongodb";
-import { tokenToID } from "@/pages/api/firebase";
-import { NextApiRequest, NextApiResponse } from "next";
+import { tokenToID } from '@/pages/api/firebase';
+import { NextApiRequest, NextApiResponse } from 'next';
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+import { authToken } from '@/lib/auth';
+import clientPromise from '@/lib/mongodb';
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   // Organization ID
   const { organizationId, memberId } = req.query as {
     organizationId: string;
@@ -15,25 +13,25 @@ export default async function handler(
 
   const uid = await authToken(req);
   if (!uid) {
-    return res.status(401).json({ message: "Unauthorized." });
+    return res.status(401).json({ message: 'Unauthorized.' });
   }
 
   const mongoClient = await clientPromise;
   const db = mongoClient.db(process.env.MONGODB_DB as string);
-  const organizations = db.collection("organizations");
-  const locations = db.collection("locations");
-  const users = db.collection("users");
+  const organizations = db.collection('organizations');
+  const locations = db.collection('locations');
+  const users = db.collection('users');
 
   let organization = (await organizations.findOne({
-    id: organizationId,
+    id: organizationId
   })) as any;
 
   if (!organization) {
-    return res.status(404).json({ message: "Organization not found" });
+    return res.status(404).json({ message: 'Organization not found' });
   }
 
   if (!organization.members[uid]) {
-    return res.status(401).json({ message: "Unauthorized." });
+    return res.status(401).json({ message: 'Unauthorized.' });
   }
 
   const user = await users.findOne({ id: memberId });
@@ -50,38 +48,35 @@ export default async function handler(
     scanData: string;
   };
 
-  if (
-    role !== organization.members[memberId]?.role &&
-    organization.members[memberId]?.role >= 3
-  ) {
+  if (role !== organization.members[memberId]?.role && organization.members[memberId]?.role >= 3) {
     return res.status(403).json({
-      message: "User is the owner of the organization.",
-      success: false,
+      message: 'User is the owner of the organization.',
+      success: false
     });
   }
 
   // Edit Member
-  if (req.method === "PATCH") {
+  if (req.method === 'PATCH') {
     role = parseInt(role.toString());
 
     if (organization.members[uid].role < 2) {
       return res.status(403).json({
         message: "You don't have edit permissions.",
-        success: false,
+        success: false
       });
     }
 
     if (role !== organization.members[memberId]?.role && role === 3) {
       return res.status(403).json({
-        message: "You cannot grant ownership.",
-        success: false,
+        message: 'You cannot grant ownership.',
+        success: false
       });
     }
 
     if (organization.members[memberId]?.role > organization.members[uid].role) {
       return res.status(403).json({
-        message: "You cannot edit a user with a higher role than you.",
-        success: false,
+        message: 'You cannot edit a user with a higher role than you.',
+        success: false
       });
     }
 
@@ -90,9 +85,8 @@ export default async function handler(
       organization.members[uid].role <= organization.members[memberId].role
     ) {
       return res.status(403).json({
-        message:
-          "You cannot edit a user's role when they're an equal or higher role than you.",
-        success: false,
+        message: "You cannot edit a user's role when they're an equal or higher role than you.",
+        success: false
       });
     }
 
@@ -100,7 +94,7 @@ export default async function handler(
       scanData = JSON.parse(scanData);
     } catch (err) {
       return res.status(400).json({
-        message: "Unable to parse scan data. Check your JSON and try again.",
+        message: 'Unable to parse scan data. Check your JSON and try again.'
       });
     }
 
@@ -113,19 +107,19 @@ export default async function handler(
       { id: organizationId },
       {
         $set: {
-          [`members.${memberId}.name`]: name || user?.displayName || "Untitled",
+          [`members.${memberId}.name`]: name || user?.displayName || 'Untitled',
           [`members.${memberId}.role`]: role,
           [`members.${memberId}.groupRoles`]: groupRoles !== undefined ? groupRoles : undefined,
           [`members.${memberId}.accessGroups`]: accessGroups,
           [`members.${memberId}.scanData`]: scanData || {},
-          [`members.${memberId}.updatedAt`]: timestamp,
+          [`members.${memberId}.updatedAt`]: timestamp
           // [`members.${memberId}`]: {
           //   name: name,
           //   role: role,
           //   accessGroups: accessGroups,
           //   scanData: scanData || {},
           // },
-        },
+        }
       },
       { upsert: true }
     );
@@ -133,20 +127,17 @@ export default async function handler(
     return res.status(200).json({
       success: true,
       message: `Successfully saved changes.`,
-      id: user?.id,
+      id: user?.id
     });
   }
 
   // Remove From Organization
-  if (req.method === "DELETE") {
-    if (organization.members[memberId]?.type !== "roblox") {
-      if (
-        organization.members[memberId]?.role >= organization.members[uid]?.role
-      ) {
+  if (req.method === 'DELETE') {
+    if (organization.members[memberId]?.type !== 'roblox') {
+      if (organization.members[memberId]?.role >= organization.members[uid]?.role) {
         return res.status(403).json({
-          message:
-            "You cannot remove a user with an equal or higher role than you.",
-          success: false,
+          message: 'You cannot remove a user with an equal or higher role than you.',
+          success: false
         });
       }
 
@@ -155,33 +146,32 @@ export default async function handler(
         { id: organizationId },
         {
           $unset: {
-            [`members.${memberId}`]: "",
-          },
+            [`members.${memberId}`]: ''
+          }
         }
       );
 
       return res.status(200).json({
         message: `Successfully removed ${user?.displayName} from the organization.`,
-        success: true,
+        success: true
       });
     } else {
-      
       // Kick From Organization
       await organizations.updateOne(
         { id: organizationId },
         {
           $unset: {
-            [`members.${memberId}`]: "",
-          },
+            [`members.${memberId}`]: ''
+          }
         }
       );
 
       return res.status(200).json({
         message: `Successfully removed the member from the organization.`,
-        success: true,
+        success: true
       });
     }
   }
 
-  return res.status(500).json({ message: "An unknown errror occurred." });
+  return res.status(500).json({ message: 'An unknown errror occurred.' });
 }

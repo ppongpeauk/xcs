@@ -1,5 +1,6 @@
-import clientPromise from "@/lib/mongodb";
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextApiRequest, NextApiResponse } from 'next';
+
+import clientPromise from '@/lib/mongodb';
 
 async function checkBlacklist(robloxId: string) {
   // temp
@@ -11,8 +12,8 @@ async function checkBlacklist(robloxId: string) {
     // },
     {
       type: 1,
-      id: 4951045,
-    },
+      id: 4951045
+    }
   ] as { type: number; id: number }[];
 
   // check if user is in any of the blacklisted users
@@ -32,38 +33,31 @@ async function checkBlacklist(robloxId: string) {
   return false;
 }
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   // roblox-side
   console.log(req.method);
-  if (req.method === "POST") {
+  if (req.method === 'POST') {
     const { code } = req.query; // verification code from website
     const { robloxId } = req.body; // roblox id from roblox
 
     const mongoClient = await clientPromise;
     const db = mongoClient.db(process.env.MONGODB_DB as string);
-    const organizations = db.collection("organizations");
-    const codes = db.collection("verificationCodes");
-    const users = db.collection("users");
+    const organizations = db.collection('organizations');
+    const codes = db.collection('verificationCodes');
+    const users = db.collection('users');
 
-    const fetchCode = await codes.findOne(
-      { code: code },
-    );
-    
+    const fetchCode = await codes.findOne({ code: code });
+
     if (fetchCode) {
       // fetch user's roblox username
-      const username = await fetch(
-        `${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/roblox/users/v1/users/${robloxId}`
-      )
+      const username = await fetch(`${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/roblox/users/v1/users/${robloxId}`)
         .then((res) => res.json())
         .then((json) => json?.name);
 
       if (!username) {
         return res.status(404).json({
           success: false,
-          message: "Roblox user not found.",
+          message: 'Roblox user not found.'
         });
       }
 
@@ -72,21 +66,21 @@ export default async function handler(
       if (isBlacklisted) {
         return res.status(403).json({
           success: false,
-          message: "You are not permitted to use the service.",
+          message: 'You are not permitted to use the service.'
         });
-      }      
+      }
 
       // locate any users that have the same roblox id and revoke their verification
       await users.updateMany(
-        { "roblox.id": robloxId },
+        { 'roblox.id': robloxId },
         {
           $set: {
             roblox: {
-              username: "",
-              id: "",
-              verified: false,
-            },
-          },
+              username: '',
+              id: '',
+              verified: false
+            }
+          }
         }
       );
 
@@ -100,16 +94,18 @@ export default async function handler(
               username: username,
               id: robloxId.toString(),
               verified: true,
-              verifiedAt: timestamp,
-            },
-          },
+              verifiedAt: timestamp
+            }
+          }
         }
       );
 
       // convert all roblox-type members across all organizations to user-type
-      const robloxUserOrganizations = await organizations.find({
-        [`members.${robloxId}`]: { $exists: true },
-      }).toArray() // get all organizations that have the roblox user as a member
+      const robloxUserOrganizations = await organizations
+        .find({
+          [`members.${robloxId}`]: { $exists: true }
+        })
+        .toArray(); // get all organizations that have the roblox user as a member
 
       // convert all roblox-type members to user-type
       for (const organization of robloxUserOrganizations) {
@@ -119,34 +115,30 @@ export default async function handler(
           {
             $set: {
               [`members.${fetchCode.id}`]: {
-                type: "user",
+                type: 'user',
                 id: fetchCode.id,
                 role: organizationRobloxUser.role,
                 accessGroups: organizationRobloxUser.accessGroups,
                 scanData: organizationRobloxUser.scanData,
-                joinedAt: organizationRobloxUser.joinedAt,
-              },
+                joinedAt: organizationRobloxUser.joinedAt
+              }
             },
             $unset: {
-              [`members.${robloxId}`]: "",
-            },
+              [`members.${robloxId}`]: ''
+            }
           }
         );
       }
 
       // revoke code
       await codes.deleteOne({ code: code });
-      return res
-        .status(200)
-        .json({ success: true, message: "Successfully verified." });
+      return res.status(200).json({ success: true, message: 'Successfully verified.' });
     } else {
-      return res
-        .status(404)
-        .json({ success: false, message: "Code not found." });
+      return res.status(404).json({ success: false, message: 'Code not found.' });
     }
-  } else if (req.method === "GET") {
-    res.status(200).json({ response: "ok" });
+  } else if (req.method === 'GET') {
+    res.status(200).json({ response: 'ok' });
   } else {
-    res.status(405).json({ message: "Method not allowed." });
+    res.status(405).json({ message: 'Method not allowed.' });
   }
 }

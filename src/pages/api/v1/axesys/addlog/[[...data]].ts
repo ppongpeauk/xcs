@@ -1,9 +1,6 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextApiRequest, NextApiResponse } from 'next';
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { data } = req.query;
 
   // if (!data) {
@@ -14,5 +11,5 @@ export default async function handler(
   // let locationId = data[1];
 
   console.log(`[AXESYS] /api/v1/axesys/addlog/: ${data}`);
-  return res.status(200).json({"response": "ok"});
+  return res.status(200).json({ response: 'ok' });
 }

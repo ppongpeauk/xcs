@@ -1,18 +1,14 @@
 // React
-import { useContext, useEffect } from "react";
-
-// Next
-import { useRouter } from "next/router";
-
-// Authentication
-import { useAuthContext } from "@/contexts/AuthContext";
+import { useContext, useEffect } from 'react';
 
 // Chakra UI
-import {
-  Center,
-  Spinner,
-  useToast,
-} from "@chakra-ui/react";
+import { Center, Spinner, useToast } from '@chakra-ui/react';
+
+// Next
+import { useRouter } from 'next/router';
+
+// Authentication
+import { useAuthContext } from '@/contexts/AuthContext';
 
 export default function Logout() {
   const router = useRouter();
@@ -20,13 +16,13 @@ export default function Logout() {
 
   useEffect(() => {
     logOut();
-    router.push("/auth/login");
+    router.push('/auth/login');
   }, []);
 
   return (
     <>
       <Center h="100vh">
-        <Spinner size={"xl"} />
+        <Spinner size={'xl'} />
       </Center>
     </>
   );

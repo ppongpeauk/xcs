@@ -1,17 +1,8 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-
 // React
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from 'react';
+import { forwardRef } from 'react';
 
-// Components
-import DeleteDialog from "@/components/DeleteDialog";
-import Footer from "@/components/Footer";
-import ThemeButton from "@/components/ThemeButton";
-import {
-  ChevronRightIcon,
-  HamburgerIcon,
-  SettingsIcon,
-} from "@chakra-ui/icons";
 import {
   AbsoluteCenter,
   Avatar,
@@ -49,49 +40,63 @@ import {
   VStack,
   useColorMode,
   useColorModeValue,
-  useDisclosure,
-} from "@chakra-ui/react";
-import NextImage from "next/image";
-import NextLink from "next/link";
-import { usePathname } from "next/navigation";
-import { forwardRef } from "react";
-import {
-  AiFillBell,
-  AiFillCrown,
-  AiFillHome,
-  AiFillInfoCircle,
-  AiFillSetting,
-} from "react-icons/ai";
-import { BiNotification, BiSolidExit, BiSolidTime } from "react-icons/bi";
-import { BsPersonBadgeFill } from "react-icons/bs";
-import { FaBell, FaBuilding, FaIdBadge, FaUserAlt } from "react-icons/fa";
-import { ImTree } from "react-icons/im";
-import { MdSensors } from "react-icons/md";
+  useDisclosure
+} from '@chakra-ui/react';
+
+import { ChevronRightIcon, HamburgerIcon, SettingsIcon } from '@chakra-ui/icons';
+
+import { AiFillBell, AiFillCrown, AiFillHome, AiFillInfoCircle, AiFillSetting } from 'react-icons/ai';
+import { BiNotification, BiSolidExit, BiSolidTime } from 'react-icons/bi';
+import { BsPersonBadgeFill } from 'react-icons/bs';
+import { FaBell, FaBuilding, FaIdBadge, FaUserAlt } from 'react-icons/fa';
+import { ImTree } from 'react-icons/im';
+import { MdSensors } from 'react-icons/md';
+
+import NextImage from 'next/image';
+import NextLink from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useRouter } from 'next/router';
 
 // Authentication
-import { useAuthContext } from "@/contexts/AuthContext";
-import { useRouter } from "next/router";
+import { useAuthContext } from '@/contexts/AuthContext';
 
-function AvatarPopover({ currentUser, onLogoutOpen }: { currentUser?: any, onLogoutOpen?: any }) {
+// Components
+import DeleteDialog from '@/components/DeleteDialog';
+import Footer from '@/components/Footer';
+import ThemeButton from '@/components/ThemeButton';
+
+function AvatarPopover({ currentUser, onLogoutOpen }: { currentUser?: any; onLogoutOpen?: any }) {
   const { push } = useRouter();
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <>
-      <Popover isOpen={isOpen} onOpen={onOpen} onClose={onClose}>
+      <Popover
+        isOpen={isOpen}
+        onOpen={onOpen}
+        onClose={onClose}
+      >
         <PopoverTrigger>
-          <Button variant={"unstyled"} h={"full"} onClick={() => {}}>
+          <Button
+            variant={'unstyled'}
+            h={'full'}
+            onClick={() => {}}
+          >
             <Skeleton
               isLoaded={!!currentUser}
-              w={"auto"}
-              h={"auto"}
+              w={'auto'}
+              h={'auto'}
               // border={"2px solid"}
               // borderColor={useColorModeValue("gray.200", "gray.700")}
-              borderRadius={"full"}
-              overflow={"hidden"}
+              borderRadius={'full'}
+              overflow={'hidden'}
             >
-              <Avatar src={currentUser?.avatar} size={"md"} borderRadius={0} />
+              <Avatar
+                src={currentUser?.avatar}
+                size={'md'}
+                borderRadius={0}
+              />
             </Skeleton>
           </Button>
         </PopoverTrigger>
@@ -100,59 +105,66 @@ function AvatarPopover({ currentUser, onLogoutOpen }: { currentUser?: any, onLog
           my={{ base: 4, md: 6 }}
           mx={{ base: 0, md: 2 }}
           zIndex={2}
-          minW={{ base: "100vw", md: "320px" }}
-          w={{ base: "100vw", md: "auto" }}
-          bg={useColorModeValue("white", "none")}
-          backdropFilter={"blur(2em)"}
-          rounded={"xl"}
+          minW={{ base: '100vw', md: '320px' }}
+          w={{ base: '100vw', md: 'auto' }}
+          bg={useColorModeValue('white', 'none')}
+          backdropFilter={'blur(2em)'}
+          rounded={'xl'}
         >
           <PopoverBody>
             <Stack>
               <Flex
                 as={Button}
                 onClick={() => {
-                  push("/platform/profile");
+                  push('/platform/profile');
                   onClose();
                 }}
-                variant={"ghost"}
-                w={"100%"}
-                h={"auto"}
-                align={"center"}
-                rounded={"lg"}
+                variant={'ghost'}
+                w={'100%'}
+                h={'auto'}
+                align={'center'}
+                rounded={'lg'}
                 p={4}
                 m={0}
               >
-                <Flex flexDir={"column"} align={"flex-start"} w={"min-content"}>
+                <Flex
+                  flexDir={'column'}
+                  align={'flex-start'}
+                  w={'min-content'}
+                >
                   <Text
-                    fontSize={"xl"}
-                    fontWeight={"900"}
-                    textOverflow={"ellipsis"}
+                    fontSize={'xl'}
+                    fontWeight={'900'}
+                    textOverflow={'ellipsis'}
                   >
                     {currentUser?.displayName}
                   </Text>
-                  <Text fontSize={"md"} color={"gray.500"}>
+                  <Text
+                    fontSize={'md'}
+                    color={'gray.500'}
+                  >
                     @{currentUser?.username}
                   </Text>
                 </Flex>
                 <Spacer />
                 <SkeletonCircle
                   isLoaded={!!currentUser}
-                  w={"auto"}
-                  h={"auto"}
+                  w={'auto'}
+                  h={'auto'}
                   pl={4}
                 >
                   <Avatar
                     // name={currentUser?.displayName}
                     src={currentUser?.avatar}
-                    size={"lg"}
+                    size={'lg'}
                   />
                 </SkeletonCircle>
               </Flex>
               <Button
                 as={NextLink}
-                href={"/platform/settings"}
-                variant={"outline"}
-                size={"md"}
+                href={'/platform/settings'}
+                variant={'outline'}
+                size={'md'}
                 leftIcon={<AiFillSetting />}
                 onClick={() => {
                   onClose();
@@ -163,8 +175,8 @@ function AvatarPopover({ currentUser, onLogoutOpen }: { currentUser?: any, onLog
               <Button
                 // as={NextLink}
                 // href={"/auth/logout"}
-                variant={"outline"}
-                size={"md"}
+                variant={'outline'}
+                size={'md'}
                 leftIcon={<BiSolidExit />}
                 onClick={() => {
                   onLogoutOpen();
@@ -182,17 +194,22 @@ function AvatarPopover({ currentUser, onLogoutOpen }: { currentUser?: any, onLog
 
 // eslint-disable-next-line react/display-name
 const MenuLink = forwardRef((props: any, ref: any) => (
-  <Link _hover={{ textDecor: "unset" }} as={NextLink} ref={ref} {...props} />
+  <Link
+    _hover={{ textDecor: 'unset' }}
+    as={NextLink}
+    ref={ref}
+    {...props}
+  />
 ));
 
 function NavLink({
   href,
   target,
   onClick,
-  variant = "ghost",
+  variant = 'ghost',
   pathname,
   children,
-  leftIcon,
+  leftIcon
 }: {
   href?: string;
   target?: string;
@@ -207,50 +224,47 @@ function NavLink({
       as={!onClick ? NextLink : undefined}
       href={!onClick ? href : undefined}
       target={target ? target : undefined}
-      variant={pathname === href ? "solid" : variant}
+      variant={pathname === href ? 'solid' : variant}
       onClick={onClick}
       leftIcon={
         leftIcon ? (
-          <Box mr={2} fontSize={"2xl"}>
+          <Box
+            mr={2}
+            fontSize={'2xl'}
+          >
             {leftIcon}
           </Box>
         ) : (
           <></>
         )
       }
-      w={"full"}
-      justifyContent={"flex-start"}
+      w={'full'}
+      justifyContent={'flex-start'}
       m={0}
       px={4}
       py={6}
-      rounded={"lg"}
+      rounded={'lg'}
       // fontSize={"lg"}
-      fontWeight={"900"}
-      color={
-        pathname === href
-          ? useColorModeValue("gray.100", "gray.900")
-          : useColorModeValue("gray.900", "gray.100")
-      }
-      bg={
-        pathname === href ? useColorModeValue("gray.900", "gray.200") : "none"
-      }
+      fontWeight={'900'}
+      color={pathname === href ? useColorModeValue('gray.100', 'gray.900') : useColorModeValue('gray.900', 'gray.100')}
+      bg={pathname === href ? useColorModeValue('gray.900', 'gray.200') : 'none'}
       _hover={
         pathname === href
           ? {}
           : {
-              color: useColorModeValue("gray.900", "gray.100"),
-              bg: useColorModeValue("gray.100", "gray.700"),
+              color: useColorModeValue('gray.900', 'gray.100'),
+              bg: useColorModeValue('gray.100', 'gray.700')
             }
       }
       _active={
         pathname === href
           ? {
-              color: useColorModeValue("gray.100", "gray.900"),
-              bg: useColorModeValue("gray.700", "gray.400"),
+              color: useColorModeValue('gray.100', 'gray.900'),
+              bg: useColorModeValue('gray.700', 'gray.400')
             }
           : {
-              color: useColorModeValue("gray.900", "gray.100"),
-              bg: useColorModeValue("gray.200", "gray.600"),
+              color: useColorModeValue('gray.900', 'gray.100'),
+              bg: useColorModeValue('gray.200', 'gray.600')
             }
       }
     >
@@ -259,20 +273,10 @@ function NavLink({
   );
 }
 
-export default function PlatformNav({
-  type,
-  title,
-}: {
-  type?: string;
-  title?: string | null | undefined;
-}) {
+export default function PlatformNav({ type, title }: { type?: string; title?: string | null | undefined }) {
   const pathname = usePathname();
   const { currentUser, isAuthLoaded } = useAuthContext();
-  const {
-    isOpen: isLogoutOpen,
-    onOpen: onLogoutOpen,
-    onClose: onLogoutClose,
-  } = useDisclosure();
+  const { isOpen: isLogoutOpen, onOpen: onLogoutOpen, onClose: onLogoutClose } = useDisclosure();
   const { push } = useRouter();
 
   return (
@@ -282,108 +286,109 @@ export default function PlatformNav({
         onClose={onLogoutClose}
         onDelete={() => {
           onLogoutClose();
-          push("/auth/logout");
+          push('/auth/logout');
         }}
-        title={"Log Out"}
-        body={"Are you sure you want to log out?"}
-        buttonText={"Log Out"}
+        title={'Log Out'}
+        body={'Are you sure you want to log out?'}
+        buttonText={'Log Out'}
       />
       <Flex
         id="platform-nav"
         as="nav"
-        display={{ base: "none", md: "flex" }}
-        position={"fixed"}
+        display={{ base: 'none', md: 'flex' }}
+        position={'fixed'}
         top={0}
-        h={"100vh"}
-        w={"240px"}
-        flexDir={"column"}
-        align={"flex-start"}
-        bg={useColorModeValue("white", "gray.800")}
-        border={"1px solid"}
-        borderColor={useColorModeValue("gray.300", "gray.700")}
+        h={'100vh'}
+        w={'240px'}
+        flexDir={'column'}
+        align={'flex-start'}
+        bg={useColorModeValue('white', 'gray.800')}
+        border={'1px solid'}
+        borderColor={useColorModeValue('gray.300', 'gray.700')}
         zIndex={500}
       >
         {/* Title */}
         <Flex
-          transform={"translateY(-1px)"}
-          h={"6rem"}
-          width={"full"}
-          borderBottom={"1px solid"}
-          borderColor={useColorModeValue("gray.300", "gray.700")}
+          transform={'translateY(-1px)'}
+          h={'6rem'}
+          width={'full'}
+          borderBottom={'1px solid'}
+          borderColor={useColorModeValue('gray.300', 'gray.700')}
         >
           <Flex
             as={NextLink}
-            width={"full"}
-            h={"full"}
-            href={"/platform/home"}
-            align={"center"}
-            justify={"center"}
-            transition={"filter 0.2s ease"}
+            width={'full'}
+            h={'full'}
+            href={'/platform/home'}
+            align={'center'}
+            justify={'center'}
+            transition={'filter 0.2s ease'}
             _hover={{
-              filter: useColorModeValue("opacity(0.75)", "brightness(0.75)"),
+              filter: useColorModeValue('opacity(0.75)', 'brightness(0.75)')
             }}
             _active={{
-              filter: useColorModeValue("opacity(0.5)", "brightness(0.5)"),
+              filter: useColorModeValue('opacity(0.5)', 'brightness(0.5)')
             }}
           >
-            <Flex position={"relative"} w={"128px"} h={"100%"}>
+            <Flex
+              position={'relative'}
+              w={'128px'}
+              h={'100%'}
+            >
               <NextImage
-                src={useColorModeValue(
-                  "/images/logo-black.png",
-                  "/images/logo-white.png"
-                )}
+                src={useColorModeValue('/images/logo-black.png', '/images/logo-white.png')}
                 priority={true}
                 fill={true}
                 quality={64}
-                alt={"Restrafes XCS"}
+                alt={'Restrafes XCS'}
                 style={{
-                  objectFit: "contain",
+                  objectFit: 'contain'
                 }}
               />
             </Flex>
           </Flex>
         </Flex>
-        <Box w={"full"}>
+        <Box w={'full'}>
           {/* Links */}
           <VStack
-            flexDir={"column"}
-            align={"flex-start"}
-            justify={"flex-start"}
-            w={"100%"}
+            flexDir={'column'}
+            align={'flex-start'}
+            justify={'flex-start'}
+            w={'100%'}
             px={4}
             py={8}
             spacing={1}
           >
             <NavLink
-              href={"/platform/home"}
+              href={'/platform/home'}
               pathname={pathname}
               leftIcon={<AiFillHome />}
             >
               Home
             </NavLink>
             <NavLink
-              href={"/platform/event-logs"}
+              href={'/platform/event-logs'}
               pathname={pathname}
               leftIcon={<BiSolidTime />}
             >
               Event Logs
             </NavLink>
             <NavLink
-              href={"/platform/profile"}
+              href={'/platform/profile'}
               pathname={pathname}
               leftIcon={<FaIdBadge />}
             >
               Profile
             </NavLink>
             <NavLink
-              href={"/platform/organizations"}
+              href={'/platform/organizations'}
               pathname={pathname}
               leftIcon={<FaBuilding />}
             >
               Organizations
             </NavLink>
             <NavLink
-              href={"/platform/locations"}
+              href={'/platform/locations'}
               pathname={pathname}
               leftIcon={<ImTree />}
             >
@@ -392,18 +397,18 @@ export default function PlatformNav({
           </VStack>
         </Box>
         <VStack
-          flexDir={"column"}
-          align={"flex-start"}
-          justify={"flex-start"}
-          w={"100%"}
+          flexDir={'column'}
+          align={'flex-start'}
+          justify={'flex-start'}
+          w={'100%'}
           px={4}
           py={8}
           spacing={1}
-          mt={"auto"}
+          mt={'auto'}
         >
           <NavLink
-            href={"https://xcs-docs.restrafes.co/"}
-            target={"_blank"}
+            href={'https://xcs-docs.restrafes.co/'}
+            target={'_blank'}
             pathname={pathname}
             leftIcon={<AiFillInfoCircle />}
           >
@@ -420,7 +425,7 @@ export default function PlatformNav({
             </NavLink>
           ) : (
             <NavLink
-              href={"/auth/login"}
+              href={'/auth/login'}
               pathname={pathname}
               leftIcon={<BiSolidExit />}
             >
@@ -431,50 +436,52 @@ export default function PlatformNav({
       </Flex>
 
       <Flex
-        flexDir={"row"}
+        flexDir={'row'}
         id="platform-nav-horizontal"
-        position={"sticky"}
+        position={'sticky'}
         top={0}
         zIndex={499}
       >
         {/* Horizontal Bar */}
         <Flex
-          as={"header"}
-          w={"100vw"}
-          h={"6rem"}
-          align={"center"}
-          justify={"space-between"}
+          as={'header'}
+          w={'100vw'}
+          h={'6rem'}
+          align={'center'}
+          justify={'space-between'}
           px={8}
-          bg={useColorModeValue("white", "gray.800")}
-          borderY={"1px solid"}
-          borderX={"1px solid"}
-          borderColor={useColorModeValue("gray.300", "gray.700")}
+          bg={useColorModeValue('white', 'gray.800')}
+          borderY={'1px solid'}
+          borderX={'1px solid'}
+          borderColor={useColorModeValue('gray.300', 'gray.700')}
         >
           <Flex
             as={NextLink}
-            href={"/platform/home"}
-            display={{ base: "flex", md: "none" }}
-            position={"relative"}
-            w={"96px"}
-            h={"100%"}
+            href={'/platform/home'}
+            display={{ base: 'flex', md: 'none' }}
+            position={'relative'}
+            w={'96px'}
+            h={'100%'}
           >
             <NextImage
-              src={useColorModeValue(
-                "/images/logo-black.png",
-                "/images/logo-white.png"
-              )}
+              src={useColorModeValue('/images/logo-black.png', '/images/logo-white.png')}
               priority={true}
               fill={true}
               quality={50}
-              alt={"Restrafes XCS"}
+              alt={'Restrafes XCS'}
               style={{
-                objectFit: "contain",
+                objectFit: 'contain'
               }}
             />
           </Flex>
           <Spacer />
 
-          <HStack align={"center"} justify={"flex-end"} spacing={4} px={4}>
+          <HStack
+            align={'center'}
+            justify={'flex-end'}
+            spacing={4}
+            px={4}
+          >
             {/* Notifications */}
             {/* <Popover>
               <PopoverTrigger>
@@ -508,7 +515,10 @@ export default function PlatformNav({
             </Popover> */}
 
             {/* Avatar */}
-            <AvatarPopover currentUser={currentUser} onLogoutOpen={onLogoutOpen} />
+            <AvatarPopover
+              currentUser={currentUser}
+              onLogoutOpen={onLogoutOpen}
+            />
 
             {/* Theme Button */}
             {/* <Box display={{ base: "none", md: "flex" }}>
@@ -516,12 +526,15 @@ export default function PlatformNav({
             </Box> */}
 
             {/* Mobile Nav */}
-            <Box display={{ base: "flex", md: "none" }} zIndex={512}>
+            <Box
+              display={{ base: 'flex', md: 'none' }}
+              zIndex={512}
+            >
               <Menu>
                 <MenuButton
                   as={IconButton}
                   icon={<HamburgerIcon />}
-                  variant={"solid"}
+                  variant={'solid'}
                   aria-label="Options"
                 />
                 <MenuList>

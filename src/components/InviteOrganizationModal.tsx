@@ -1,4 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+import { useRef, useState } from 'react';
+
 import {
   Button,
   Checkbox,
@@ -20,22 +22,23 @@ import {
   VStack,
   useClipboard,
   useColorModeValue,
-  useToast,
-} from "@chakra-ui/react";
-import { AsyncSelect, CreatableSelect, Select } from "chakra-react-select";
-import { Field, Form, Formik } from "formik";
+  useToast
+} from '@chakra-ui/react';
 
-import { useAuthContext } from "@/contexts/AuthContext";
-import { textToRole } from "@/lib/utils";
-import NextLink from "next/link";
-import { useRef, useState } from "react";
+import { AsyncSelect, CreatableSelect, Select } from 'chakra-react-select';
+import { Field, Form, Formik } from 'formik';
+import NextLink from 'next/link';
+
+import { textToRole } from '@/lib/utils';
+
+import { useAuthContext } from '@/contexts/AuthContext';
 
 export default function InviteOrganizationModal({
   isOpen,
   onOpen,
   onClose,
   onCreate,
-  organizationId,
+  organizationId
 }: {
   isOpen: boolean;
   onOpen: () => void;
@@ -46,11 +49,7 @@ export default function InviteOrganizationModal({
   const toast = useToast();
   const { user } = useAuthContext();
   const [inviteCode, setInviteCode] = useState<string | null>(null);
-  const {
-    setValue: setClipboardValue,
-    onCopy: onClipboardCopy,
-    hasCopied: clipboardHasCopied,
-  } = useClipboard("");
+  const { setValue: setClipboardValue, onCopy: onClipboardCopy, hasCopied: clipboardHasCopied } = useClipboard('');
 
   const onModalClose = () => {
     onClose();
@@ -60,10 +59,10 @@ export default function InviteOrganizationModal({
   const copyInviteLink = () => {
     onClipboardCopy();
     toast({
-      title: "Copied invite link to clipboard!",
-      status: "success",
+      title: 'Copied invite link to clipboard!',
+      status: 'success',
       duration: 5000,
-      isClosable: true,
+      isClosable: true
     });
   };
 
@@ -71,23 +70,20 @@ export default function InviteOrganizationModal({
     <>
       <Formik
         enableReinitialize={true}
-        initialValues={{ role: { label: "Member", value: 1 }, singleUse: true }}
+        initialValues={{ role: { label: 'Member', value: 1 }, singleUse: true }}
         onSubmit={(values, actions) => {
           user.getIdToken().then((token: any) => {
-            fetch(
-              `/api/v1/organizations/${organizationId}/create-invite-link`,
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                  singleUse: values.singleUse,
-                  role: values.role.value,
-                }),
-              }
-            )
+            fetch(`/api/v1/organizations/${organizationId}/create-invite-link`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`
+              },
+              body: JSON.stringify({
+                singleUse: values.singleUse,
+                role: values.role.value
+              })
+            })
               .then((res) => {
                 if (res.status === 200) {
                   return res.json();
@@ -100,25 +96,23 @@ export default function InviteOrganizationModal({
               .then((data) => {
                 toast({
                   title: data.message,
-                  status: "success",
+                  status: 'success',
                   duration: 5000,
-                  isClosable: true,
+                  isClosable: true
                 });
                 setInviteCode(data.inviteCode);
-                setClipboardValue(
-                  `${process.env.NEXT_PUBLIC_ROOT_URL}/invitation/${data.inviteCode}`
-                );
+                setClipboardValue(`${process.env.NEXT_PUBLIC_ROOT_URL}/invitation/${data.inviteCode}`);
                 actions.resetForm();
                 onCreate(data.inviteCode);
                 // onClose();
               })
               .catch((error) => {
                 toast({
-                  title: "There was an error creating the invitation.",
+                  title: 'There was an error creating the invitation.',
                   description: error.message,
-                  status: "error",
+                  status: 'error',
                   duration: 5000,
-                  isClosable: true,
+                  isClosable: true
                 });
               })
               .finally(() => {
@@ -128,10 +122,14 @@ export default function InviteOrganizationModal({
         }}
       >
         {(props) => (
-          <Modal isOpen={isOpen} onClose={onModalClose} isCentered>
+          <Modal
+            isOpen={isOpen}
+            onClose={onModalClose}
+            isCentered
+          >
             <ModalOverlay />
             <Form>
-              <ModalContent bg={useColorModeValue("white", "gray.800")}>
+              <ModalContent bg={useColorModeValue('white', 'gray.800')}>
                 <ModalHeader pb={2}>Create Invitation Link</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody pb={4}>
@@ -144,29 +142,32 @@ export default function InviteOrganizationModal({
                               <FormLabel>Role</FormLabel>
                               <Select
                                 {...field}
-                                variant={"outline"}
+                                variant={'outline'}
                                 options={[
-                                  { label: "Member", value: 1 },
-                                  { label: "Manager", value: 2 },
+                                  { label: 'Member', value: 1 },
+                                  { label: 'Manager', value: 2 }
                                 ]}
                                 onChange={(value) => {
-                                  form.setFieldValue("role", value);
+                                  form.setFieldValue('role', value);
                                 }}
                                 value={field.value}
                                 placeholder="Select a role..."
                                 single={true}
                                 hideSelectedOptions={false}
-                                selectedOptionStyle={"check"}
+                                selectedOptionStyle={'check'}
                               />
                             </FormControl>
                           )}
                         </Field>
-                        <Field name="singleUse" type={"checkbox"}>
+                        <Field
+                          name="singleUse"
+                          type={'checkbox'}
+                        >
                           {({ field, form }: any) => (
                             <FormControl>
                               <Checkbox
                                 {...field}
-                                variant={"outline"}
+                                variant={'outline'}
                                 isChecked={field.value}
                               >
                                 Single Use
@@ -180,20 +181,20 @@ export default function InviteOrganizationModal({
                         <FormControl>
                           <FormLabel>Invitation Link</FormLabel>
                           <Input
-                            variant={"outline"}
+                            variant={'outline'}
                             value={`${process.env.NEXT_PUBLIC_ROOT_URL}/invitation/${inviteCode}`}
                             isReadOnly={true}
                             onFocus={(e) => e.target.select()}
                           />
                         </FormControl>
-                        <Text>
-                          Share this link with the person you want to invite to
-                          your organization.
-                        </Text>
+                        <Text>Share this link with the person you want to invite to your organization.</Text>
                       </>
                     )}
                   </VStack>
-                  <Text fontSize={"sm"} pt={2}>
+                  <Text
+                    fontSize={'sm'}
+                    pt={2}
+                  >
                     All invitation links expire after 14 days.
                   </Text>
                 </ModalBody>
@@ -202,9 +203,9 @@ export default function InviteOrganizationModal({
                   {!inviteCode ? (
                     <HStack>
                       <Button
-                        colorScheme={"blue"}
+                        colorScheme={'blue'}
                         isLoading={props.isSubmitting}
-                        type={"submit"}
+                        type={'submit'}
                       >
                         Create Link
                       </Button>
@@ -212,8 +213,11 @@ export default function InviteOrganizationModal({
                     </HStack>
                   ) : (
                     <HStack>
-                      <Button colorScheme={"blue"} onClick={copyInviteLink}>
-                        {!clipboardHasCopied ? "Copy Link" : "Copied!"}
+                      <Button
+                        colorScheme={'blue'}
+                        onClick={copyInviteLink}
+                      >
+                        {!clipboardHasCopied ? 'Copy Link' : 'Copied!'}
                       </Button>
                       <Button onClick={onModalClose}>Close</Button>
                     </HStack>

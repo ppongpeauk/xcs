@@ -1,14 +1,12 @@
-import clientPromise from "@/lib/mongodb";
-import { Location } from "@/types";
-import { NextApiRequest, NextApiResponse } from "next";
+import { Location } from '@/types';
+import { NextApiRequest, NextApiResponse } from 'next';
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+import clientPromise from '@/lib/mongodb';
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   // reject non-GET requests
-  if (req.method !== "GET") {
-    return res.status(405).json({ error: "Method not allowed." });
+  if (req.method !== 'GET') {
+    return res.status(405).json({ error: 'Method not allowed.' });
   }
 
   // query parameters
@@ -16,7 +14,7 @@ export default async function handler(
   const { data } = req.query;
 
   if (!data) {
-    return res.status(400).json({ error: "Missing data" });
+    return res.status(400).json({ error: 'Missing data' });
   }
 
   console.log(`[AXESYS] /api/v1/axesys/syncdoorspremium/: ${data}`);
@@ -27,21 +25,21 @@ export default async function handler(
   // create a connection to the database
   const mongoClient = await clientPromise;
   const db = mongoClient.db(process.env.MONGODB_DB as string);
-  const locations = db.collection("locations");
-  const organizations = db.collection("organizations");
-  const accessPoints = db.collection("accessPoints");
+  const locations = db.collection('locations');
+  const organizations = db.collection('organizations');
+  const accessPoints = db.collection('accessPoints');
 
   // fetch location data
   let location = (await locations.findOne(
     {
-      id: locationId,
+      id: locationId
     },
     { projection: { id: 1, organizationId: 1 } }
   )) as Location | null;
 
   console.log(location);
   if (!location) {
-    return res.status(404).json({ error: "Location not found" });
+    return res.status(404).json({ error: 'Location not found' });
   }
 
   // check if the API key is valid
@@ -50,31 +48,28 @@ export default async function handler(
     { projection: { id: 1 } }
   );
   if (!organization) {
-    return res.status(401).json({ error: "Invalid API key" });
+    return res.status(401).json({ error: 'Invalid API key' });
   }
 
   // create legacy response
 
   // get all access points
-  let accessPointsData = await accessPoints
-    .find({ locationId: location.id })
-    .toArray();
+  let accessPointsData = await accessPoints.find({ locationId: location.id }).toArray();
 
   let legacyResponse = {} as any;
   for (let accessPoint of accessPointsData) {
     legacyResponse[accessPoint.id] = {
       DoorSettings: {
         DoorName: accessPoint.name,
-        Active: accessPoint.configuration.active ? "1" : "0",
-        Locked: accessPoint.configuration.armed ? "1" : "0",
-        Timer: accessPoint.configuration.timer || 8,
+        Active: accessPoint.configuration.active ? '1' : '0',
+        Locked: accessPoint.configuration.armed ? '1' : '0',
+        Timer: accessPoint.configuration.timer || 8
       },
       AuthorizedUsers: {},
-      AuthorizedGroups: {},
+      AuthorizedGroups: {}
     };
     for (let user of accessPoint.configuration.alwaysAllowed.users) {
-      legacyResponse[accessPoint.id].AuthorizedUsers[user.robloxId] =
-        user.robloxUsername;
+      legacyResponse[accessPoint.id].AuthorizedUsers[user.robloxId] = user.robloxUsername;
     }
     // TODO: add group support
   }
@@ -82,7 +77,7 @@ export default async function handler(
   console.log(legacyResponse);
 
   return res.status(200).json({
-    response: "ok",
-    data: legacyResponse,
+    response: 'ok',
+    data: legacyResponse
   });
 }

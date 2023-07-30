@@ -1,8 +1,10 @@
-import { useAuthContext } from "@/contexts/AuthContext";
-import { AccessGroup, Organization } from "@/types";
-import { clsx, type ClassValue } from "clsx";
-import { useCallback } from "react";
-import { twMerge } from "tailwind-merge";
+import { memo, useCallback } from 'react';
+
+import { AccessGroup, Organization } from '@/types';
+import { type ClassValue, clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+import { useAuthContext } from '@/contexts/AuthContext';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -12,28 +14,28 @@ const roleToText = (role: number) => {
   role = Number(role);
   switch (role) {
     case 0:
-      return "Guest";
+      return 'Guest';
     case 1:
-      return "Member";
+      return 'Member';
     case 2:
-      return "Manager";
+      return 'Manager';
     case 3:
-      return "Owner";
+      return 'Owner';
     default:
-      return "Member";
+      return 'Member';
   }
 };
 
 const textToRole = (role: string) => {
   role = role.toString().toLowerCase();
   switch (role) {
-    case "guest":
+    case 'guest':
       return 0;
-    case "member":
+    case 'member':
       return 1;
-    case "manager":
+    case 'manager':
       return 2;
-    case "owner":
+    case 'owner':
       return 3;
     default:
       return 1;
@@ -41,19 +43,16 @@ const textToRole = (role: string) => {
 };
 
 const getRobloxUsersByUsernames = async (usernames: string[]) => {
-  let robloxResponse = await fetch(
-    `${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/roblox/users/v1/usernames/users`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        usernames,
-        excludeBannedUsers: false,
-      }),
-    }
-  )
+  let robloxResponse = await fetch(`${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/roblox/users/v1/usernames/users`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      usernames,
+      excludeBannedUsers: false
+    })
+  })
     .then((res) => res.json())
     .then((res) => res.data);
 
@@ -61,33 +60,28 @@ const getRobloxUsersByUsernames = async (usernames: string[]) => {
 };
 
 const getRobloxUsers = async (userIds: string[]) => {
-  let robloxResponse = await fetch(
-    `${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/roblox/users/v1/users`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        userIds,
-        excludeBannedUsers: false,
-      }),
-    }
-  )
+  let robloxResponse = await fetch(`${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/roblox/users/v1/users`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      userIds,
+      excludeBannedUsers: false
+    })
+  })
     .then((res) => res.json())
     .then((res) => res.data);
 
   let robloxUserAvatar = await fetch(
-    `${
-      process.env.NEXT_PUBLIC_ROOT_URL
-    }/api/v1/roblox/thumbnails/v1/users/avatar-headshot?userIds=${userIds.join(
-      ","
+    `${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/roblox/thumbnails/v1/users/avatar-headshot?userIds=${userIds.join(
+      ','
     )}&size=150x150&format=Png&isCircular=false`,
     {
-      method: "GET",
+      method: 'GET',
       headers: {
-        "Content-Type": "application/json",
-      },
+        'Content-Type': 'application/json'
+      }
     }
   )
     .then((res) => res.json())
@@ -109,28 +103,26 @@ const getRobloxUsers = async (userIds: string[]) => {
 
 const getRobloxGroups = async (groupIds: string[]) => {
   let robloxResponse = await fetch(
-    `${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/roblox/groups/v2/groups?groupIds=${groupIds?.join(",") || 0}`,
+    `${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/roblox/groups/v2/groups?groupIds=${groupIds?.join(',') || 0}`,
     {
-      method: "GET",
+      method: 'GET',
       headers: {
-        "Content-Type": "application/json",
-      },
+        'Content-Type': 'application/json'
+      }
     }
   )
     .then((res) => res.json())
     .then((res) => res.data);
 
   let robloxGroupThumbnail = await fetch(
-    `${
-      process.env.NEXT_PUBLIC_ROOT_URL
-    }/api/v1/roblox/thumbnails/v1/groups/icons?groupIds=${groupIds.join(
-      ","
+    `${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/roblox/thumbnails/v1/groups/icons?groupIds=${groupIds.join(
+      ','
     )}&size=150x150&format=Png&isCircular=false`,
     {
-      method: "GET",
+      method: 'GET',
       headers: {
-        "Content-Type": "application/json",
-      },
+        'Content-Type': 'application/json'
+      }
     }
   )
     .then((res) => res.json())
@@ -139,21 +131,18 @@ const getRobloxGroups = async (groupIds: string[]) => {
   for (let i = 0; i < robloxResponse.length; i++) {
     robloxResponse[i].avatar = robloxGroupThumbnail[i].imageUrl;
   }
-  
+
   // get roles for each group
   for (let i = 0; i < robloxResponse.length; i++) {
     let robloxGroupRoles = await fetch(
-      `${
-        process.env.NEXT_PUBLIC_ROOT_URL
-      }/api/v1/roblox/groups/v1/groups/${robloxResponse[i].id}/roles`,
+      `${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/roblox/groups/v1/groups/${robloxResponse[i].id}/roles`,
       {
-        method: "GET",
+        method: 'GET',
         headers: {
-          "Content-Type": "application/json",
-        },
+          'Content-Type': 'application/json'
+        }
       }
     )
-    
       .then((res) => res.json())
       .then((res) => res.roles);
     robloxResponse[i].roles = robloxGroupRoles;
@@ -171,56 +160,56 @@ const getRobloxGroups = async (groupIds: string[]) => {
 
 const getRandomAccessPointName = () => {
   let accessPointNames = [
-    "Front Entrance",
-    "Back Entrance",
-    "Main Lobby",
-    "Reception Area",
-    "Mail Room",
-    "Copy Room",
-    "Supply Closet",
-    "IT Department",
-    "HR Department",
-    "Accounting Department",
-    "Sales Department",
-    "Marketing Department",
-    "Executive Offices",
-    "Conference Room A",
-    "Conference Room B",
-    "Conference Room C",
-    "Conference Room D",
-    "Break Room",
-    "Cafeteria",
-    "Kitchen",
-    "Bathrooms",
-    "Elevator Bank",
-    "East Stairwell",
-    "West Stairwell",
-    "Electrical Room",
-    "Janitor Closet",
-    "Boiler Room",
-    "Loading Dock",
-    "Front Desk",
-    "Lobby Desk",
-    "Security Office",
-    "East Wing",
-    "West Wing",
-    "North Wing",
-    "South Wing",
-    "Patio",
-    "Garden",
-    "Fountain",
-    "Sitting Area",
-    "Parking Garage",
-    "Visitor Lot",
-    "Employee Lot",
-    "Server Room",
-    "Printing Room",
-    "Storage Room",
-    "Mechanical Room",
-    "Telecom Room",
-    "Electrical Closet",
-    "Janitor Office",
-    "Maintenance Shop",
+    'Front Entrance',
+    'Back Entrance',
+    'Main Lobby',
+    'Reception Area',
+    'Mail Room',
+    'Copy Room',
+    'Supply Closet',
+    'IT Department',
+    'HR Department',
+    'Accounting Department',
+    'Sales Department',
+    'Marketing Department',
+    'Executive Offices',
+    'Conference Room A',
+    'Conference Room B',
+    'Conference Room C',
+    'Conference Room D',
+    'Break Room',
+    'Cafeteria',
+    'Kitchen',
+    'Bathrooms',
+    'Elevator Bank',
+    'East Stairwell',
+    'West Stairwell',
+    'Electrical Room',
+    'Janitor Closet',
+    'Boiler Room',
+    'Loading Dock',
+    'Front Desk',
+    'Lobby Desk',
+    'Security Office',
+    'East Wing',
+    'West Wing',
+    'North Wing',
+    'South Wing',
+    'Patio',
+    'Garden',
+    'Fountain',
+    'Sitting Area',
+    'Parking Garage',
+    'Visitor Lot',
+    'Employee Lot',
+    'Server Room',
+    'Printing Room',
+    'Storage Room',
+    'Mechanical Room',
+    'Telecom Room',
+    'Electrical Closet',
+    'Janitor Office',
+    'Maintenance Shop'
   ];
 
   return accessPointNames[Math.floor(Math.random() * accessPointNames.length)];
@@ -228,7 +217,7 @@ const getRandomAccessPointName = () => {
 
 const agNames = (organization: any, names: string[]) => {
   if (!organization?.accessGroups) {
-    console.warn("No access groups found", organization, names);
+    console.warn('No access groups found', organization, names);
     return [];
   }
   let res = [];
@@ -263,7 +252,7 @@ const agKV = (organization: any) => {
   for (let key of Object.keys(organization.accessGroups)) {
     res.push({
       label: organization.accessGroups[key].name,
-      value: organization.accessGroups[key].name,
+      value: organization.accessGroups[key].name
     });
   }
   return res;
@@ -275,16 +264,13 @@ const getLocation = async (locationId: string) => {
 
   let location;
   await user.getIdToken().then(async (token: string) => {
-    const ret = await fetch(
-      `${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/locations/${locationId}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+    const ret = await fetch(`${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/locations/${locationId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
       }
-    )
+    })
       .then((res) => res.json())
       .then((res) => res.data);
     location = ret;
@@ -294,14 +280,14 @@ const getLocation = async (locationId: string) => {
 };
 
 const getAccessGroupType = (organization: Organization, ag: AccessGroup) => {
-  if (ag.type === "organization") {
-    return "Organization";
-  } else if (ag.type === "location") {
+  if (ag.type === 'organization') {
+    return 'Organization';
+  } else if (ag.type === 'location') {
     // get location name
     // const location = Object.values(
     //   organization?.locations as AccessGroup[]
     // ).find((l: any) => l.id === ag.id);
-    return "Unknown";
+    return 'Unknown';
   } else {
     return ag.type;
   }
@@ -321,17 +307,13 @@ const getAccessGroupOptions = (organization: Organization) => {
 
   ags.forEach((ag: AccessGroup) => {
     // check if the group is already in the groups object
-    if (
-      groups.find(
-        (g: Group) => g.label === getAccessGroupType(organization, ag)
-      )
-    ) {
+    if (groups.find((g: Group) => g.label === getAccessGroupType(organization, ag))) {
       // if it is, add the option to the options array
       groups
         .find((g: Group) => g.label === getAccessGroupType(organization, ag))
         .options.push({
           label: ag.name,
-          value: ag.id,
+          value: ag.id
         });
     } else {
       // if it's not, add the group to the groups array
@@ -340,17 +322,17 @@ const getAccessGroupOptions = (organization: Organization) => {
         options: [
           {
             label: ag.name,
-            value: ag.id,
-          },
-        ],
+            value: ag.id
+          }
+        ]
       });
     }
   });
 
   // sort the groups so organizations are at the bottom
   groups.sort((a: Group, b: Group) => {
-    if (a.label === "Organization") return 1;
-    if (b.label === "Organization") return -1;
+    if (a.label === 'Organization') return 1;
+    if (b.label === 'Organization') return -1;
     return 0;
   });
 
@@ -363,8 +345,10 @@ export {
   agNames,
   getAccessGroupOptions,
   getAccessGroupType,
-  getRandomAccessPointName, getRobloxGroups, getRobloxUsers, getRobloxUsersByUsernames,
+  getRandomAccessPointName,
+  getRobloxGroups,
+  getRobloxUsers,
+  getRobloxUsersByUsernames,
   roleToText,
   textToRole
 };
-

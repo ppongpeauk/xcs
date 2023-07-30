@@ -1,20 +1,18 @@
-import clientPromise from "@/lib/mongodb";
-import { tokenToID } from "@/pages/api/firebase";
+import { tokenToID } from '@/pages/api/firebase';
 // @ts-ignore
-import { getRobloxUsers } from "@/lib/utils";
+import mergician from 'mergician';
+import moment from 'moment';
+import { NextApiRequest, NextApiResponse } from 'next';
+
+import clientPromise from '@/lib/mongodb';
 // @ts-ignore
-import mergician from "mergician";
-import moment from "moment";
-import { NextApiRequest, NextApiResponse } from "next";
+import { getRobloxUsers } from '@/lib/utils';
 
 const mergicianOptions = { appendArrays: true, dedupArrays: true };
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method !== "GET") {
-    return res.status(405).json({ message: "Method not allowed." });
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== 'GET') {
+    return res.status(405).json({ message: 'Method not allowed.' });
   }
 
   let { locationId, accessPointId, apiKey, userId } = req.query;
@@ -22,52 +20,41 @@ export default async function handler(
   const mongoClient = await clientPromise;
 
   const db = mongoClient.db(process.env.MONGODB_DB as string);
-  const dbAccessPoints = db.collection("accessPoints");
-  const dbLocations = db.collection("locations");
-  const dbOrganizations = db.collection("organizations");
-  const dbUsers = db.collection("users");
-  const dbStatistics = db.collection("statistics");
+  const dbAccessPoints = db.collection('accessPoints');
+  const dbLocations = db.collection('locations');
+  const dbOrganizations = db.collection('organizations');
+  const dbUsers = db.collection('users');
+  const dbStatistics = db.collection('statistics');
   const timestamp = new Date();
 
   // check if API key is empty
   if (!apiKey) {
-    return res
-      .status(401)
-      .json({ success: false, message: "No API key provided" });
+    return res.status(401).json({ success: false, message: 'No API key provided' });
   }
 
   // get location
   const location = await dbLocations.findOne({ id: locationId });
   if (!location) {
-    return res
-      .status(404)
-      .json({ success: false, message: "Location not found" });
+    return res.status(404).json({ success: false, message: 'Location not found' });
   }
 
   // get organization
   const organization = await dbOrganizations.findOne({
-    id: location.organizationId,
+    id: location.organizationId
   });
   if (!organization) {
-    return res
-      .status(404)
-      .json({ success: false, message: "Organization not found" });
+    return res.status(404).json({ success: false, message: 'Organization not found' });
   }
 
   // check API key
   if (!((apiKey as string) in organization.apiKeys)) {
-    return res.status(401).json({ success: false, message: "Invalid API key" });
+    return res.status(401).json({ success: false, message: 'Invalid API key' });
   }
 
   // get access point
-  const accessPoint = await dbAccessPoints.findOne(
-    { id: accessPointId },
-    { projection: { _id: 0 } }
-  );
+  const accessPoint = await dbAccessPoints.findOne({ id: accessPointId }, { projection: { _id: 0 } });
   if (!accessPoint) {
-    return res
-      .status(404)
-      .json({ success: false, message: "Access point not found" });
+    return res.status(404).json({ success: false, message: 'Access point not found' });
   }
 
   // TODO: finish this
@@ -76,9 +63,9 @@ export default async function handler(
   if (!accessPoint.config.active) {
     return res.status(200).json({
       success: true,
-      grant_type: "access_point_inactive",
-      response_code: "access_denied",
-      scan_data: accessPoint.config?.scanData?.denied || {},
+      grant_type: 'access_point_inactive',
+      response_code: 'access_denied',
+      scan_data: accessPoint.config?.scanData?.denied || {}
     });
   }
 
@@ -86,9 +73,9 @@ export default async function handler(
   if (!accessPoint.config.armed) {
     return res.status(200).json({
       success: true,
-      grant_type: "access_point_unarmed",
-      response_code: "access_granted",
-      scan_data: accessPoint.config?.scanData?.granted || {},
+      grant_type: 'access_point_unarmed',
+      response_code: 'access_granted',
+      scan_data: accessPoint.config?.scanData?.granted || {}
     });
   }
 
@@ -98,28 +85,22 @@ export default async function handler(
   // get all access groups that are open to everyone
   const openAccessGroups = Object.keys(organization.accessGroups).filter(
     (groupId) =>
-      (organization.accessGroups[groupId].type === "organization" ||
-      organization.accessGroups[groupId].locationId === locationId) &&
+      (organization.accessGroups[groupId].type === 'organization' ||
+        organization.accessGroups[groupId].locationId === locationId) &&
       organization.accessGroups[groupId]?.config?.openToEveryone
   );
 
   // get all organization members that belong to allowed groups
   let allowedOrganizationMembers = {} as any;
   for (const group of allowedGroups) {
-    for (const [memberId, member] of Object.entries(
-      organization.members
-    ) as any) {
-      if (
-        !((memberId as string) in allowedOrganizationMembers) &&
-        member.accessGroups.includes(group)
-      ) {
+    for (const [memberId, member] of Object.entries(organization.members) as any) {
+      if (!((memberId as string) in allowedOrganizationMembers) && member.accessGroups.includes(group)) {
         allowedOrganizationMembers[memberId] = member.accessGroups;
 
         // add open access groups to the user's allowed groups
-        allowedOrganizationMembers[memberId] = mergician(mergicianOptions)(
-          allowedOrganizationMembers[memberId],
-          { openAccessGroups }
-        );
+        allowedOrganizationMembers[memberId] = mergician(mergicianOptions)(allowedOrganizationMembers[memberId], {
+          openAccessGroups
+        });
       }
     }
   }
@@ -128,7 +109,7 @@ export default async function handler(
   let allowedRobloxIds = {} as any;
   for (const memberId of Object.keys(allowedOrganizationMembers)) {
     const member = organization.members[memberId];
-    if (member.type === "roblox") {
+    if (member.type === 'roblox') {
       allowedRobloxIds[member.id] = memberId;
     } else {
       const user = await dbUsers.findOne({ id: memberId }).then((user) => user);
@@ -138,9 +119,7 @@ export default async function handler(
     }
   }
 
-  let isAllowed = Object.keys(allowedRobloxIds).includes(
-    userId?.toString() as string
-  );
+  let isAllowed = Object.keys(allowedRobloxIds).includes(userId?.toString() as string);
 
   // check for access through roblox groups
   // get roblox groups and roles from user
@@ -149,7 +128,7 @@ export default async function handler(
 
   // make a list of allowed group roles from allowed groups
   const robloxMemberGroups = Object.values(organization.members).filter(
-    (member: any) => member.type === "roblox-group"
+    (member: any) => member.type === 'roblox-group'
   );
   for (const member of robloxMemberGroups as any) {
     for (const accessGroup of member.accessGroups) {
@@ -176,20 +155,14 @@ export default async function handler(
   // check if user has any allowed group roles
   for (const role of Object.keys(allowedGroupRoles)) {
     if (userGroupRoles.includes(parseInt(role))) {
-      console.log("user has allowed group role", role);
+      console.log('user has allowed group role', role);
       isAllowed = true;
-      groupScanData = mergician(mergicianOptions)(
-        groupScanData,
-        allowedGroupRoles[role]?.scanData || {}
-      );
+      groupScanData = mergician(mergicianOptions)(groupScanData, allowedGroupRoles[role]?.scanData || {});
       // get scan data from allowed groups' access groups
       for (const group of allowedGroupRoles[role]?.accessGroups) {
         if (organization.accessGroups[group]?.config?.active) {
-          groupScanData = mergician(mergicianOptions)(
-            groupScanData,
-            organization.accessGroups[group]?.scanData || {}
-          );
-          console.log("adding scan data from access group", group);
+          groupScanData = mergician(mergicianOptions)(groupScanData, organization.accessGroups[group]?.scanData || {});
+          console.log('adding scan data from access group', group);
         }
       }
     }
@@ -197,12 +170,12 @@ export default async function handler(
 
   // update global statistics
   await dbStatistics.updateOne(
-    { id: "global" },
+    { id: 'global' },
     {
       $inc: {
         [`scans.total`]: 1,
-        [`scans.${isAllowed ? "granted" : "denied"}`]: 1,
-      },
+        [`scans.${isAllowed ? 'granted' : 'denied'}`]: 1
+      }
     }
   );
 
@@ -216,23 +189,23 @@ export default async function handler(
         const webhook = accessPoint?.config?.webhook;
         const user = await dbUsers
           .findOne(
-            { "roblox.id": userId },
+            { 'roblox.id': userId },
             {
               projection: {
                 id: 1,
                 displayName: 1,
                 username: 1,
                 roblox: 1,
-                avatar: 1,
-              },
+                avatar: 1
+              }
             }
           )
           .then((user) => user);
         let member = organization.members[user?.id] || {
-          type: "roblox",
-          id: userId,
+          type: 'roblox',
+          id: userId
         };
-        if (member?.type === "roblox") {
+        if (member?.type === 'roblox') {
           const robloxUsers = await getRobloxUsers([member.id]);
           member.displayName = robloxUsers[member.id].displayName;
           member.username = robloxUsers[member.id].name;
@@ -244,60 +217,59 @@ export default async function handler(
 
         const avatarUrl = `${process.env.NEXT_PUBLIC_ROOT_URL}/images/logo-square.jpeg`;
         const webhookRes = await fetch(webhook.url, {
-          method: "POST",
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            username: "XCS",
+            username: 'XCS',
             avatar_url: avatarUrl,
             embeds: [
               {
-                title: "Access Scan Event",
+                title: 'Access Scan Event',
                 description: `A user has scanned ${accessPoint?.name}.`,
                 color: isAllowed ? 0x16db65 : 0xdb1616,
                 thumbnail: {
-                  url: member?.avatar || avatarUrl,
+                  url: member?.avatar || avatarUrl
                 },
                 author: {
-                  name: "Restrafes XCS",
-                  url: "https://xcs.restrafes.co",
-                  icon_url: avatarUrl,
+                  name: 'Restrafes XCS',
+                  url: 'https://xcs.restrafes.co',
+                  icon_url: avatarUrl
                 },
                 fields: [
                   {
-                    name:
-                      (member?.type !== "roblox" ? "XCS" : "Roblox") + " User",
+                    name: (member?.type !== 'roblox' ? 'XCS' : 'Roblox') + ' User',
                     value:
-                      member?.type === "roblox"
+                      member?.type === 'roblox'
                         ? `${member.displayName} (${userId})`
-                        : `${member.displayName} (@${member.roblox.username}) (${userId})`,
+                        : `${member.displayName} (@${member.roblox.username}) (${userId})`
                   },
                   {
-                    name: "Access Point",
-                    value: `${accessPoint?.name} (${location?.name})`,
+                    name: 'Access Point',
+                    value: `${accessPoint?.name} (${location?.name})`
                   },
                   {
-                    name: "Organization",
-                    value: organization?.name,
+                    name: 'Organization',
+                    value: organization?.name
                   },
                   {
-                    name: "Scan Result",
-                    value: isAllowed ? "Access Granted" : "Access Denied",
+                    name: 'Scan Result',
+                    value: isAllowed ? 'Access Granted' : 'Access Denied'
                   },
                   {
-                    name: "Scan Time",
-                    value: timestamp.toLocaleString("en-US", {
-                      timeZone: "America/New_York",
-                    }),
-                  },
+                    name: 'Scan Time',
+                    value: timestamp.toLocaleString('en-US', {
+                      timeZone: 'America/New_York'
+                    })
+                  }
                 ],
                 footer: {
-                  text: `If you wish to disable these messages, reconfigure the webhook from the access point's configuration page.`,
-                },
-              },
-            ],
-          }),
+                  text: `If you wish to disable these messages, reconfigure the webhook from the access point's configuration page.`
+                }
+              }
+            ]
+          })
         });
       }
     }
@@ -314,10 +286,7 @@ export default async function handler(
     if (memberGroups) {
       for (const group of Object.values(memberGroups) as any) {
         if (organization.accessGroups[group]?.config?.active) {
-          scanData = mergician(mergicianOptions)(
-            scanData,
-            organization.accessGroups[group]?.scanData || {}
-          );
+          scanData = mergician(mergicianOptions)(scanData, organization.accessGroups[group]?.scanData || {});
         }
       }
     }
@@ -328,10 +297,7 @@ export default async function handler(
     }
 
     // user scan data, user scan data overrides group scan data
-    scanData = mergician(mergicianOptions)(
-      scanData,
-      organization.members[memberId]?.scanData || {}
-    );
+    scanData = mergician(mergicianOptions)(scanData, organization.members[memberId]?.scanData || {});
 
     // access point scan data, access point scan data comes before everything else
     scanData = mergician(mergicianOptions)(
@@ -342,16 +308,16 @@ export default async function handler(
 
     res.status(200).json({
       success: true,
-      grant_type: "user_scan",
-      response_code: "access_granted",
-      scan_data: scanData || {},
+      grant_type: 'user_scan',
+      response_code: 'access_granted',
+      scan_data: scanData || {}
     });
   } else {
     res.status(200).json({
       success: true,
-      grant_type: "user_scan",
-      response_code: "access_denied",
-      scan_data: accessPoint.config?.scanData?.denied || {},
+      grant_type: 'user_scan',
+      response_code: 'access_denied',
+      scan_data: accessPoint.config?.scanData?.denied || {}
     });
   }
 }

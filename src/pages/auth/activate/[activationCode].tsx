@@ -1,8 +1,5 @@
-import Footer from "@/components/Footer";
-import Nav from "@/components/Nav";
-import Section from "@/components/section";
-import { auth } from "@/lib/firebase";
-import { useDisclosure } from "@chakra-ui/hooks";
+import { useEffect, useState } from 'react';
+
 import {
   Box,
   Button,
@@ -18,18 +15,26 @@ import {
   SkeletonText,
   Text,
   useColorModeValue,
-  useToast,
-} from "@chakra-ui/react";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { Field, Form, Formik } from "formik";
-import Head from "next/head";
-import NextLink from "next/link";
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import { BsDisplayFill } from "react-icons/bs";
-import { FaKey, FaSmileWink, FaUser } from "react-icons/fa";
-import { MdEmail, MdPin } from "react-icons/md";
-import { RiLockPasswordFill } from "react-icons/ri";
+  useToast
+} from '@chakra-ui/react';
+
+import { BsDisplayFill } from 'react-icons/bs';
+import { FaKey, FaSmileWink, FaUser } from 'react-icons/fa';
+import { MdEmail, MdPin } from 'react-icons/md';
+import { RiLockPasswordFill } from 'react-icons/ri';
+
+import { useDisclosure } from '@chakra-ui/hooks';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { Field, Form, Formik } from 'formik';
+import Head from 'next/head';
+import NextLink from 'next/link';
+import { useRouter } from 'next/router';
+
+import { auth } from '@/lib/firebase';
+
+import Footer from '@/components/Footer';
+import Nav from '@/components/Nav';
+import Section from '@/components/section';
 
 export default function Activate() {
   const toast = useToast();
@@ -41,10 +46,10 @@ export default function Activate() {
   useEffect(() => {
     if (activationCode) {
       fetch(`/api/v1/activation/${activationCode}`, {
-        method: "GET",
+        method: 'GET',
         headers: {
-          "Content-Type": "application/json",
-        },
+          'Content-Type': 'application/json'
+        }
       })
         .then((res) => {
           if (res.status === 200) {
@@ -59,11 +64,11 @@ export default function Activate() {
         .catch((error) => {
           toast({
             title: error.message,
-            status: "error",
+            status: 'error',
             duration: 5000,
-            isClosable: true,
+            isClosable: true
           });
-          router.push("/auth/login");
+          router.push('/auth/login');
         })
         .finally(() => {
           setLoading(false);
@@ -75,46 +80,76 @@ export default function Activate() {
     <>
       <Head>
         <title>Restrafes XCS – Activate Account</title>
-        <meta name="description" content="Restrafes XCS - Activate Account" />
-        <link rel="icon" href="/favicon.ico" />
-        <meta name="og:site_name" content="Restrafes XCS" />
-        <meta name="og:title" content="Restrafes XCS - Activate Account" />
-        <meta name="og:description" content="Activate your Restrafes XCS account." />
-        <meta name="og:type" content="website" />
-        <meta name="og:url" content="https://xcs.restrafes.co" />
-        <meta property="og:image" content="/images/logo-square.jpeg" />
-        <meta name="og:locale" content="en_US" />
+        <meta
+          name="description"
+          content="Restrafes XCS - Activate Account"
+        />
+        <link
+          rel="icon"
+          href="/favicon.ico"
+        />
+        <meta
+          name="og:site_name"
+          content="Restrafes XCS"
+        />
+        <meta
+          name="og:title"
+          content="Restrafes XCS - Activate Account"
+        />
+        <meta
+          name="og:description"
+          content="Activate your Restrafes XCS account."
+        />
+        <meta
+          name="og:type"
+          content="website"
+        />
+        <meta
+          name="og:url"
+          content="https://xcs.restrafes.co"
+        />
+        <meta
+          property="og:image"
+          content="/images/logo-square.jpeg"
+        />
+        <meta
+          name="og:locale"
+          content="en_US"
+        />
       </Head>
       <Nav />
       <Flex
-        position={"relative"}
-        minH={"calc(100vh - 6rem)"}
-        align={"center"}
-        justify={"center"}
+        position={'relative'}
+        minH={'calc(100vh - 6rem)'}
+        align={'center'}
+        justify={'center'}
       >
         <Flex
-          position={"relative"}
-          align={"center"}
-          justify={"center"}
-          height={"100%"}
+          position={'relative'}
+          align={'center'}
+          justify={'center'}
+          height={'100%'}
         >
           <Section>
             <Flex
-              position={"relative"}
+              position={'relative'}
               p={8}
               pb={16}
-              flexDir={"column"}
-              align={"center"}
-              outline={["0px solid", "1px solid"]}
-              outlineColor={[
-                "unset",
-                useColorModeValue("gray.200", "gray.700"),
-              ]}
-              rounded={"lg"}
-              w={["full", "md"]}
+              flexDir={'column'}
+              align={'center'}
+              outline={['0px solid', '1px solid']}
+              outlineColor={['unset', useColorModeValue('gray.200', 'gray.700')]}
+              rounded={'lg'}
+              w={['full', 'md']}
             >
-              <Box w={"full"} px={[0, 8]}>
-                <Text fontSize={"3xl"} fontWeight={"bold"}>
+              <Box
+                w={'full'}
+                px={[0, 8]}
+              >
+                <Text
+                  fontSize={'3xl'}
+                  fontWeight={'bold'}
+                >
                   Activate Account
                 </Text>
               </Box>
@@ -122,23 +157,23 @@ export default function Activate() {
               <Box px={[0, 8]}>
                 <Formik
                   initialValues={{
-                    displayName: "",
-                    email: "",
-                    username: "",
-                    password: "",
+                    displayName: '',
+                    email: '',
+                    username: '',
+                    password: ''
                   }}
                   onSubmit={(values, actions) => {
                     fetch(`/api/v1/activation/${activationCode}`, {
-                      method: "POST",
+                      method: 'POST',
                       headers: {
-                        "Content-Type": "application/json",
+                        'Content-Type': 'application/json'
                       },
                       body: JSON.stringify({
                         displayName: values.displayName,
                         email: values.email,
                         username: values.username,
-                        password: values.password,
-                      }),
+                        password: values.password
+                      })
                     })
                       .then((res) => {
                         if (res.status === 200) {
@@ -151,22 +186,21 @@ export default function Activate() {
                       })
                       .then((res) => {
                         toast({
-                          title: "Account created.",
-                          description: "You can now log in.",
-                          status: "success",
+                          title: 'Account created.',
+                          description: 'You can now log in.',
+                          status: 'success',
                           duration: 5000,
-                          isClosable: true,
+                          isClosable: true
                         });
-                        router.push("/auth/login");
+                        router.push('/auth/login');
                       })
                       .catch((error) => {
                         toast({
-                          title:
-                            "There was an error while creating your account.",
+                          title: 'There was an error while creating your account.',
                           description: error.message,
-                          status: "error",
+                          status: 'error',
                           duration: 5000,
-                          isClosable: true,
+                          isClosable: true
                         });
                       })
                       .finally(() => {
@@ -176,7 +210,10 @@ export default function Activate() {
                 >
                   {(props) => (
                     <Form>
-                      <HStack my={2} spacing={2}>
+                      <HStack
+                        my={2}
+                        spacing={2}
+                      >
                         <Field name="displayName">
                           {({ field, form }: any) => (
                             <FormControl isRequired={true}>
@@ -192,14 +229,17 @@ export default function Activate() {
                                     {...field}
                                     type="text"
                                     placeholder="Display Name"
-                                    variant={"outline"}
+                                    variant={'outline'}
                                   />
                                 </InputGroup>
                               </Skeleton>
                             </FormControl>
                           )}
                         </Field>
-                        <Field name="username" isRequired={true}>
+                        <Field
+                          name="username"
+                          isRequired={true}
+                        >
                           {({ field, form }: any) => (
                             <FormControl isRequired={true}>
                               <Skeleton isLoaded={!loading}>
@@ -214,7 +254,7 @@ export default function Activate() {
                                     {...field}
                                     type="text"
                                     placeholder="Username"
-                                    variant={"outline"}
+                                    variant={'outline'}
                                   />
                                 </InputGroup>
                               </Skeleton>
@@ -222,7 +262,10 @@ export default function Activate() {
                           )}
                         </Field>
                       </HStack>
-                      <Field name="email" isRequired={true}>
+                      <Field
+                        name="email"
+                        isRequired={true}
+                      >
                         {({ field, form }: any) => (
                           <FormControl isRequired={true}>
                             <Skeleton isLoaded={!loading}>
@@ -237,7 +280,7 @@ export default function Activate() {
                                   {...field}
                                   type="text"
                                   placeholder="Email"
-                                  variant={"outline"}
+                                  variant={'outline'}
                                 />
                               </InputGroup>
                             </Skeleton>
@@ -259,7 +302,7 @@ export default function Activate() {
                                   {...field}
                                   type="password"
                                   placeholder="Password"
-                                  variant={"outline"}
+                                  variant={'outline'}
                                 />
                               </InputGroup>
                             </Skeleton>
@@ -281,7 +324,7 @@ export default function Activate() {
                                   {...field}
                                   type="text"
                                   placeholder="Activation Code"
-                                  variant={"outline"}
+                                  variant={'outline'}
                                   isDisabled={true}
                                   value={activationCode}
                                 />
@@ -293,35 +336,38 @@ export default function Activate() {
                       <Skeleton isLoaded={!loading}>
                         <Button
                           my={2}
-                          w={"full"}
+                          w={'full'}
                           isLoading={props.isSubmitting}
-                          type={"submit"}
+                          type={'submit'}
                         >
                           Register
                         </Button>
                       </Skeleton>
 
-                      <Text fontSize={"sm"} mb={2}>
-                        By creating an account, you agree to our{" "}
-                        <Text as={"span"}>
+                      <Text
+                        fontSize={'sm'}
+                        mb={2}
+                      >
+                        By creating an account, you agree to our{' '}
+                        <Text as={'span'}>
                           <Link
                             as={NextLink}
-                            href={"/terms"}
-                            textDecor={"underline"}
+                            href={'/terms'}
+                            textDecor={'underline'}
                             textUnderlineOffset={4}
-                            whiteSpace={"nowrap"}
+                            whiteSpace={'nowrap'}
                           >
                             Terms of Service
                           </Link>
-                        </Text>{" "}
-                        and{" "}
-                        <Text as={"span"}>
+                        </Text>{' '}
+                        and{' '}
+                        <Text as={'span'}>
                           <Link
                             as={NextLink}
-                            href={"/privacy"}
-                            textDecor={"underline"}
+                            href={'/privacy'}
+                            textDecor={'underline'}
                             textUnderlineOffset={4}
-                            whiteSpace={"nowrap"}
+                            whiteSpace={'nowrap'}
                           >
                             Privacy Policy
                           </Link>
@@ -331,15 +377,15 @@ export default function Activate() {
                     </Form>
                   )}
                 </Formik>
-                <Text fontSize={"sm"}>
-                  Already have an account?{" "}
+                <Text fontSize={'sm'}>
+                  Already have an account?{' '}
                   <Box
                     as={NextLink}
                     href="/auth/login"
-                    textDecor={"underline"}
+                    textDecor={'underline'}
                     textUnderlineOffset={4}
-                    transition={"all 0.15s ease"}
-                    _hover={{ color: ["gray.300", "gray.500"] }}
+                    transition={'all 0.15s ease'}
+                    _hover={{ color: ['gray.300', 'gray.500'] }}
                   >
                     Login
                   </Box>

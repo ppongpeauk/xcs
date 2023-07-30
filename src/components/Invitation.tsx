@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useAuthContext } from "@/contexts/AuthContext";
+import { useEffect, useState } from 'react';
+
 import {
   Avatar,
   Box,
@@ -17,13 +18,16 @@ import {
   SkeletonText,
   Text,
   useColorModeValue,
-  useToast,
-} from "@chakra-ui/react";
-import Head from "next/head";
-import NextLink from "next/link";
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import Section from "./section";
+  useToast
+} from '@chakra-ui/react';
+
+import Head from 'next/head';
+import NextLink from 'next/link';
+import { useRouter } from 'next/router';
+
+import { useAuthContext } from '@/contexts/AuthContext';
+
+import Section from './section';
 
 export default function Invitation({ invite }: { invite: any }) {
   const { query, push } = useRouter();
@@ -41,23 +45,19 @@ export default function Invitation({ invite }: { invite: any }) {
 
   const acceptInvite = async () => {
     setIsAcceptLoading(true);
-    if (invite.type === "organization") {
+    if (invite.type === 'organization') {
       push(`/platform/organizations/?invitation=${query.id}`);
-    } else if (invite.type === "xcs") {
+    } else if (invite.type === 'xcs') {
       push(`/auth/activate/${query.id}`);
     }
   };
 
   const inviteTypeSwitch = (type: string) => {
     switch (type) {
-      case "organization":
-        return "join their organization";
-      case "xcs":
-        return (
-          <>
-            create an account.
-          </>
-        );
+      case 'organization':
+        return 'join their organization';
+      case 'xcs':
+        return <>create an account.</>;
       default:
         return null;
     }
@@ -68,81 +68,88 @@ export default function Invitation({ invite }: { invite: any }) {
       <Head>
         <title>Restrafes XCS – Invitation</title>
       </Head>
-      <Container maxW={"container.lg"} h={"100dvh"}>
+      <Container
+        maxW={'container.lg'}
+        h={'100dvh'}
+      >
         <Flex
-          pos={"relative"}
-          flexDir={"column"}
-          align={"center"}
-          justify={"center"}
-          h={"full"}
+          pos={'relative'}
+          flexDir={'column'}
+          align={'center'}
+          justify={'center'}
+          h={'full'}
           bottom={[0, 8]}
         >
-          <Link as={NextLink} my={8} href={"/"}>
+          <Link
+            as={NextLink}
+            my={8}
+            href={'/'}
+          >
             <Image
-              src={useColorModeValue(
-                "/images/logo-black.png",
-                "/images/logo-white.png"
-              )}
-              alt={"Restrafes XCS Logo"}
-              w={"auto"}
-              h={"24px"}
-              objectFit={"contain"}
-              transition={"filter 0.2s ease"}
+              src={useColorModeValue('/images/logo-black.png', '/images/logo-white.png')}
+              alt={'Restrafes XCS Logo'}
+              w={'auto'}
+              h={'24px'}
+              objectFit={'contain'}
+              transition={'filter 0.2s ease'}
               _hover={{
-                filter: useColorModeValue("opacity(0.75)", "brightness(0.75)"),
+                filter: useColorModeValue('opacity(0.75)', 'brightness(0.75)')
               }}
               _active={{
-                filter: useColorModeValue("opacity(0.5)", "brightness(0.5)"),
+                filter: useColorModeValue('opacity(0.5)', 'brightness(0.5)')
               }}
             />
           </Link>
 
           <Flex
-            w={["100%", "480px"]}
-            aspectRatio={invite ? 1 / 1.25 : "unset"}
-            rounded={"xl"}
-            border={["none", "1px solid"]}
-            borderColor={["none", useColorModeValue("gray.300", "gray.600")]}
-            direction={"column"}
-            align={"center"}
-            justify={"space-between"}
+            w={['100%', '480px']}
+            aspectRatio={invite ? 1 / 1.25 : 'unset'}
+            rounded={'xl'}
+            border={['none', '1px solid']}
+            borderColor={['none', useColorModeValue('gray.300', 'gray.600')]}
+            direction={'column'}
+            align={'center'}
+            justify={'space-between'}
             p={[4, 8]}
           >
-            <Box w={"full"}>
+            <Box w={'full'}>
               <Skeleton isLoaded={!loading}>
                 <Text
-                  as={"h2"}
-                  fontSize={"3xl"}
-                  fontWeight={"900"}
-                  letterSpacing={"tight"}
-                  w={"full"}
-                  textAlign={"center"}
+                  as={'h2'}
+                  fontSize={'3xl'}
+                  fontWeight={'900'}
+                  letterSpacing={'tight'}
+                  w={'full'}
+                  textAlign={'center'}
                 >
                   {invite
-                    ? invite.type === "organization"
+                    ? invite.type === 'organization'
                       ? "You've recieved an invitation"
                       : "You're invited to register"
-                    : "Invitation not found"}
+                    : 'Invitation not found'}
                 </Text>
               </Skeleton>
               <Skeleton isLoaded={!loading}>
-                <Text fontSize={"lg"} mb={2}>
+                <Text
+                  fontSize={'lg'}
+                  mb={2}
+                >
                   {invite ? (
                     <>
-                      {invite?.from?.displayName || invite?.from?.name.first} has invited you to{" "}
+                      {invite?.from?.displayName || invite?.from?.name.first} has invited you to{' '}
                       {inviteTypeSwitch(invite?.type)}
-                      {invite?.type === "organization" ? (
-                        <Text as={"span"} fontWeight={"bold"}>
-                          {", "}
+                      {invite?.type === 'organization' ? (
+                        <Text
+                          as={'span'}
+                          fontWeight={'bold'}
+                        >
+                          {', '}
                           {invite.organization.name}
                         </Text>
                       ) : null}
                     </>
                   ) : (
-                    <>
-                      The invitation you are looking for is either invalid or no
-                      longer exists.
-                    </>
+                    <>The invitation you are looking for is either invalid or no longer exists.</>
                   )}
                 </Text>
               </Skeleton>
@@ -150,51 +157,53 @@ export default function Invitation({ invite }: { invite: any }) {
             {invite ? (
               <>
                 <Flex
-                  align={"center"}
-                  justify={"center"}
+                  align={'center'}
+                  justify={'center'}
                   flexGrow={1}
-                  w={"full"}
+                  w={'full'}
                   p={[4, 8]}
                 >
                   <Skeleton
-                    display={"flex"}
+                    display={'flex'}
                     isLoaded={!loading}
-                    objectFit={"contain"}
-                    justifyContent={"center"}
-                    rounded={"full"}
+                    objectFit={'contain'}
+                    justifyContent={'center'}
+                    rounded={'full'}
                   >
                     <Avatar
                       src={invite?.from?.avatar}
-                      size={"full"}
-                      maxW={"240px"}
+                      size={'full'}
+                      maxW={'240px'}
                       aspectRatio={1 / 1}
-                      outline={"1px solid"}
-                      outlineColor={useColorModeValue("gray.300", "gray.600")}
+                      outline={'1px solid'}
+                      outlineColor={useColorModeValue('gray.300', 'gray.600')}
                     />
                   </Skeleton>
                 </Flex>
-                <Box w={"full"}>
+                <Box w={'full'}>
                   <Skeleton isLoaded={!loading}>
-                    {currentUser || invite.type === "xcs" ? (
+                    {currentUser || invite.type === 'xcs' ? (
                       <Button
-                        w={"full"}
+                        w={'full'}
                         my={2}
                         isLoading={isAcceptLoading}
                         onClick={acceptInvite}
-                        isDisabled={invite?.type === "xcs" && currentUser}
+                        isDisabled={invite?.type === 'xcs' && currentUser}
                       >
-                        {invite?.type === "xcs"
-                          ? (currentUser ? "You are logged in" : "Register & accept")
-                          : "Accept invitation"}
+                        {invite?.type === 'xcs'
+                          ? currentUser
+                            ? 'You are logged in'
+                            : 'Register & accept'
+                          : 'Accept invitation'}
                       </Button>
                     ) : (
                       <Button
-                        w={"full"}
+                        w={'full'}
                         my={2}
                         isLoading={isAcceptLoading}
                         onClick={() => {
                           setIsAcceptLoading(true);
-                          push("/login?redirect=/invitation/" + query.id);
+                          push('/login?redirect=/invitation/' + query.id);
                         }}
                       >
                         Login to accept
@@ -202,35 +211,41 @@ export default function Invitation({ invite }: { invite: any }) {
                     )}
                   </Skeleton>
                   <Skeleton isLoaded={!loading}>
-                    <Text fontSize={"sm"} my={2}>
-                      By accepting this invitation, you agree to the{" "}
-                      <Text as={"span"} fontWeight={"bold"}>
-                        Restrafes XCS
-                      </Text>{" "}
+                    <Text
+                      fontSize={'sm'}
+                      my={2}
+                    >
+                      By accepting this invitation, you agree to the{' '}
                       <Text
-                        as={"span"}
-                        fontWeight={"bold"}
-                        whiteSpace={"nowrap"}
+                        as={'span'}
+                        fontWeight={'bold'}
+                      >
+                        Restrafes XCS
+                      </Text>{' '}
+                      <Text
+                        as={'span'}
+                        fontWeight={'bold'}
+                        whiteSpace={'nowrap'}
                       >
                         <Link
                           as={NextLink}
-                          href={"/terms"}
-                          textDecor={"underline"}
+                          href={'/terms'}
+                          textDecor={'underline'}
                           textUnderlineOffset={4}
                         >
                           Terms of Service
                         </Link>
-                      </Text>{" "}
-                      and{" "}
+                      </Text>{' '}
+                      and{' '}
                       <Text
-                        as={"span"}
-                        fontWeight={"bold"}
-                        whiteSpace={"nowrap"}
+                        as={'span'}
+                        fontWeight={'bold'}
+                        whiteSpace={'nowrap'}
                       >
                         <Link
                           as={NextLink}
-                          href={"/privacy"}
-                          textDecor={"underline"}
+                          href={'/privacy'}
+                          textDecor={'underline'}
                           textUnderlineOffset={4}
                         >
                           Privacy Policy
@@ -243,8 +258,13 @@ export default function Invitation({ invite }: { invite: any }) {
               </>
             ) : (
               <>
-                <Box w={"full"}>
-                  <Button as={NextLink} href={"/"} w={"full"} mt={4}>
+                <Box w={'full'}>
+                  <Button
+                    as={NextLink}
+                    href={'/'}
+                    w={'full'}
+                    mt={4}
+                  >
                     Return to Home
                   </Button>
                 </Box>

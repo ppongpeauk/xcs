@@ -1,24 +1,24 @@
-import { TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons";
-import { Table, Tbody, Td, Th, Thead, Tr, chakra } from "@chakra-ui/react";
+import * as React from 'react';
+
+import { Table, Tbody, Td, Th, Thead, Tr, chakra } from '@chakra-ui/react';
+
+import { TriangleDownIcon, TriangleUpIcon } from '@chakra-ui/icons';
+
 import {
   ColumnDef,
   SortingState,
   flexRender,
   getCoreRowModel,
   getSortedRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-import * as React from "react";
+  useReactTable
+} from '@tanstack/react-table';
 
 export type DataTableProps<Data extends object> = {
   data: Data[];
   columns: ColumnDef<Data, any>[];
 };
 
-export function DataTable<Data extends object>({
-  data,
-  columns,
-}: DataTableProps<Data>) {
+export function DataTable<Data extends object>({ data, columns }: DataTableProps<Data>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const table = useReactTable({
     columns,
@@ -27,8 +27,8 @@ export function DataTable<Data extends object>({
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     state: {
-      sorting,
-    },
+      sorting
+    }
   });
 
   return (
@@ -45,14 +45,11 @@ export function DataTable<Data extends object>({
                   onClick={header.column.getToggleSortingHandler()}
                   isNumeric={meta?.isNumeric}
                 >
-                  {flexRender(
-                    header.column.columnDef.header,
-                    header.getContext()
-                  )}
+                  {flexRender(header.column.columnDef.header, header.getContext())}
 
-                  <chakra.span pl={"4"}>
+                  <chakra.span pl={'4'}>
                     {header.column.getIsSorted() ? (
-                      header.column.getIsSorted() === "desc" ? (
+                      header.column.getIsSorted() === 'desc' ? (
                         <TriangleDownIcon aria-label="sorted descending" />
                       ) : (
                         <TriangleUpIcon aria-label="sorted ascending" />
@@ -72,7 +69,10 @@ export function DataTable<Data extends object>({
               // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
               const meta: any = cell.column.columnDef.meta;
               return (
-                <Td key={cell.id} isNumeric={meta?.isNumeric}>
+                <Td
+                  key={cell.id}
+                  isNumeric={meta?.isNumeric}
+                >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </Td>
               );

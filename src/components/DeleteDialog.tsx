@@ -7,10 +7,18 @@ import {
   AlertDialogHeader,
   AlertDialogOverlay,
   Button,
-  useColorModeValue,
-} from "@chakra-ui/react";
+  useColorModeValue
+} from '@chakra-ui/react';
 
-export default function DeleteDialog({ isOpen, onClose, cancelRef, onDelete, title, body, buttonText="Delete" } : any) {
+export default function DeleteDialog({
+  isOpen,
+  onClose,
+  cancelRef,
+  onDelete,
+  title,
+  body,
+  buttonText = 'Delete'
+}: any) {
   return (
     <>
       <AlertDialog
@@ -20,24 +28,29 @@ export default function DeleteDialog({ isOpen, onClose, cancelRef, onDelete, tit
         isCentered
       >
         <AlertDialogOverlay>
-          <AlertDialogContent bg={useColorModeValue("white", "gray.800")}>
-            <AlertDialogHeader fontSize="lg" fontWeight="bold" pb={2}>
-              {
-                title ? title : "Delete item"
-              }
+          <AlertDialogContent bg={useColorModeValue('white', 'gray.800')}>
+            <AlertDialogHeader
+              fontSize="lg"
+              fontWeight="bold"
+              pb={2}
+            >
+              {title ? title : 'Delete item'}
             </AlertDialogHeader>
 
-            <AlertDialogBody>
-              {
-                body ? body : "Are you sure? You can't undo this action afterwards."
-              }
-            </AlertDialogBody>
+            <AlertDialogBody>{body ? body : "Are you sure? You can't undo this action afterwards."}</AlertDialogBody>
 
             <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={onClose}>
+              <Button
+                ref={cancelRef}
+                onClick={onClose}
+              >
                 Cancel
               </Button>
-              <Button colorScheme={"red"} onClick={onDelete} ml={3}>
+              <Button
+                colorScheme={'red'}
+                onClick={onDelete}
+                ml={3}
+              >
                 {buttonText}
               </Button>
             </AlertDialogFooter>

@@ -1,4 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+import { useCallback, useRef } from 'react';
+
 import {
   Button,
   FormControl,
@@ -15,22 +17,23 @@ import {
   Textarea,
   VStack,
   useColorModeValue,
-  useToast,
-} from "@chakra-ui/react";
-import { Field, Form, Formik } from "formik";
+  useToast
+} from '@chakra-ui/react';
 
-import { useAuthContext } from "@/contexts/AuthContext";
-import { agKV, agNames, roleToText, textToRole } from "@/lib/utils";
-import { AccessGroup, Organization } from "@/types";
-import { AsyncSelect, CreatableSelect, Select } from "chakra-react-select";
-import { useCallback, useRef } from "react";
+import { AccessGroup, Organization } from '@/types';
+import { AsyncSelect, CreatableSelect, Select } from 'chakra-react-select';
+import { Field, Form, Formik } from 'formik';
+
+import { agKV, agNames, roleToText, textToRole } from '@/lib/utils';
+
+import { useAuthContext } from '@/contexts/AuthContext';
 
 export default function InviteOrganizationRobloxModal({
   isOpen,
   onClose,
   onAdd,
   organization,
-  accessGroupOptions,
+  accessGroupOptions
 }: {
   isOpen: boolean;
   onClose: () => void;
@@ -44,11 +47,11 @@ export default function InviteOrganizationRobloxModal({
   const { user } = useAuthContext();
 
   const getAccessGroupType = (ag: AccessGroup) => {
-    if (ag.type === "organization") {
-      return "Organization";
-    } else if (ag.type === "location") {
+    if (ag.type === 'organization') {
+      return 'Organization';
+    } else if (ag.type === 'location') {
       // TODO: get location name
-      return ag.locationName || ag.locationId || "Unknown";
+      return ag.locationName || ag.locationId || 'Unknown';
     } else {
       return ag.type;
     }
@@ -57,8 +60,7 @@ export default function InviteOrganizationRobloxModal({
   const getAccessGroupOptions = useCallback(
     (organization: Organization) => {
       if (!organization) return [];
-      const ags =
-        Object.values(organization?.accessGroups as AccessGroup[]) || [];
+      const ags = Object.values(organization?.accessGroups as AccessGroup[]) || [];
       interface Group {
         label: string;
         options: {
@@ -76,7 +78,7 @@ export default function InviteOrganizationRobloxModal({
             .find((g: Group) => g.label === getAccessGroupType(ag))
             .options.push({
               label: ag.name,
-              value: ag.id,
+              value: ag.id
             });
         } else {
           // if it's not, add the group to the groups array
@@ -85,17 +87,17 @@ export default function InviteOrganizationRobloxModal({
             options: [
               {
                 label: ag.name,
-                value: ag.id,
-              },
-            ],
+                value: ag.id
+              }
+            ]
           });
         }
       });
 
       // sort the groups so organizations are at the bottom
       groups.sort((a: Group, b: Group) => {
-        if (a.label === "Organization") return 1;
-        if (b.label === "Organization") return -1;
+        if (a.label === 'Organization') return 1;
+        if (b.label === 'Organization') return -1;
         return 0;
       });
 
@@ -108,21 +110,21 @@ export default function InviteOrganizationRobloxModal({
     <>
       <Formik
         enableReinitialize={true}
-        initialValues={{ username: "", accessGroups: [] }}
+        initialValues={{ username: '', accessGroups: [] }}
         onSubmit={(values, actions) => {
           user.getIdToken().then((token: any) => {
             fetch(`/api/v1/organizations/${organization.id}/members`, {
-              method: "POST",
+              method: 'POST',
               headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`
               },
               body: JSON.stringify({
-                type: "roblox",
+                type: 'roblox',
                 username: values.username,
 
-                accessGroups: values?.accessGroups?.map((ag: any) => ag?.value),
-              }),
+                accessGroups: values?.accessGroups?.map((ag: any) => ag?.value)
+              })
             })
               .then((res) => {
                 if (res.status === 200) {
@@ -136,9 +138,9 @@ export default function InviteOrganizationRobloxModal({
               .then((data) => {
                 toast({
                   title: data.message,
-                  status: "success",
+                  status: 'success',
                   duration: 5000,
-                  isClosable: true,
+                  isClosable: true
                 });
                 onClose();
                 onAdd();
@@ -146,12 +148,11 @@ export default function InviteOrganizationRobloxModal({
               })
               .catch((error) => {
                 toast({
-                  title:
-                    "There was an error adding a Roblox user to your organization.",
+                  title: 'There was an error adding a Roblox user to your organization.',
                   description: error.message,
-                  status: "error",
+                  status: 'error',
                   duration: 5000,
-                  isClosable: true,
+                  isClosable: true
                 });
               })
               .finally(() => {
@@ -161,10 +162,15 @@ export default function InviteOrganizationRobloxModal({
         }}
       >
         {(props) => (
-          <Modal isOpen={isOpen} onClose={onClose} isCentered allowPinchZoom>
+          <Modal
+            isOpen={isOpen}
+            onClose={onClose}
+            isCentered
+            allowPinchZoom
+          >
             <ModalOverlay />
             <Form>
-              <ModalContent bg={useColorModeValue("white", "gray.800")}>
+              <ModalContent bg={useColorModeValue('white', 'gray.800')}>
                 <ModalHeader pb={2}>Add Roblox Member</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody pb={4}>
@@ -175,12 +181,12 @@ export default function InviteOrganizationRobloxModal({
                           <FormLabel>Username</FormLabel>
                           <Input
                             {...field}
-                            type={"username"}
-                            variant={"outline"}
-                            placeholder={"Roblox Username"}
-                            autoComplete={"off"}
-                            autoCorrect={"off"}
-                            spellCheck={"false"}
+                            type={'username'}
+                            variant={'outline'}
+                            placeholder={'Roblox Username'}
+                            autoComplete={'off'}
+                            autoCorrect={'off'}
+                            spellCheck={'false'}
                           />
                         </FormControl>
                       )}
@@ -191,34 +197,36 @@ export default function InviteOrganizationRobloxModal({
                           <FormLabel>Access Groups</FormLabel>
                           <Select
                             {...field}
-                            variant={"outline"}
+                            variant={'outline'}
                             options={accessGroupOptions}
                             onChange={(value) => {
-                              form.setFieldValue("accessGroups", value);
+                              form.setFieldValue('accessGroups', value);
                             }}
                             value={field.value || []}
                             placeholder="Select an access group..."
                             isMulti
                             closeMenuOnSelect={false}
                             hideSelectedOptions={false}
-                            selectedOptionStyle={"check"}
+                            selectedOptionStyle={'check'}
                           />
                         </FormControl>
                       )}
                     </Field>
                   </VStack>
-                  <Text fontSize={"sm"} pt={2}>
-                    Add a Roblox user that isn&apos;t registered on XCS to your
-                    organization.
+                  <Text
+                    fontSize={'sm'}
+                    pt={2}
+                  >
+                    Add a Roblox user that isn&apos;t registered on XCS to your organization.
                   </Text>
                 </ModalBody>
 
                 <ModalFooter>
                   <Button
-                    colorScheme={"blue"}
+                    colorScheme={'blue'}
                     mr={3}
                     isLoading={props.isSubmitting}
-                    type={"submit"}
+                    type={'submit'}
                   >
                     Add Roblox User
                   </Button>

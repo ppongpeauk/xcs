@@ -1,12 +1,13 @@
-import clientPromise from "@/lib/mongodb";
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextApiRequest, NextApiResponse } from 'next';
+
+import clientPromise from '@/lib/mongodb';
 
 // number to boolean
 const bv = (v: string) => {
   switch (v) {
-    case "0":
+    case '0':
       return false;
-    case "1":
+    case '1':
       return true;
     default:
       return false;
@@ -14,8 +15,8 @@ const bv = (v: string) => {
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
-  if (req.method !== "GET") {
-    res.status(400).json({ success: false, error: "Bad request" });
+  if (req.method !== 'GET') {
+    res.status(400).json({ success: false, error: 'Bad request' });
     return;
   }
 
@@ -24,7 +25,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse): Promise<void>
 
   // reject if id is missing
   if (!id) {
-    res.status(200).json({ success: false, error: "Missing id parameter" });
+    res.status(200).json({ success: false, error: 'Missing id parameter' });
     return;
   }
 
@@ -33,17 +34,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse): Promise<void>
   const db = client.db(process.env.MONGODB_DB as string);
 
   // get licenses
-  const licenses = await db
-    .collection("licenses")
-    .find({ subjectId: id })
-    .toArray();
+  const licenses = await db.collection('licenses').find({ subjectId: id }).toArray();
 
   // no licenses under this id found
   if (licenses.length === 0) {
     res.status(200).json({
       success: true,
       subjectId: id,
-      groupId: "-1",
+      groupId: '-1',
       productsOwned: {
         monospace0: false,
         polaris0: false,
@@ -64,7 +62,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse): Promise<void>
   res.status(200).json({
     success: true,
     subjectId: id,
-    groupId: "-1",
+    groupId: '-1',
     productsOwned
   });
 };

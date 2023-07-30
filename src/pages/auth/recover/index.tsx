@@ -1,27 +1,31 @@
-import Footer from "@/components/Footer";
-import Nav from "@/components/Nav";
-import Section from "@/components/section";
+import { useEffect, useState } from 'react';
+
 import {
-    Box,
-    Button,
-    Flex,
-    FormControl,
-    FormLabel,
-    Input,
-    InputGroup,
-    InputLeftElement,
-    Link,
-    Text,
-    useColorModeValue,
-    useToast,
-} from "@chakra-ui/react";
-import { getAuth, sendPasswordResetEmail } from "firebase/auth";
-import { Field, Form, Formik } from "formik";
-import Head from "next/head";
-import NextLink from "next/link";
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import { MdEmail } from "react-icons/md";
+  Box,
+  Button,
+  Flex,
+  FormControl,
+  FormLabel,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  Link,
+  Text,
+  useColorModeValue,
+  useToast
+} from '@chakra-ui/react';
+
+import { MdEmail } from 'react-icons/md';
+
+import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
+import { Field, Form, Formik } from 'formik';
+import Head from 'next/head';
+import NextLink from 'next/link';
+import { useRouter } from 'next/router';
+
+import Footer from '@/components/Footer';
+import Nav from '@/components/Nav';
+import Section from '@/components/section';
 
 export default function Recover() {
   const auth = getAuth();
@@ -30,69 +34,100 @@ export default function Recover() {
   const toast = useToast();
 
   const redirect = () => {
-    push("/auth/login");
+    push('/auth/login');
   };
 
   return (
     <>
       <Head>
         <title>Restrafes XCS – Recover Account</title>
-        <meta name="description" content="Restrafes XCS - Recover Account" />
-        <link rel="icon" href="/favicon.ico" />
-        <meta name="og:site_name" content="Restrafes XCS" />
-        <meta name="og:title" content="Restrafes XCS - Recover Account" />
-        <meta name="og:description" content="Recover your Restrafes XCS account." />
-        <meta name="og:type" content="website" />
-        <meta name="og:url" content="https://xcs.restrafes.co" />
-        <meta property="og:image" content="/images/logo-square.jpeg" />
-        <meta name="og:locale" content="en_US" />
+        <meta
+          name="description"
+          content="Restrafes XCS - Recover Account"
+        />
+        <link
+          rel="icon"
+          href="/favicon.ico"
+        />
+        <meta
+          name="og:site_name"
+          content="Restrafes XCS"
+        />
+        <meta
+          name="og:title"
+          content="Restrafes XCS - Recover Account"
+        />
+        <meta
+          name="og:description"
+          content="Recover your Restrafes XCS account."
+        />
+        <meta
+          name="og:type"
+          content="website"
+        />
+        <meta
+          name="og:url"
+          content="https://xcs.restrafes.co"
+        />
+        <meta
+          property="og:image"
+          content="/images/logo-square.jpeg"
+        />
+        <meta
+          name="og:locale"
+          content="en_US"
+        />
       </Head>
       <Nav />
-      <Box position={"relative"} h={"calc(100vh - 6rem)"}>
+      <Box
+        position={'relative'}
+        h={'calc(100vh - 6rem)'}
+      >
         <Flex
-          position={"relative"}
-          align={"center"}
-          justify={"center"}
-          height={"100%"}
+          position={'relative'}
+          align={'center'}
+          justify={'center'}
+          height={'100%'}
         >
           <Section>
             <Flex
-              position={"relative"}
+              position={'relative'}
               p={8}
               pb={16}
               bottom={[0, 16]}
-              flexDir={"column"}
-              align={"center"}
-              outline={["0px solid", "1px solid"]}
-              outlineColor={[
-                "unset",
-                useColorModeValue("gray.200", "gray.700"),
-              ]}
-              rounded={"lg"}
-              w={["full", "md"]}
+              flexDir={'column'}
+              align={'center'}
+              outline={['0px solid', '1px solid']}
+              outlineColor={['unset', useColorModeValue('gray.200', 'gray.700')]}
+              rounded={'lg'}
+              w={['full', 'md']}
             >
-              <Box w={"full"} px={8}>
-                <Text fontSize={"3xl"} fontWeight={"bold"}>
+              <Box
+                w={'full'}
+                px={8}
+              >
+                <Text
+                  fontSize={'3xl'}
+                  fontWeight={'bold'}
+                >
                   Recover Account
                 </Text>
-                <Text fontSize={"md"}>
-                  Enter your email address to recover your account.
-                </Text>
+                <Text fontSize={'md'}>Enter your email address to recover your account.</Text>
               </Box>
               <br />
               <Box px={[0, 4]}>
                 <Formik
                   initialValues={{
-                    email: "",
+                    email: ''
                   }}
                   onSubmit={(values, actions) => {
                     sendPasswordResetEmail(auth, values.email)
                       .then(() => {
                         toast({
-                          title: "Password reset email sent. Please check your inbox.",
-                          status: "success",
+                          title: 'Password reset email sent. Please check your inbox.',
+                          status: 'success',
                           duration: 5000,
-                          isClosable: true,
+                          isClosable: true
                         });
                         redirect();
                       })
@@ -100,20 +135,20 @@ export default function Recover() {
                         const errorCode = error.code;
                         let errorMessage = error.message;
                         switch (errorCode) {
-                          case "auth/invalid-email":
+                          case 'auth/invalid-email':
                             errorMessage = "The email address you've entered is invalid. Please try again.";
                             break;
-                          case "auth/user-not-found":
+                          case 'auth/user-not-found':
                             errorMessage = "The email address you've entered is invalid. Please try again.";
                             break;
                           default:
-                            errorMessage = "An unknown error occurred.";
+                            errorMessage = 'An unknown error occurred.';
                         }
                         toast({
                           title: errorMessage,
-                          status: "error",
+                          status: 'error',
                           duration: 5000,
-                          isClosable: true,
+                          isClosable: true
                         });
                       })
                       .finally(() => {
@@ -135,7 +170,7 @@ export default function Recover() {
                                 {...field}
                                 type="text"
                                 placeholder="Email"
-                                variant={"outline"}
+                                variant={'outline'}
                               />
                             </InputGroup>
                           </FormControl>
@@ -143,16 +178,16 @@ export default function Recover() {
                       </Field>
                       <Button
                         my={2}
-                        w={"full"}
+                        w={'full'}
                         isLoading={props.isSubmitting}
-                        type={"submit"}
+                        type={'submit'}
                       >
                         Continue
                       </Button>
                     </Form>
                   )}
                 </Formik>
-                <Text fontSize={"sm"}>
+                <Text fontSize={'sm'}>
                   <Link
                     as={NextLink}
                     href="/auth/login"

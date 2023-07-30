@@ -1,26 +1,24 @@
-import clientPromise from "@/lib/mongodb";
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextApiRequest, NextApiResponse } from 'next';
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+import clientPromise from '@/lib/mongodb';
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { username } = req.query as { username: string };
 
   const mongoClient = await clientPromise;
   const db = mongoClient.db(process.env.MONGODB_DB as string);
-  const users = db.collection("users");
-  const organizations = db.collection("organizations");
+  const users = db.collection('users');
+  const organizations = db.collection('organizations');
   let user = (await users.findOne(
     { username: username },
     { projection: { email: 0, notifications: 0, alerts: 0, payment: 0 } }
   )) as any;
 
   if (!user) {
-    return res.status(404).json({ message: "User not found." });
+    return res.status(404).json({ message: 'User not found.' });
   }
 
-  if (req.method === "GET") {
+  if (req.method === 'GET') {
     let userOrgs = await organizations
       .find(
         { [`members.${user.id}`]: { $exists: true } },
@@ -31,9 +29,9 @@ export default async function handler(
     user.organizations = userOrgs;
 
     return res.status(200).json({
-      user: user,
+      user: user
     });
   }
 
-  return res.status(500).json({ message: "An unknown errror occurred." });
+  return res.status(500).json({ message: 'An unknown errror occurred.' });
 }

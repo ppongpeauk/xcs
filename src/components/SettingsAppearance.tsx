@@ -1,5 +1,3 @@
-import DeleteDialog from "@/components/DeleteDialog";
-import { useAuthContext } from "@/contexts/AuthContext";
 import {
   Box,
   Button,
@@ -12,9 +10,14 @@ import {
   Text,
   useColorMode,
   useDisclosure,
-  useToast,
-} from "@chakra-ui/react";
-import moment from "moment";
+  useToast
+} from '@chakra-ui/react';
+
+import moment from 'moment';
+
+import { useAuthContext } from '@/contexts/AuthContext';
+
+import DeleteDialog from '@/components/DeleteDialog';
 
 export default function SettingsAppearance() {
   const { currentUser, refreshCurrentUser, user } = useAuthContext();
@@ -26,19 +29,19 @@ export default function SettingsAppearance() {
     <>
       <FormControl>
         <FormLabel>Color Mode</FormLabel>
-        <Stack direction={{ base: "column", md: "row" }} spacing={4} h={"max-content"}>
+        <Stack
+          direction={{ base: 'column', md: 'row' }}
+          spacing={4}
+          h={'max-content'}
+        >
           <Button
-            variant={"unstyled"}
+            variant={'unstyled'}
             onClick={() => {
-              setColorMode("light");
+              setColorMode('light');
             }}
-            h={"fit-content"}
+            h={'fit-content'}
           >
-            <div
-              className={`items-center rounded-lg border-2 p-1 ${
-                colorMode === "light" ? "border-muted" : ""
-              }`}
-            >
+            <div className={`items-center rounded-lg border-2 p-1 ${colorMode === 'light' ? 'border-muted' : ''}`}>
               <div className="space-y-2 rounded-lg bg-[#ecedef] p-2">
                 <div className="space-y-2 rounded-md bg-white p-2 shadow-sm">
                   <div className="h-2 w-[80px] rounded-lg bg-[#ecedef]" />
@@ -54,20 +57,23 @@ export default function SettingsAppearance() {
                 </div>
               </div>
             </div>
-            <Text w={"full"} p={2}>
+            <Text
+              w={'full'}
+              p={2}
+            >
               Light
             </Text>
           </Button>
           <Button
-            variant={"unstyled"}
+            variant={'unstyled'}
             onClick={() => {
-              setColorMode("dark");
+              setColorMode('dark');
             }}
-            h={"fit-content"}
+            h={'fit-content'}
           >
             <div
               className={`items-center rounded-lg border-2 bg-popover p-1 ${
-                colorMode === "dark" ? "border-muted" : ""
+                colorMode === 'dark' ? 'border-muted' : ''
               }`}
             >
               <div className="space-y-2 rounded-lg bg-slate-950 p-2">
@@ -85,7 +91,10 @@ export default function SettingsAppearance() {
                 </div>
               </div>
             </div>
-            <Text w={"full"} p={2}>
+            <Text
+              w={'full'}
+              p={2}
+            >
               Dark
             </Text>
           </Button>

@@ -1,17 +1,8 @@
-import {
-  Box,
-  Button,
-  Checkbox,
-  Flex,
-  Heading,
-  Text,
-  useColorModeValue,
-} from "@chakra-ui/react";
+import * as React from 'react';
 
-import { DataTable } from "@/components/event-logs-table/data-table";
-import { TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons";
-import { ColumnDef } from "@tanstack/react-table";
-import * as React from "react";
+import { Box, Button, Checkbox, Flex, Heading, Text, useColorModeValue } from '@chakra-ui/react';
+
+import { TriangleDownIcon, TriangleUpIcon } from '@chakra-ui/icons';
 
 // import {
 //   DropdownMenu,
@@ -21,48 +12,57 @@ import * as React from "react";
 //   DropdownMenuSeparator,
 //   DropdownMenuTrigger,
 // } from "@/components/ui/dropdown-menu";
+import { BsThreeDots } from 'react-icons/bs';
 
-import { BsThreeDots } from "react-icons/bs";
+import { ColumnDef } from '@tanstack/react-table';
+
+import { DataTable } from '@/components/event-logs-table/data-table';
 
 type EventLog = {
   id: string;
   createdAt: string;
   type: string;
   access_point: string;
-  status: "success" | "pending" | "failed";
+  status: 'success' | 'pending' | 'failed';
   scanner: React.ReactNode;
 };
 
 export const logs: EventLog[] = [
   {
-    id: "728ed52f",
+    id: '728ed52f',
     createdAt: new Date().toISOString(),
-    type: "card_scan",
-    access_point: "Front Door",
-    status: "success",
+    type: 'card_scan',
+    access_point: 'Front Door',
+    status: 'success',
     scanner: (
-      <Text as="span" fontWeight="bold">
+      <Text
+        as="span"
+        fontWeight="bold"
+      >
         Eve Holloway
       </Text>
-    ),
+    )
   },
   {
-    id: "728ed52e",
+    id: '728ed52e',
     createdAt: new Date().toISOString(),
-    type: "card_scan",
-    access_point: "Front Door",
-    status: "success",
+    type: 'card_scan',
+    access_point: 'Front Door',
+    status: 'success',
     scanner: (
-      <Text as="span" fontWeight="bold">
+      <Text
+        as="span"
+        fontWeight="bold"
+      >
         Eve Holloway
       </Text>
-    ),
-  },
+    )
+  }
 ];
 
 const columns: ColumnDef<EventLog>[] = [
   {
-    id: "select",
+    id: 'select',
     header: ({ table }) => (
       <Checkbox
         colorScheme="gray"
@@ -80,37 +80,36 @@ const columns: ColumnDef<EventLog>[] = [
       />
     ),
     enableSorting: true,
-    enableHiding: false,
+    enableHiding: false
   },
   {
-    accessorKey: "type",
-    header: "Type",
+    accessorKey: 'type',
+    header: 'Type'
   },
   {
-    accessorKey: "access_point",
-    header: "Access Point Name",
+    accessorKey: 'access_point',
+    header: 'Access Point Name'
   },
   {
-    accessorKey: "scanner",
-    header: "Scanner Name",
+    accessorKey: 'scanner',
+    header: 'Scanner Name'
   },
   {
-    accessorKey: "createdAt",
-    header: "Scan Date",
+    accessorKey: 'createdAt',
+    header: 'Scan Date'
   },
   {
-    accessorKey: "status",
-    header: "Status",
+    accessorKey: 'status',
+    header: 'Status'
   },
   {
-    id: "actions",
+    id: 'actions',
     enableHiding: false,
     cell: ({ row }) => {
       const payment = row.original;
 
       return (
-        <>
-        </>
+        <></>
         // <DropdownMenu>
         //   <DropdownMenuTrigger asChild>
         //     <Button variant="ghost" className="h-8 w-8 p-0">
@@ -139,25 +138,33 @@ const columns: ColumnDef<EventLog>[] = [
         //   </DropdownMenuContent>
         // </DropdownMenu>
       );
-    },
-  },
+    }
+  }
 ];
 
 export default function LocationEventLogs() {
   return (
-    <Box h={"100%"}>
-      <Text as={"h1"} fontSize={"4xl"} fontWeight={"900"} mb={2}>
+    <Box h={'100%'}>
+      <Text
+        as={'h1'}
+        fontSize={'4xl'}
+        fontWeight={'900'}
+        mb={2}
+      >
         Event Logs
       </Text>
       <Flex
-        w={"full"}
-        h={"max-content"}
+        w={'full'}
+        h={'max-content'}
         // rounded={"xl"}
         // border={"1px solid"}
         // borderColor={useColorModeValue("gray.300", "gray.700")}
         // p={4}
       >
-        <DataTable columns={columns} data={logs} />
+        <DataTable
+          columns={columns}
+          data={logs}
+        />
       </Flex>
     </Box>
   );

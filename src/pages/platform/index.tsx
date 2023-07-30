@@ -1,7 +1,11 @@
-import { useAuthContext } from "@/contexts/AuthContext";
-import Layout from "@/layouts/PlatformLayout";
-import { Container, Heading } from "@chakra-ui/react";
-import Head from "next/head";
+import { Container, Heading } from '@chakra-ui/react';
+
+import Head from 'next/head';
+
+import { useAuthContext } from '@/contexts/AuthContext';
+
+import Layout from '@/layouts/PlatformLayout';
+
 export default function PlatformIndex() {
   const { currentUser } = useAuthContext();
 
@@ -10,9 +14,10 @@ export default function PlatformIndex() {
       <Head>
         <title>Restrafes XCS – Platform Index</title>
       </Head>
-      <Container maxW={"full"} p={8}>
-
-      </Container>
+      <Container
+        maxW={'full'}
+        p={8}
+      ></Container>
     </>
   );
 }
