@@ -541,7 +541,12 @@ export default function PlatformAccessPoint() {
                           options={tagsOptions}
                           placeholder="Select a tag..."
                           onChange={(value) => {
-                            form.setFieldValue('tags', value);
+                            form.setFieldValue('tags', value.map((v: any) => {
+                              return {
+                                label: v.value,
+                                value: v.value
+                              };
+                            }));
                           }}
                           value={field?.value}
                           isMulti
