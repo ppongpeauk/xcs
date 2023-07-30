@@ -577,8 +577,7 @@ export default function PlatformAccessPoint() {
                   Configuration
                 </Heading>
                 <Tabs
-                  isFitted
-                  variant="enclosed"
+                  isManual
                   colorScheme="gray"
                   py={2}
                 >
