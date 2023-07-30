@@ -30,11 +30,13 @@ export default function InviteOrganizationRobloxModal({
   onClose,
   onAdd,
   organization,
+  accessGroupOptions,
 }: {
   isOpen: boolean;
   onClose: () => void;
   onAdd: () => void;
   organization: any;
+  accessGroupOptions: any;
 }) {
   const toast = useToast();
   const initialRef = useRef(null);
@@ -190,7 +192,7 @@ export default function InviteOrganizationRobloxModal({
                           <Select
                             {...field}
                             variant={"outline"}
-                            options={getAccessGroupOptions(organization)}
+                            options={accessGroupOptions}
                             onChange={(value) => {
                               form.setFieldValue("accessGroups", value);
                             }}

@@ -199,12 +199,12 @@ export default function AccessGroupEditModal({
                 justify={"space-between"}
                 flexDir={{ base: "column", xl: "row" }}
                 h="full"
-                overflow="scroll"
+                overflow="auto"
               >
                 <TableContainer
                   py={2}
                   minH={{ base: "320px", xl: "100%" }}
-                  overflowY={"scroll"}
+                  overflowY={"auto"}
                   flexGrow={1}
                   px={4}
                 >

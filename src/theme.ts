@@ -6,7 +6,13 @@ const config: ThemeConfig = {
 };
 
 const theme = {
-  components: {},
+  components: {
+    Skeleton: {
+      baseStyle: {
+        borderRadius: "lg",
+      },
+    }
+  },
   fonts: {
     heading: "var(--font-familjen)",
     body: "var(--font-familjen)",

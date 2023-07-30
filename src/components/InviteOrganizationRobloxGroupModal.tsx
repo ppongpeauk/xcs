@@ -48,11 +48,13 @@ export default function InviteOrganizationRobloxGroupModal({
   onClose,
   onAdd,
   organization,
+  accessGroupOptions,
 }: {
   isOpen: boolean;
   onClose: () => void;
   onAdd: () => void;
   organization: any;
+  accessGroupOptions: any;
 }) {
   const toast = useToast();
   const initialRef = useRef(null);
@@ -159,67 +161,6 @@ export default function InviteOrganizationRobloxGroupModal({
     });
   };
 
-  const getAccessGroupType = (ag: AccessGroup) => {
-    if (ag.type === "organization") {
-      return "Organization";
-    } else if (ag.type === "location") {
-      // TODO: get location name
-      return ag.locationName || ag.locationId || "Unknown";
-    } else {
-      return ag.type;
-    }
-  };
-
-  const getAccessGroupOptions = useCallback(
-    (organization: Organization) => {
-      if (!organization) return [];
-      const ags =
-        Object.values(organization?.accessGroups as AccessGroup[]) || [];
-      interface Group {
-        label: string;
-        options: {
-          label: string;
-          value: string;
-        }[];
-      }
-      let groups = [] as any;
-
-      ags.forEach((ag: AccessGroup) => {
-        // check if the group is already in the groups object
-        if (groups.find((g: Group) => g.label === getAccessGroupType(ag))) {
-          // if it is, add the option to the options array
-          groups
-            .find((g: Group) => g.label === getAccessGroupType(ag))
-            .options.push({
-              label: ag.name,
-              value: ag.id,
-            });
-        } else {
-          // if it's not, add the group to the groups array
-          groups.push({
-            label: getAccessGroupType(ag),
-            options: [
-              {
-                label: ag.name,
-                value: ag.id,
-              },
-            ],
-          });
-        }
-      });
-
-      // sort the groups so organizations are at the bottom
-      groups.sort((a: Group, b: Group) => {
-        if (a.label === "Organization") return 1;
-        if (b.label === "Organization") return -1;
-        return 0;
-      });
-
-      return groups;
-    },
-    [organization]
-  );
-
   return (
     <>
       <Formik
@@ -292,9 +233,7 @@ export default function InviteOrganizationRobloxGroupModal({
           <Modal isOpen={isOpen} onClose={onClose} isCentered allowPinchZoom>
             <ModalOverlay />
             <Form>
-              <ModalContent
-                bg={useColorModeValue("white", "gray.800")}
-              >
+              <ModalContent bg={useColorModeValue("white", "gray.800")}>
                 <ModalHeader pb={2}>Add Roblox Group</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody pb={4}>
@@ -315,7 +254,10 @@ export default function InviteOrganizationRobloxGroupModal({
                         </FormControl>
                       )}
                     </Field>
-                    <Stack direction={{ base: "column", md: "column" }} w={"full"}>
+                    <Stack
+                      direction={{ base: "column", md: "column" }}
+                      w={"full"}
+                    >
                       <Field name="robloxGroupId">
                         {({ field, form }: any) => (
                           <FormControl>
@@ -330,7 +272,9 @@ export default function InviteOrganizationRobloxGroupModal({
                               closeMenuOnSelect={true}
                               isClearable={true}
                               size="md"
-                              noOptionsMessage={() => "No search results found."}
+                              noOptionsMessage={() =>
+                                "No search results found."
+                              }
                               loadOptions={(inputValue, callback) => {
                                 getGroupSearchResults(inputValue, callback);
                               }}
@@ -372,7 +316,7 @@ export default function InviteOrganizationRobloxGroupModal({
                           <Select
                             {...field}
                             variant={"outline"}
-                            options={getAccessGroupOptions(organization)}
+                            options={accessGroupOptions}
                             onChange={(value) => {
                               form.setFieldValue("accessGroups", value);
                             }}

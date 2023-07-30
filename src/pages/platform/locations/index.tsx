@@ -141,7 +141,8 @@ export default function PlatformLocations() {
           <FormControl
             w={{
               base: "unset",
-              md: "384px",
+              md: "256px",
+              lg: "384px",
             }}
           >
             <FormLabel>Organization</FormLabel>

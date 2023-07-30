@@ -21,18 +21,27 @@ export default async function handler(
   const db = mongoClient.db(process.env.MONGODB_DB as string);
   let organizations = await db
     .collection("organizations")
-    .find({ [`members.${uid}`]: { $exists: true } })
+    .find(
+      { [`members.${uid}`]: { $exists: true } },
+      { projection: { id: 1, name: 1, description: 1, avatar: 1, members: 1 } }
+    )
     .toArray();
 
-  organizations = await Promise.all(organizations.map(async (organization) => {
-    let ownerId = Object.keys(organization.members).find(
-      (member) => organization.members[member].role === 3
-    );
-    let owner = await db.collection("users").findOne({ id: ownerId }, { projection: { id: 1, displayName: 1, username: 1, avatar: 1 } });
-    return { ...organization, owner };
-  }))
+  organizations = await Promise.all(
+    organizations.map(async (organization) => {
+      let ownerId = Object.keys(organization.members).find(
+        (member) => organization.members[member].role === 3
+      );
+      let owner = await db
+        .collection("users")
+        .findOne(
+          { id: ownerId },
+          { projection: { id: 1, displayName: 1, username: 1, avatar: 1 } }
+        );
 
-  console.log(organizations);
+      return { ...organization, owner };
+    })
+  );
 
   res.status(200).json({ organizations: organizations });
 }

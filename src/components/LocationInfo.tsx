@@ -347,7 +347,7 @@ export default function LocationInfo({
                     </FormControl>
                   )}
                 </Field>
-                <Field name="enabled">
+                {/* <Field name="enabled">
                   {({ field, form }: any) => (
                     <FormControl width={"fit-content"}>
                       <FormLabel>Enabled</FormLabel>
@@ -362,7 +362,7 @@ export default function LocationInfo({
                       </InputGroup>
                     </FormControl>
                   )}
-                </Field>
+                </Field> */}
                 <Stack
                   direction={{ base: "column", md: "row" }}
                   spacing={2}

@@ -187,6 +187,7 @@ const MenuLink = forwardRef((props: any, ref: any) => (
 
 function NavLink({
   href,
+  target,
   onClick,
   variant = "ghost",
   pathname,
@@ -194,6 +195,7 @@ function NavLink({
   leftIcon,
 }: {
   href?: string;
+  target?: string;
   onClick?: () => void;
   variant?: string;
   pathname: string;
@@ -204,6 +206,7 @@ function NavLink({
     <Button
       as={!onClick ? NextLink : undefined}
       href={!onClick ? href : undefined}
+      target={target ? target : undefined}
       variant={pathname === href ? "solid" : variant}
       onClick={onClick}
       leftIcon={
@@ -400,6 +403,7 @@ export default function PlatformNav({
         >
           <NavLink
             href={"https://xcs-docs.restrafes.co/"}
+            target={"_blank"}
             pathname={pathname}
             leftIcon={<AiFillInfoCircle />}
           >

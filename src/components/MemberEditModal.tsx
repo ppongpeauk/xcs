@@ -84,12 +84,13 @@ export default function MemberEditModal({
 }: any) {
   const { user } = useAuthContext();
   const toast = useToast();
-  const [focusedMember, setFocusedMember] = useState<any>(null);
+  
   const themeBorderColor = useColorModeValue("gray.200", "gray.700");
-
-  const memberSearchRef = useRef<any>(null);
   const [filteredMembers, setFilteredMembers] = useState<any>(null);
-
+  const [focusedMember, setFocusedMember] = useState<any>(null);
+  const [accessGroupOptions, setAccessGroupOptions] = useState<any>(null);
+  
+  const memberSearchRef = useRef<any>(null);
   const editButtonsRef = useRef<any>(null);
 
   const {
@@ -126,7 +127,6 @@ export default function MemberEditModal({
   };
 
   useEffect(() => {
-    // if (filteredMembers && filteredMembers !== members) return; // don't reset if we're already filtering
     setFilteredMembers(members);
   }, [members]);
 
@@ -138,6 +138,7 @@ export default function MemberEditModal({
         (member: any) => member.id === focusedMember?.id
       )
     );
+    getAccessGroupOptions(organization);
   }, [organization]);
 
   const getAccessGroupType = (ag: AccessGroup) => {
@@ -196,6 +197,7 @@ export default function MemberEditModal({
         return 0;
       });
 
+      setAccessGroupOptions(groups);
       return groups;
     },
     [organization]
@@ -231,6 +233,7 @@ export default function MemberEditModal({
           onRefresh();
         }}
         organization={organization}
+        accessGroupOptions={accessGroupOptions}
       />
       <InviteOrganizationRobloxGroupModal
         isOpen={robloxGroupModalOpen}
@@ -239,6 +242,7 @@ export default function MemberEditModal({
           onRefresh();
         }}
         organization={organization}
+        accessGroupOptions={accessGroupOptions}
       />
       <Modal
         isOpen={isOpen}
@@ -310,12 +314,12 @@ export default function MemberEditModal({
                 h="auto"
                 justify={"space-between"}
                 flexDir={{ base: "column", xl: "row" }}
-                overflow="scroll"
+                overflow="auto"
               >
                 <TableContainer
                   py={2}
                   minH={{ base: "320px", xl: "100%" }}
-                  overflowY={"scroll"}
+                  overflowY={"auto"}
                   flexGrow={1}
                   px={4}
                 >
@@ -639,8 +643,10 @@ export default function MemberEditModal({
                                   },
                                   body: JSON.stringify({
                                     type: focusedMember?.type,
-                                    name: focusedMember?.type ===
-                                    "roblox-group" ? values?.name : undefined,
+                                    name:
+                                      focusedMember?.type === "roblox-group"
+                                        ? values?.name
+                                        : undefined,
                                     groupRoles: values?.robloxGroupRoles?.map(
                                       (role: any) => role?.value
                                     ),
@@ -797,7 +803,9 @@ export default function MemberEditModal({
                                           isDisabled={
                                             ["roblox", "roblox-group"].includes(
                                               focusedMember.type
-                                            ) || focusedMember.role === 3 || focusedMember === clientMember
+                                            ) ||
+                                            focusedMember.role === 3 ||
+                                            focusedMember === clientMember
                                           }
                                           hideSelectedOptions={false}
                                           selectedOptionStyle={"check"}
@@ -812,9 +820,7 @@ export default function MemberEditModal({
                                         <Select
                                           {...field}
                                           name="accessGroups"
-                                          options={getAccessGroupOptions(
-                                            organization
-                                          )}
+                                          options={accessGroupOptions || []}
                                           placeholder="Select an access group..."
                                           onChange={(value) => {
                                             form.setFieldValue(
@@ -825,8 +831,8 @@ export default function MemberEditModal({
                                           value={field?.value}
                                           isMulti
                                           closeMenuOnSelect={false}
-                                          hideSelectedOptions={false}
                                           selectedOptionStyle={"check"}
+                                          hideSelectedOptions={false}
                                         />
                                       </FormControl>
                                     )}

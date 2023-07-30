@@ -293,7 +293,10 @@ export default function PlatformOrganization() {
     <>
       <Head>
         <title>Restrafes XCS – {organization?.name}</title>
-        <meta property="og:title" content="Restrafes XCS - Manage Organization" />
+        <meta
+          property="og:title"
+          content="Restrafes XCS - Manage Organization"
+        />
         <meta property="og:site_name" content="Restrafes XCS" />
         <meta property="og:url" content="https://xcs.restrafes.co" />
         <meta property="og:type" content="website" />
@@ -448,8 +451,8 @@ export default function PlatformOrganization() {
         <Text as={"h2"} fontSize={"3xl"} fontWeight={"900"}>
           General Settings
         </Text>
-        {organization ? (
-          <Box p={4}>
+        <Skeleton isLoaded={!!organization} w={"fit-content"}>
+          <Box my={2} w={"fit-content"}>
             <Formik
               initialValues={{
                 name: organization?.name,
@@ -596,14 +599,7 @@ export default function PlatformOrganization() {
               )}
             </Formik>
           </Box>
-        ) : (
-          <Stack>
-            <Skeleton height="20px" />
-            <Skeleton height="20px" />
-            <Skeleton height="20px" />
-            <Skeleton height="20px" />
-          </Stack>
-        )}
+        </Skeleton>
       </Container>
     </>
   );

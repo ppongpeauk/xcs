@@ -2,6 +2,7 @@
 import Layout from "@/layouts/PlatformLayout";
 import {
   Avatar,
+  AvatarGroup,
   Box,
   Button,
   Code,
@@ -124,7 +125,10 @@ export default function PlatformOrganizations() {
     <>
       <Head>
         <title>Restrafes XCS – Organizations</title>
-        <meta property="og:title" content="Restrafes XCS - Manage Organizations" />
+        <meta
+          property="og:title"
+          content="Restrafes XCS - Manage Organizations"
+        />
         <meta property="og:site_name" content="Restrafes XCS" />
         <meta property="og:url" content="https://xcs.restrafes.co" />
         <meta property="og:type" content="website" />

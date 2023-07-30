@@ -65,6 +65,7 @@ export default function PlatformAccessPoint() {
   const { user } = useAuthContext();
   const [accessPoint, setAccessPoint] = useState<any>(null);
   const themeBorderColor = useColorModeValue("gray.200", "gray.700");
+  const [accessGroupOptions, setAccessGroupOptions] = useState<any>([]);
   const toast = useToast();
   const {
     hasCopied: clipboardHasCopied,
@@ -236,10 +237,17 @@ export default function PlatformAccessPoint() {
         return 0;
       });
 
+      setAccessGroupOptions(groups);
       return groups;
     },
     [accessPoint]
   );
+
+  useEffect(() => {
+    if (!accessPoint) return;
+    if (!accessPoint?.organization) return;
+    getAccessGroupOptions(accessPoint?.organization);
+  }, [accessPoint, getAccessGroupOptions]);
 
   return (
     <>
@@ -476,9 +484,7 @@ export default function PlatformAccessPoint() {
                           <Select
                             {...field}
                             name="accessGroups"
-                            options={getAccessGroupOptions(
-                              accessPoint?.organization
-                            )}
+                            options={accessGroupOptions}
                             placeholder="Select an access group..."
                             onChange={(value) => {
                               form.setFieldValue("accessGroups", value);
