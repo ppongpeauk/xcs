@@ -120,7 +120,7 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
         >
           Create
         </Button>
-        <Box w={'256px'} maxW={'fit-content'}>
+        <Box>
           <FormControl>
             {/* <FormLabel>Filter by tag</FormLabel> */}
             <Select
