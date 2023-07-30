@@ -42,7 +42,6 @@
     "formik": "^2.4.2",
     "framer-motion": "^10.13.0",
     "generate-api-key": "^1.0.2",
-    "global": "^4.4.0",
     "lodash.merge": "^4.6.2",
     "mergician": "^1.1.0",
     "moment": "^2.29.4",
