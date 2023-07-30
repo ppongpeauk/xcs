@@ -34,6 +34,11 @@ import {
   Spacer,
   Stack,
   Switch,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
   Text,
   Textarea,
   chakra,
@@ -260,7 +265,7 @@ export default function PlatformAccessPoint() {
           accessPoints?.forEach((accessPoint: any) => {
             res = [...res, ...(accessPoint?.tags || [])];
           });
-          res = [...new Set(res as any) as any];
+          res = [...(new Set(res as any) as any)];
           setTags(res);
           setTagsOptions([
             ...(new Set(
@@ -513,9 +518,40 @@ export default function PlatformAccessPoint() {
                     </FormControl>
                   )}
                 </Field>
+                <Field name="tags">
+                  {({ field, form }: any) => (
+                    <FormControl w={'fit-content'}>
+                      <Skeleton isLoaded={accessPoint}>
+                        <FormLabel>Tags</FormLabel>
+                        <Box mb={2}>
+                          <CreatableSelect
+                            options={tagsOptions}
+                            placeholder="Select a tag..."
+                            onChange={(value) => {
+                              form.setFieldValue(
+                                'tags',
+                                value.map((v: any) => {
+                                  return {
+                                    label: v.value,
+                                    value: v.value
+                                  };
+                                })
+                              );
+                            }}
+                            value={field?.value}
+                            isMulti
+                            closeMenuOnSelect={false}
+                            hideSelectedOptions={false}
+                            selectedOptionStyle={'check'}
+                          />
+                        </Box>
+                      </Skeleton>
+                    </FormControl>
+                  )}
+                </Field>
                 <Field name="description">
                   {({ field, form }: any) => (
-                    <FormControl maxW={'500px'}>
+                    <FormControl maxW={'100%'}>
                       <Skeleton isLoaded={accessPoint}>
                         <FormLabel>Description</FormLabel>
                         <InputGroup mb={2}>
@@ -532,38 +568,6 @@ export default function PlatformAccessPoint() {
                     </FormControl>
                   )}
                 </Field>
-                <Field name="tags">
-                  {({ field, form }: any) => (
-                    <FormControl
-                      w={'240px'}
-                      maxW={'540px'}
-                    >
-                      <Skeleton isLoaded={accessPoint}>
-                        <FormLabel>Tags</FormLabel>
-                        <CreatableSelect
-                          options={tagsOptions}
-                          placeholder="Select a tag..."
-                          onChange={(value) => {
-                            form.setFieldValue(
-                              'tags',
-                              value.map((v: any) => {
-                                return {
-                                  label: v.value,
-                                  value: v.value
-                                };
-                              })
-                            );
-                          }}
-                          value={field?.value}
-                          isMulti
-                          closeMenuOnSelect={false}
-                          hideSelectedOptions={false}
-                          selectedOptionStyle={'check'}
-                        />
-                      </Skeleton>
-                    </FormControl>
-                  )}
-                </Field>
                 <Heading
                   as={'h2'}
                   fontSize={'xl'}
@@ -572,59 +576,23 @@ export default function PlatformAccessPoint() {
                 >
                   Configuration
                 </Heading>
-                <Stack
-                  direction={{ base: 'column', md: 'row' }}
-                  spacing={2}
-                >
-                  <Field name="accessGroups">
-                    {({ field, form }: any) => (
-                      <FormControl
-                        w={'fit-content'}
-                        maxW={'75%'}
-                      >
-                        <Skeleton isLoaded={accessPoint}>
-                          <FormLabel>Access Groups</FormLabel>
-                          <Select
-                            {...field}
-                            name="accessGroups"
-                            options={accessGroupOptions}
-                            placeholder="Select an access group..."
-                            onChange={(value) => {
-                              form.setFieldValue('accessGroups', value);
-                            }}
-                            value={field?.value}
-                            isMulti
-                            closeMenuOnSelect={false}
-                            hideSelectedOptions={false}
-                            selectedOptionStyle={'check'}
-                          />
-                        </Skeleton>
-                      </FormControl>
-                    )}
-                  </Field>
-                </Stack>
-                <Accordion
-                  defaultIndex={[0]}
+                <Tabs
+                  isFitted
+                  variant="enclosed"
+                  colorScheme="gray"
                   py={2}
                 >
-                  <AccordionItem>
-                    <h2>
-                      <AccordionButton>
-                        <Box
-                          as="span"
-                          flex="1"
-                          textAlign="left"
-                        >
-                          Main Settings
-                        </Box>
-                        <AccordionIcon />
-                      </AccordionButton>
-                    </h2>
-                    <AccordionPanel pb={4}>
+                  <TabList mb={2}>
+                    <Tab>Main Settings</Tab>
+                    <Tab>Permissions</Tab>
+                    <Tab>Scan Data</Tab>
+                    <Tab>Webhook Integration</Tab>
+                  </TabList>
+                  <TabPanels>
+                    <TabPanel>
                       <Stack
                         direction={'row'}
                         spacing={2}
-                        py={2}
                         w={'fit-content'}
                       >
                         <Field name="active">
@@ -700,62 +668,45 @@ export default function PlatformAccessPoint() {
                           </FormControl>
                         )}
                       </Field>
-                    </AccordionPanel>
-                  </AccordionItem>
-                  <AccordionItem zIndex={500}>
-                    <h2>
-                      <AccordionButton>
-                        <Box
-                          as="span"
-                          flex="1"
-                          textAlign="left"
-                        >
-                          Scan Data
-                        </Box>
-                        <AccordionIcon />
-                      </AccordionButton>
-                    </h2>
-                    <AccordionPanel
-                      pb={4}
-                      overflow={'scroll'}
-                      minH={'240px'}
-                    >
+                    </TabPanel>
+                    <TabPanel>
                       <Stack
                         direction={{ base: 'column', md: 'row' }}
                         spacing={2}
                       >
-                        {/* <Field name="accessGroupsDisarmed">
+                        <Field name="accessGroups">
                           {({ field, form }: any) => (
-                            <FormControl w={"fit-content"} maxW={"75%"}>
+                            <FormControl
+                              w={'fit-content'}
+                              maxW={'75%'}
+                            >
                               <Skeleton isLoaded={accessPoint}>
-                                <FormLabel>Access Groups (Disarmed)</FormLabel>
+                                <FormLabel>Access Groups</FormLabel>
                                 <Select
                                   {...field}
-                                  name="accessGroupsDisarmed"
-                                  options={getAccessGroupOptions(
-                                    accessPoint?.organization
-                                  )}
+                                  name="accessGroups"
+                                  options={accessGroupOptions}
                                   placeholder="Select an access group..."
                                   onChange={(value) => {
-                                    form.setFieldValue(
-                                      "accessGroupsDisarmed",
-                                      value
-                                    );
+                                    form.setFieldValue('accessGroups', value);
                                   }}
                                   value={field?.value}
                                   isMulti
                                   closeMenuOnSelect={false}
                                   hideSelectedOptions={false}
-                                  selectedOptionStyle={"check"}
+                                  selectedOptionStyle={'check'}
                                 />
-                                <FormHelperText>
-                                  These access groups will be passed when the
-                                  access point is disarmed.
-                                </FormHelperText>
                               </Skeleton>
                             </FormControl>
                           )}
-                        </Field> */}
+                        </Field>
+                      </Stack>
+                    </TabPanel>
+                    <TabPanel>
+                      <Stack
+                        direction={{ base: 'column', md: 'row' }}
+                        spacing={2}
+                      >
                         <Field name="scanDataDisarmed">
                           {({ field, form }: any) => (
                             <FormControl>
@@ -831,22 +782,8 @@ export default function PlatformAccessPoint() {
                           )}
                         </Field>
                       </Stack>
-                    </AccordionPanel>
-                  </AccordionItem>
-                  <AccordionItem>
-                    <h2>
-                      <AccordionButton>
-                        <Box
-                          as="span"
-                          flex="1"
-                          textAlign="left"
-                        >
-                          Webhooks
-                        </Box>
-                        <AccordionIcon />
-                      </AccordionButton>
-                    </h2>
-                    <AccordionPanel>
+                    </TabPanel>
+                    <TabPanel>
                       <Field
                         name="webhookUrl"
                         w={'min-content'}
@@ -890,6 +827,7 @@ export default function PlatformAccessPoint() {
                                 <InputGroup>
                                   <Switch
                                     {...field}
+                                    colorScheme='green'
                                     variant={'outline'}
                                     width={'fit-content'}
                                     defaultChecked={accessPoint?.config?.webhook?.eventGranted}
@@ -907,6 +845,7 @@ export default function PlatformAccessPoint() {
                                 <InputGroup>
                                   <Switch
                                     {...field}
+                                    colorScheme='red'
                                     variant={'outline'}
                                     width={'fit-content'}
                                     defaultChecked={accessPoint?.config?.webhook?.eventDenied}
@@ -930,9 +869,9 @@ export default function PlatformAccessPoint() {
                           (which could be a lot).
                         </Text> */}
                       </Box>
-                    </AccordionPanel>
-                  </AccordionItem>
-                </Accordion>
+                    </TabPanel>
+                  </TabPanels>
+                </Tabs>
                 <Stack
                   direction={{ base: 'column', md: 'row' }}
                   spacing={2}

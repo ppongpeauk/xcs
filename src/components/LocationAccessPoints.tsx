@@ -220,6 +220,7 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
                           <Badge
                             key={tag}
                             mr={1}
+                            mb={1}
                             colorScheme={'purple'}
                           >
                             {tag}
