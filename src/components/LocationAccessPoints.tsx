@@ -226,7 +226,19 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
                           </Badge>
                         ))}
                       </Flex>
-                    ) : <></>}
+                    ) : <>
+                      <Flex
+                        flexWrap={'wrap'}
+                        py={1}
+                      >
+                        <Badge
+                          mr={1}
+                          colorScheme={'purple'}
+                        >
+                          No Tags
+                        </Badge>
+                      </Flex>
+                    </>}
                     <HStack
                       align={'center'}
                       justify={'flex-start'}
