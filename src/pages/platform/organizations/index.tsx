@@ -35,7 +35,7 @@ import {
 
 import { Link } from '@chakra-ui/next-js';
 
-import { MdOutlineAddCircle, MdOutlineJoinRight } from 'react-icons/md';
+import { MdMail, MdOutlineAddCircle, MdOutlineJoinRight } from 'react-icons/md';
 
 import Head from 'next/head';
 import NextLink from 'next/link';
@@ -71,7 +71,7 @@ function TableEntry({ key, organization }: { key: number | string, organization:
           </Stack>
         </Link>
       </Td>
-      <Td>
+      <Td isNumeric>
         {/* TODO: implement avatars */}
         {/* <AvatarGroup max={3} size={"sm"}>
           <Avatar src='/images/logo.jpg' />
@@ -112,6 +112,7 @@ function TableEntry({ key, organization }: { key: number | string, organization:
             size={"sm"}
             variant={"outline"}
             colorScheme='blue'
+            textDecor={"unset !important"}
           >
             View Profile
           </Button>
@@ -121,17 +122,18 @@ function TableEntry({ key, organization }: { key: number | string, organization:
             size={"sm"}
             variant={"solid"}
             colorScheme='blue'
+            textDecor={"unset !important"}
           >
             View Details
           </Button>
-          <Button
+          {/* <Button
             size={"sm"}
             variant={"solid"}
             colorScheme='red'
             leftIcon={<BiSolidExit />}
           >
             Leave
-          </Button>
+          </Button> */}
         </ButtonGroup>
       </Td>
     </Tr>
@@ -301,6 +303,16 @@ export default function PlatformOrganizations() {
               Join
             </Button>
           </FormControl>
+          <FormControl w={'fit-content'}>
+            <Button
+              variant={'solid'}
+              leftIcon={<MdMail />}
+              onClick={onJoinOrganizationModalOpen}
+              isDisabled={true}
+            >
+              View Invitations
+            </Button>
+          </FormControl>
         </HStack>
         <Box>
           <Flex
@@ -313,7 +325,7 @@ export default function PlatformOrganizations() {
           >
             <TableContainer
               py={2}
-              maxW={"container.xl"}
+              maxW={"100%"}
               minH={{ base: '320px', xl: '100%' }}
               overflowY={'auto'}
               flexGrow={1}
@@ -323,7 +335,7 @@ export default function PlatformOrganizations() {
                 <Thead>
                   <Tr>
                     <Th>Organization</Th>
-                    <Th>Members</Th>
+                    <Th isNumeric># Members</Th>
                     <Th isNumeric># Locations</Th>
                     <Th>Last Updated</Th>
                     <Th isNumeric>Actions</Th>

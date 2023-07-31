@@ -138,6 +138,7 @@ export default function CreateOrganizationDialog({
                       <Link
                         as={NextLink}
                         href={'/legal/terms'}
+                        target={'_blank'}
                         textDecor={'underline'}
                         textUnderlineOffset={4}
                         whiteSpace={'nowrap'}
@@ -150,6 +151,7 @@ export default function CreateOrganizationDialog({
                       <Link
                         as={NextLink}
                         href={'/legal/privacy'}
+                        target={'_blank'}
                         textDecor={'underline'}
                         textUnderlineOffset={4}
                         whiteSpace={'nowrap'}
