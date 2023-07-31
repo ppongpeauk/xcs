@@ -253,9 +253,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
       }
     );
+    await locations.updateOne(
+      { id: accessPoint.locationId },
+      {
+        $set: {
+          updatedAt: timestamp
+        },
+      }
+    );
     await organizations.updateOne(
       { id: organization.id },
       {
+        $set: {
+          updatedAt: timestamp
+        },
         $push: {
           logs: {
             type: 'access-point-updated',

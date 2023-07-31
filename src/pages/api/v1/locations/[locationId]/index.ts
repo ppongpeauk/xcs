@@ -179,6 +179,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     await organizations.updateOne(
       { id: organization.id },
       {
+        $set: {
+          updatedAt: timestamp
+        },
         $push: {
           logs: {
             type: 'location-updated',
