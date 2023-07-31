@@ -41,7 +41,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // update organization to have owner member
     if (!ownerMember) {
       // find owner
-      let ownerMember = Object.values(organization.members).find(
+      ownerMember = Object.values(organization.members).find(
         (member: any) => member.role === 3) as OrganizationMember
       await organizations.updateOne({ id: organizationId }, { $set: { ownerId: ownerMember.id } });
       organization.ownerId = ownerMember.id;

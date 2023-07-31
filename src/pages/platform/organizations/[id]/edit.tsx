@@ -401,7 +401,7 @@ export default function PlatformOrganization() {
                 <Link
                   as={NextLink}
                   textUnderlineOffset={4}
-                  href={`/platform/profile/${organization?.owner.username}`}
+                  href={`/platform/profile/${organization?.owner?.username}`}
                 >
                   {organization?.owner.displayName || 'Organization Owner'}
                 </Link>
@@ -414,7 +414,7 @@ export default function PlatformOrganization() {
               <Avatar
                 as={NextLink}
                 key={organization?.owner.id}
-                href={`/platform/profile/${organization?.owner.username}`}
+                href={`/platform/profile/${organization?.owner?.username}`}
                 src={organization?.owner.avatar}
               />
               {organization?.members
