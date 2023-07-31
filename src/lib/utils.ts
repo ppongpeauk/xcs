@@ -1,7 +1,7 @@
 import { memo, useCallback } from 'react';
 
 import { AccessGroup, Organization } from '@/types';
-import { type ClassValue, clsx } from 'clsx';
+import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
 import { useAuthContext } from '@/contexts/AuthContext';
@@ -54,7 +54,10 @@ const getRobloxUsersByUsernames = async (usernames: string[]) => {
     })
   })
     .then((res) => res.json())
-    .then((res) => res.data);
+    .then((res) => res.data)
+    .catch((err) => {
+      return []
+    });
 
   return robloxResponse;
 };
@@ -71,7 +74,10 @@ const getRobloxUsers = async (userIds: string[]) => {
     })
   })
     .then((res) => res.json())
-    .then((res) => res.data);
+    .then((res) => res.data)
+    .catch((err) => {
+      return {}
+    });
 
   let robloxUserAvatar = await fetch(
     `${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/roblox/thumbnails/v1/users/avatar-headshot?userIds=${userIds.join(

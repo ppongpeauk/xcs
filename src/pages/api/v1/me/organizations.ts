@@ -21,7 +21,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     .collection('organizations')
     .find(
       { [`members.${uid}`]: { $exists: true } },
-      { projection: { id: 1, name: 1, description: 1, avatar: 1, members: 1 } }
+      { projection: { id: 1, name: 1, description: 1, avatar: 1, members: 1, updatedAt: 1, createdAt: 1 } }
     )
     .toArray();
 
@@ -32,7 +32,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         .collection('users')
         .findOne({ id: ownerId }, { projection: { id: 1, displayName: 1, username: 1, avatar: 1 } });
 
-      return { ...organization, owner };
+      // inject statistics into data
+      let numLocations = (await db.collection('locations').find({ organizationId: organization.id }, { projection: { _id: 1 } })
+        .toArray())
+        .length;
+      let numMembers = Object.keys(organization.members).length;
+
+      console.log(numLocations)
+
+      return { ...organization, owner, statistics: {
+        numLocations,
+        numMembers
+      } };
     })
   );
 

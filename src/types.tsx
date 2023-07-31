@@ -3,22 +3,24 @@ import { NextApiRequest, NextApiResponse } from 'next';
 
 export interface User {
   id: string;
-  name: string;
+  name?: {
+    first: string
+    last?: string
+    privacyLevel: number
+  }; // deprecated
+  displayName?: string;
   username: string;
-  email: string;
+  bio?: string;
+  avatar: string | null;
+  email: {
+    address: string;
+    privacyLevel: number;
+  };
   roblox: {
-    id: string;
+    id: string | null;
+    displayName?: string;
+    username?: string
     verified: boolean;
-  };
-  verified: {
-    email: boolean;
-    roblox: boolean;
-  };
-  profile: {
-    bio: string;
-    location: string;
-    website: string;
-    avatar: string;
   };
 }
 
@@ -26,6 +28,8 @@ export interface Organization {
   id: string;
 
   name: string;
+  ownerId: string;
+  owner?: User;
   description: string;
   isPersonal: boolean;
 
@@ -39,6 +43,12 @@ export interface Organization {
 
   avatar?: string;
   accessGroups?: {};
+
+  // not stored in mongoDB, but added to organization data on some endpoints
+  statistics?: {
+    numLocations?: number,
+    numMembers?: number
+  }
 }
 
 export interface Location {

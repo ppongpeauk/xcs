@@ -345,7 +345,7 @@ export default function PlatformOrganization() {
           <BreadcrumbItem>
             <BreadcrumbLink
               as={NextLink}
-              href={`./`}
+              href={`/platform/organizations`}
               textUnderlineOffset={4}
             >
               Organizations

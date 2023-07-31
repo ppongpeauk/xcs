@@ -1,11 +1,12 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import {
   Avatar,
   AvatarGroup,
   Box,
   Button,
+  ButtonGroup,
   Code,
   Container,
   Divider,
@@ -14,15 +15,25 @@ import {
   FormLabel,
   HStack,
   Heading,
-  Link,
   Select,
   Skeleton,
   Stack,
+  Table,
+  TableCaption,
+  TableContainer,
+  Tbody,
+  Td,
   Text,
+  Tfoot,
+  Th,
+  Thead,
+  Tr,
   useColorModeValue,
   useDisclosure,
   useToast
 } from '@chakra-ui/react';
+
+import { Link } from '@chakra-ui/next-js';
 
 import { MdOutlineAddCircle, MdOutlineJoinRight } from 'react-icons/md';
 
@@ -36,7 +47,83 @@ import Layout from '@/layouts/PlatformLayout';
 
 import CreateOrganizationDialog from '@/components/CreateOrganizationDialog';
 import JoinOrganizationDialog from '@/components/JoinOrganizationDialog';
+import { Organization } from '@/types';
+import moment from 'moment';
+import 'moment-timezone';
+import { BiSolidExit } from 'react-icons/bi';
 
+function TableEntry({ key, organization }: { key: number | string, organization: Organization }) {
+  return <>
+    <Tr key={key}>
+      <Td>
+        <Link href={`/platform/organizations/${organization?.id}/edit`} textDecoration={"unset !important"}>
+          <Stack flexDir={'row'} align={'center'}>
+            <Avatar borderRadius={'lg'} size={'md'} src={organization?.avatar} />
+
+            <Flex flexDir={'column'} mx={2}>
+              <Text fontWeight={'bold'}>
+                {organization?.name}
+              </Text>
+              <Text size={'sm'} color={'gray.500'}>
+                Owned by {organization?.owner?.displayName}
+              </Text>
+            </Flex>
+          </Stack>
+        </Link>
+      </Td>
+      <Td>
+        {/* TODO: implement avatars */}
+        {/* <AvatarGroup max={3} size={"sm"}>
+          <Avatar src='/images/logo.jpg' />
+          <Avatar src='/images/logo.jpg' />
+          <Avatar src='/images/logo.jpg' />
+          <Avatar src='/images/logo.jpg' />
+        </AvatarGroup> */}
+
+        {organization?.statistics?.numMembers}
+      </Td>
+      <Td isNumeric>
+        {organization?.statistics?.numLocations}
+      </Td>
+      <Td>
+        {useMemo(() => {
+          const date = moment(new Date(organization.updatedAt as string)).tz('America/New York').fromNow();
+          return date as string;
+        }, [organization])}
+      </Td>
+      <Td isNumeric>
+        <ButtonGroup>
+          <Button
+            as={Link}
+            href={`/platform/organizations/${organization?.id}`}
+            size={"sm"}
+            variant={"outline"}
+            colorScheme='blue'
+          >
+            View Profile
+          </Button>
+          <Button
+            as={Link}
+            href={`/platform/organizations/${organization?.id}/edit`}
+            size={"sm"}
+            variant={"solid"}
+            colorScheme='blue'
+          >
+            View Details
+          </Button>
+          <Button
+            size={"sm"}
+            variant={"solid"}
+            colorScheme='red'
+            leftIcon={<BiSolidExit />}
+          >
+            Leave
+          </Button>
+        </ButtonGroup>
+      </Td>
+    </Tr>
+  </>
+}
 export default function PlatformOrganizations() {
   const { push, query } = useRouter();
   const [organizations, setOrganizations] = useState<any>([]);
@@ -211,7 +298,35 @@ export default function PlatformOrganizations() {
             overflow={'auto'}
             flexWrap={'wrap'}
           >
-            {organizationsLoading ? (
+            <TableContainer
+              py={2}
+              maxW={"container.xl"}
+              minH={{ base: '320px', xl: '100%' }}
+              overflowY={'auto'}
+              flexGrow={1}
+              px={4}
+            >
+              <Table size={{ base: 'sm', md: 'md' }}>
+                <Thead>
+                  <Tr>
+                    <Th>Organization</Th>
+                    <Th>Members</Th>
+                    <Th isNumeric># Locations</Th>
+                    <Th>Last Updated</Th>
+                    <Th isNumeric>Actions</Th>
+                  </Tr>
+                </Thead>
+                {/* display list of organizations */}
+                <Tbody>
+                  {
+                    organizationsLoading ? <></> : (organizations.map((organization: Organization) => (
+                      <TableEntry key={organization.id as string} organization={organization} />
+                    )))
+                  }
+                </Tbody>
+              </Table>
+            </TableContainer>
+            {/* {organizationsLoading ? (
               Array.from({ length: 6 }).map((_, i) => (
                 <Box
                   key={i}
@@ -341,7 +456,7 @@ export default function PlatformOrganizations() {
                 </Text>{' '}
                 an organization to get started.
               </Text>
-            )}
+            )} */}
           </Flex>
         </Box>
       </Container>
