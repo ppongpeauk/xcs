@@ -2,21 +2,34 @@ import { createContext, useContext, useEffect, useState } from 'react';
 
 import { useToast } from '@chakra-ui/react';
 
-import { getAuth, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { UserCredential, getAuth, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { useRouter } from 'next/router';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
 import { auth } from '@/lib/firebase';
+import { User } from '@/types';
 
 const AuthContext = createContext(null);
 
+interface AuthContextValues {
+  user: any; // TODO: fix this
+  currentUser?: User | null;
+  refreshCurrentUser: () => void;
+  auth: any;
+  getAuth: () => any;
+  logOut: () => void;
+  signOut: () => void;
+  signInWithEmailAndPassword: (email: string, password: string) => Promise<UserCredential>;
+  isAuthLoaded: boolean;
+}
+
 export function useAuthContext() {
-  return useContext(AuthContext) as any;
+  return useContext(AuthContext) as unknown as AuthContextValues;
 }
 
 export default function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, loading, error] = useAuthState(auth);
-  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [currentUser, setCurrentUser] = useState<User | null>();
   const [isAuthLoaded, setIsAuthLoaded] = useState<boolean>(false);
   const toast = useToast();
   const { push } = useRouter();
@@ -97,7 +110,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     signOut,
     signInWithEmailAndPassword,
     isAuthLoaded
-  } as any;
+  } as unknown as AuthContextValues;
 
   return <AuthContext.Provider value={values as any}>{children}</AuthContext.Provider>;
 }

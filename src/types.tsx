@@ -51,6 +51,11 @@ export interface Organization {
   }
 }
 
+export interface OrganizationMember {
+  type: "xcs" | "roblox-user" | "roblox-group";
+  id: string;
+  role: number;
+}
 export interface Location {
   id: string;
   name: string;
@@ -79,3 +84,11 @@ export type DiscordInteractionApiHandler = (
   res: NextApiResponse<APIInteractionResponse>,
   interaction: APIApplicationCommandInteraction
 ) => void | Promise<void>;
+
+export interface Dialog {
+  title?: string,
+  description?: string,
+  confirmButtonText?: string,
+  cancelButtonText?: string,
+  callback?: () => void
+}

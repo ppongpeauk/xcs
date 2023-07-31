@@ -43,6 +43,7 @@ const textToRole = (role: string) => {
 };
 
 const getRobloxUsersByUsernames = async (usernames: string[]) => {
+  if (!usernames.length) return {};
   let robloxResponse = await fetch(`${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/roblox/users/v1/usernames/users`, {
     method: 'POST',
     headers: {
@@ -56,13 +57,14 @@ const getRobloxUsersByUsernames = async (usernames: string[]) => {
     .then((res) => res.json())
     .then((res) => res.data)
     .catch((err) => {
-      return []
+      return {}
     });
 
   return robloxResponse;
 };
 
 const getRobloxUsers = async (userIds: string[]) => {
+  if (!userIds.length) return {};
   let robloxResponse = await fetch(`${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/roblox/users/v1/users`, {
     method: 'POST',
     headers: {
@@ -108,6 +110,7 @@ const getRobloxUsers = async (userIds: string[]) => {
 };
 
 const getRobloxGroups = async (groupIds: string[]) => {
+  if (!groupIds.length) return {};
   let robloxResponse = await fetch(
     `${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/roblox/groups/v2/groups?groupIds=${groupIds?.join(',') || 0}`,
     {
@@ -132,7 +135,10 @@ const getRobloxGroups = async (groupIds: string[]) => {
     }
   )
     .then((res) => res.json())
-    .then((res) => res.data);
+    .then((res) => res.data)
+    .catch((err) => {
+      return {}
+    });
 
   for (let i = 0; i < robloxResponse.length; i++) {
     robloxResponse[i].avatar = robloxGroupThumbnail[i].imageUrl;

@@ -12,6 +12,7 @@ import { AuthProvider } from '@/contexts/AuthContext';
 
 // Theme
 import PageProgress from '@/components/PageProgress';
+import { DialogProvider } from '@/contexts/DialogContext';
 
 const font = Familjen_Grotesk({ subsets: ['latin'] });
 
@@ -38,8 +39,10 @@ export default function App({ Component, pageProps }: any) {
         cssVarsRoot="body"
       >
         <AuthProvider>
-          <PageProgress />
-          {getLayout(<Component {...pageProps} />)}
+          <DialogProvider>
+            <PageProgress />
+            {getLayout(<Component {...pageProps} />)}
+          </DialogProvider>
         </AuthProvider>
       </ChakraProvider>
     </>

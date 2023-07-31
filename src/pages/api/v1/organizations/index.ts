@@ -103,6 +103,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       isPersonal: false,
       name: name,
       description: '',
+      ownerId: uid,
       avatar: '',
       members: {
         [uid]: {

@@ -4,6 +4,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { authToken } from '@/lib/auth';
 import clientPromise from '@/lib/mongodb';
 import { getRobloxGroups, getRobloxUsers } from '@/lib/utils';
+import { OrganizationMember } from '@/types';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   // Organization ID
@@ -33,17 +34,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (req.method === 'GET') {
     organization.user = organization.members[uid];
+    
+    let ownerMember = Object.values(organization.members).find(
+      (member: any) => member.id === organization.ownerId) as OrganizationMember
 
-    // Find owner of organization
-    for (const [key, value] of Object.entries(organization.members) as any) {
-      if (value.role === 3) {
-        let owner = await users.findOne({ id: key });
-        organization.owner = owner;
-        break;
-      }
+    // update organization to have owner member
+    if (!ownerMember) {
+      // find owner
+      let ownerMember = Object.values(organization.members).find(
+        (member: any) => member.role === 3) as OrganizationMember
+      await organizations.updateOne({ id: organizationId }, { $set: { ownerId: ownerMember.id } });
+      organization.ownerId = ownerMember.id;
     }
 
-    // Get all members
+    let ownerUser = await users.findOne({ id: ownerMember.id }, {
+      projection: {
+        displayName: 1,
+        username: 1,
+        id: 1,
+      }
+    });
+
+    organization.owner = ownerUser;
+
+    // get all members
     let members = [];
 
     // xcs users

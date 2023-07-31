@@ -24,6 +24,7 @@ import {
 import Head from 'next/head';
 
 import { useAuthContext } from '@/contexts/AuthContext';
+import { useDialogContext } from '@/contexts/DialogContext';
 
 import Layout from '@/layouts/PlatformLayout';
 
@@ -70,6 +71,7 @@ export default function PlatformHome() {
   ];
 
   const [randomSubGreeting, setRandomSubGreeting] = useState('');
+  // const { createDialog } = useDialogContext();
 
   useEffect(() => {
     if (!user) return;
@@ -84,6 +86,16 @@ export default function PlatformHome() {
           setStats(data);
         });
     });
+
+    // createDialog({
+    //   title: 'Welcome to Restrafes XCS!',
+    //   description: 'This is the platform home page. You can view your organization\'s statistics here.',
+    //   confirmButtonText: 'Got it!',
+    //   cancelButtonText: 'Learn more',
+    //   callback: () => {
+    //     console.log('User clicked "Got it!"');
+    //   }
+    // });
   }, [user]);
 
   useEffect(() => {
@@ -133,7 +145,7 @@ export default function PlatformHome() {
             >
               <Avatar
                 size={'2xl'}
-                src={currentUser?.avatar}
+                src={currentUser?.avatar || ''}
               />
               <Box textAlign={{ base: 'center', md: 'left' }}>
                 <Heading fontSize={'4xl'}>
