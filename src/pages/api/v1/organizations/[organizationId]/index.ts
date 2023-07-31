@@ -59,6 +59,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     organization.owner = ownerUser;
 
+    // get last updated user
+    let lastUpdatedUser = await users.findOne({ id: organization.updatedById }, {
+      projection: {
+        id: 1,
+        displayName: 1,
+        username: 1,
+        avatar: 1,
+      }
+    });
+
+    organization.updatedBy = lastUpdatedUser;
+
     // get all members
     let members = [];
 
@@ -214,6 +226,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const timestamp = new Date();
 
     body.updatedAt = timestamp;
+    body.updatedById = uid;
 
     await organizations.updateOne({ id: organizationId }, { $set: body });
     await organizations.updateOne(

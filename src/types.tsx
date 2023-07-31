@@ -40,6 +40,8 @@ export interface Organization {
 
   createdAt: string;
   updatedAt: string;
+  updatedById?: string;
+  updatedBy?: User;
 
   avatar?: string;
   accessGroups?: {};

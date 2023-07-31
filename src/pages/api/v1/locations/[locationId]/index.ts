@@ -174,13 +174,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const timestamp = new Date();
 
     body.updatedAt = timestamp;
+    body.updatedById = uid;
 
     await locations.updateOne({ id: locationId }, { $set: body });
     await organizations.updateOne(
       { id: organization.id },
       {
         $set: {
-          updatedAt: timestamp
+          updatedAt: timestamp,
+          updatedById: uid
         },
         $push: {
           logs: {

@@ -249,6 +249,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           description: body.description,
           tags: body.tags,
           updatedAt: timestamp,
+          updatedById: uid,
           config: body.config
         }
       }
@@ -257,7 +258,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       { id: accessPoint.locationId },
       {
         $set: {
-          updatedAt: timestamp
+          updatedAt: timestamp,
+          updatedById: uid
         },
       }
     );
@@ -265,7 +267,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       { id: organization.id },
       {
         $set: {
-          updatedAt: timestamp
+          updatedAt: timestamp,
+          updatedById: uid
         },
         $push: {
           logs: {

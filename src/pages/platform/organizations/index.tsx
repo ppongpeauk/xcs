@@ -87,9 +87,22 @@ function TableEntry({ key, organization }: { key: number | string, organization:
       </Td>
       <Td>
         {useMemo(() => {
-          const date = moment(new Date(organization.updatedAt as string)).tz('America/New York').fromNow();
+          const date = moment(new Date(organization.updatedAt as string)).fromNow();
           return date as string;
         }, [organization])}
+
+        {organization?.updatedBy && " by "}
+
+        {organization?.updatedBy &&
+          <Link href={`/platform/profile/${organization?.updatedBy?.username}`} textUnderlineOffset={4}>
+            <Flex flexDir={'row'} align={"center"} gap={1} py={1}>
+              <Avatar borderRadius={'lg'} size={'xs'} src={organization?.updatedBy?.avatar || '/images/default-avatar.png'} />
+              <Text fontWeight={'bold'}>
+                {organization?.updatedBy?.displayName}
+              </Text>
+            </Flex>
+          </Link>
+        }
       </Td>
       <Td isNumeric>
         <ButtonGroup>
