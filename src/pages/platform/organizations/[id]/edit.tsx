@@ -403,7 +403,7 @@ export default function PlatformOrganization() {
                   textUnderlineOffset={4}
                   href={`/platform/profile/${organization?.owner?.username}`}
                 >
-                  {organization?.owner.displayName || 'Organization Owner'}
+                  {organization?.owner?.displayName || 'Organization Owner'}
                 </Link>
               </Text>
             </Skeleton>
@@ -413,15 +413,15 @@ export default function PlatformOrganization() {
             >
               <Avatar
                 as={NextLink}
-                key={organization?.owner.id}
+                key={organization?.owner?.id}
                 href={`/platform/profile/${organization?.owner?.username}`}
-                src={organization?.owner.avatar}
+                src={organization?.owner?.avatar}
               />
               {organization?.members
                 .filter((member: any) => member.type !== 'roblox-group')
                 .map(
                   (member: any) =>
-                    member.id !== organization?.owner.id &&
+                    member.id !== organization?.owner?.id &&
                     (!member.type.startsWith('roblox') ? (
                       <Avatar
                         as={NextLink}
