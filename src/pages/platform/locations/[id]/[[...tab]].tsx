@@ -1,31 +1,25 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { Suspense, useEffect, useState } from 'react';
 
-import { Container, Divider, MenuList, Skeleton, useColorModeValue } from '@chakra-ui/react';
 import {
   Box,
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
-  BreadcrumbSeparator,
-  Heading,
+  BreadcrumbSeparator, Container, Divider, Heading,
   IconButton,
   Menu,
   MenuButton,
   MenuDivider,
-  MenuItem,
-  Tab,
+  MenuItem, MenuList, Skeleton, Tab,
   TabList,
   TabPanel,
   TabPanels,
   Tabs,
-  Text,
-  useDisclosure
+  Text, useColorModeValue, useDisclosure, useToast
 } from '@chakra-ui/react';
-import { useToast } from '@chakra-ui/react';
 
-import { ChevronRightIcon, DeleteIcon } from '@chakra-ui/icons';
-import { HamburgerIcon } from '@chakra-ui/icons';
+import { ChevronRightIcon, DeleteIcon, HamburgerIcon } from '@chakra-ui/icons';
 
 import { AiFillTag } from 'react-icons/ai';
 import { BiSolidGroup, BiSolidTime, BiSolidTrafficBarrier } from 'react-icons/bi';
@@ -200,7 +194,7 @@ export default function PlatformLocation() {
             <BreadcrumbItem>
               <BreadcrumbLink
                 as={NextLink}
-                href={`/platform/organizations/${location?.organization.id}`}
+                href={`/platform/organizations/${location?.organization.id}/edit`}
                 textUnderlineOffset={4}
               >
                 {location?.organization.name || 'Organization Name'}

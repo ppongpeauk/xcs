@@ -20,9 +20,9 @@ import {
   Stack,
   Text,
   useColorModeValue,
-  useDisclosure
+  useDisclosure,
+  useToast
 } from '@chakra-ui/react';
-import { useToast } from '@chakra-ui/react';
 
 import { MdOutlineAddCircle, MdOutlineJoinRight } from 'react-icons/md';
 
@@ -152,7 +152,7 @@ export default function PlatformOrganizations() {
         isOpen={isCreateOrganizationModalOpen}
         onClose={onCreateOrganizationModalClose}
         onCreate={(id) => {
-          push(`/platform/organizations/${id}`);
+          push(`/platform/organizations/${id}/edit`);
         }}
       />
       {!queryLoading && (
@@ -160,7 +160,7 @@ export default function PlatformOrganizations() {
           isOpen={isJoinOrganizationModalOpen}
           onClose={onJoinOrganizationModalClose}
           onJoin={(id) => {
-            push(`/platform/organizations/${id}`);
+            push(`/platform/organizations/${id}/edit`);
           }}
           initialValue={initialInviteCodeValue || ''}
         />
@@ -283,7 +283,7 @@ export default function PlatformOrganizations() {
                     </Box>
                     <Avatar
                       as={NextLink}
-                      href={`/platform/organizations/${organization.id}`}
+                      href={`/platform/organizations/${organization.id}/edit`}
                       alignSelf={'flex-start'}
                       name={organization.name}
                       src={organization.avatar}
@@ -297,7 +297,7 @@ export default function PlatformOrganizations() {
                   <Stack pt={4}>
                     <Button
                       as={NextLink}
-                      href={`/platform/organizations/${organization.id}`}
+                      href={`/platform/organizations/${organization.id}/edit`}
                       variant={'solid'}
                     >
                       View
