@@ -195,7 +195,7 @@ export default function Settings() {
                     setIndex(3);
                   }}
                 >
-                  Admin Settings
+                  Staff Settings
                 </MenuItem>
               )}
             </MenuList>
@@ -240,7 +240,7 @@ export default function Settings() {
                 index={3}
                 icon={RiAdminFill}
               >
-                <Text>Admin Settings</Text>
+                <Text>Staff Settings</Text>
               </StyledTab>
             )}
           </TabList>
@@ -289,12 +289,12 @@ export default function Settings() {
               <SettingsLinkedAccounts />
             </TabPanel>
             <TabPanel p={0}>
-              <Heading>Admin Settings</Heading>
+              <Heading>Staff Settings</Heading>
               <Text
                 fontSize={'md'}
                 color={'gray.500'}
               >
-                Super secret admin settings.
+                Super secret settings.
               </Text>
               <Divider
                 mt={4}
