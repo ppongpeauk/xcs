@@ -39,19 +39,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       (member: any) => member.id === organization.ownerId) as OrganizationMember
 
     // update organization to have owner member
-    if (!ownerMember) {
+    if (!organization.ownerId) {
       // find owner
-      ownerMember = Object.values(organization.members).find(
-        (member: any) => member.role === 3) as OrganizationMember
-      await organizations.updateOne({ id: organizationId }, { $set: { ownerId: ownerMember.id } });
-      organization.ownerId = ownerMember.id;
+      const ownerMemberId = Object.keys(organization.members).find(
+        (key: any) => organization.members[key].role === 3) as string;
+      ownerMember = organization.members[ownerMemberId] as OrganizationMember;
+      await organizations.updateOne({ id: organizationId }, { $set: { ownerId: ownerMemberId } });
+      organization.ownerId = ownerMemberId;
     }
 
-    let ownerUser = await users.findOne({ id: ownerMember.id }, {
+    let ownerUser = await users.findOne({ id: organization.ownerId }, {
       projection: {
+        id: 1,
         displayName: 1,
         username: 1,
-        id: 1,
+        avatar: 1,
       }
     });
 
