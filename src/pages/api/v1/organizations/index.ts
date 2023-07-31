@@ -104,7 +104,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       name: name,
       description: '',
       ownerId: uid,
-      avatar: '',
+      avatar: 'https://xcs.restrafes.co/images/default-avatar.png',
       members: {
         [uid]: {
           type: 'user',

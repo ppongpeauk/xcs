@@ -58,7 +58,7 @@ function TableEntry({ key, organization }: { key: number | string, organization:
       <Td>
         <Link href={`/platform/organizations/${organization?.id}/edit`} textDecoration={"unset !important"}>
           <Stack flexDir={'row'} align={'center'}>
-            <Avatar borderRadius={'lg'} size={'md'} src={organization?.avatar} />
+            <Avatar borderRadius={'lg'} size={'md'} src={organization?.avatar || '/images/default-avatar.png'} />
 
             <Flex flexDir={'column'} mx={2}>
               <Text fontWeight={'bold'}>

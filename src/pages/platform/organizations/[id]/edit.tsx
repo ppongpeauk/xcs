@@ -372,7 +372,7 @@ export default function PlatformOrganization() {
           >
             <Avatar
               name={organization?.name}
-              src={organization?.avatar}
+              src={organization?.avatar || '/images/default-avatar.png'}
               boxSize={{ base: '6rem', md: '10rem' }}
               borderRadius={'lg'}
             />
