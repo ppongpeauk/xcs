@@ -29,6 +29,11 @@ import { useAuthContext } from '@/contexts/AuthContext';
 import { AsyncSelect } from 'chakra-react-select';
 import { useCallback } from 'react';
 
+interface Option {
+  label?: string;
+  value?: string;
+}
+
 export default function LocationResetUniverseIdModal({
   isOpen,
   onClose,
@@ -86,12 +91,9 @@ export default function LocationResetUniverseIdModal({
   return (
     <>
       <Formik
-        initialValues={{ id: '', memberId: {
-          label: '',
-          value: ''
-        } }}
+        initialValues={{ id: '', memberId: null as Option | null }}
         onSubmit={(values, actions) => {
-          user.getIdToken().then((token: any) => {
+          user.getIdToken().then((token: string) => {
             fetch(`/api/v1/locations/${values?.id}/resetUniverse`, {
               method: 'PATCH',
               headers: {
@@ -99,7 +101,7 @@ export default function LocationResetUniverseIdModal({
                 Authorization: `Bearer ${token}`
               },
               body: JSON.stringify({
-                memberId: values?.memberId?.value
+                memberId: values?.memberId?.value as string
               })
             })
               .then((res) => {
