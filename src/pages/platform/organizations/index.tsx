@@ -96,7 +96,7 @@ function TableEntry({ key, organization }: { key: number | string, organization:
         {organization?.updatedBy &&
           <Link href={`/platform/profile/${organization?.updatedBy?.username}`} textUnderlineOffset={4}>
             <Flex flexDir={'row'} align={"center"} gap={1} py={1}>
-              <Avatar borderRadius={'lg'} size={'xs'} src={organization?.updatedBy?.avatar || '/images/default-avatar.png'} />
+              <Avatar size={'xs'} src={organization?.updatedBy?.avatar || '/images/default-avatar.png'} />
               <Text fontWeight={'bold'}>
                 {organization?.updatedBy?.displayName}
               </Text>
