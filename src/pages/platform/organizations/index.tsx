@@ -17,6 +17,7 @@ import {
   Heading,
   Select,
   Skeleton,
+  SkeletonCircle,
   Stack,
   Table,
   TableCaption,
@@ -52,21 +53,25 @@ import moment from 'moment';
 import 'moment-timezone';
 import { BiSolidExit } from 'react-icons/bi';
 
-function TableEntry({ key, organization }: { key: number | string, organization: Organization }) {
+function TableEntry({ key, organization, skeleton }: { key: number | string, organization?: Organization, skeleton?: boolean }) {
   return <>
     <Tr key={key}>
       <Td>
         <Link href={`/platform/organizations/${organization?.id}/edit`} textDecoration={"unset !important"}>
           <Stack flexDir={'row'} align={'center'}>
-            <Avatar borderRadius={'lg'} size={'md'} src={organization?.avatar || '/images/default-avatar.png'} />
+            <Skeleton isLoaded={!skeleton}>
+              <Avatar borderRadius={'lg'} size={'md'} src={organization?.avatar || '/images/default-avatar.png'} />
+            </Skeleton>
 
-            <Flex flexDir={'column'} mx={2}>
-              <Text fontWeight={'bold'}>
-                {organization?.name}
-              </Text>
-              <Text size={'sm'} color={'gray.500'}>
-                Owned by {organization?.owner?.displayName}
-              </Text>
+            <Flex flexDir={'column'} mx={2} justify={'center'}>
+              <Skeleton isLoaded={!skeleton}>
+                <Text fontWeight={'bold'}>
+                  {!skeleton ? organization?.name : "Organization Name"}
+                </Text>
+                <Text size={'sm'} color={'gray.500'}>
+                  Owned by {!skeleton ? organization?.owner?.displayName : "Organization Owner"}
+                </Text>
+              </Skeleton>
             </Flex>
           </Stack>
         </Link>
@@ -79,54 +84,64 @@ function TableEntry({ key, organization }: { key: number | string, organization:
           <Avatar src='/images/logo.jpg' />
           <Avatar src='/images/logo.jpg' />
         </AvatarGroup> */}
-
-        {organization?.statistics?.numMembers}
+        <Skeleton isLoaded={!skeleton}>
+          <Text fontWeight={'bold'}>
+            {!skeleton ? organization?.statistics?.numMembers : 0}
+          </Text>
+        </Skeleton>
       </Td>
       <Td isNumeric>
-        {organization?.statistics?.numLocations}
+        <Skeleton isLoaded={!skeleton}>
+          <Text fontWeight={'bold'}>
+            {!skeleton ? organization?.statistics?.numLocations : 0}
+          </Text>
+        </Skeleton>
       </Td>
       <Td>
-        {useMemo(() => {
-          const date = moment(new Date(organization.updatedAt as string)).fromNow();
-          return date as string;
-        }, [organization])}
+        <Skeleton isLoaded={!skeleton}>
+          {useMemo(() => {
+            const date = moment(new Date(organization?.updatedAt as string)).fromNow();
+            return date as string;
+          }, [organization])}
 
-        {organization?.updatedBy && " by "}
+          {organization?.updatedBy && " by "}
 
-        {organization?.updatedBy &&
-          <Link href={`/platform/profile/${organization?.updatedBy?.username}`} textUnderlineOffset={4}>
-            <Flex flexDir={'row'} align={"center"} gap={1} py={1}>
-              <Avatar size={'xs'} src={organization?.updatedBy?.avatar || '/images/default-avatar.png'} />
-              <Text fontWeight={'bold'}>
-                {organization?.updatedBy?.displayName}
-              </Text>
-            </Flex>
-          </Link>
-        }
+          {organization?.updatedBy &&
+            <Link href={`/platform/profile/${organization?.updatedBy?.username}`} textUnderlineOffset={4}>
+              <Flex flexDir={'row'} align={"center"} gap={1} py={1}>
+                <Avatar size={'xs'} src={organization?.updatedBy?.avatar || '/images/default-avatar.png'} />
+                <Text fontWeight={'bold'}>
+                  {organization?.updatedBy?.displayName}
+                </Text>
+              </Flex>
+            </Link>
+          }
+        </Skeleton>
       </Td>
       <Td isNumeric>
-        <ButtonGroup>
-          <Button
-            as={Link}
-            href={`/platform/organizations/${organization?.id}`}
-            size={"sm"}
-            variant={"outline"}
-            colorScheme='blue'
-            textDecor={"unset !important"}
-          >
-            View Profile
-          </Button>
-          <Button
-            as={Link}
-            href={`/platform/organizations/${organization?.id}/edit`}
-            size={"sm"}
-            variant={"solid"}
-            colorScheme='blue'
-            textDecor={"unset !important"}
-          >
-            View Details
-          </Button>
-          {/* <Button
+        <Skeleton isLoaded={!skeleton}>
+          <ButtonGroup>
+            <Button
+              as={Link}
+              href={`/platform/organizations/${organization?.id}`}
+              size={"sm"}
+              variant={"outline"}
+              colorScheme='blue'
+              textDecor={"unset !important"}
+            >
+              View Profile
+            </Button>
+            <Button
+              as={Link}
+              href={`/platform/organizations/${organization?.id}/edit`}
+              size={"sm"}
+              variant={"solid"}
+              colorScheme='blue'
+              textDecor={"unset !important"}
+            >
+              View Details
+            </Button>
+            {/* <Button
             size={"sm"}
             variant={"solid"}
             colorScheme='red'
@@ -134,7 +149,8 @@ function TableEntry({ key, organization }: { key: number | string, organization:
           >
             Leave
           </Button> */}
-        </ButtonGroup>
+          </ButtonGroup>
+        </Skeleton>
       </Td>
     </Tr>
   </>
@@ -343,9 +359,14 @@ export default function PlatformOrganizations() {
                 </Thead>
                 {/* display list of organizations */}
                 <Tbody>
+                  
                   {
-                    organizationsLoading ? <></> : (organizations.map((organization: Organization) => (
-                      <TableEntry key={organization.id as string} organization={organization} />
+                    organizationsLoading ? (
+                      Array.from({ length: 6 }).map((_, i) => (
+                        <TableEntry key={i} organization={undefined} skeleton={true} />
+                      ))
+                    ) : (organizations.map((organization: Organization) => (
+                      <TableEntry key={organization.id as string} organization={organization} skeleton={false} />
                     )))
                   }
                 </Tbody>
