@@ -1,4 +1,4 @@
-import { Box, Container, Divider, Flex, Heading, Image, Text, useColorModeValue } from '@chakra-ui/react';
+import { Box, Container, Divider, Flex, Heading, Image, Text, chakra, useColorModeValue } from '@chakra-ui/react';
 
 // import { Familjen_Grotesk, Manrope } from "next/font/google";
 // const font1 = Familjen_Grotesk({ subsets: ["latin"] });
@@ -6,6 +6,13 @@ import NextImage from 'next/image';
 import Marquee from 'react-fast-marquee';
 
 import Section from '@/components/section';
+
+// const Image = chakra(NextImage, {
+//   baseStyle: {
+//     maxH: '100%',
+//     maxW: '100%'
+//   }
+// });
 
 export default function Home() {
   return (
@@ -16,7 +23,7 @@ export default function Home() {
     >
       <Flex
         position={'relative'}
-        flexDir={['column', 'row']}
+        flexDir={{ base: 'column', md: 'row' }}
         h={'calc(100vh - 6rem)'}
         borderBottom={'1px solid'}
         borderColor={useColorModeValue('gray.300', 'gray.700')}
@@ -24,16 +31,17 @@ export default function Home() {
         <Flex
           flexBasis={1}
           flexGrow={2}
-          order={[2, 1]}
+          order={{ base: 2, md: 1 }}
+          overflow={'hidden'}
           w={'full'}
         >
-          <NextImage
-            src={'/images/hero4.jpeg'}
+          <Image
+            src={'/images/login3.jpg'}
             alt={'Home Image'}
-            fill={true}
+            w={"full"}
+            h={"100%"}
             style={{
               objectFit: 'cover',
-              objectPosition: 'right center'
             }}
           />
         </Flex>
@@ -44,16 +52,16 @@ export default function Home() {
           align={'center'}
           justify={'center'}
           py={8}
-          px={[8, 8, 24]}
-          order={[1, 2]}
+          px={{ base: 8, md: 16, lg: 32 }}
+          order={{ base: 1, md: 2 }}
           // backdropFilter={"blur(2rem)"}
           // bg={useColorModeValue(
           //   "rgba(255, 255, 255, 0.25)",
           //   "rgba(26, 32, 44, 0.5)"
           // )}
           bg={useColorModeValue('white', 'gray.800')}
-          minW={['unset', '50%']}
-          w={['full', 'full', '50%']}
+          minW={{ base: 'unset', md: '50%' }}
+          w={{ base: 'full', md: '50%' }}
           h={'full'}
         >
           <Section>

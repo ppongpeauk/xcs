@@ -78,7 +78,7 @@ export default function Recover() {
           content="en_US"
         />
       </Head>
-      <Nav />
+      <Nav type={"login"} />
       <Box
         position={'relative'}
         h={'calc(100vh - 6rem)'}

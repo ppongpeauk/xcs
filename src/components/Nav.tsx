@@ -62,7 +62,8 @@ function NavLink({
   return (
     <Button
       as={NextLink}
-      variant={pathname === href ? 'solid' : variant}
+      // variant={pathname === href ? 'solid' : variant}
+      variant={variant}
       href={href}
     >
       {children}
@@ -94,8 +95,8 @@ export default function Nav({ type }: { type?: string }) {
           justify={'center'}
           w={'240px'}
           h={'full'}
-          // borderRight={"1px solid"}
-          // borderColor={useColorModeValue("gray.300", "gray.700")}
+        // borderRight={"1px solid"}
+        // borderColor={useColorModeValue("gray.300", "gray.700")}
         >
           <Flex
             as={NextLink}
@@ -139,30 +140,23 @@ export default function Nav({ type }: { type?: string }) {
           // borderColor={useColorModeValue("gray.200", "gray.700")}
           spacing={2}
         >
-          <Box display={{ base: 'none', md: 'flex' }}>
-            <Skeleton isLoaded={isAuthLoaded}>
-              {currentUser ? (
-                <NavLink
-                  href={'/platform/home'}
-                  pathname={pathname}
-                >
-                  Control Panel
-                </NavLink>
-              ) : (
+          {/* {type !== "login" && */}
+            <Box display={{ base: 'none', md: 'flex' }}>
+              <Skeleton isLoaded={isAuthLoaded}>
                 <NavLink
                   href={'/auth/login'}
                   pathname={pathname}
                 >
-                  Login
+                  Access Platform
                 </NavLink>
-              )}
-            </Skeleton>
-          </Box>
+              </Skeleton>
+            </Box>
+          {/* } */}
 
           {/* Theme Button */}
-          <Box display={{ base: 'none', md: 'flex' }}>
+          {/* <Box display={{ base: 'none', md: 'flex' }}>
             <ThemeButton />
-          </Box>
+          </Box> */}
 
           {/* Mobile Nav */}
           <Box display={{ base: 'flex', md: 'none' }}>
@@ -181,25 +175,14 @@ export default function Nav({ type }: { type?: string }) {
                 >
                   Home
                 </MenuItem>
-                {currentUser ? (
-                  <MenuItem
-                    as={MenuLink}
-                    icon={<IoCube />}
-                    href="/platform/home"
-                  >
-                    Control Panel
-                  </MenuItem>
-                ) : (
-                  <MenuItem
-                    as={MenuLink}
-                    icon={<BiSolidLogIn />}
-                    href="/auth/login"
-                  >
-                    Login
-                  </MenuItem>
-                )}
-                <MenuDivider />
-                <ThemeButton menu={true} />
+                <MenuItem
+                  as={MenuLink}
+                  icon={<BiSolidLogIn />}
+                  href="/auth/login"
+                >
+                  Access Platform
+                </MenuItem>
+                {/* <ThemeButton menu={true} /> */}
               </MenuList>
             </Menu>
           </Box>

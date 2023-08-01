@@ -116,7 +116,7 @@ export default function Login() {
             content="en_US"
           />
         </Head>
-        <Nav />
+        <Nav type={"login"} />
         <Modal
           onClose={onClose}
           isOpen={isOpen}

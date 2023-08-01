@@ -117,7 +117,7 @@ export default function Activate() {
           content="en_US"
         />
       </Head>
-      <Nav />
+      <Nav type={"login"} />
       <Flex
         position={'relative'}
         minH={'calc(100vh - 6rem)'}
