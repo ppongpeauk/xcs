@@ -279,7 +279,7 @@ export default function Activate() {
                                 <Input
                                   {...field}
                                   type="text"
-                                  placeholder="Email"
+                                  placeholder="Email address"
                                   variant={'outline'}
                                 />
                               </InputGroup>

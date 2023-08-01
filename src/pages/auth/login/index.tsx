@@ -249,7 +249,7 @@ export default function Login() {
                                   <Input
                                     {...field}
                                     type="text"
-                                    placeholder="Email"
+                                    placeholder="Email address"
                                     variant={'outline'}
                                   />
                                 </InputGroup>

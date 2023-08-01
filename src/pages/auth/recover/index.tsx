@@ -169,7 +169,7 @@ export default function Recover() {
                               <Input
                                 {...field}
                                 type="text"
-                                placeholder="Email"
+                                placeholder="Email address"
                                 variant={'outline'}
                               />
                             </InputGroup>
