@@ -112,7 +112,7 @@ export default function Recover() {
                 >
                   Recover Account
                 </Text>
-                <Text fontSize={'md'}>Enter your email address to recover your account.</Text>
+                <Text color={"gray.500"} fontSize={'md'}>Enter your email address to recover your account.</Text>
               </Box>
               <br />
               <Box px={[0, 4]}>

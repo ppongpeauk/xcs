@@ -15,6 +15,7 @@ import {
   FormLabel,
   HStack,
   Heading,
+  Icon,
   Select,
   Skeleton,
   SkeletonCircle,
@@ -51,30 +52,36 @@ import JoinOrganizationDialog from '@/components/JoinOrganizationDialog';
 import { Organization } from '@/types';
 import moment from 'moment';
 import 'moment-timezone';
-import { BiSolidExit } from 'react-icons/bi';
+import { BiRefresh, BiSolidExit } from 'react-icons/bi';
 
 function TableEntry({ key, organization, skeleton }: { key: number | string, organization?: Organization, skeleton?: boolean }) {
   return <>
     <Tr key={key}>
       <Td>
-        <Link href={`/platform/organizations/${organization?.id}/edit`} textDecoration={"unset !important"}>
-          <Stack flexDir={'row'} align={'center'}>
-            <Skeleton isLoaded={!skeleton}>
-              <Avatar borderRadius={'lg'} size={'md'} src={organization?.avatar || '/images/default-avatar.png'} />
-            </Skeleton>
+        <Stack flexDir={'row'} align={'center'}>
+          <Skeleton isLoaded={!skeleton}>
+            <Avatar borderRadius={'lg'} size={'md'} src={organization?.avatar || '/images/default-avatar.png'} />
+          </Skeleton>
 
-            <Flex flexDir={'column'} mx={2} justify={'center'}>
-              <Skeleton isLoaded={!skeleton}>
-                <Text fontWeight={'bold'}>
-                  {!skeleton ? organization?.name : "Organization Name"}
+          <Flex flexDir={'column'} mx={2} justify={'center'}>
+            <Skeleton isLoaded={!skeleton}>
+              <Text fontWeight={'bold'}>
+                {!skeleton ? organization?.name : "Organization Name"}
+              </Text>
+              <Text size={'sm'} color={'gray.500'}>
+                Owned by {!skeleton ? organization?.owner?.displayName : "Organization Owner"}
+              </Text>
+              <Flex align={'center'} color={'gray.500'} gap={1}>
+                <Icon as={BiRefresh} />
+                <Text size={'sm'}>
+                  {!skeleton ? moment(new Date(organization?.updatedAt as string)).fromNow() : "Last Updated"}
+                  {!skeleton && organization?.updatedBy && " by "}
+                  {!skeleton ? organization?.updatedBy?.displayName : "Organization Owner"}
                 </Text>
-                <Text size={'sm'} color={'gray.500'}>
-                  Owned by {!skeleton ? organization?.owner?.displayName : "Organization Owner"}
-                </Text>
-              </Skeleton>
-            </Flex>
-          </Stack>
-        </Link>
+              </Flex>
+            </Skeleton>
+          </Flex>
+        </Stack>
       </Td>
       <Td isNumeric>
         {/* TODO: implement avatars */}
@@ -358,7 +365,7 @@ export default function PlatformOrganizations() {
                 </Thead>
                 {/* display list of organizations */}
                 <Tbody>
-                  
+
                   {
                     organizationsLoading ? (
                       Array.from({ length: 6 }).map((_, i) => (
