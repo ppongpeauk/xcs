@@ -342,7 +342,6 @@ export default function PlatformOrganizations() {
             <TableContainer
               py={2}
               maxW={"100%"}
-              minH={{ base: '320px', xl: '100%' }}
               overflowY={'auto'}
               flexGrow={1}
               px={4}

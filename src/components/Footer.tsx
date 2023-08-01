@@ -1,6 +1,7 @@
-import { Box, Divider, Flex, Image, Link, Spacer, Text, useColorModeValue } from '@chakra-ui/react';
+import { Box, Divider, Flex, Icon, Image, Link, Spacer, Text, useColorModeValue } from '@chakra-ui/react';
 
 import NextLink from 'next/link';
+import { BiGitBranch } from 'react-icons/bi';
 
 import ThemeButton from './ThemeButton';
 
@@ -13,7 +14,7 @@ export default function Footer() {
         top={0}
         flexDir={'column'}
         w={'100%'}
-        h={'7rem'}
+        h={'8rem'}
         border={'1px solid'}
         borderLeft={{ base: '1px solid', md: 'unset' }}
         borderColor={useColorModeValue('gray.300', 'gray.700')}
@@ -54,14 +55,17 @@ export default function Footer() {
             Privacy Policy
           </Link>
         </Flex>
-        <Text
-          color={'gray.400'}
-          fontSize={'xs'}
-          letterSpacing={'tighter'}
+        <Flex
+          color={'gray.500'}
+          fontSize={"sm"}
+          align={'center'}
         >
-          Commit: {process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA || 'dev'} (
-          {process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF || 'dev'})
-        </Text>
+          <Icon as={BiGitBranch} mr={1} />{" "}
+          <Text as={'span'}>
+            {process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA || 'dev-mode'}{" "}
+            ({process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF || 'dev'})
+          </Text>
+        </Flex>
       </Flex>
     </>
   );
