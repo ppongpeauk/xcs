@@ -87,11 +87,12 @@ export default function SettingsProfile() {
       {isAuthLoaded && currentUser && (
         <Box w={'fit-content'}>
           <Formik
+            enableReinitialize={true}
             initialValues={{
-              displayName: currentUser?.displayName,
-              username: currentUser?.username,
-              bio: currentUser?.bio,
-              email: currentUser?.email?.address
+              displayName: currentUser?.displayName as string,
+              username: currentUser?.username as string,
+              bio: currentUser?.bio as string,
+              email: currentUser?.email?.address as string
             }}
             onSubmit={(values, actions) => {
               user.getIdToken().then((token: string) => {
@@ -102,7 +103,7 @@ export default function SettingsProfile() {
                     Authorization: `Bearer ${token}`
                   },
                   body: JSON.stringify({
-                    displayName: values.displayName,
+                    displayName: values.displayName || currentUser?.username,
                     bio: values.bio,
                     email: values.email !== currentUser?.email?.address ? values.email : undefined,
                     avatar: image !== currentUser?.avatar ? image : undefined
@@ -125,6 +126,15 @@ export default function SettingsProfile() {
                       isClosable: true
                     });
                     refreshCurrentUser();
+                    // refresh form values
+                    actions.resetForm({
+                      values: {
+                        displayName: currentUser?.displayName as string,
+                        username: currentUser?.username as string,
+                        bio: currentUser?.bio as string,
+                        email: currentUser?.email?.address as string
+                      }
+                    });
                   })
                   .catch((err) => {
                     toast({
@@ -199,7 +209,7 @@ export default function SettingsProfile() {
                             {...field}
                             type="text"
                             autoComplete="off"
-                            placeholder="Display Name"
+                            placeholder={currentUser?.username}
                             variant={'outline'}
                           />
                         </InputGroup>

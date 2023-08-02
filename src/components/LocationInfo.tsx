@@ -3,6 +3,7 @@ import { Suspense, useEffect, useState } from 'react';
 
 import {
   Box,
+  Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator,
   Button,
   Container,
   FormControl,
@@ -19,14 +20,15 @@ import {
   Switch,
   Text,
   Textarea,
-  useColorModeValue
+  useColorModeValue,
+  useDisclosure,
+  useToast
 } from '@chakra-ui/react';
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator, useDisclosure } from '@chakra-ui/react';
-import { useToast } from '@chakra-ui/react';
 
 import { ChevronRightIcon, DeleteIcon } from '@chakra-ui/icons';
 
 import { AiFillCheckCircle, AiFillTag } from 'react-icons/ai';
+import { BiSolidDownload } from 'react-icons/bi';
 import { BsFillCloudDownloadFill } from 'react-icons/bs';
 import { HiGlobeAlt } from 'react-icons/hi';
 import { IoIosRemoveCircle } from 'react-icons/io';
@@ -53,88 +55,92 @@ export default function LocationInfo({ location, query, idToken, refreshData }: 
   const [packLoading, setPackLoading] = useState<boolean>(false);
 
   const onDelete = () => {
-    fetch(`/api/v1/locations/${query.id}`, {
-      method: 'DELETE',
-      headers: { Authorization: `Bearer ${idToken}` }
-    })
-      .then((res) => {
-        if (res.status === 200) {
-          return res.json();
-        } else {
-          return res.json().then((json: any) => {
-            throw new Error(json.message);
+    user.getIdToken().then((token: string) => {
+      fetch(`/api/v1/locations/${query.id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      })
+        .then((res) => {
+          if (res.status === 200) {
+            return res.json();
+          } else {
+            return res.json().then((json: any) => {
+              throw new Error(json.message);
+            });
+          }
+        })
+        .then((data) => {
+          toast({
+            title: data.message,
+            status: 'success',
+            duration: 5000,
+            isClosable: true
           });
-        }
-      })
-      .then((data) => {
-        toast({
-          title: data.message,
-          status: 'success',
-          duration: 5000,
-          isClosable: true
+          push('/platform/locations');
+        })
+        .catch((err) => {
+          toast({
+            title: 'Error',
+            description: err.message,
+            status: 'error',
+            duration: 5000,
+            isClosable: true
+          });
+        })
+        .finally(() => {
+          onDeleteDialogClose();
         });
-        push('/platform/locations');
-      })
-      .catch((err) => {
-        toast({
-          title: 'Error',
-          description: err.message,
-          status: 'error',
-          duration: 5000,
-          isClosable: true
-        });
-      })
-      .finally(() => {
-        onDeleteDialogClose();
-      });
+    });
   };
 
   let downloadStarterPack = () => {
     setPackLoading(true);
-    fetch(`/api/v1/locations/${query.id}/starter-pack`, {
-      method: 'GET',
-      headers: { Authorization: `Bearer ${idToken}` }
-    })
-      .then((res) => {
-        if (res.status === 200) {
-          return res.blob();
-        } else {
-          return res.json().then((json: any) => {
-            throw new Error(json.message);
+    user.getIdToken().then((token: string) => {
+      fetch(`/api/v1/locations/${query.id}/starter-pack`, {
+        method: 'GET',
+        headers: { Authorization: `Bearer ${token}` }
+      })
+        .then((res) => {
+          if (res.status === 200) {
+            return res.blob();
+          } else {
+            return res.json().then((json: any) => {
+              throw new Error(json.message);
+            });
+          }
+        })
+        .then((blob) => {
+          // Convert location name to kebab case for file name
+          const locationName = location.name.replace(/\s+/g, '-').replace('.', '').toLowerCase();
+
+          const url = window.URL.createObjectURL(new Blob([blob]));
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', `xcs-template-${locationName}.rbxmx`);
+          document.body.appendChild(link);
+          link.click();
+          link.parentNode?.removeChild(link);
+
+          toast({
+            title: 'Your download should start shortly.',
+            status: 'success',
+            duration: 5000,
+            isClosable: true
           });
-        }
-      })
-      .then((blob) => {
-        // Convert location name to kebab case for file name
-        const locationName = location.name.replace(/\s+/g, '-').replace('.', '').toLowerCase();
-
-        const url = window.URL.createObjectURL(new Blob([blob]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', `xcs-template-${locationName}.rbxmx`);
-        document.body.appendChild(link);
-        link.click();
-        link.parentNode?.removeChild(link);
-
-        toast({
-          title: 'Your download should start shortly.',
-          status: 'success',
-          duration: 5000,
-          isClosable: true
+        })
+        .catch((err) => {
+          toast({
+            title: 'Error',
+            description: err.message,
+            status: 'error',
+            duration: 5000,
+            isClosable: true
+          });
+        })
+        .finally(() => {
+          setPackLoading(false);
         });
-      })
-      .catch((err) => {
-        toast({
-          title: 'Error',
-          description: err.message,
-          status: 'error',
-          duration: 5000,
-          isClosable: true
-        });
-      })
-      .finally(() => {
-        setPackLoading(false);
-      });
+    });
   };
 
   const onGroupRemove = async (group: any) => {
@@ -215,58 +221,60 @@ export default function LocationInfo({ location, query, idToken, refreshData }: 
                 : ''
             }}
             onSubmit={(values, actions) => {
-              fetch(`/api/v1/locations/${query.id}`, {
-                method: 'PUT',
-                headers: {
-                  Authorization: `Bearer ${idToken}`,
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                  name: values.name,
-                  description: values.description || '',
-                  enabled: values.enabled,
-                  roblox: {
-                    universe: {
-                      id: location?.roblox?.universe?.id
-                        ? location?.roblox?.universe?.id
-                        : values.universeId.trim() == ''
-                        ? ''
-                        : values.universeId.trim()
+              user.getIdToken().then((token: string) => {
+                fetch(`/api/v1/locations/${query.id}`, {
+                  method: 'PUT',
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                    name: values.name,
+                    description: values.description || '',
+                    enabled: values.enabled,
+                    roblox: {
+                      universe: {
+                        id: location?.roblox?.universe?.id
+                          ? location?.roblox?.universe?.id
+                          : values.universeId.trim() == ''
+                            ? ''
+                            : values.universeId.trim()
+                      }
                     }
-                  }
+                  })
                 })
-              })
-                .then((res: any) => {
-                  if (res.status === 200) {
-                    return res.json();
-                  } else {
-                    return res.json().then((json: any) => {
-                      throw new Error(json.message);
+                  .then((res: any) => {
+                    if (res.status === 200) {
+                      return res.json();
+                    } else {
+                      return res.json().then((json: any) => {
+                        throw new Error(json.message);
+                      });
+                    }
+                  })
+                  .then((data) => {
+                    toast({
+                      title: data.message,
+                      status: 'success',
+                      duration: 5000,
+                      isClosable: true
                     });
-                  }
-                })
-                .then((data) => {
-                  toast({
-                    title: data.message,
-                    status: 'success',
-                    duration: 5000,
-                    isClosable: true
+                    actions.setSubmitting(false);
+                    refreshData();
+                  })
+                  .catch((error) => {
+                    toast({
+                      title: 'There was an error updating the location.',
+                      description: error.message,
+                      status: 'error',
+                      duration: 5000,
+                      isClosable: true
+                    });
+                  })
+                  .finally(() => {
+                    actions.setSubmitting(false);
                   });
-                  actions.setSubmitting(false);
-                  refreshData();
-                })
-                .catch((error) => {
-                  toast({
-                    title: 'There was an error updating the location.',
-                    description: error.message,
-                    status: 'error',
-                    duration: 5000,
-                    isClosable: true
-                  });
-                })
-                .finally(() => {
-                  actions.setSubmitting(false);
-                });
+              });
             }}
           >
             {(props) => (
@@ -356,7 +364,7 @@ export default function LocationInfo({ location, query, idToken, refreshData }: 
                     onClick={roleModalOnOpen}
                     leftIcon={<HiGlobeAlt />}
                   >
-                    Manage Access Groups
+                    Access Groups
                   </Button>
                 </Stack>
                 <Stack
@@ -377,7 +385,8 @@ export default function LocationInfo({ location, query, idToken, refreshData }: 
                     mb={2}
                     onClick={downloadStarterPack}
                     isLoading={packLoading}
-                    leftIcon={<BsFillCloudDownloadFill />}
+                    variant={'outline'}
+                    leftIcon={<BiSolidDownload />}
                     isDisabled={location?.self.role < 2}
                   >
                     Download Template

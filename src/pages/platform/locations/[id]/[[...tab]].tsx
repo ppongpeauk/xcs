@@ -56,13 +56,13 @@ function StyledTab({ children }: { children: React.ReactNode }) {
       _hover={{
         bg: useColorModeValue('gray.100', 'gray.700')
       }}
-      _active={{
-        bg: useColorModeValue('gray.200', 'gray.600'),
-        color: useColorModeValue('gray.900', 'white')
-      }}
       _selected={{
         bg: useColorModeValue('gray.100', '#fff'),
         color: useColorModeValue('black', 'gray.900')
+      }}
+      _active={{
+        bg: useColorModeValue('gray.200', 'gray.600'),
+        color: useColorModeValue('gray.900', 'white')
       }}
     >
       {children}
@@ -74,50 +74,43 @@ export default function PlatformLocation() {
   const router = useRouter();
   const { query, push } = router;
   const { user } = useAuthContext();
-  const [idToken, setIdToken] = useState<string | null>(null);
   const [location, setLocation] = useState<any>(null);
   const [tabIndex, setTabIndex] = useState(0);
   const toast = useToast();
 
   let refreshData = () => {
     setLocation(null);
-    fetch(`/api/v1/locations/${query.id}`, {
-      method: 'GET',
-      headers: { Authorization: `Bearer ${idToken}` }
-    })
-      .then((res) => {
-        if (res.status === 200) return res.json();
-        if (res.status === 404) {
-          return push('/404');
-        } else if (res.status === 403 || res.status === 401) {
-          toast({
-            title: 'Unauthorized.',
-            description: 'You are not authorized to view this location.',
-            status: 'error',
-            duration: 5000,
-            isClosable: true
-          });
-          return push('/platform/organizations');
-        }
+    user.getIdToken().then((token: string) => {
+      fetch(`/api/v1/locations/${query.id}`, {
+        method: 'GET',
+        headers: { Authorization: `Bearer ${token}` }
       })
-      .then((data) => {
-        setLocation(data.location);
-      });
+        .then((res) => {
+          if (res.status === 200) return res.json();
+          if (res.status === 404) {
+            return push('/404');
+          } else if (res.status === 403 || res.status === 401) {
+            toast({
+              title: 'Unauthorized.',
+              description: 'You are not authorized to view this location.',
+              status: 'error',
+              duration: 5000,
+              isClosable: true
+            });
+            return push('/platform/organizations');
+          }
+        })
+        .then((data) => {
+          setLocation(data.location);
+        });
+    });
   };
 
   // Fetch location data
   useEffect(() => {
-    if (!idToken) return;
     if (!query.id) return;
     refreshData();
-  }, [query.id, idToken]);
-
-  useEffect(() => {
-    if (!user) return;
-    user.getIdToken().then((token: string) => {
-      setIdToken(token);
-    });
-  }, [user]);
+  }, [query]);
 
   const indexSwitch = (index: number) => {
     let route = '';
@@ -319,7 +312,6 @@ export default function PlatformLocation() {
           <TabPanels px={{ base: 0, md: 8 }}>
             <TabPanel p={0}>
               <LocationInfo
-                idToken={idToken}
                 query={query}
                 location={location}
                 refreshData={refreshData}
@@ -333,7 +325,6 @@ export default function PlatformLocation() {
             </TabPanel> */}
             <TabPanel p={0}>
               <LocationAccessPoints
-                idToken={idToken}
                 location={location}
                 refreshData={refreshData}
               />

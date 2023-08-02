@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useEffect, useState } from 'react';
 
+import { Link } from '@chakra-ui/next-js';
 import {
   Avatar,
   AvatarBadge,
@@ -13,13 +14,14 @@ import {
   Heading,
   Icon,
   Image,
-  Link,
   Skeleton,
   SkeletonCircle,
   SkeletonText,
   Stack,
   StackItem,
   Text,
+  Wrap,
+  WrapItem,
   useColorModeValue,
   useToast
 } from '@chakra-ui/react';
@@ -30,9 +32,8 @@ import { SiRoblox } from 'react-icons/si';
 import { VscVerifiedFilled } from 'react-icons/vsc';
 
 // Types
-import { User } from '@/types';
+import { Organization, User } from '@/types';
 import Head from 'next/head';
-import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 
 // Authentication
@@ -40,38 +41,35 @@ import { useAuthContext } from '@/contexts/AuthContext';
 
 function OrganizationItem({ organization }: { organization: any }) {
   return (
-    <StackItem p={2}>
-      <Link
-        as={NextLink}
-        href={`/platform/organizations/${organization.id}`}
-        w={'auto'}
-        h={'auto'}
-        transition={'filter 0.2s ease-in-out'}
-        _hover={{
-          filter: useColorModeValue('opacity(0.75)', 'brightness(0.75)')
-        }}
+    <Link
+      href={`/platform/organizations/${organization.id}`}
+      w={'auto'}
+      h={'auto'}
+      transition={'filter 0.2s ease-in-out'}
+      _hover={{
+        filter: useColorModeValue('opacity(0.75)', 'brightness(0.75)')
+      }}
+    >
+      <Avatar
+        title={organization?.name}
+        name={organization?.name}
+        src={organization?.avatar}
+        objectFit={'cover'}
+        aspectRatio={1 / 1}
+        rounded={'md'}
+        borderRadius={'md'}
       >
-        <Avatar
-          title={organization?.name}
-          name={organization?.name}
-          src={organization?.avatar}
-          objectFit={'cover'}
-          aspectRatio={1 / 1}
-          rounded={'md'}
-          borderRadius={'md'}
-        >
-          {organization?.verified && (
-            <AvatarBadge boxSize="1.05em">
-              <Icon
-                as={VscVerifiedFilled}
-                color={'gold'}
-                h={'1em'}
-              />
-            </AvatarBadge>
-          )}
-        </Avatar>
-      </Link>
-    </StackItem>
+        {organization?.verified && (
+          <AvatarBadge boxSize="1.05em">
+            <Icon
+              as={VscVerifiedFilled}
+              color={'gold'}
+              h={'1em'}
+            />
+          </AvatarBadge>
+        )}
+      </Avatar>
+    </Link>
   );
 }
 
@@ -258,7 +256,7 @@ export default function Profile({ username, user: serverUser }: { username?: str
                   This user has not set a bio yet.
                 </Text>
               ) : (
-                // Multi-line support
+                // multi-line support
                 user?.bio.split('\n').map((line: string, i: number) => (
                   <Text
                     size={'md'}
@@ -285,9 +283,8 @@ export default function Profile({ username, user: serverUser }: { username?: str
               Connected Accounts
             </Text>
             <Skeleton isLoaded={!!user}>
-              <Flex
+              <Wrap
                 flexDir={'row'}
-                gap={0}
                 w={'fit-content'}
               >
                 {!user?.discord.verified && !user?.roblox.verified && (
@@ -299,59 +296,72 @@ export default function Profile({ username, user: serverUser }: { username?: str
                   </Text>
                 )}
                 {user?.discord.verified && (
-                  <Button
-                    as={NextLink}
-                    href={`https://discord.com/users/${user?.discord.id}`}
-                    target="_blank"
-                    size={'sm'}
-                    variant={'ghost'}
-                  >
-                    <Icon
-                      as={BsDiscord}
-                      size={'xl'}
-                      mr={2}
-                    />
-                    <Text
-                      size={'md'}
-                      fontWeight={'900'}
+                  <WrapItem>
+                    <Button
+                      as={Link}
+                      href={`https://discord.com/users/${user?.discord.id}`}
+                      target="_blank"
+                      size={'sm'}
+                      variant={'ghost'}
+                      style={{ textDecoration: 'none' }}
                     >
-                      @{user?.discord.username}
-                      {user?.discord.discriminator && `#${user?.discord.discriminator}`}
-                    </Text>
-                  </Button>
+                      <Icon
+                        as={BsDiscord}
+                        size={'xl'}
+                        mr={2}
+                      />
+                      <Text
+                        size={'md'}
+                        fontWeight={'900'}
+                      >
+                        @{user?.discord.username}
+                        {user?.discord.discriminator && `#${user?.discord.discriminator}`}
+                      </Text>
+                    </Button>
+                  </WrapItem>
                 )}
                 {user?.roblox.verified && (
-                  <Button
-                    as={NextLink}
-                    href={`https://roblox.com/users/${user?.roblox.id}/profile`}
-                    target="_blank"
-                    size={'sm'}
-                    variant={'ghost'}
-                  >
-                    <Icon
-                      as={SiRoblox}
-                      size={'xl'}
-                      mr={2}
-                    />
-                    <Text
-                      size={'md'}
-                      fontWeight={'900'}
+                  <WrapItem>
+                    <Button
+                      as={Link}
+                      href={`https://roblox.com/users/${user?.roblox.id}/profile`}
+                      target="_blank"
+                      size={'sm'}
+                      variant={'ghost'}
+                      style={{ textDecoration: 'none' }}
                     >
-                      {user?.roblox.username}
-                    </Text>
-                  </Button>
+                      <Icon
+                        as={SiRoblox}
+                        size={'xl'}
+                        mr={2}
+                      />
+                      <Text
+                        size={'md'}
+                        fontWeight={'900'}
+                      >
+                        {user?.roblox.username}
+                      </Text>
+                    </Button>
+                  </WrapItem>
                 )}
-              </Flex>
+              </Wrap>
             </Skeleton>
           </Box>
         </Box>
-        <Flex flexDir={['column', 'row']}>
+        <Flex>
           {/* Organizations */}
           <Box
             py={2}
-            w={['full', '300px']}
-            mr={[0, 16]}
+            w={{ base: 'full', md: '320px' }}
+            mr={{ base: 0, md: 16 }}
           >
+            <Text
+              as={'h1'}
+              fontSize={'2xl'}
+              fontWeight={'900'}
+            >
+              Organizations
+            </Text>
             <Flex
               w={'full'}
               h={'fit-content'}
@@ -360,37 +370,26 @@ export default function Profile({ username, user: serverUser }: { username?: str
               justify={'flex-start'}
               flexGrow={1}
             >
-              <Text
-                as={'h1'}
-                fontSize={'2xl'}
-                fontWeight={'900'}
-              >
-                Organizations
-              </Text>
-              <Box
-                w={'full'}
-                h={'full'}
-              >
-                <Skeleton isLoaded={!!user}>
-                  {user?.organizations?.length ? (
-                    <Box>
-                      {user?.organizations?.map((org: any) => (
+              <Skeleton isLoaded={!!user} py={2}>
+                {user?.organizations?.length ? (
+                  <Wrap spacing={2}>
+                    {user?.organizations?.map((org: Organization) => (
+                      <WrapItem key={org.id}>
                         <OrganizationItem
-                          key={org.id}
                           organization={org}
                         />
-                      ))}
-                    </Box>
-                  ) : (
-                    <Text
-                      size={'md'}
-                      color={'gray.500'}
-                    >
-                      This user is not in any organizations.
-                    </Text>
-                  )}
-                </Skeleton>
-              </Box>
+                      </WrapItem>
+                    ))}
+                  </Wrap>
+                ) : (
+                  <Text
+                    size={'md'}
+                    color={'gray.500'}
+                  >
+                    This user is not in any organizations.
+                  </Text>
+                )}
+              </Skeleton>
             </Flex>
           </Box>
         </Flex>

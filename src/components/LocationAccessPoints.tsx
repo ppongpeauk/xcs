@@ -14,6 +14,7 @@ import {
   GridItem,
   HStack,
   Heading,
+  Input,
   SimpleGrid,
   Skeleton,
   SkeletonText,
@@ -33,13 +34,16 @@ import moment from 'moment';
 import NextLink from 'next/link';
 
 import CreateAccessPointDialog from '@/components/CreateAccessPointDialog';
+import { useAuthContext } from '@/contexts/AuthContext';
 
 export default function LocationAccessPoints({ idToken, location, refreshData }: any) {
   const [accessPoints, setAccessPoints] = useState<any>(null);
   const [selectedTags, setSelectedTags] = useState<any>([]);
   const [tags, setTags] = useState<any>([]);
   const [tagsOptions, setTagsOptions] = useState<any>([]); // [{ value: 'tag', label: 'tag' }
+  const [nameFilter, setNameFilter] = useState<string>('');
   const toast = useToast();
+  const { user } = useAuthContext();
 
   const {
     isOpen: isCreateAccessPointModalOpen,
@@ -70,27 +74,28 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
 
   useEffect(() => {
     if (!location) return;
-
-    fetch(`/api/v1/locations/${location.id}/access-points`, {
-      method: 'GET',
-      headers: { Authorization: `Bearer ${idToken}` }
-    })
-      .then((res) => {
-        if (res.status === 200) return res.json();
-        throw new Error(`Failed to fetch access points. (${res.status})`);
+    user.getIdToken().then((token: string) => {
+      fetch(`/api/v1/locations/${location.id}/access-points`, {
+        method: 'GET',
+        headers: { Authorization: `Bearer ${token}` }
       })
-      .then((data) => {
-        setAccessPoints(data);
-      })
-      .catch((err) => {
-        toast({
-          title: 'Error',
-          description: err.message,
-          status: 'error',
-          duration: 5000,
-          isClosable: true
+        .then((res) => {
+          if (res.status === 200) return res.json();
+          throw new Error(`Failed to fetch access points. (${res.status})`);
+        })
+        .then((data) => {
+          setAccessPoints(data);
+        })
+        .catch((err) => {
+          toast({
+            title: 'Error',
+            description: err.message,
+            status: 'error',
+            duration: 5000,
+            isClosable: true
+          });
         });
-      });
+    });
   }, [location]);
 
   return (
@@ -120,12 +125,20 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
         >
           Create
         </Button>
-        <Box>
+        <Stack direction={{ base: 'column', md: 'row' }}>
           <FormControl>
-            {/* <FormLabel>Filter by tag</FormLabel> */}
+            <Input
+              placeholder="Filter by name..."
+              onChange={(e) => {
+                setNameFilter(e.target.value);
+              }}
+              value={nameFilter}
+            />
+          </FormControl>
+          <FormControl>
             <Select
               options={tagsOptions}
-              placeholder="Select a tag..."
+              placeholder="Filter by tag..."
               onChange={(value) => {
                 setSelectedTags(value);
               }}
@@ -136,7 +149,7 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
               selectedOptionStyle={'check'}
             />
           </FormControl>
-        </Box>
+        </Stack>
       </Stack>
       <Flex
         as={Stack}
@@ -157,40 +170,41 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
           >
             {!accessPoints
               ? Array.from({ length: 6 }).map((_, i) => (
-                  <Box
-                    key={i}
-                    as={Skeleton}
-                    w={{ base: 'full', md: '384px' }}
-                    h={'max-content'}
-                    py={4}
-                    px={8}
-                    borderWidth={1}
-                    borderRadius={'xl'}
-                    borderColor={useColorModeValue('gray.200', 'gray.700')}
+                <Box
+                  key={i}
+                  as={Skeleton}
+                  w={{ base: 'full', md: '384px' }}
+                  h={'max-content'}
+                  py={4}
+                  px={8}
+                  borderWidth={1}
+                  borderRadius={'xl'}
+                  borderColor={useColorModeValue('gray.200', 'gray.700')}
+                >
+                  <HStack
+                    p={2}
+                    w={'full'}
                   >
-                    <HStack
-                      p={2}
-                      w={'full'}
-                    >
-                      <Box flexGrow={1}>
-                        <Text
-                          fontSize={'2xl'}
-                          fontWeight={'bold'}
-                        >
-                          Loading...
-                        </Text>
-                        <Text color={'gray.500'}>0 Members</Text>
-                        <Text color={'gray.500'}>Owned by</Text>
-                        <Text>Organization</Text>
-                      </Box>
-                    </HStack>
-                  </Box>
-                ))
+                    <Box flexGrow={1}>
+                      <Text
+                        fontSize={'2xl'}
+                        fontWeight={'bold'}
+                      >
+                        Loading...
+                      </Text>
+                      <Text color={'gray.500'}>0 Members</Text>
+                      <Text color={'gray.500'}>Owned by</Text>
+                      <Text>Organization</Text>
+                    </Box>
+                  </HStack>
+                </Box>
+              ))
               : null}
             {accessPoints?.accessPoints
               ?.filter(
                 (accessPoint: any) =>
-                  !selectedTags.length || selectedTags.some((tag: any) => accessPoint?.tags?.includes(tag.value))
+                  (!selectedTags.length || selectedTags.some((tag: any) => accessPoint?.tags?.includes(tag.value))) &&
+                  (!nameFilter || accessPoint?.name?.toLowerCase().includes(nameFilter.toLowerCase()))
               )
               .map((accessPoint: any) => (
                 <Flex

@@ -16,6 +16,7 @@ import {
   Code,
   Container,
   Divider,
+  Flex,
   FormControl,
   FormHelperText,
   FormLabel,
@@ -76,7 +77,6 @@ export default function PlatformAccessPoint() {
   const [accessPoint, setAccessPoint] = useState<any>(null);
   const themeBorderColor = useColorModeValue('gray.200', 'gray.700');
   const [accessGroupOptions, setAccessGroupOptions] = useState<any>([]);
-  const [tags, setTags] = useState<any>([]);
   const [tagsOptions, setTagsOptions] = useState<any>([]); // [{ value: 'tag', label: 'tag' }
   const toast = useToast();
   const {
@@ -87,8 +87,6 @@ export default function PlatformAccessPoint() {
   } = useClipboard('');
 
   const { isOpen: isDeleteDialogOpen, onOpen: onDeleteDialogOpen, onClose: onDeleteDialogClose } = useDisclosure();
-
-  const [packLoading, setPackLoading] = useState<boolean>(false);
 
   const onDelete = () => {
     user.getIdToken().then((idToken: any) => {
@@ -266,7 +264,6 @@ export default function PlatformAccessPoint() {
             res = [...res, ...(accessPoint?.tags || [])];
           });
           res = [...(new Set(res as any) as any)];
-          setTags(res);
           setTagsOptions([
             ...(new Set(
               res.map((value: string) => {
@@ -497,33 +494,30 @@ export default function PlatformAccessPoint() {
                 >
                   General
                 </Heading>
-                <Field
-                  name="name"
-                  w={'min-content'}
-                >
-                  {({ field, form }: any) => (
-                    <FormControl w={'fit-content'}>
-                      <Skeleton isLoaded={accessPoint}>
-                        <FormLabel>Name</FormLabel>
-                        <InputGroup mb={2}>
+                <Flex direction={'column'} gap={2}>
+                  <Field
+                    name="name"
+                    w={'min-content'}
+                  >
+                    {({ field, form }: any) => (
+                      <FormControl w={'fit-content'}>
+                        <Skeleton isLoaded={accessPoint}>
+                          <FormLabel>Name</FormLabel>
                           <Input
                             {...field}
                             type="text"
                             autoComplete="off"
                             placeholder="Access Point Name"
-                            variant={'outline'}
                           />
-                        </InputGroup>
-                      </Skeleton>
-                    </FormControl>
-                  )}
-                </Field>
-                <Field name="tags">
-                  {({ field, form }: any) => (
-                    <FormControl w={'fit-content'}>
-                      <Skeleton isLoaded={accessPoint}>
-                        <FormLabel>Tags</FormLabel>
-                        <Box mb={2}>
+                        </Skeleton>
+                      </FormControl>
+                    )}
+                  </Field>
+                  <Field name="tags">
+                    {({ field, form }: any) => (
+                      <FormControl w={{ base: 'full', md: '320px' }}>
+                        <Skeleton isLoaded={accessPoint}>
+                          <FormLabel>Tags</FormLabel>
                           <CreatableSelect
                             options={tagsOptions}
                             placeholder="Select a tag..."
@@ -544,41 +538,41 @@ export default function PlatformAccessPoint() {
                             hideSelectedOptions={false}
                             selectedOptionStyle={'check'}
                           />
-                        </Box>
-                      </Skeleton>
-                    </FormControl>
-                  )}
-                </Field>
-                <Field name="description">
-                  {({ field, form }: any) => (
-                    <FormControl maxW={'100%'}>
-                      <Skeleton isLoaded={accessPoint}>
-                        <FormLabel>Description</FormLabel>
-                        <InputGroup mb={2}>
+                          <FormHelperText>
+                            Tags are used to organize access points, and can be used to filter
+                            access points in the access point list.
+                          </FormHelperText>
+                        </Skeleton>
+                      </FormControl>
+                    )}
+                  </Field>
+                  <Field name="description">
+                    {({ field, form }: any) => (
+                      <FormControl w={{ base: 'full', md: '320px' }}>
+                        <Skeleton isLoaded={accessPoint}>
+                          <FormLabel>Description</FormLabel>
                           <Textarea
                             {...field}
                             type="text"
                             autoComplete="off"
                             placeholder="Access Point Description"
-                            variant={'outline'}
                             maxH={'240px'}
                           />
-                        </InputGroup>
-                      </Skeleton>
-                    </FormControl>
-                  )}
-                </Field>
+                        </Skeleton>
+                      </FormControl>
+                    )}
+                  </Field>
+                </Flex>
                 <Heading
                   as={'h2'}
                   fontSize={'xl'}
                   fontWeight={'900'}
-                  py={2}
+                  pt={4}
                 >
                   Configuration
                 </Heading>
                 <Tabs
                   isManual
-                  colorScheme="gray"
                   py={2}
                 >
                   <TabList mb={2}>
@@ -589,84 +583,83 @@ export default function PlatformAccessPoint() {
                   </TabList>
                   <TabPanels>
                     <TabPanel>
-                      <Stack
-                        direction={'row'}
-                        spacing={2}
-                        w={'fit-content'}
-                      >
-                        <Field name="active">
+                      <Flex direction={'column'} gap={2}>
+                        <Stack
+                          direction={'row'}
+                          spacing={2}
+                          w={'fit-content'}
+                        >
+                          <Field name="active">
+                            {({ field, form }: any) => (
+                              <FormControl>
+                                <Skeleton isLoaded={accessPoint}>
+                                  <FormLabel>Active</FormLabel>
+                                  <InputGroup>
+                                    <Switch
+                                      {...field}
+                                      colorScheme="blue"
+                                      placeholder="Active"
+                                      variant={'outline'}
+                                      width={'fit-content'}
+                                      defaultChecked={accessPoint?.config?.active}
+                                    />
+                                  </InputGroup>
+                                </Skeleton>
+                              </FormControl>
+                            )}
+                          </Field>
+                          <Field name="armed">
+                            {({ field, form }: any) => (
+                              <FormControl>
+                                <Skeleton isLoaded={accessPoint}>
+                                  <FormLabel>Armed</FormLabel>
+                                  <InputGroup>
+                                    <Switch
+                                      {...field}
+                                      colorScheme="red"
+                                      placeholder="Armed"
+                                      variant={'outline'}
+                                      width={'fit-content'}
+                                      defaultChecked={accessPoint?.config?.armed}
+                                    />
+                                  </InputGroup>
+                                </Skeleton>
+                              </FormControl>
+                            )}
+                          </Field>
+                        </Stack>
+                        <Field name="unlockTime">
                           {({ field, form }: any) => (
-                            <FormControl>
+                            <FormControl w={'fit-content'}>
                               <Skeleton isLoaded={accessPoint}>
-                                <FormLabel>Active</FormLabel>
-                                <InputGroup>
-                                  <Switch
+                                <FormLabel>Unlock Time</FormLabel>
+                                <InputGroup mb={2}>
+                                  <NumberInput
                                     {...field}
-                                    colorScheme="blue"
-                                    placeholder="Active"
+                                    autoComplete="off"
+                                    placeholder="Unlock Time"
                                     variant={'outline'}
-                                    width={'fit-content'}
-                                    defaultChecked={accessPoint?.config?.active}
-                                  />
+                                    min={1}
+                                    defaultValue={8}
+                                    onChange={(value) => {
+                                      form.setFieldValue('unlockTime', value);
+                                    }}
+                                  >
+                                    <NumberInputField />
+                                    <NumberInputStepper>
+                                      <NumberIncrementStepper />
+                                      <NumberDecrementStepper />
+                                    </NumberInputStepper>
+                                  </NumberInput>
                                 </InputGroup>
+                                <FormHelperText>
+                                  The number of seconds to keep the door unlocked for.
+                                </FormHelperText>
                               </Skeleton>
                             </FormControl>
                           )}
                         </Field>
-                        <Field name="armed">
-                          {({ field, form }: any) => (
-                            <FormControl>
-                              <Skeleton isLoaded={accessPoint}>
-                                <FormLabel>Armed</FormLabel>
-                                <InputGroup>
-                                  <Switch
-                                    {...field}
-                                    colorScheme="red"
-                                    placeholder="Armed"
-                                    variant={'outline'}
-                                    width={'fit-content'}
-                                    defaultChecked={accessPoint?.config?.armed}
-                                  />
-                                </InputGroup>
-                              </Skeleton>
-                            </FormControl>
-                          )}
-                        </Field>
-                      </Stack>
-                      <Box my={2}>
-                        <Text fontSize={'sm'}>Active - Card scans will be processed.</Text>
-                        <Text fontSize={'sm'}>
-                          Armed - Turning this off will no longer require a card to grant access.
-                        </Text>
-                      </Box>
-                      <Field name="unlockTime">
-                        {({ field, form }: any) => (
-                          <FormControl w={'fit-content'}>
-                            <Skeleton isLoaded={accessPoint}>
-                              <FormLabel>Unlock Time</FormLabel>
-                              <InputGroup mb={2}>
-                                <NumberInput
-                                  {...field}
-                                  autoComplete="off"
-                                  placeholder="Unlock Time"
-                                  variant={'outline'}
-                                  min={1}
-                                  defaultValue={8}
-                                  onChange={(value) => {
-                                    form.setFieldValue('unlockTime', value);
-                                  }}
-                                >
-                                  <NumberInputField />
-                                  <NumberInputStepper>
-                                    <NumberIncrementStepper />
-                                    <NumberDecrementStepper />
-                                  </NumberInputStepper>
-                                </NumberInput>
-                              </InputGroup>
-                            </Skeleton>
-                          </FormControl>
-                        )}
-                      </Field>
+                      </Flex>
                     </TabPanel>
                     <TabPanel>
                       <Stack
@@ -676,7 +669,7 @@ export default function PlatformAccessPoint() {
                         <Field name="accessGroups">
                           {({ field, form }: any) => (
                             <FormControl
-                              w={'fit-content'}
+                              w={{ base: 'full', md: '320px' }}
                               maxW={'75%'}
                             >
                               <Skeleton isLoaded={accessPoint}>
@@ -695,6 +688,9 @@ export default function PlatformAccessPoint() {
                                   hideSelectedOptions={false}
                                   selectedOptionStyle={'check'}
                                 />
+                                <FormHelperText>
+                                  Choose which access groups will be allowed to access this access point.
+                                </FormHelperText>
                               </Skeleton>
                             </FormControl>
                           )}
@@ -710,7 +706,7 @@ export default function PlatformAccessPoint() {
                           {({ field, form }: any) => (
                             <FormControl>
                               <Skeleton isLoaded={accessPoint}>
-                                <FormLabel>Scan Data (Disarmed)</FormLabel>
+                                <FormLabel>Disarmed</FormLabel>
                                 <Box
                                   border={'1px solid'}
                                   borderColor={themeBorderColor}
@@ -747,7 +743,7 @@ export default function PlatformAccessPoint() {
                           {({ field, form }: any) => (
                             <FormControl>
                               <Skeleton isLoaded={accessPoint}>
-                                <FormLabel>Scan Data (Ready)</FormLabel>
+                                <FormLabel>Ready</FormLabel>
                                 <Box
                                   border={'1px solid'}
                                   borderColor={themeBorderColor}

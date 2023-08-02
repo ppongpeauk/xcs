@@ -300,7 +300,7 @@ export default function AccessGroupEditModal({
                         </>
                       )}
                     </Tbody>
-                    {(!groups?.length || !filteredGroups?.length) && (
+                    {(!Object.keys(groups || {})?.length || !Object.keys(filteredGroups || {})?.length) && (
                       <TableCaption>No access groups found.</TableCaption>
                     )}
                   </Table>
@@ -321,8 +321,6 @@ export default function AccessGroupEditModal({
                     rounded={'lg'}
                     border={'1px solid'}
                     borderColor={themeBorderColor}
-                    //minH={{ base: "unset", xl: "512px" }}
-                    //maxH={{ base: "unset", xl: "512px" }}
                     h={'full'}
                     overflowY={'auto'}
                   >
@@ -464,7 +462,7 @@ export default function AccessGroupEditModal({
                                             {...field}
                                             type={'text'}
                                             variant={'outline'}
-                                            placeholder={'Access Group Short Description'}
+                                            placeholder={'Short Description'}
                                             autoComplete={'off'}
                                             autoCorrect={'off'}
                                           />

@@ -92,19 +92,19 @@ function TableEntry({ key, organization, skeleton }: { key: number | string, org
           <Avatar src='/images/logo.jpg' />
         </AvatarGroup> */}
         <Skeleton isLoaded={!skeleton}>
-          <Text fontWeight={'bold'}>
+          <Text>
             {!skeleton ? organization?.statistics?.numMembers : 0}
           </Text>
         </Skeleton>
       </Td>
       <Td isNumeric>
         <Skeleton isLoaded={!skeleton}>
-          <Text fontWeight={'bold'}>
+          <Text>
             {!skeleton ? organization?.statistics?.numLocations : 0}
           </Text>
         </Skeleton>
       </Td>
-      <Td>
+      {/* <Td>
         <Skeleton isLoaded={!skeleton}>
           {useMemo(() => {
             const date = moment(new Date(organization?.updatedAt as string)).fromNow();
@@ -124,7 +124,7 @@ function TableEntry({ key, organization, skeleton }: { key: number | string, org
             </Link>
           }
         </Skeleton>
-      </Td>
+      </Td> */}
       <Td isNumeric>
         <Skeleton isLoaded={!skeleton}>
           <ButtonGroup>
@@ -348,7 +348,7 @@ export default function PlatformOrganizations() {
           >
             <TableContainer
               py={2}
-              maxW={"100%"}
+              maxW={{ base: 'full', md: 'container.lg' }}
               overflowY={'auto'}
               flexGrow={1}
               px={4}
@@ -359,7 +359,7 @@ export default function PlatformOrganizations() {
                     <Th>Organization</Th>
                     <Th isNumeric># Members</Th>
                     <Th isNumeric># Locations</Th>
-                    <Th>Last Updated</Th>
+                    {/* <Th>Last Updated</Th> */}
                     <Th isNumeric>Actions</Th>
                   </Tr>
                 </Thead>

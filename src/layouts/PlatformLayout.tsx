@@ -109,6 +109,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             )}
           </Stack>
         </Flex>
+        {
+          process.env.NODE_ENV === 'development' && (
+            <Alert status={'warning'} rounded={'none'} mb={0}>
+              <AlertIcon />
+              <AlertTitle mr={2}>Development Mode</AlertTitle>
+              <AlertDescription>
+                This website is currently running in development mode.
+              </AlertDescription>
+            </Alert>
+          )
+        }
         <Box minH={'calc(100vh - 6rem)'}>{children}</Box>
       </Box>
     </>
