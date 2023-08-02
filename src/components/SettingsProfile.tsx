@@ -227,13 +227,13 @@ export default function SettingsProfile() {
                 <Field name="email">
                   {({ field, form }: any) => (
                     <FormControl>
-                      <FormLabel>Email Address</FormLabel>
+                      <FormLabel>Email</FormLabel>
                       <InputGroup mb={2}>
                         <Input
                           {...field}
                           type="email"
                           autoComplete="off"
-                          placeholder="Email Address"
+                          placeholder="Email address"
                           variant={'outline'}
                         />
                       </InputGroup>

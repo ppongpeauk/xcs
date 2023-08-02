@@ -101,9 +101,9 @@ export default function Terms() {
 
             <ListItem>
               <Text as="span">
-                These terms are governed by the laws of the State of Delaware without regard to conflict of law
+                These terms are governed by the laws of the State of Virginia without regard to conflict of law
                 principles. Any dispute arising from these terms shall be resolved exclusively in the state or federal
-                courts located in Delaware.
+                courts located in Virginia.
               </Text>
             </ListItem>
 

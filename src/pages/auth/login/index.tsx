@@ -46,9 +46,11 @@ import { useRouter } from 'next/router';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
 // Components
+import CheckActivationCodeModal from '@/components/CheckActivationCodeModal';
 import Footer from '@/components/Footer';
 import Nav from '@/components/Nav';
 import Section from '@/components/section';
+import Marquee from 'react-fast-marquee';
 
 export default function Login() {
   const router = useRouter();
@@ -58,6 +60,7 @@ export default function Login() {
   const [user, loading, error] = useAuthState(auth);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen: isActivationCodeOpen, onOpen: onActivationCodeOpen, onClose: onActivationCodeClose } = useDisclosure();
   const toast = useToast();
 
   function redirectOnAuth() {
@@ -117,6 +120,7 @@ export default function Login() {
           />
         </Head>
         <Nav type={"login"} />
+        <CheckActivationCodeModal isOpen={isActivationCodeOpen} onClose={onActivationCodeClose} />
         <Modal
           onClose={onClose}
           isOpen={isOpen}
@@ -176,6 +180,24 @@ export default function Login() {
                 bottom={{ base: 'unset', md: '3rem' }}
               >
                 <Image flex={"0 0 auto"} display={{ base: "none", md: "flex" }} src={'/images/login4.jpeg'} alt={'Login'} objectFit={'cover'} w={'sm'} h={"full"} />
+                {/* <Flex flex={"0 0 auto"} display={{ base: "none", md: "flex" }} objectFit={'cover'} w={'sm'} h={"full"} flexDir={'column'}>
+                  <Marquee
+                    autoFill={true}
+                    direction={'left'}
+                    className={'overflow-hidden'}
+                  >
+                    <Text
+                      as={'h3'}
+                      fontSize={['2xl', '3xl']}
+                    >
+                      Restrafes XCS
+                      <Box
+                        as={'span'}
+                        mx={4}
+                      ></Box>
+                    </Text>
+                  </Marquee>
+                </Flex> */}
                 <Flex flex={"1 1 auto"} flexDir={'column'} justify={"center"} align={"flex-start"} py={8} px={10}>
                   <Box
                     w={'full'}
@@ -294,15 +316,14 @@ export default function Login() {
                         Forgot your password?
                       </Link>
                     </Text>
-                    {/* <Text fontSize={"sm"}>
-                    <Link
-                      as={NextLink}
-                      href="/auth/activate"
-                      textUnderlineOffset={4}
-                    >
-                      Activate an account.
-                    </Link>
-                  </Text> */}
+                    <Text fontSize={"sm"}>
+                      <Link
+                        onClick={onActivationCodeOpen}
+                        textUnderlineOffset={4}
+                      >
+                        Received an activation code?
+                      </Link>
+                    </Text>
                     <Text fontSize={'sm'}>
                       Need help?{' '}
                       <Box

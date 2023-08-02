@@ -140,7 +140,7 @@ export default function Activate() {
               outline={['0px solid', '1px solid']}
               outlineColor={['unset', useColorModeValue('gray.200', 'gray.700')]}
               rounded={'lg'}
-              w={['full', 'md']}
+              w={{ base: 'full', md: 'md', lg: 'lg' }}
             >
               <Box
                 w={'full'}
@@ -252,7 +252,7 @@ export default function Activate() {
                                   </InputLeftElement>
                                   <Input
                                     {...field}
-                                    type="text"
+                                    type="username"
                                     placeholder="Username"
                                     variant={'outline'}
                                   />
@@ -278,7 +278,7 @@ export default function Activate() {
                                 </InputLeftElement>
                                 <Input
                                   {...field}
-                                  type="text"
+                                  type="email"
                                   placeholder="Email address"
                                   variant={'outline'}
                                 />

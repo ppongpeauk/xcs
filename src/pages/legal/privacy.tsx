@@ -143,7 +143,7 @@ export default function Terms() {
           </Heading>
 
           <Text>
-            If you have any questions about this Privacy Policy or our privacy practices, please email us at
+            If you have any questions about this Privacy Policy or our privacy practices, please email us at{" "}
             <Link href="mailto:xcs@restrafes.co">xcs@restrafes.co</Link>
           </Text>
 

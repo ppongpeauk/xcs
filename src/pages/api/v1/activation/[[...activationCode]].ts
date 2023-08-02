@@ -12,9 +12,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const mongoClient = await clientPromise;
     const db = mongoClient.db(process.env.MONGODB_DB as string);
     const invitations = db.collection('invitations');
+    // console.log(activationCode);
     const invitation = await invitations.findOne({
       type: 'xcs',
-      inviteCode: activationCode
+      inviteCode: activationCode[0]
     });
 
     if (!invitation) {
@@ -55,7 +56,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     let invitation = await invitations.findOne(
       {
         type: 'xcs',
-        inviteCode: activationCode
+        inviteCode: activationCode[0]
       },
       { projection: { _id: 0, uses: 1, maxUses: 1 } }
     );
@@ -237,10 +238,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       .then(async (result) => {
         if (invitation?.uses + 1 >= invitation?.maxUses) {
           await invitations.deleteOne({
-            inviteCode: activationCode
+            inviteCode: activationCode[0]
           });
         } else {
-          await invitations.updateOne({ inviteCode: activationCode }, { $inc: { uses: 1 } });
+          await invitations.updateOne({ inviteCode: activationCode[0] }, { $inc: { uses: 1 } });
         }
       })
       .catch((error) => {
