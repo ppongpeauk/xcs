@@ -568,13 +568,14 @@ export default function PlatformOrganization() {
                       onClick={memberModalOnOpen}
                       leftIcon={<HiUserGroup />}
                     >
-                      Manage Members
+                      Members
                     </Button>
                     <Button
+                      variant={'outline'}
                       onClick={roleModalOnOpen}
                       leftIcon={<HiGlobeAlt />}
                     >
-                      Manage Access Groups
+                      Access Groups
                     </Button>
                   </Stack>
                   <Stack

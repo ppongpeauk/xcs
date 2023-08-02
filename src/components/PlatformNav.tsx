@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 // React
-import { Suspense, useEffect, useState } from 'react';
-import { forwardRef } from 'react';
+import { Suspense, forwardRef, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
   AbsoluteCenter,
@@ -15,6 +14,7 @@ import {
   Flex,
   HStack,
   Heading,
+  Icon,
   IconButton,
   Image,
   Link,
@@ -81,14 +81,12 @@ function AvatarPopover({ currentUser, onLogoutOpen }: { currentUser?: any; onLog
           <Button
             variant={'unstyled'}
             h={'full'}
-            onClick={() => {}}
+            onClick={() => { }}
           >
             <Skeleton
               isLoaded={!!currentUser}
               w={'auto'}
               h={'auto'}
-              // border={"2px solid"}
-              // borderColor={useColorModeValue("gray.200", "gray.700")}
               borderRadius={'full'}
               overflow={'hidden'}
             >
@@ -145,6 +143,23 @@ function AvatarPopover({ currentUser, onLogoutOpen }: { currentUser?: any; onLog
                   >
                     @{currentUser?.username}
                   </Text>
+                  {
+                    currentUser?.platform?.staff ? (
+                      <Flex
+                        fontSize={'md'}
+                        color={'gray.500'}
+                        align={'center'}
+                        gap={1}
+                      >
+                        <Icon as={AiFillCrown}/>
+                        <Text>
+                          Staff Member
+                        </Text>
+                      </Flex>
+                    ) : (
+                      <></>
+                    )
+                  }
                 </Flex>
                 <Spacer />
                 <SkeletonCircle
@@ -154,7 +169,6 @@ function AvatarPopover({ currentUser, onLogoutOpen }: { currentUser?: any; onLog
                   pl={4}
                 >
                   <Avatar
-                    // name={currentUser?.displayName}
                     src={currentUser?.avatar}
                     size={'lg'}
                   />
@@ -252,20 +266,20 @@ function NavLink({
         pathname === href
           ? {}
           : {
-              color: useColorModeValue('gray.900', 'gray.100'),
-              bg: useColorModeValue('gray.100', 'gray.700')
-            }
+            color: useColorModeValue('gray.900', 'gray.100'),
+            bg: useColorModeValue('gray.100', 'gray.700')
+          }
       }
       _active={
         pathname === href
           ? {
-              color: useColorModeValue('gray.100', 'gray.900'),
-              bg: useColorModeValue('gray.700', 'gray.400')
-            }
+            color: useColorModeValue('gray.100', 'gray.900'),
+            bg: useColorModeValue('gray.700', 'gray.400')
+          }
           : {
-              color: useColorModeValue('gray.900', 'gray.100'),
-              bg: useColorModeValue('gray.200', 'gray.600')
-            }
+            color: useColorModeValue('gray.900', 'gray.100'),
+            bg: useColorModeValue('gray.200', 'gray.600')
+          }
       }
     >
       {children}
