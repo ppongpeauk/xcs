@@ -109,7 +109,7 @@ export default function CheckActivationCodeModal({
                     color={"gray.500"}
                     pt={2}
                   >
-                    Have an activation code? Enter it here to create an account.
+                    Received an activation code? Enter it here to create an account.
                   </Text>
                 </ModalBody>
 

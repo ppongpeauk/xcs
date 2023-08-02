@@ -14,6 +14,12 @@ import Section from '@/components/section';
 //   }
 // });
 
+const ChakraImage = chakra(NextImage, {
+  baseStyle: { maxH: 120, maxW: 120 },
+  shouldForwardProp: (prop) => ['width', 'height', 'src', 'alt'].includes(prop),
+});
+
+
 export default function Home() {
   return (
     // New Bold Typography Design
@@ -39,7 +45,7 @@ export default function Home() {
             src={'/images/login3.jpg'}
             alt={'Home Image'}
             w={"full"}
-            h={"100%"}
+            height={"full"}
             style={{
               objectFit: 'cover',
             }}

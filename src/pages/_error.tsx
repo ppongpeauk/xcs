@@ -1,12 +1,12 @@
-/* eslint-disable react/no-children-prop */
 // Components
 import { Box, Flex } from '@chakra-ui/react';
+import { NextPageContext } from 'next';
 
 import Error from '@/components/Error';
 import Footer from '@/components/Footer';
 import Nav from '@/components/Nav';
 
-export default function ErrorPage() {
+function ErrorPage({ statusCode }: { statusCode: string }) {
   return (
     <Box
       w={'100vw'}
@@ -18,10 +18,17 @@ export default function ErrorPage() {
           as="main"
           minH={'calc(100vh - 6rem)'}
         >
-          <Error />
+          <Error statusCode={statusCode} />
         </Box>
         <Footer />
       </Box>
     </Box>
   );
 }
+
+ErrorPage.getInitialProps = ({ res, err }: NextPageContext) => {
+  const statusCode = res ? res.statusCode : err ? err.statusCode : 404;
+  return { statusCode };
+}
+
+export default ErrorPage;

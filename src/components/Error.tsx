@@ -1,36 +1,64 @@
-import { Box, Button, Container, Flex, Heading, Link, Text } from '@chakra-ui/react';
+import { Link } from '@chakra-ui/next-js';
+import { Box, Button, Container, Flex, Heading, Text } from '@chakra-ui/react';
+import Head from 'next/head';
+import { useMemo } from 'react';
 
-import NextLink from 'next/link';
+export default function Error({ statusCode }: { statusCode: string }) {
+  const ErrorPageMessages = {
+    "404": {
+      title: 'Page Not Found',
+      message: 'The page you are looking for does not exist.',
+    },
+    "403": {
+      title: 'Unauthorized',
+      message: 'You do not have permission to view this page.',
+    },
+    "401": {
+      title: 'Unauthorized',
+      message: 'You do not have permission to view this page.',
+    },
+    "500": {
+      title: 'Server Error',
+      message: 'An error occurred on the server.',
+    },
+  } as { [key: string]: ErrorPageMessage };
 
-export default function Error() {
+  interface ErrorPageMessage {
+    title: string;
+    message: string;
+  }
+
+  const { title, message }: ErrorPageMessage = useMemo(() => {
+    return ErrorPageMessages[statusCode] || ErrorPageMessages['500'];
+  }, [statusCode]);
+
   return (
-    <Container
-      maxW={'container.sm'}
-      py={16}
-    >
-      <Text
-        as={'h1'}
-        fontSize={'4xl'}
-        fontWeight={'900'}
-        mb={2}
+    <>
+      <Head>
+        <title>Restrafes XCS – {title}</title>
+      </Head>
+      <Container
+        maxW={'container.sm'}
+        py={16}
       >
-        Looks like you&apos;ve hit a snag.
-      </Text>
-      <Text
-        fontSize={'lg'}
-        mb={4}
-      >
-        This could be because the page you&apos;re looking for does not exist or you do not have permission to view it.
-      </Text>
-      <Flex flexDir={'row'}>
-        <Link
-          as={NextLink}
-          href={'/'}
-          _hover={{ textDecoration: 'none' }}
+        <Text
+          as={'h1'}
+          fontSize={'4xl'}
+          fontWeight={'900'}
         >
-          <Button>Return Home</Button>
-        </Link>
-      </Flex>
-    </Container>
+          {title}
+        </Text>
+        <Text
+          fontSize={'lg'}
+          mb={4}
+        >
+          {message}
+        </Text>
+        <Flex flexDir={'row'} gap={2}>
+          <Button as={Link} href={'/'} _hover={{ textDecoration: 'none' }}>Return to Home</Button>
+          <Button as={Link} href={'/platform/home'} _hover={{ textDecoration: 'none' }}>Return to Platform Home</Button>
+        </Flex>
+      </Container>
+    </>
   );
 }

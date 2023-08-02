@@ -12,7 +12,6 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
-  Link,
   Skeleton,
   SkeletonCircle,
   SkeletonText,
@@ -21,13 +20,12 @@ import {
   useToast
 } from '@chakra-ui/react';
 
+import { Link } from '@chakra-ui/next-js';
+
+import { useAuthContext } from '@/contexts/AuthContext';
 import Head from 'next/head';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
-
-import { useAuthContext } from '@/contexts/AuthContext';
-
-import Section from './section';
 
 export default function Invitation({ invite }: { invite: any }) {
   const { query, push } = useRouter();
@@ -81,7 +79,6 @@ export default function Invitation({ invite }: { invite: any }) {
           bottom={[0, 8]}
         >
           <Link
-            as={NextLink}
             my={8}
             href={'/'}
           >
@@ -228,7 +225,6 @@ export default function Invitation({ invite }: { invite: any }) {
                         whiteSpace={'nowrap'}
                       >
                         <Link
-                          as={NextLink}
                           href={'/legal/terms'}
                           textDecor={'underline'}
                           textUnderlineOffset={4}
@@ -243,7 +239,6 @@ export default function Invitation({ invite }: { invite: any }) {
                         whiteSpace={'nowrap'}
                       >
                         <Link
-                          as={NextLink}
                           href={'/legal/privacy'}
                           textDecor={'underline'}
                           textUnderlineOffset={4}
@@ -260,7 +255,7 @@ export default function Invitation({ invite }: { invite: any }) {
               <>
                 <Box w={'full'}>
                   <Button
-                    as={NextLink}
+                    as={Link}
                     href={'/'}
                     w={'full'}
                     mt={4}
