@@ -50,13 +50,9 @@ export default function DeleteDialogOrganization({
                 placeholder={`Type "${organization?.name}" to confirm`}
                 ref={inputRef}
                 onChange={(e) => {
-                  if (e.target.value === organization?.name) {
-                    setDisabled(false);
-                  } else {
-                    setDisabled(true);
-                  }
+                  setDisabled(e.target.value !== organization?.name);
                 }}
-                my={4}
+                mt={4}
               />
             
             </AlertDialogBody>
