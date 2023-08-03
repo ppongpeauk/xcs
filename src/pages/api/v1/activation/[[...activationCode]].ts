@@ -251,6 +251,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         throw error;
       });
 
+    try {
     const email_link = await admin.auth().generateEmailVerificationLink(email.trim().toLowerCase(), {
       url: `${process.env.NEXT_PUBLIC_ROOT_URL}/platform/onboarding/verify-email`,
       handleCodeInApp: true
@@ -283,6 +284,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }).then(() => {
         return res.status(200).json({ success: true, message: 'Email sent.' });
       });
+    } catch (error) {
+      console.log(error);
+    }
 
     return res.status(200).json({
       message: 'Successfully registered! You may now login.',
