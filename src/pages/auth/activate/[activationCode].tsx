@@ -129,6 +129,7 @@ export default function Activate() {
           align={'center'}
           justify={'center'}
           height={'100%'}
+          bottom={{ base: '0', md: '3em' }}
         >
           <Section>
             <Flex

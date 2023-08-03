@@ -166,6 +166,7 @@ export default function Login() {
               align={'center'}
               justify={'center'}
               height={'100%'}
+              bottom={{ base: '0', md: '3em' }}
             >
               <Flex
                 position={'relative'}
@@ -315,14 +316,14 @@ export default function Login() {
                         Forgot your password?
                       </Link>
                     </Text>
-                    <Text fontSize={"sm"}>
+                    {/* <Text fontSize={"sm"}>
                       <Link
                         onClick={onActivationCodeOpen}
                         textUnderlineOffset={4}
                       >
                         Received an activation code?
                       </Link>
-                    </Text>
+                    </Text> */}
                     <Text fontSize={'sm'}>
                       Need help?{' '}
                       <Box
