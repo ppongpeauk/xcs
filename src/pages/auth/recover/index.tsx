@@ -94,7 +94,6 @@ export default function Recover() {
               position={'relative'}
               p={8}
               pb={16}
-              bottom={[0, 16]}
               flexDir={'column'}
               align={'center'}
               outline={['0px solid', '1px solid']}

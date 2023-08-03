@@ -177,7 +177,6 @@ export default function Login() {
                 maxW={"container.md"}
                 overflow={'hidden'}
                 height={{ base: 'auto', md: '500px' }}
-                bottom={{ base: 'unset', md: '3rem' }}
               >
                 <Image flex={"0 0 auto"} display={{ base: "none", md: "flex" }} src={'/images/login4.jpeg'} alt={'Login'} objectFit={'cover'} w={'sm'} h={"full"} />
                 {/* <Flex flex={"0 0 auto"} display={{ base: "none", md: "flex" }} objectFit={'cover'} w={'sm'} h={"full"} flexDir={'column'}>
