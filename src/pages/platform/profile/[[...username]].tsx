@@ -34,11 +34,18 @@ export async function getServerSideProps({ query }: any) {
     .then((ret) => {
       return ret?.user;
     });
-  return {
-    props: {
-      user: user ? user : null
-    }
-  };
+
+  if (user) {
+    return {
+      props: {
+        user
+      }
+    };
+  } else {
+    return {
+      notFound: true
+    };
+  }
 }
 export default function UserProfileNS({ user }: any) {
   const { query, push } = useRouter();
@@ -65,9 +72,8 @@ export default function UserProfileNS({ user }: any) {
             />
             <meta
               property="og:description"
-              content={`Join ${
-                user?.displayName || user.name.first
-              } and a community of architects in managing access points effortlessly on Restrafes XCS.`}
+              content={`Join ${user?.displayName || user.name.first
+                } and a community of architects in managing access points effortlessly on Restrafes XCS.`}
             />
             <meta
               property="og:image"
