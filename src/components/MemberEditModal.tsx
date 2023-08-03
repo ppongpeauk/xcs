@@ -565,7 +565,7 @@ export default function MemberEditModal({
                                 fontSize={'xl'}
                                 fontWeight={'bold'}
                               >
-                                {focusedMember?.name || focusedMember?.displayName}
+                                {focusedMember?.type === 'roblox-group' ? focusedMember?.name : focusedMember?.displayName}
                               </Text>
                             </Flex>
                             <Text
@@ -605,7 +605,7 @@ export default function MemberEditModal({
                         <Formik
                           enableReinitialize={true}
                           initialValues={{
-                            name: focusedMember?.name || focusedMember?.displayName,
+                            name: focusedMember?.type === 'roblox-group' ? focusedMember?.name : focusedMember?.displayName,
                             role: {
                               label: roleToText(focusedMember?.role),
                               value: focusedMember?.role
