@@ -139,27 +139,11 @@ function AvatarPopover({ currentUser, onLogoutOpen }: { currentUser?: any; onLog
                   </Text>
                   <Text
                     fontSize={'md'}
+                    fontWeight={'400'}
                     color={'gray.500'}
                   >
                     @{currentUser?.username}
                   </Text>
-                  {
-                    currentUser?.platform?.staff ? (
-                      <Flex
-                        fontSize={'md'}
-                        color={'gray.500'}
-                        align={'center'}
-                        gap={1}
-                      >
-                        <Icon as={AiFillCrown}/>
-                        <Text>
-                          Staff Member
-                        </Text>
-                      </Flex>
-                    ) : (
-                      <></>
-                    )
-                  }
                 </Flex>
                 <Spacer />
                 <SkeletonCircle

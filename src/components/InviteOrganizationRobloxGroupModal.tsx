@@ -10,6 +10,14 @@ import {
   IconButton,
   Input,
   InputGroup,
+  Menu,
+  MenuButton,
+  MenuDivider,
+  MenuGroup,
+  MenuItem,
+  MenuItemOption,
+  MenuList,
+  MenuOptionGroup,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -23,16 +31,6 @@ import {
   VStack,
   useColorModeValue,
   useToast
-} from '@chakra-ui/react';
-import {
-  Menu,
-  MenuButton,
-  MenuDivider,
-  MenuGroup,
-  MenuItem,
-  MenuItemOption,
-  MenuList,
-  MenuOptionGroup
 } from '@chakra-ui/react';
 
 import { AiFillCheckCircle } from 'react-icons/ai';
@@ -182,7 +180,7 @@ export default function InviteOrganizationRobloxGroupModal({
               },
               body: JSON.stringify({
                 type: 'roblox-group',
-                name: values.name || 'Group',
+                name: values.name || values.robloxGroupId?.label || 'Roblox Group',
                 robloxGroupId: values.robloxGroupId?.value,
                 robloxGroupRoles: values.robloxGroupRoles?.map((role: any) => role.value),
                 // get access group ids from names

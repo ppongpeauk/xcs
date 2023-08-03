@@ -4,6 +4,7 @@ import { useRef } from 'react';
 import {
   Button,
   FormControl,
+  FormHelperText,
   FormLabel,
   Input,
   Modal,
@@ -101,7 +102,7 @@ export default function CreateLocationDialog({
             <ModalOverlay />
             <Form>
               <ModalContent bg={useColorModeValue('white', 'gray.800')}>
-                <ModalHeader pb={2}>Create Location</ModalHeader>
+                <ModalHeader pb={2}>New Location</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody pb={4}>
                   <VStack spacing={2}>
@@ -140,23 +141,20 @@ export default function CreateLocationDialog({
                             placeholder={'Location Description'}
                             maxH={'200px'}
                           />
+                          <FormHelperText>
+                            This location will be created under the{' '}
+                            <Text
+                              as={'span'}
+                              fontWeight={'bold'}
+                            >
+                              {selectedOrganization?.name}
+                            </Text>{' '}
+                            organization.
+                          </FormHelperText>
                         </FormControl>
                       )}
                     </Field>
                   </VStack>
-                  <Text
-                    fontSize={'sm'}
-                    pt={2}
-                  >
-                    This location will be created under the{' '}
-                    <Text
-                      as={'span'}
-                      fontWeight={'bold'}
-                    >
-                      {selectedOrganization?.name}
-                    </Text>{' '}
-                    organization.
-                  </Text>
                 </ModalBody>
 
                 <ModalFooter>

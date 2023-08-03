@@ -4,6 +4,7 @@ import { useRef } from 'react';
 import {
   Button,
   FormControl,
+  FormHelperText,
   FormLabel,
   Input,
   Link,
@@ -99,7 +100,7 @@ export default function CreateOrganizationDialog({
             <ModalOverlay />
             <Form>
               <ModalContent bg={useColorModeValue('white', 'gray.800')}>
-                <ModalHeader pb={2}>Create Organization</ModalHeader>
+                <ModalHeader pb={2}>New Organization</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody pb={4}>
                   <VStack spacing={2}>
@@ -112,55 +113,39 @@ export default function CreateOrganizationDialog({
                             variant={'outline'}
                             placeholder={'Organization Name'}
                           />
+                          <FormHelperText>
+                            By creating an organization, you agree to our{' '}
+                            <Text as={'span'}>
+                              <Link
+                                as={NextLink}
+                                href={'/legal/terms'}
+                                target={'_blank'}
+                                textDecor={'underline'}
+                                textUnderlineOffset={4}
+                                whiteSpace={'nowrap'}
+                              >
+                                Terms of Use
+                              </Link>
+                            </Text>{' '}
+                            and{' '}
+                            <Text as={'span'}>
+                              <Link
+                                as={NextLink}
+                                href={'/legal/privacy'}
+                                target={'_blank'}
+                                textDecor={'underline'}
+                                textUnderlineOffset={4}
+                                whiteSpace={'nowrap'}
+                              >
+                                Privacy Policy
+                              </Link>
+                            </Text>
+                            .
+                          </FormHelperText>
                         </FormControl>
                       )}
                     </Field>
-                    {/* <Field name="organization">
-                      {({ field, form }: any) => (
-                        <FormControl>
-                          <FormLabel>Organization</FormLabel>
-                          <Input
-                            {...field}
-                            variant={"outline"}
-                            value={selectedOrganization.name}
-                            isDisabled={true}
-                          />
-                        </FormControl>
-                      )}
-                    </Field> */}
                   </VStack>
-                  <Text
-                    fontSize={'sm'}
-                    pt={2}
-                  >
-                    By creating an organization, you agree to our{' '}
-                    <Text as={'span'}>
-                      <Link
-                        as={NextLink}
-                        href={'/legal/terms'}
-                        target={'_blank'}
-                        textDecor={'underline'}
-                        textUnderlineOffset={4}
-                        whiteSpace={'nowrap'}
-                      >
-                        Terms of Use
-                      </Link>
-                    </Text>{' '}
-                    and{' '}
-                    <Text as={'span'}>
-                      <Link
-                        as={NextLink}
-                        href={'/legal/privacy'}
-                        target={'_blank'}
-                        textDecor={'underline'}
-                        textUnderlineOffset={4}
-                        whiteSpace={'nowrap'}
-                      >
-                        Privacy Policy
-                      </Link>
-                    </Text>
-                    .
-                  </Text>
                 </ModalBody>
 
                 <ModalFooter>

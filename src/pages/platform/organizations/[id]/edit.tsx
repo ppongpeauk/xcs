@@ -30,6 +30,7 @@ import {
 
 import { ChevronRightIcon } from '@chakra-ui/icons';
 
+import { ExternalLinkIcon } from '@chakra-ui/icons';
 import { AiFillTag } from 'react-icons/ai';
 import { BiSolidExit } from 'react-icons/bi';
 import { FaIdBadge, FaTags, FaUserShield } from 'react-icons/fa';
@@ -573,11 +574,18 @@ export default function PlatformOrganization() {
                       Members
                     </Button>
                     <Button
-                      variant={'outline'}
+                      variant={'solid'}
                       onClick={roleModalOnOpen}
                       leftIcon={<HiGlobeAlt />}
                     >
                       Access Groups
+                    </Button>
+                    <Button
+                      as={NextLink}
+                      href={`/platform/locations/?organization=${query.id}`}
+                      leftIcon={<ImTree />}
+                    >
+                      View Locations
                     </Button>
                   </Stack>
                   <Stack
@@ -591,13 +599,6 @@ export default function PlatformOrganization() {
                       type={'submit'}
                     >
                       Save Changes
-                    </Button>
-                    <Button
-                      as={NextLink}
-                      href={`/platform/locations/?organization=${query.id}`}
-                      leftIcon={<ImTree />}
-                    >
-                      View Locations
                     </Button>
                     {organization?.user.role >= 3 ? (
                       <Button

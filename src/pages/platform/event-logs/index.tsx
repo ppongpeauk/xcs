@@ -42,9 +42,8 @@ export default function PlatformEventLogs() {
         </Text>
         <Text
           fontSize={'xl'}
-          fontWeight={'500'}
         >
-          Check back later.
+          This feature is coming soon! Please check back later.
         </Text>
       </Container>
     </>

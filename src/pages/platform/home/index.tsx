@@ -28,8 +28,6 @@ import { useDialogContext } from '@/contexts/DialogContext';
 
 import Layout from '@/layouts/PlatformLayout';
 
-// import { Stat } from "@/components/Stat";
-
 function StatBox({ label, value, helper }: { label: string; value: string; helper?: string }) {
   return (
     <Box
@@ -56,22 +54,11 @@ export default function PlatformHome() {
     'Security made simple.',
     'Where security meets flexibility.',
     'Take control of your entry points.',
-    'Custom access when you need it.',
-    'Secured access for all.',
-    'Grant access with confidence.',
-    'Your access authority.',
-    'Empowering you with access control.',
-    'Expert security at your fingertips.',
     'Intelligent access management.',
-    'Seamless security, happy users.',
     'Making security seamless.',
-    'The intersection of access and trust.',
-    'Balancing security and convenience.',
-    'Let us handle access so you can focus on your work.'
   ];
 
   const [randomSubGreeting, setRandomSubGreeting] = useState('');
-  // const { createDialog } = useDialogContext();
 
   useEffect(() => {
     if (!user) return;
@@ -86,16 +73,6 @@ export default function PlatformHome() {
           setStats(data);
         });
     });
-
-    // createDialog({
-    //   title: 'Welcome to Restrafes XCS!',
-    //   description: 'This is the platform home page. You can view your organization\'s statistics here.',
-    //   confirmButtonText: 'Got it!',
-    //   cancelButtonText: 'Learn more',
-    //   callback: () => {
-    //     console.log('User clicked "Got it!"');
-    //   }
-    // });
   }, [user]);
 
   useEffect(() => {

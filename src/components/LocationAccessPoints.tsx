@@ -123,7 +123,7 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
           onClick={onCreateAccessPointModalOpen}
           isDisabled={accessPoints?.self?.role <= 1}
         >
-          Create
+          New Access Point
         </Button>
         <Stack direction={{ base: 'column', md: 'row' }}>
           <FormControl>
@@ -178,7 +178,7 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
                   py={4}
                   px={8}
                   borderWidth={1}
-                  borderRadius={'xl'}
+                  borderRadius={'lg'}
                   borderColor={useColorModeValue('gray.200', 'gray.700')}
                 >
                   <HStack
@@ -213,7 +213,7 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
                   h={'max-content'}
                   p={6}
                   borderWidth={1}
-                  borderRadius={'xl'}
+                  borderRadius={'lg'}
                   borderColor={useColorModeValue('gray.200', 'gray.700')}
                 >
                   <Box flexGrow={1}>

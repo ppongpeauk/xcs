@@ -314,7 +314,7 @@ export default function PlatformOrganizations() {
               leftIcon={<MdOutlineAddCircle />}
               onClick={onCreateOrganizationModalOpen}
             >
-              Create
+              New
             </Button>
           </FormControl>
           <FormControl w={'fit-content'}>

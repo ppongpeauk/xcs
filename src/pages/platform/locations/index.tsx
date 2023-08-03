@@ -199,7 +199,7 @@ export default function PlatformLocations() {
             onClick={onCreateLocationModalOpen}
             isDisabled={!selectedOrganization}
           >
-            Create
+            New Location
           </Button>
         </HStack>
 
@@ -223,7 +223,7 @@ export default function PlatformLocations() {
                     py={4}
                     px={8}
                     borderWidth={1}
-                    borderRadius={'xl'}
+                    borderRadius={'lg'}
                     borderColor={useColorModeValue('gray.200', 'gray.700')}
                   >
                     <HStack
@@ -282,7 +282,7 @@ export default function PlatformLocations() {
                       h={'auto'}
                       p={6}
                       borderWidth={1}
-                      borderRadius={'xl'}
+                      borderRadius={'lg'}
                       borderColor={useColorModeValue('gray.200', 'gray.700')}
                       mr={4}
                       align={'center'}

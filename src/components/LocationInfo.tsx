@@ -385,7 +385,7 @@ export default function LocationInfo({ location, query, idToken, refreshData }: 
                     mb={2}
                     onClick={downloadStarterPack}
                     isLoading={packLoading}
-                    variant={'outline'}
+                    variant={'solid'}
                     leftIcon={<BiSolidDownload />}
                     isDisabled={location?.self.role < 2}
                   >

@@ -253,13 +253,13 @@ export default function SettingsProfile() {
                 <Field name="bio">
                   {({ field, form }: any) => (
                     <FormControl>
-                      <FormLabel>Bio</FormLabel>
+                      <FormLabel>About Me</FormLabel>
                       <InputGroup mb={2}>
                         <Textarea
                           {...field}
                           type="text"
                           autoComplete="off"
-                          placeholder="Bio"
+                          placeholder="Hello, world!"
                           variant={'outline'}
                         />
                       </InputGroup>

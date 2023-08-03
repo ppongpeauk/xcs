@@ -22,7 +22,7 @@ export default function Logout() {
   return (
     <>
       <Center h="100vh">
-        <Spinner size={'xl'} />
+        <Spinner size={'lg'} />
       </Center>
     </>
   );

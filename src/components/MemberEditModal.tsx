@@ -230,6 +230,7 @@ export default function MemberEditModal({
         isCentered
         blockScrollOnMount={false}
         scrollBehavior="inside"
+        motionPreset='slideInBottom'
       >
         <ModalOverlay />
         <ModalContent

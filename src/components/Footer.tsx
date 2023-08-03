@@ -26,17 +26,16 @@ export default function Footer() {
           <Text
             as={'span'}
             fontWeight={'bold'}
-            letterSpacing={'tighter'}
+            letterSpacing={'tight'}
           >
             © RESTRAFES & CO LLC.
           </Text>{' '}
           All rights reserved.
         </Text>
-        <Flex align={'center'} justify={'center'}>
+        <Flex align={'center'} justify={'center'} fontSize={'sm'}>
           <Link
             as={NextLink}
             href={'/legal/terms'}
-            fontSize={'sm'}
           >
             Terms of Use
           </Link>
@@ -49,7 +48,6 @@ export default function Footer() {
           <Link
             as={NextLink}
             href={'/legal/privacy'}
-            fontSize={'sm'}
           >
             Privacy Policy
           </Link>

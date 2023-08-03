@@ -4,6 +4,7 @@ import { useCallback, useRef } from 'react';
 import {
   Button,
   FormControl,
+  FormHelperText,
   FormLabel,
   Input,
   Modal,
@@ -106,7 +107,7 @@ export default function CreateAccessPointDialog({
             <ModalOverlay />
             <Form>
               <ModalContent bg={useColorModeValue('white', 'gray.800')}>
-                <ModalHeader pb={2}>Create Access Point</ModalHeader>
+                <ModalHeader pb={2}>New Access Point</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody pb={4}>
                   <VStack spacing={2}>
@@ -135,23 +136,20 @@ export default function CreateAccessPointDialog({
                             placeholder={'Access Point Description'}
                             maxH={'200px'}
                           />
+                          <FormHelperText>
+                            This access point will be created under the{' '}
+                            <Text
+                              as={'span'}
+                              fontWeight={'bold'}
+                            >
+                              {location?.name}
+                            </Text>{' '}
+                            location.
+                          </FormHelperText>
                         </FormControl>
                       )}
                     </Field>
                   </VStack>
-                  <Text
-                    fontSize={'sm'}
-                    pt={2}
-                  >
-                    This access point will be created under the{' '}
-                    <Text
-                      as={'span'}
-                      fontWeight={'bold'}
-                    >
-                      {location?.name}
-                    </Text>{' '}
-                    location.
-                  </Text>
                 </ModalBody>
 
                 <ModalFooter>

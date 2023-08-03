@@ -4,6 +4,7 @@ import { useRef } from 'react';
 import {
   Button,
   FormControl,
+  FormHelperText,
   FormLabel,
   Input,
   Modal,
@@ -105,26 +106,21 @@ export default function JoinOrganizationDialog({
                 <ModalHeader>Join Organization</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody pb={4}>
-                  <VStack spacing={2}>
-                    <Field name="inviteCode">
-                      {({ field, form }: any) => (
-                        <FormControl>
-                          <FormLabel>Invite Code</FormLabel>
-                          <Input
-                            {...field}
-                            variant={'outline'}
-                            placeholder={'Invite Code'}
-                          />
-                        </FormControl>
-                      )}
-                    </Field>
-                  </VStack>
-                  <Text
-                    mt={2}
-                    fontSize={'sm'}
-                  >
-                    Have an invite code? Enter it here to join an organization.
-                  </Text>
+                  <Field name="inviteCode">
+                    {({ field, form }: any) => (
+                      <FormControl>
+                        <FormLabel>Invite Code</FormLabel>
+                        <Input
+                          {...field}
+                          variant={'outline'}
+                          placeholder={'Invite Code'}
+                        />
+                        <FormHelperText>
+                          Received an invite code? Enter it here to join an organization.
+                        </FormHelperText>
+                      </FormControl>
+                    )}
+                  </Field>
                 </ModalBody>
 
                 <ModalFooter>

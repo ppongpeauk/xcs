@@ -104,15 +104,15 @@ export default function Recover() {
             >
               <Box
                 w={'full'}
-                px={8}
+                mx={16}
               >
                 <Text
                   fontSize={'3xl'}
                   fontWeight={'bold'}
                 >
-                  Recover Account
+                  Recover XCS Account
                 </Text>
-                <Text color={"gray.500"} fontSize={'md'}>Enter your email address to recover your account.</Text>
+                <Text color={"gray.500"} fontSize={'md'}>Enter your email address to reset your account credentials.</Text>
               </Box>
               <br />
               <Box px={[0, 4]}>
@@ -182,7 +182,7 @@ export default function Recover() {
                         isLoading={props.isSubmitting}
                         type={'submit'}
                       >
-                        Continue
+                        Submit
                       </Button>
                     </Form>
                   )}

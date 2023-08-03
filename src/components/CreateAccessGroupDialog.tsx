@@ -105,7 +105,7 @@ export default function CreateAccessGroupDialog({
             <ModalOverlay />
             <Form>
               <ModalContent bg={useColorModeValue('white', 'gray.800')}>
-                <ModalHeader pb={2}>Create Access Group</ModalHeader>
+                <ModalHeader pb={2}>New Access Group</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody pb={4}>
                   <VStack spacing={2}>
