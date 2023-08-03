@@ -291,8 +291,6 @@ export default function PlatformOrganization() {
         />
       </Head>
       <DeleteDialogOrganization
-        title="Delete Organization"
-        body="Are you sure you want to delete this organization? This will remove all associated data, including locations and API keys. This action cannot be undone."
         isOpen={isDeleteDialogOpen}
         onClose={onDeleteDialogClose}
         onDelete={onDelete}

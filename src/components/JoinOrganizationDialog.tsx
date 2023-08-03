@@ -99,6 +99,7 @@ export default function JoinOrganizationDialog({
             isOpen={isOpen}
             onClose={onClose}
             isCentered
+            initialFocusRef={initialRef}
           >
             <ModalOverlay />
             <Form>
@@ -114,6 +115,7 @@ export default function JoinOrganizationDialog({
                           {...field}
                           variant={'outline'}
                           placeholder={'Invite Code'}
+                          ref={initialRef}
                         />
                         <FormHelperText>
                           Received an invite code? Enter it here to join an organization.

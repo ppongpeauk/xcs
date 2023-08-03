@@ -650,7 +650,7 @@ export default function PlatformAccessPoint() {
                                   </NumberInput>
                                 </InputGroup>
                                 <FormHelperText>
-                                  The number of seconds to keep the door unlocked for.
+                                  The number of seconds to keep the access point unlocked for.
                                 </FormHelperText>
                               </Skeleton>
                             </FormControl>
@@ -803,7 +803,7 @@ export default function PlatformAccessPoint() {
                         fontWeight={'900'}
                         mt={4}
                       >
-                        Events
+                        Trigger Events
                       </Heading>
                       <Stack
                         direction={'row'}
@@ -819,7 +819,6 @@ export default function PlatformAccessPoint() {
                                 <InputGroup>
                                   <Switch
                                     {...field}
-                                    colorScheme='green'
                                     variant={'outline'}
                                     width={'fit-content'}
                                     defaultChecked={accessPoint?.config?.webhook?.eventGranted}
@@ -837,7 +836,6 @@ export default function PlatformAccessPoint() {
                                 <InputGroup>
                                   <Switch
                                     {...field}
-                                    colorScheme='red'
                                     variant={'outline'}
                                     width={'fit-content'}
                                     defaultChecked={accessPoint?.config?.webhook?.eventDenied}
@@ -848,19 +846,6 @@ export default function PlatformAccessPoint() {
                           )}
                         </Field>
                       </Stack>
-                      <Box my={2}>
-                        <Text
-                          fontSize={'sm'}
-                          mb={1}
-                        >
-                          Choose which events to send to the webhook.
-                        </Text>
-                        {/* <Text fontSize={"sm"}>
-                          It is not recommended to enable denied events, as this
-                          will send a webhook request for every denied card scan
-                          (which could be a lot).
-                        </Text> */}
-                      </Box>
                     </TabPanel>
                   </TabPanels>
                 </Tabs>

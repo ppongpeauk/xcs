@@ -96,6 +96,7 @@ export default function CreateOrganizationDialog({
             isOpen={isOpen}
             onClose={onClose}
             isCentered
+            initialFocusRef={initialRef}
           >
             <ModalOverlay />
             <Form>
@@ -112,6 +113,7 @@ export default function CreateOrganizationDialog({
                             {...field}
                             variant={'outline'}
                             placeholder={'Organization Name'}
+                            ref={initialRef}
                           />
                           <FormHelperText>
                             By creating an organization, you agree to our{' '}

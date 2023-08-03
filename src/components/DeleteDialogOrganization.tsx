@@ -7,19 +7,32 @@ import {
   AlertDialogHeader,
   AlertDialogOverlay,
   Button,
+  FormControl,
+  FormLabel,
+  Image,
   Input,
+  Text,
   useColorModeValue
 } from '@chakra-ui/react';
 import { useEffect, useRef, useState } from 'react';
+
+function DeleteButtonIcon() {
+  return <>
+    <Image
+      src={'/images/7534-dababy.png'}
+      alt={'Delete'}
+      width={6}
+      height={6}
+    />
+  </>
+}
 
 export default function DeleteDialogOrganization({
   isOpen,
   onClose,
   cancelRef,
   onDelete,
-  title,
-  body,
-  buttonText = 'Delete',
+  buttonText = 'I Understand, Delete Organization',
   organization
 }: any) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -41,20 +54,22 @@ export default function DeleteDialogOrganization({
               fontWeight="bold"
               pb={2}
             >
-              {title ? title : 'Delete item'}
+              Delete Organization
             </AlertDialogHeader>
 
             <AlertDialogBody>
-              {body ? body : "Are you sure? You can't undo this action afterwards."}
-              <Input
-                placeholder={`Type "${organization?.name}" to confirm`}
-                ref={inputRef}
-                onChange={(e) => {
-                  setDisabled(e.target.value !== organization?.name);
-                }}
-                mt={4}
-              />
-            
+              Are you sure you want to delete this organization? This will remove all associated data, including locations, access points, access groups, and API keys. <br/><Text as={'strong'}>This action cannot be undone.</Text>
+              <FormControl my={4}>
+                <FormLabel>Organization Name</FormLabel>
+                <Input
+                  placeholder={`Type "${organization?.name}" to confirm`}
+                  ref={inputRef}
+                  onChange={(e) => {
+                    setDisabled(e.target.value !== organization?.name);
+                  }}
+                />
+              </FormControl>
+
             </AlertDialogBody>
 
             <AlertDialogFooter>

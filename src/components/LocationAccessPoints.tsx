@@ -18,6 +18,7 @@ import {
   SimpleGrid,
   Skeleton,
   SkeletonText,
+  Spacer,
   Stack,
   Text,
   useColorModeValue,
@@ -74,6 +75,7 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
 
   useEffect(() => {
     if (!location) return;
+    if (!user) return;
     user.getIdToken().then((token: string) => {
       fetch(`/api/v1/locations/${location.id}/access-points`, {
         method: 'GET',
@@ -96,7 +98,7 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
           });
         });
     });
-  }, [location]);
+  }, [location, user]);
 
   return (
     <>
@@ -116,7 +118,7 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
       </Text>
       <Stack
         mb={4}
-        direction={{ base: 'column', md: 'row' }}
+        direction={{ base: 'column', xl: 'row' }}
       >
         <Button
           leftIcon={<MdOutlineAddCircle />}
@@ -125,7 +127,7 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
         >
           New Access Point
         </Button>
-        <Stack direction={{ base: 'column', md: 'row' }}>
+        <Stack direction={{ base: 'column', xl: 'row' }}>
           <FormControl>
             <Input
               placeholder="Filter by name..."
@@ -208,91 +210,79 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
               )
               .map((accessPoint: any) => (
                 <Flex
+                  direction={'column'}
+                  justify={'space-between'}
                   key={accessPoint.id}
                   w={{ base: 'full', md: '384px' }}
-                  h={'max-content'}
                   p={6}
                   borderWidth={1}
                   borderRadius={'lg'}
                   borderColor={useColorModeValue('gray.200', 'gray.700')}
                 >
-                  <Box flexGrow={1}>
-                    <Text
-                      fontSize={'xl'}
-                      fontWeight={'bold'}
-                      noOfLines={1}
-                      mb={1}
+                  <Text
+                    fontSize={'xl'}
+                    fontWeight={'bold'}
+                    noOfLines={1}
+                    mb={1}
+                  >
+                    {accessPoint?.name}
+                  </Text>
+                  <HStack
+                    align={'center'}
+                    justify={'flex-start'}
+                    fontSize={'xl'}
+                    mt={1}
+                  >
+                    {accessPoint?.config?.active ? (
+                      <Badge colorScheme={'green'}>Active</Badge>
+                    ) : (
+                      <Badge colorScheme={'red'}>Inactive</Badge>
+                    )}
+                    {accessPoint?.config?.armed ? (
+                      <Badge colorScheme={'blue'}>Armed</Badge>
+                    ) : (
+                      <Badge colorScheme={'red'}>Not Armed</Badge>
+                    )}
+                  </HStack>
+                  {accessPoint?.tags?.length ? (
+                    <Flex
+                      flexWrap={'wrap'}
+                      pt={1}
+                      gap={2}
                     >
-                      {accessPoint?.name}
-                    </Text>
-                    {accessPoint?.tags?.length ? (
-                      <Flex
-                        flexWrap={'wrap'}
-                        py={1}
-                      >
-                        {accessPoint?.tags?.map((tag: string) => (
-                          <Badge
-                            key={tag}
-                            mr={1}
-                            mb={1}
-                            colorScheme={'purple'}
-                          >
-                            {tag}
-                          </Badge>
-                        ))}
-                      </Flex>
-                    ) : <>
-                      <Flex
-                        flexWrap={'wrap'}
-                        py={1}
-                      >
+                      {accessPoint?.tags?.map((tag: string) => (
                         <Badge
-                          mr={1}
-                          mb={1}
+                          key={tag}
                           colorScheme={'gray'}
                         >
-                          No Tags
+                          {tag}
                         </Badge>
-                      </Flex>
-                    </>}
-                    <HStack
-                      align={'center'}
-                      justify={'flex-start'}
-                      fontSize={'xl'}
-                      mt={1}
-                    >
-                      {accessPoint?.config?.active ? (
-                        <Badge colorScheme={'green'}>Active</Badge>
-                      ) : (
-                        <Badge colorScheme={'red'}>Inactive</Badge>
-                      )}
-                      {accessPoint?.config?.armed ? (
-                        <Badge colorScheme={'blue'}>Armed</Badge>
-                      ) : (
-                        <Badge colorScheme={'red'}>Not Armed</Badge>
-                      )}
-                    </HStack>
+                      ))}
+                    </Flex>
+                  ) : <>
+
+                  </>}
+                  <Box mb={'auto'}>
                     {accessPoint.description ? (
-                      <Text pt={2}>{accessPoint.description}</Text>
+                      <Text pt={1}>{accessPoint.description}</Text>
                     ) : (
                       <Text
-                        pt={2}
+                        pt={1}
                         color={'gray.500'}
                       >
                         No description available.
                       </Text>
                     )}
-                    <Stack pt={4}>
-                      <Button
-                        as={NextLink}
-                        href={`/platform/access-points/${accessPoint.id}`}
-                        variant={'solid'}
-                        w={'full'}
-                      >
-                        View
-                      </Button>
-                    </Stack>
                   </Box>
+                  <Button
+                    mt={4}
+                    as={NextLink}
+                    href={`/platform/access-points/${accessPoint.id}`}
+                    variant={'solid'}
+                    w={'full'}
+                  >
+                    View
+                  </Button>
                 </Flex>
               ))}
           </Flex>
