@@ -3,8 +3,7 @@ import { Suspense, useEffect, useState } from 'react';
 import {
   Avatar,
   Box,
-  Card,
-  CardHeader,
+  Card, CardBody, CardFooter, CardHeader,
   Container,
   Flex,
   Heading,
@@ -139,10 +138,11 @@ export default function PlatformHome() {
             </Stack>
           </Skeleton>
           <Box py={8}>
-            <Skeleton isLoaded={!!stats.total}>
+            {/* Global Stats */}
+            <Skeleton isLoaded={!!stats.total} w={'container.md'}>
               <Heading
                 fontSize={'3xl'}
-                mb={4}
+                my={4}
               >
                 Global Statistics
               </Heading>
@@ -179,6 +179,26 @@ export default function PlatformHome() {
                 />
               </Skeleton>
             </SimpleGrid>
+
+            {/* Platform Announcements */}
+            <Skeleton isLoaded w={'container.md'}>
+              <Heading
+                fontSize={'3xl'}
+                my={4}
+              >
+                Announcements
+              </Heading>
+              <Stack
+                direction={{ base: 'column', md: 'row' }}
+                spacing={4}
+                align={'center'}
+                justify={'space-between'}
+              >
+                <Flex w={"full"} h={"128px"} borderRadius={'lg'} border={'1px solid'} borderColor={useColorModeValue('gray.200', 'gray.700')} p={4}>
+                  <Text fontSize={'2xl'} m={'auto'}>Coming soon!</Text>
+                </Flex>
+              </Stack>
+            </Skeleton>
           </Box>
         </Box>
       </Container>
