@@ -112,6 +112,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       };
     });
 
+    // get access points
+    for (const accessGroupId in organization.accessGroups) {
+      const accessGroup = organization.accessGroups[accessGroupId];
+      if (accessGroup.locationId) {
+        const location = await locations.findOne({ id: accessGroup.locationId }, { projection: { name: 1, id: 1 } });
+        if (location) organization.accessGroups[accessGroupId].locationName = location.name;
+      }
+    }
+
     out.accessPoint.self = organization.members[uid as any];
     return res.status(200).json(out);
   }

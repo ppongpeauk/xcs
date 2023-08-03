@@ -175,7 +175,7 @@ export default function PlatformAccessPoint() {
     refreshData();
   }, [query.id, user]);
 
-  const getAccessGroupType = (ag: AccessGroup) => {
+  const getAccessGroupType = useCallback((ag: AccessGroup) => {
     if (ag.type === 'organization') {
       return 'Organization';
     } else if (ag.type === 'location') {
@@ -184,7 +184,7 @@ export default function PlatformAccessPoint() {
     } else {
       return ag.type;
     }
-  };
+  }, []);
 
   const getAccessGroupOptions = useCallback(
     (organization: Organization) => {
@@ -200,29 +200,26 @@ export default function PlatformAccessPoint() {
       let groups = [] as any;
 
       ags.forEach((ag: AccessGroup) => {
-        // check if the group is an organization or if it's associated with the location
-        if (ag.type === 'organization' || ag.locationId === accessPoint?.location?.id) {
-          // check if the group is already in the groups object
-          if (groups.find((g: Group) => g.label === getAccessGroupType(ag))) {
-            // if it is, add the option to the options array
-            groups
-              .find((g: Group) => g.label === getAccessGroupType(ag))
-              .options.push({
+        // check if the group is already in the groups object
+        if (groups.find((g: Group) => g.label === getAccessGroupType(ag))) {
+          // if it is, add the option to the options array
+          groups
+            .find((g: Group) => g.label === getAccessGroupType(ag))
+            .options.push({
+              label: ag.name,
+              value: ag.id
+            });
+        } else {
+          // if it's not, add the group to the groups array
+          groups.push({
+            label: getAccessGroupType(ag),
+            options: [
+              {
                 label: ag.name,
                 value: ag.id
-              });
-          } else {
-            // if it's not, add the group to the groups array
-            groups.push({
-              label: getAccessGroupType(ag),
-              options: [
-                {
-                  label: ag.name,
-                  value: ag.id
-                }
-              ]
-            });
-          }
+              }
+            ]
+          });
         }
       });
 
@@ -236,7 +233,7 @@ export default function PlatformAccessPoint() {
       setAccessGroupOptions(groups);
       return groups;
     },
-    [accessPoint]
+    [accessPoint?.organization]
   );
 
   useEffect(() => {
