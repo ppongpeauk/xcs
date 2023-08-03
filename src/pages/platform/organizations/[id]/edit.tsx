@@ -457,13 +457,18 @@ export default function PlatformOrganization() {
           </Flex>
         </Stack>
         <Divider my={4} />
-        <Text
-          as={'h2'}
-          fontSize={'3xl'}
-          fontWeight={'900'}
+        <Skeleton
+          isLoaded={organization}
+          w={'fit-content'}
         >
-          General Settings
-        </Text>
+          <Text
+            as={'h2'}
+            fontSize={'3xl'}
+            fontWeight={'900'}
+          >
+            General Settings
+          </Text>
+        </Skeleton>
         <Skeleton
           isLoaded={!!organization}
           w={'fit-content'}

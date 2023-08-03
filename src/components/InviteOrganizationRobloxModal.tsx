@@ -4,6 +4,7 @@ import { useCallback, useRef } from 'react';
 import {
   Button,
   FormControl,
+  FormHelperText,
   FormLabel,
   Input,
   Modal,
@@ -209,16 +210,13 @@ export default function InviteOrganizationRobloxModal({
                             hideSelectedOptions={false}
                             selectedOptionStyle={'check'}
                           />
+                          <FormHelperText>
+                            Add a Roblox user that isn&apos;t registered on XCS to your organization.
+                          </FormHelperText>
                         </FormControl>
                       )}
                     </Field>
                   </VStack>
-                  <Text
-                    fontSize={'sm'}
-                    pt={2}
-                  >
-                    Add a Roblox user that isn&apos;t registered on XCS to your organization.
-                  </Text>
                 </ModalBody>
 
                 <ModalFooter>

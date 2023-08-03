@@ -5,6 +5,7 @@ import {
   Button,
   Flex,
   FormControl,
+  FormHelperText,
   FormLabel,
   HStack,
   IconButton,
@@ -323,6 +324,9 @@ export default function InviteOrganizationRobloxGroupModal({
                             hideSelectedOptions={false}
                             selectedOptionStyle={'check'}
                           />
+                          <FormHelperText>
+                            Add a Roblox group to your organization to start managing their access.
+                          </FormHelperText>
                         </FormControl>
                       )}
                     </Field>

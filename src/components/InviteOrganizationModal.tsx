@@ -5,6 +5,7 @@ import {
   Button,
   Checkbox,
   FormControl,
+  FormHelperText,
   FormLabel,
   HStack,
   Input,
@@ -172,6 +173,9 @@ export default function InviteOrganizationModal({
                               >
                                 Single Use
                               </Checkbox>
+                              <FormHelperText>
+                                All invitation links expire after 14 days.
+                              </FormHelperText>
                             </FormControl>
                           )}
                         </Field>
@@ -186,17 +190,13 @@ export default function InviteOrganizationModal({
                             isReadOnly={true}
                             onFocus={(e) => e.target.select()}
                           />
+                          <FormHelperText>
+                            Share this link with the person you want to invite to your organization.
+                          </FormHelperText>
                         </FormControl>
-                        <Text>Share this link with the person you want to invite to your organization.</Text>
                       </>
                     )}
                   </VStack>
-                  <Text
-                    fontSize={'sm'}
-                    pt={2}
-                  >
-                    All invitation links expire after 14 days.
-                  </Text>
                 </ModalBody>
 
                 <ModalFooter>

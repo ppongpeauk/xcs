@@ -122,9 +122,9 @@ export default function InvitePlatformModal({
           code: '',
           senderId: null as
             | {
-                label: string;
-                value: string;
-              }
+              label: string;
+              value: string;
+            }
             | any,
           maxUses: 1,
           comment: ''
@@ -272,6 +272,9 @@ export default function InvitePlatformModal({
                                 autoComplete="off"
                                 placeholder="Comment"
                               />
+                              <FormHelperText>
+                                All invitation links expire after 14 days.
+                              </FormHelperText>
                             </FormControl>
                           )}
                         </Field>
@@ -299,17 +302,13 @@ export default function InvitePlatformModal({
                             isReadOnly={true}
                             onFocus={(e) => e.target.select()}
                           />
+                          <FormHelperText>
+                            Share this link with the people you want to invite to the platform.
+                          </FormHelperText>
                         </FormControl>
-                        <Text>Share this link with the people you want to invite to the platform.</Text>
                       </>
                     )}
                   </VStack>
-                  <Text
-                    fontSize={'sm'}
-                    pt={2}
-                  >
-                    All invitation links expire after 14 days.
-                  </Text>
                 </ModalBody>
 
                 <ModalFooter>
