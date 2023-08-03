@@ -19,7 +19,6 @@ export default function Footer() {
         borderLeft={{ base: '1px solid', md: 'unset' }}
         borderColor={useColorModeValue('gray.300', 'gray.700')}
         p={4}
-        zIndex={50}
         align={'center'}
         justify={'center'}
       >
