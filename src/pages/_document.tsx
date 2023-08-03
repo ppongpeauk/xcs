@@ -12,12 +12,15 @@ export default function Document() {
   return (
     <Html lang="en">
       <Head>
-        <body>
-          <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-          <Main />
-          <NextScript />
-        </body>
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="apple-touch-icon" href="/images/icons/icon-128x128.png" />
+        <meta name="theme-color" content={"#000000"} />
       </Head>
+      <body>
+        <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+        <Main />
+        <NextScript />
+      </body>
     </Html>
   );
 }
