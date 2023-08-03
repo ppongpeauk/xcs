@@ -51,6 +51,7 @@ import Layout from '@/layouts/PlatformLayout';
 
 import AccessGroupEditModal from '@/components/AccessGroupEditModal';
 import DeleteDialog from '@/components/DeleteDialog';
+import DeleteDialogOrganization from '@/components/DeleteDialogOrganization';
 import MemberEditModal from '@/components/MemberEditModal';
 
 export default function PlatformOrganization() {
@@ -288,12 +289,13 @@ export default function PlatformOrganization() {
           content="/images/logo-square.jpeg"
         />
       </Head>
-      <DeleteDialog
+      <DeleteDialogOrganization
         title="Delete Organization"
         body="Are you sure you want to delete this organization? This will remove all associated data, including locations and API keys. This action cannot be undone."
         isOpen={isDeleteDialogOpen}
         onClose={onDeleteDialogClose}
         onDelete={onDelete}
+        organization={organization}
       />
       <DeleteDialog
         title="Leave Organization"
