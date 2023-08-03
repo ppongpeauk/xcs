@@ -252,38 +252,33 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
 
     try {
-    const email_link = await admin.auth().generateEmailVerificationLink(email.trim().toLowerCase(), {
-      url: `${process.env.NEXT_PUBLIC_ROOT_URL}/platform/onboarding/verify-email`,
-      handleCodeInApp: true
-    }).then((link) => {
-      return link;
-    }).catch((error) => {
-      console.log(error);
-      throw error;
-    });
-
-    // console.log(email_link);
-
-    const msg = {
-      to: email.trim().toLowerCase(), // Change to your recipient
-      from: 'xcs-noreply@restrafes.co', // Change to your verified sender
-      subject: 'Verify your email address',
-      template_id: 'd-9dd7e88dbb554984867e7da76c9d6c6f',
-      dynamic_template_data: {
-        name: displayName,
-        link: email_link
-      }
-    }
-    await sgMail
-      .send(msg)
-      .then(() => {
-        console.log('Email sent')
-      })
-      .catch((error: any) => {
-        return res.status(500).json({ success: false, message: error });
-      }).then(() => {
-        return res.status(200).json({ success: true, message: 'Email sent.' });
+      const email_link = await admin.auth().generateEmailVerificationLink(email.trim().toLowerCase(), {
+        url: `${process.env.NEXT_PUBLIC_ROOT_URL}/platform/onboarding/verify-email`,
+        handleCodeInApp: true
+      }).then((link) => {
+        return link;
+      }).catch((error) => {
+        console.log(error);
+        throw error;
       });
+
+      // console.log(email_link);
+
+      const msg = {
+        to: email.trim().toLowerCase(), // Change to your recipient
+        from: 'xcs-noreply@restrafes.co', // Change to your verified sender
+        subject: 'Verify your email address',
+        template_id: 'd-9dd7e88dbb554984867e7da76c9d6c6f',
+        dynamic_template_data: {
+          name: displayName,
+          link: email_link
+        }
+      }
+      await sgMail
+        .send(msg)
+        .then(() => {
+          console.log('Email sent')
+        })
     } catch (error) {
       console.log(error);
     }
