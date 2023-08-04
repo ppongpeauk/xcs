@@ -120,7 +120,7 @@ export default function CreateAccessPointDialog({
                             ref={initialRef}
                             variant={'outline'}
                             placeholder={namePlaceholder || 'Access Point Name'}
-                            autoCorrect={'off'}
+                            autoComplete='off'
                           />
                         </FormControl>
                       )}
