@@ -140,7 +140,6 @@ export default function AccessGroupEditModal({
         onClose={onClose}
         isCentered
         scrollBehavior="inside"
-        motionPreset='slideInBottom'
       >
         <ModalOverlay />
         <ModalContent

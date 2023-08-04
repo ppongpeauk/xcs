@@ -1,8 +1,16 @@
-import { type ThemeConfig, extendTheme } from '@chakra-ui/react';
+import { modalAnatomy as parts } from '@chakra-ui/anatomy';
+import { AlertDialog, Modal, extendTheme, type ThemeConfig } from '@chakra-ui/react';
+import { createMultiStyleConfigHelpers } from '@chakra-ui/styled-system';
+
+const { defineMultiStyleConfig } = createMultiStyleConfigHelpers(parts.keys)
 
 const config: ThemeConfig = {
   useSystemColorMode: true,
   initialColorMode: 'dark'
+};
+
+Modal.defaultProps = {
+  motionPreset: 'slideInBottom',
 };
 
 const theme = {

@@ -114,6 +114,7 @@ export default function CreateOrganizationDialog({
                             variant={'outline'}
                             placeholder={'Organization Name'}
                             ref={initialRef}
+                            autoComplete={'off'}
                           />
                           <FormHelperText>
                             By creating an organization, you agree to our{' '}

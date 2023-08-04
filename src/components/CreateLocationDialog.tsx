@@ -98,6 +98,7 @@ export default function CreateLocationDialog({
             isOpen={isOpen}
             onClose={onClose}
             isCentered
+            initialFocusRef={initialRef}
           >
             <ModalOverlay />
             <Form>
@@ -114,6 +115,8 @@ export default function CreateLocationDialog({
                             {...field}
                             variant={'outline'}
                             placeholder={'Location Name'}
+                            ref={initialRef}
+                            autoComplete='off'
                           />
                         </FormControl>
                       )}

@@ -56,13 +56,13 @@ function StyledTab({ children }: { children: React.ReactNode }) {
       _hover={{
         bg: useColorModeValue('gray.100', 'gray.700')
       }}
-      _selected={{
-        bg: useColorModeValue('gray.100', '#fff'),
-        color: useColorModeValue('black', 'gray.900')
-      }}
       _active={{
         bg: useColorModeValue('gray.200', 'gray.600'),
         color: useColorModeValue('gray.900', 'white')
+      }}
+      _selected={{
+        bg: useColorModeValue('gray.100', '#fff'),
+        color: useColorModeValue('black', 'gray.900')
       }}
     >
       {children}

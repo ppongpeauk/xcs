@@ -126,7 +126,6 @@ export default function Login() {
           isOpen={isOpen}
           isCentered
           size={'md'}
-          motionPreset='slideInBottom'
         >
           <ModalOverlay />
           <ModalContent bg={useColorModeValue('white', 'gray.800')}>

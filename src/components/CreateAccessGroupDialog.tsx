@@ -119,7 +119,6 @@ export default function CreateAccessGroupDialog({
                             variant={'outline'}
                             placeholder={'Access Group Name'}
                             ref={initialRef}
-                            autoComplete={'off'}
                             autoCorrect={'off'}
                           />
                         </FormControl>
