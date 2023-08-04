@@ -370,9 +370,9 @@ export default function Profile({ username, user: serverUser }: { username?: str
               justify={'flex-start'}
               flexGrow={1}
             >
-              <Skeleton isLoaded={!!user} py={2}>
+              <Skeleton isLoaded={!!user}>
                 {user?.organizations?.length ? (
-                  <Wrap spacing={2}>
+                  <Wrap spacing={2} py={2}>
                     {user?.organizations?.map((org: Organization) => (
                       <WrapItem key={org.id}>
                         <OrganizationItem
