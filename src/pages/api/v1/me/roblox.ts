@@ -13,6 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const mongoClient = await clientPromise;
   const db = mongoClient.db(process.env.MONGODB_DB as string);
   const users = db.collection('users');
+  const organizations = db.collection('organizations');
   const user = await users.findOne({ id: uid });
 
   if (!user) {
@@ -71,6 +72,36 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               id: null,
               username: null
             }
+          }
+        }
+      );
+    }
+
+    // convert all roblox-type members across all organizations to user-type
+    const robloxUserOrganizations = await organizations
+      .find({
+        [`members.${userInfo.sub}`]: { $exists: true }
+      })
+      .toArray(); // get all organizations that have the roblox user as a member
+
+    // convert all roblox-type members to user-type
+    for (const organization of robloxUserOrganizations) {
+      const organizationRobloxUser = organization.members[userInfo.sub];
+      await organizations.updateOne(
+        { id: organization.id },
+        {
+          $set: {
+            [`members.${user.id}`]: {
+              type: 'user',
+              id: user.id,
+              role: organizationRobloxUser.role,
+              accessGroups: organizationRobloxUser.accessGroups,
+              scanData: organizationRobloxUser.scanData,
+              joinedAt: organizationRobloxUser.joinedAt
+            }
+          },
+          $unset: {
+            [`members.${userInfo.sub}`]: ''
           }
         }
       );
