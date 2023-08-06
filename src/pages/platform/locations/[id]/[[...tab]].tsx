@@ -109,8 +109,9 @@ export default function PlatformLocation() {
   // Fetch location data
   useEffect(() => {
     if (!query.id) return;
+    if (!user) return;
     refreshData();
-  }, [query]);
+  }, [query, user]);
 
   const indexSwitch = (index: number) => {
     let route = '';
