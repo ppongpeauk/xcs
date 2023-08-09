@@ -5,13 +5,22 @@ import { createMultiStyleConfigHelpers } from '@chakra-ui/styled-system';
 const { defineMultiStyleConfig } = createMultiStyleConfigHelpers(parts.keys)
 
 const unselected = defineStyle({
-  background: 'whiteAlpha.50',
+  background: 'gray.50',
   _hover: {
-    background: 'whiteAlpha.300'
+    background: 'gray.100'
   },
   _active: {
-    background: 'whiteAlpha.400'
+    background: 'gray.200'
   },
+  _dark: {
+    background: 'whiteAlpha.50',
+    _hover: {
+      background: 'whiteAlpha.300'
+    },
+    _active: {
+      background: 'whiteAlpha.400'
+    },
+  }
 });
 
 
