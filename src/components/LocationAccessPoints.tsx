@@ -130,7 +130,7 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
         </Button>
         <FormControl w={"fit-content"}>
           <Input
-            placeholder="Filter by name..."
+            placeholder="Search"
             variant={'filled'}
             onChange={(e) => {
               setNameFilter(e.target.value);
@@ -138,10 +138,10 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
             value={nameFilter}
           />
         </FormControl>
-        <FormControl h={'1'} w={"fit-content"}>
+        <FormControl h={'min-content'} w={"fit-content"}>
           <Select
             options={tagsOptions}
-            placeholder="Filter by tag..."
+            placeholder="Filter by Tags"
             onChange={(value) => {
               setSelectedTags(value);
             }}
