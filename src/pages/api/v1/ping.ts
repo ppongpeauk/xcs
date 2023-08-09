@@ -7,5 +7,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const statistics = db.collection('statistics');
   const globalStatistics = await statistics.findOne({ id: 'global' });
 
-  return res.status(200).json({ success: true });
+  if (globalStatistics) {
+    return res.status(200).json({ success: true });
+  } else {
+    return res.status(500).json({ success: false });
+  }
 }

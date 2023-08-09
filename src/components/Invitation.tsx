@@ -44,7 +44,7 @@ export default function Invitation({ invite }: { invite: any }) {
   const acceptInvite = async () => {
     setIsAcceptLoading(true);
     if (invite.type === 'organization') {
-      push(`/platform/organizations/?invitation=${query.id}`);
+      push(`/organizations/?invitation=${query.id}`);
     } else if (invite.type === 'xcs') {
       push(`/auth/activate/${query.id}`);
     }

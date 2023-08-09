@@ -281,7 +281,7 @@ export default function Verify() {
                 >
                   <Button
                     colorScheme={'blue'}
-                    onClick={() => push('/platform/home')}
+                    onClick={() => push('/home')}
                   >
                     Go Home
                   </Button>

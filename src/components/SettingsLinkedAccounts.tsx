@@ -169,7 +169,7 @@ export default function SettingsLinkedAccounts() {
                   colorScheme={'blue'}
                   onClick={() => {
                     push(
-                      `https://apis.roblox.com/oauth/v1/authorize?client_id=${process.env.NEXT_PUBLIC_ROBLOX_CLIENT_ID}&redirect_uri=${process.env.NEXT_PUBLIC_ROOT_URL}/platform/verify/oauth2/roblox&scope=openid profile&response_type=code`
+                      `https://apis.roblox.com/oauth/v1/authorize?client_id=${process.env.NEXT_PUBLIC_ROBLOX_CLIENT_ID}&redirect_uri=${process.env.NEXT_PUBLIC_ROOT_URL}/verify/oauth2/roblox&scope=openid profile&response_type=code`
                     );
                   }}
                 >
@@ -216,7 +216,7 @@ export default function SettingsLinkedAccounts() {
                   colorScheme={'blue'}
                   onClick={() => {
                     push(
-                      `https://discord.com/api/oauth2/authorize?client_id=1127492928995078215&redirect_uri=${process.env.NEXT_PUBLIC_ROOT_URL}/platform/verify/oauth2/discord&response_type=code&scope=identify`
+                      `https://discord.com/api/oauth2/authorize?client_id=1127492928995078215&redirect_uri=${process.env.NEXT_PUBLIC_ROOT_URL}/verify/oauth2/discord&response_type=code&scope=identify`
                     );
                   }}
                 >
@@ -232,7 +232,7 @@ export default function SettingsLinkedAccounts() {
                   colorScheme={'blue'}
                   onClick={() => {
                     push(
-                      `https://discord.com/api/oauth2/authorize?client_id=1127492928995078215&redirect_uri=${process.env.NEXT_PUBLIC_ROOT_URL}/platform/verify/oauth2/discord&response_type=code&scope=identify`
+                      `https://discord.com/api/oauth2/authorize?client_id=1127492928995078215&redirect_uri=${process.env.NEXT_PUBLIC_ROOT_URL}/verify/oauth2/discord&response_type=code&scope=identify`
                     );
                   }}
                 >

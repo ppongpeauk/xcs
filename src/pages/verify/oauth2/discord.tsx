@@ -31,19 +31,19 @@ export default function Discord() {
             .then((data) => {
               if (data.success) {
                 refreshCurrentUser();
-                push('/platform/settings/3?discordLinked=true');
+                push('/settings/3?discordLinked=true');
               }
             });
         })
         .catch((err: any) => {
           console.log(err);
         })
-        .finally(() => {});
+        .finally(() => { });
     } else {
-      push('/platform/settings/3?discordLinked=false');
+      push('/settings/3?discordLinked=false');
     }
     if (query.error) {
-      push('/platform/settings/3?discordLinked=false');
+      push('/settings/3?discordLinked=false');
     }
   }, [user, query]);
 

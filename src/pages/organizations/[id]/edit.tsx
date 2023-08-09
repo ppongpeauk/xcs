@@ -91,7 +91,7 @@ export default function PlatformOrganization() {
             duration: 5000,
             isClosable: true
           });
-          push('/platform/organizations');
+          push('/organizations');
         })
         .catch((err) => {
           toast({
@@ -130,7 +130,7 @@ export default function PlatformOrganization() {
             duration: 5000,
             isClosable: true
           });
-          push('/platform/organizations');
+          push('/organizations');
         })
         .catch((err) => {
           toast({
@@ -156,7 +156,7 @@ export default function PlatformOrganization() {
       })
         .then((res) => {
           if (res.status === 200) return res.json();
-          push('/platform/organizations');
+          push('/organizations');
           switch (res.status) {
             case 404:
               throw new Error('Organization not found.');
@@ -337,7 +337,7 @@ export default function PlatformOrganization() {
           <BreadcrumbItem>
             <BreadcrumbLink
               as={NextLink}
-              href="/platform/home"
+              href="/home"
               textUnderlineOffset={4}
             >
               Platform
@@ -346,7 +346,7 @@ export default function PlatformOrganization() {
           <BreadcrumbItem>
             <BreadcrumbLink
               as={NextLink}
-              href={`/platform/organizations`}
+              href={`/organizations`}
               textUnderlineOffset={4}
             >
               Organizations
@@ -402,7 +402,7 @@ export default function PlatformOrganization() {
                 <Link
                   as={NextLink}
                   textUnderlineOffset={4}
-                  href={`/platform/profile/${organization?.owner?.username}`}
+                  href={`/user/${organization?.owner?.username}`}
                 >
                   {organization?.owner?.displayName || 'Organization Owner'}
                 </Link>
@@ -415,7 +415,7 @@ export default function PlatformOrganization() {
               <Avatar
                 as={NextLink}
                 key={organization?.owner?.id}
-                href={`/platform/profile/${organization?.owner?.username}`}
+                href={`/user/${organization?.owner?.username}`}
                 src={organization?.owner?.avatar}
               />
               {organization?.members
@@ -427,7 +427,7 @@ export default function PlatformOrganization() {
                       <Avatar
                         as={NextLink}
                         key={member?.id}
-                        href={`/platform/profile/${member?.username}`}
+                        href={`/user/${member?.username}`}
                         src={member?.avatar}
                         bg={'gray.300'}
                       />
@@ -435,7 +435,7 @@ export default function PlatformOrganization() {
                       <Avatar
                         as={NextLink}
                         key={member?.id}
-                        href={`https://www.roblox.com/users/${member?.id}/profile`}
+                        href={`https://www.roblox.com/users/${member?.id}/user`}
                         src={member?.avatar}
                         bg={'gray.300'}
                         target={'_blank'}
@@ -585,7 +585,7 @@ export default function PlatformOrganization() {
                     </Button>
                     <Button
                       as={NextLink}
-                      href={`/platform/locations/?organization=${query.id}`}
+                      href={`/locations/?organization=${query.id}`}
                       leftIcon={<ImTree />}
                     >
                       View Locations

@@ -68,7 +68,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         .toString()
         .replace('{{locationId}}', location.id)
         .replace('{{locationName}}', location.name)
-        .replace('{{configUrl}}', `${process.env.NEXT_PUBLIC_ROOT_URL}/platform/locations/${location.id}`)
+        .replace('{{configUrl}}', `${process.env.NEXT_PUBLIC_ROOT_URL}/locations/${location.id}`)
         .replace('{{apiKey}}', apiKey)
     );
 

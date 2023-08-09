@@ -18,7 +18,7 @@ export default function OrganizationPublic() {
 
   // TODO: public page
   useEffect(() => {
-    push(`/platform/organizations/${query.id}/edit`);
+    push(`/organizations/${query.id}/edit`);
   }, []);
 
   return (
@@ -26,7 +26,7 @@ export default function OrganizationPublic() {
       <Container maxW="container.lg" py={8}>
         <Heading as="h1" size="xl">Public Page</Heading>
         <Box p={4}>
-          <Button as={Link} href={`/platform/organizations/${query.id}/edit`} colorScheme="blue">Edit Organization</Button>
+          <Button as={Link} href={`/organizations/${query.id}/edit`} colorScheme="blue">Edit Organization</Button>
         </Box>
       </Container>
     </>

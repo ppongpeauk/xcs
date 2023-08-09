@@ -199,7 +199,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           embeds: [
             {
               title: 'Access Point Webhook Configured',
-              description: `If you're seeing this, your webhook has been successfully configured! 🎉\nClick [here](${process.env.NEXT_PUBLIC_ROOT_URL}/platform/access-points/${accessPoint?.id}) to reconfigure your access point.`,
+              description: `If you're seeing this, your webhook has been successfully configured! 🎉\nClick [here](${process.env.NEXT_PUBLIC_ROOT_URL}/access-points/${accessPoint?.id}) to reconfigure your access point.`,
               color: 0xffffff,
               thumbnail: {
                 url: avatarUrl

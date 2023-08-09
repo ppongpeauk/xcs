@@ -20,6 +20,7 @@ import {
   Stack,
   StackItem,
   Text,
+  Tooltip,
   Wrap,
   WrapItem,
   useColorModeValue,
@@ -42,7 +43,7 @@ import { useAuthContext } from '@/contexts/AuthContext';
 function OrganizationItem({ organization }: { organization: any }) {
   return (
     <Link
-      href={`/platform/organizations/${organization.id}`}
+      href={`/organizations/${organization.id}`}
       w={'auto'}
       h={'auto'}
       transition={'filter 0.2s ease-in-out'}
@@ -51,7 +52,6 @@ function OrganizationItem({ organization }: { organization: any }) {
       }}
     >
       <Avatar
-        title={organization?.name}
         name={organization?.name}
         src={organization?.avatar}
         objectFit={'cover'}
@@ -270,7 +270,7 @@ export default function Profile({ username, user: serverUser }: { username?: str
           </Box>
         </Box>
         {/* User Linked Accounts */}
-        <Box my={4}>
+        {/* <Box my={4}>
           <Box
             rounded={'lg'}
             w={{ base: 'full', md: '384px' }}
@@ -324,7 +324,7 @@ export default function Profile({ username, user: serverUser }: { username?: str
                   <WrapItem>
                     <Button
                       as={Link}
-                      href={`https://roblox.com/users/${user?.roblox.id}/profile`}
+                      href={`https://roblox.com/users/${user?.roblox.id}/user`}
                       target="_blank"
                       size={'sm'}
                       variant={'ghost'}
@@ -347,8 +347,8 @@ export default function Profile({ username, user: serverUser }: { username?: str
               </Wrap>
             </Skeleton>
           </Box>
-        </Box>
-        <Flex>
+        </Box> */}
+        <Flex py={4}>
           {/* Organizations */}
           <Box
             py={2}
@@ -374,11 +374,13 @@ export default function Profile({ username, user: serverUser }: { username?: str
                 {user?.organizations?.length ? (
                   <Wrap spacing={2} py={2}>
                     {user?.organizations?.map((org: Organization) => (
-                      <WrapItem key={org.id}>
-                        <OrganizationItem
-                          organization={org}
-                        />
-                      </WrapItem>
+                      <Tooltip key={org.id} label={org.name}>
+                        <WrapItem>
+                          <OrganizationItem
+                            organization={org}
+                          />
+                        </WrapItem>
+                      </Tooltip>
                     ))}
                   </Wrap>
                 ) : (

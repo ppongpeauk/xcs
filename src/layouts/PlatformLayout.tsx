@@ -37,7 +37,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   // Wait for the router to be ready before checking if the user is logged in
   useEffect(() => {
     if (loading) return;
-    // if (pathname.startsWith("/platform/profile")) return;
+    // if (pathname.startsWith("/user")) return;
     setTimeout(() => {
       if (!firebaseUser) {
         push('/auth/login?redirect=' + window.location.pathname);
@@ -54,7 +54,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   // get platform alerts
   useEffect(() => {
-    fetch('/api/v1/platform/alerts').then(async (res) => {
+    fetch('/api/v1/alerts').then(async (res) => {
       const data = await res.json();
       setAlerts(data);
     });
@@ -130,7 +130,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     button={{
                       text: 'Verify Roblox account',
                       onClick: async () => {
-                        push(`https://apis.roblox.com/oauth/v1/authorize?client_id=${process.env.NEXT_PUBLIC_ROBLOX_CLIENT_ID}&redirect_uri=${process.env.NEXT_PUBLIC_ROOT_URL}/platform/verify/oauth2/roblox&scope=openid profile&response_type=code`);
+                        push(`https://apis.roblox.com/oauth/v1/authorize?client_id=${process.env.NEXT_PUBLIC_ROBLOX_CLIENT_ID}&redirect_uri=${process.env.NEXT_PUBLIC_ROOT_URL}/verify/oauth2/roblox&scope=openid profile&response_type=code`);
                       }
                     }}
                   />

@@ -11,6 +11,11 @@ module.exports = withPWA({
   reactStrictMode: true,
   async rewrites() {
     return [
+      // legacy oauth endpoints
+      {
+        source: '/platform/verify/:slug*',
+        destination: '/verify/:slug*'
+      },
       {
         source: '/api/v1/roblox/users/:slug*',
         destination: 'https://users.roblox.com/:slug*'
@@ -56,8 +61,13 @@ module.exports = withPWA({
         permanent: true
       },
       {
+        source: '/platform/:slug*',
+        destination: '/:slug*',
+        permanent: false
+      },
+      {
         source: '/@:username*',
-        destination: '/platform/profile/:username*',
+        destination: '/platform/user/:username*',
         permanent: false
       },
       {

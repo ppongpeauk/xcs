@@ -97,7 +97,7 @@ export default function PlatformLocation() {
               duration: 5000,
               isClosable: true
             });
-            return push('/platform/organizations');
+            return push('/organizations');
           }
         })
         .then((data) => {
@@ -117,13 +117,13 @@ export default function PlatformLocation() {
     let route = '';
     switch (index) {
       case 0:
-        route = `/platform/locations/${query.id}/general`;
+        route = `/locations/${query.id}/general`;
         break;
       case 1:
-        route = `/platform/locations/${query.id}/access-points`;
+        route = `/locations/${query.id}/access-points`;
         break;
       default:
-        route = `/platform/locations/${query.id}/general`;
+        route = `/locations/${query.id}/general`;
         break;
     }
     return route;
@@ -179,7 +179,7 @@ export default function PlatformLocation() {
             <BreadcrumbItem>
               <BreadcrumbLink
                 as={NextLink}
-                href="/platform/home"
+                href="/home"
                 textUnderlineOffset={4}
               >
                 Platform
@@ -188,7 +188,7 @@ export default function PlatformLocation() {
             <BreadcrumbItem>
               <BreadcrumbLink
                 as={NextLink}
-                href={`/platform/organizations/${location?.organization.id}/edit`}
+                href={`/organizations/${location?.organization.id}/edit`}
                 textUnderlineOffset={4}
               >
                 {location?.organization.name || 'Organization Name'}
@@ -197,7 +197,7 @@ export default function PlatformLocation() {
             <BreadcrumbItem>
               <BreadcrumbLink
                 as={NextLink}
-                href={`/platform/locations?organization=${location?.organization.id}`}
+                href={`/locations?organization=${location?.organization.id}`}
                 textUnderlineOffset={4}
               >
                 Locations
@@ -246,28 +246,28 @@ export default function PlatformLocation() {
             <MenuList>
               <MenuItem
                 as={NextLink}
-                href={`/platform/locations/${query.id}/general`}
+                href={`/locations/${query.id}/general`}
                 icon={<IoBusiness />}
               >
                 General
               </MenuItem>
               {/* <MenuItem
                 as={NextLink}
-                href={`/platform/locations/${query.id}/event-logs`}
+                href={`/locations/${query.id}/event-logs`}
                 icon={<BiSolidTime />}
               >
                 Event Logs
               </MenuItem>
               <MenuItem
                 as={NextLink}
-                href={`/platform/locations/${query.id}/members`}
+                href={`/locations/${query.id}/members`}
                 icon={<BiSolidGroup />}
               >
                 Members
               </MenuItem> */}
               <MenuItem
                 as={NextLink}
-                href={`/platform/locations/${query.id}/access-points`}
+                href={`/locations/${query.id}/access-points`}
                 icon={<MdSensors />}
               >
                 Access Points

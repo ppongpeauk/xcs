@@ -76,7 +76,7 @@ export default function LocationInfo({ location, query, idToken, refreshData }: 
             duration: 5000,
             isClosable: true
           });
-          push('/platform/locations');
+          push('/locations');
         })
         .catch((err) => {
           toast({
@@ -406,7 +406,7 @@ export default function LocationInfo({ location, query, idToken, refreshData }: 
                   Access groups can be managed in the settings of{' '}
                   <Link
                     as={NextLink}
-                    href={`/platform/organizations/${location?.organizationId}`}
+                    href={`/organizations/${location?.organizationId}`}
                     textDecor={'underline'}
                     textUnderlineOffset={4}
                     whiteSpace={'nowrap'}

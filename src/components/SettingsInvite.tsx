@@ -51,7 +51,7 @@ export default function SettingsInvite() {
         duration: 3000,
         isClosable: true
       });
-      push('/platform/settings/1');
+      push('/settings/1');
       return;
     }
   }, [currentUser, push, toast]);

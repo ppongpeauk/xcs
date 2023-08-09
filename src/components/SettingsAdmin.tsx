@@ -51,7 +51,7 @@ export default function SettingsProfile() {
         duration: 3000,
         isClosable: true
       });
-      push('/platform/settings/1');
+      push('/settings/1');
       return;
     }
   }, [currentUser, push, toast]);
@@ -76,7 +76,7 @@ export default function SettingsProfile() {
         isOpen={platformInviteModalOpen}
         onOpen={platformInviteModalOnOpen}
         onClose={platformInviteModalOnClose}
-        onCreate={() => {}}
+        onCreate={() => { }}
       />
       <LocationResetUniverseIdModal
         isOpen={locationUniverseIdResetModalOpen}
@@ -99,13 +99,13 @@ export default function SettingsProfile() {
               Create Registration Invite
             </Button>
             <FormControl>
-            <Button
-              mb={2}
-              leftIcon={<BiReset />}
-              onClick={locationUniverseIdResetModalOnOpen}
-            >
-              Reset Location Universe
-            </Button>
+              <Button
+                mb={2}
+                leftIcon={<BiReset />}
+                onClick={locationUniverseIdResetModalOnOpen}
+              >
+                Reset Location Universe
+              </Button>
             </FormControl>
           </Stack>
         </Box>

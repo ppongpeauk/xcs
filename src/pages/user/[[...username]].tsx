@@ -68,7 +68,7 @@ export default function UserProfileNS({ user }: any) {
             />
             <meta
               property="og:url"
-              content={`https://xcs.restrafes.co/platform/profile/${username}`}
+              content={`https://xcs.restrafes.co/user/${username}`}
             />
             <meta
               property="og:description"
@@ -88,7 +88,7 @@ export default function UserProfileNS({ user }: any) {
             />
             <meta
               property="og:url"
-              content={`https://xcs.restrafes.co/platform/profile`}
+              content={`https://xcs.restrafes.co/user`}
             />
             <meta
               property="og:description"

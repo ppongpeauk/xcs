@@ -14,7 +14,7 @@ export default function RobloxOauth2() {
     if (!user || !query) return;
 
     if (!code) {
-      push('/platform/settings/3?robloxLinked=false');
+      push('/settings/3?robloxLinked=false');
     } else {
       user
         .getIdToken()
@@ -33,9 +33,9 @@ export default function RobloxOauth2() {
             .then((data) => {
               if (data.success) {
                 refreshCurrentUser();
-                push('/platform/settings/3?robloxLinked=true');
+                push('/settings/3?robloxLinked=true');
               } else {
-                push('/platform/settings/3?robloxLinked=false');
+                push('/settings/3?robloxLinked=false');
               }
             });
         })

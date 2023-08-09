@@ -110,7 +110,7 @@ export default function PlatformAccessPoint() {
             duration: 5000,
             isClosable: true
           });
-          push(`/platform/locations/${accessPoint?.location?.id}/access-points`);
+          push(`/locations/${accessPoint?.location?.id}/access-points`);
         })
         .catch((err) => {
           toast({
@@ -136,7 +136,7 @@ export default function PlatformAccessPoint() {
       })
         .then((res) => {
           if (res.status === 200) return res.json();
-          push('/platform/organizations');
+          push('/organizations');
           switch (res.status) {
             case 404:
               throw new Error('Access point not found.');
@@ -330,7 +330,7 @@ export default function PlatformAccessPoint() {
             <BreadcrumbItem>
               <BreadcrumbLink
                 as={NextLink}
-                href="/platform/home"
+                href="/home"
                 textUnderlineOffset={4}
               >
                 Platform
@@ -339,7 +339,7 @@ export default function PlatformAccessPoint() {
             <BreadcrumbItem>
               <BreadcrumbLink
                 as={NextLink}
-                href={`/platform/organizations/${accessPoint?.organizationId}/edit`}
+                href={`/organizations/${accessPoint?.organizationId}/edit`}
                 textUnderlineOffset={4}
               >
                 {accessPoint?.organization?.name}
@@ -348,7 +348,7 @@ export default function PlatformAccessPoint() {
             <BreadcrumbItem>
               <BreadcrumbLink
                 as={NextLink}
-                href={`/platform/locations/${accessPoint?.location?.id}/access-points`}
+                href={`/locations/${accessPoint?.location?.id}/access-points`}
                 textUnderlineOffset={4}
               >
                 {accessPoint?.location?.name}

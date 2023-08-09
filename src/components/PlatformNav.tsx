@@ -51,6 +51,7 @@ import { BsPersonBadgeFill } from 'react-icons/bs';
 import { FaBell, FaBuilding, FaIdBadge, FaUserAlt } from 'react-icons/fa';
 import { ImTree } from 'react-icons/im';
 import { MdSensors } from 'react-icons/md';
+import { RiAdminFill } from 'react-icons/ri';
 
 import NextImage from 'next/image';
 import NextLink from 'next/link';
@@ -114,7 +115,7 @@ function AvatarPopover({ currentUser, onLogoutOpen }: { currentUser?: any; onLog
               <Flex
                 as={Button}
                 onClick={() => {
-                  push('/platform/profile');
+                  push('/user');
                   onClose();
                 }}
                 variant={'ghost'}
@@ -160,7 +161,7 @@ function AvatarPopover({ currentUser, onLogoutOpen }: { currentUser?: any; onLog
               </Flex>
               <Button
                 as={NextLink}
-                href={'/platform/settings'}
+                href={'/settings'}
                 variant={'outline'}
                 size={'md'}
                 leftIcon={<AiFillSetting />}
@@ -170,9 +171,21 @@ function AvatarPopover({ currentUser, onLogoutOpen }: { currentUser?: any; onLog
               >
                 Settings
               </Button>
+              {currentUser?.platform.staff && (
+                <Button
+                  as={NextLink}
+                  href={'/settings/4'}
+                  variant={'outline'}
+                  size={'md'}
+                  leftIcon={<RiAdminFill />}
+                  onClick={() => {
+                    onClose();
+                  }}
+                >
+                  Staff Panel
+                </Button>
+              )}
               <Button
-                // as={NextLink}
-                // href={"/auth/logout"}
                 variant={'outline'}
                 size={'md'}
                 leftIcon={<BiSolidExit />}
@@ -320,7 +333,7 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
             as={NextLink}
             width={'full'}
             h={'full'}
-            href={'/platform/home'}
+            href={'/home'}
             align={'center'}
             justify={'center'}
             transition={'filter 0.2s ease'}
@@ -361,35 +374,35 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
             spacing={1}
           >
             <NavLink
-              href={'/platform/home'}
+              href={'/home'}
               pathname={pathname}
               leftIcon={<AiFillHome />}
             >
               Home
             </NavLink>
             <NavLink
-              href={'/platform/event-logs'}
+              href={'/event-logs'}
               pathname={pathname}
               leftIcon={<BiSolidTime />}
             >
               Event Logs
             </NavLink>
             <NavLink
-              href={'/platform/profile'}
+              href={'/user'}
               pathname={pathname}
               leftIcon={<FaIdBadge />}
             >
               Profile
             </NavLink>
             <NavLink
-              href={'/platform/organizations'}
+              href={'/organizations'}
               pathname={pathname}
               leftIcon={<FaBuilding />}
             >
               Organizations
             </NavLink>
             <NavLink
-              href={'/platform/locations'}
+              href={'/locations'}
               pathname={pathname}
               leftIcon={<ImTree />}
             >
@@ -458,7 +471,7 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
         >
           <Flex
             as={NextLink}
-            href={'/platform/home'}
+            href={'/home'}
             display={{ base: 'flex', md: 'none' }}
             position={'relative'}
             w={'96px'}
@@ -542,35 +555,35 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
                   <MenuItem
                     as={MenuLink}
                     icon={<AiFillHome />}
-                    href="/platform/home"
+                    href="/home"
                   >
                     Home
                   </MenuItem>
                   <MenuItem
                     as={MenuLink}
                     icon={<BiSolidTime />}
-                    href="/platform/event-logs"
+                    href="/event-logs"
                   >
                     Event Logs
                   </MenuItem>
                   <MenuItem
                     as={MenuLink}
                     icon={<FaIdBadge />}
-                    href="/platform/profile"
+                    href="/user"
                   >
                     Profile
                   </MenuItem>
                   <MenuItem
                     as={MenuLink}
                     icon={<FaBuilding />}
-                    href="/platform/organizations"
+                    href="/organizations"
                   >
                     Organizations
                   </MenuItem>
                   <MenuItem
                     as={MenuLink}
                     icon={<ImTree />}
-                    href="/platform/locations"
+                    href="/locations"
                   >
                     Locations
                   </MenuItem>
@@ -578,10 +591,19 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
                   <MenuItem
                     as={MenuLink}
                     icon={<AiFillSetting />}
-                    href="/platform/settings"
+                    href="/settings"
                   >
                     Settings
                   </MenuItem>
+                  {currentUser?.platform.staff && (
+                    <MenuItem
+                      as={MenuLink}
+                      icon={<RiAdminFill />}
+                      href="/settings/4"
+                    >
+                      Staff Panel
+                    </MenuItem>
+                  )}
                   <MenuItem
                     as={MenuLink}
                     icon={<AiFillInfoCircle />}

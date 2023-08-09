@@ -151,7 +151,7 @@ export default function PlatformLocations() {
         onClose={onCreateLocationModalClose}
         selectedOrganization={selectedOrganization}
         onCreate={(id) => {
-          push(`/platform/locations/${id}`);
+          push(`/locations/${id}`);
         }}
       />
       <Container
@@ -199,6 +199,7 @@ export default function PlatformLocations() {
                     value: organization.id
                   })) || []
                 }
+                variant='filled'
                 selectedOptionStyle="check"
               />
             </>
@@ -338,7 +339,7 @@ export default function PlatformLocations() {
                       >
                         <Button
                           as={NextLink}
-                          href={`/platform/locations/${location?.id}`}
+                          href={`/locations/${location?.id}`}
                           variant={'solid'}
                           w={'full'}
                         >

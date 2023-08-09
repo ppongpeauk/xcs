@@ -29,6 +29,10 @@ export interface User {
     username?: string
     verified: boolean;
   };
+  platform: {
+    staff: number | boolean;
+    membership: number
+  }
 }
 
 export interface Organization {

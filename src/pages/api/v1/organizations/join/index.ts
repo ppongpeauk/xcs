@@ -33,7 +33,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(404).json({
         success: false,
         valid: false,
-        message: 'Invalid invite code.'
+        message: 'This invite code is invalid. Please try again.'
       });
     }
 
@@ -45,7 +45,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(404).json({
         success: false,
         valid: false,
-        message: 'Invalid invite code.'
+        message: 'This invite code is invalid. Please try again.'
       });
     }
 

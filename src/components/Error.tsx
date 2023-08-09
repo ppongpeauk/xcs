@@ -56,7 +56,7 @@ export default function Error({ statusCode }: { statusCode: string }) {
         </Text>
         <Flex flexDir={'row'} gap={2}>
           <Button as={Link} href={'/'} _hover={{ textDecoration: 'none' }}>Return to Home</Button>
-          <Button as={Link} href={'/platform/home'} _hover={{ textDecoration: 'none' }}>Return to Platform Home</Button>
+          <Button as={Link} href={'/home'} _hover={{ textDecoration: 'none' }}>Return to Platform Home</Button>
         </Flex>
       </Container>
     </>

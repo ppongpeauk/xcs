@@ -121,14 +121,13 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
         direction={{ base: 'column', md: 'row' }}
       >
         <Button
-          px={4}
           leftIcon={<MdOutlineAddCircle />}
           onClick={onCreateAccessPointModalOpen}
           isDisabled={accessPoints?.self?.role <= 1}
         >
           New Access Point
         </Button>
-        <FormControl w={"fit-content"}>
+        <FormControl w={{ base: 'full', md: 'fit-content' }}>
           <Input
             placeholder="Search"
             variant={'filled'}
@@ -138,7 +137,7 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
             value={nameFilter}
           />
         </FormControl>
-        <FormControl h={'min-content'} w={"fit-content"}>
+        <FormControl w={{ base: 'full', md: 'fit-content' }} h={'min-content'}>
           <Select
             options={tagsOptions}
             placeholder="Filter by Tags"
@@ -278,7 +277,7 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
                   <Button
                     mt={4}
                     as={NextLink}
-                    href={`/platform/access-points/${accessPoint.id}`}
+                    href={`/access-points/${accessPoint.id}`}
                     variant={'solid'}
                     w={'full'}
                   >

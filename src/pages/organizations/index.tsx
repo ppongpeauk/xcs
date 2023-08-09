@@ -110,7 +110,7 @@ function TableEntry({ key, organization, skeleton }: { key: number | string, org
           <ButtonGroup>
             <Button
               as={Link}
-              href={`/platform/organizations/${organization?.id}/edit`}
+              href={`/organizations/${organization?.id}/edit`}
               size={"sm"}
               variant={"solid"}
               colorScheme='blue'
@@ -283,7 +283,7 @@ export default function PlatformOrganizations() {
         isOpen={isCreateOrganizationModalOpen}
         onClose={onCreateOrganizationModalClose}
         onCreate={(id) => {
-          push(`/platform/organizations/${id}/edit`);
+          push(`/organizations/${id}/edit`);
         }}
       />
       {!queryLoading && (
@@ -291,7 +291,7 @@ export default function PlatformOrganizations() {
           isOpen={isJoinOrganizationModalOpen}
           onClose={onJoinOrganizationModalClose}
           onJoin={(id) => {
-            push(`/platform/organizations/${id}/edit`);
+            push(`/organizations/${id}/edit`);
           }}
           initialValue={initialInviteCodeValue || ''}
         />
@@ -404,7 +404,7 @@ export default function PlatformOrganizations() {
                 <Flex py={8} gap={4} wrap={'wrap'}>
                   {
                     organizationsLoading ? (
-                      Array.from({ length: 16 }).map((_, i) => (
+                      Array.from({ length: 6 }).map((_, i) => (
                         <Flex key={i} flexDir={'column'} w={"196px"}>
                           <Skeleton>
                             <Flex
@@ -450,7 +450,7 @@ export default function PlatformOrganizations() {
                             borderColor={useColorModeValue('gray.200', 'gray.700')}
                             aspectRatio={1}
                           >
-                            <Link href={`/platform/organizations/${organization.id}/edit`}>
+                            <Link href={`/organizations/${organization.id}/edit`}>
                               <Avatar
                                 ignoreFallback={true}
                                 borderRadius={'lg'}
@@ -469,11 +469,11 @@ export default function PlatformOrganizations() {
                               size={'md'}
                               fontWeight={'bold'}
                             >
-                              <Link href={`/platform/organizations/${organization.id}/edit`}>
+                              <Link href={`/organizations/${organization.id}/edit`}>
                                 {organization.name}
                               </Link>
                             </Heading>
-                            <Link color={"gray.500"} href={`/platform/profile/${organization.owner?.username}`}>
+                            <Link color={"gray.500"} href={`/user/${organization.owner?.username}`}>
                               by {organization.owner?.displayName}
                             </Link>
                             <Flex align={'center'} color={'gray.500'} gap={1} fontSize={'md'}>

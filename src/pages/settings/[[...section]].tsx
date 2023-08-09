@@ -71,7 +71,7 @@ function StyledTab({ children, index, icon }: { children: React.ReactNode; index
         color: useColorModeValue('black', 'gray.900')
       }}
       onClick={() => {
-        push(`/platform/settings/${index + 1}`);
+        push(`/settings/${index + 1}`);
       }}
     >
       {icon ? (
