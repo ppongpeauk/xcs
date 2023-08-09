@@ -49,8 +49,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
       });
 
-      console.log(updatedBy);
-
       return {
         ...organization, owner, updatedBy, statistics: {
           numLocations,

@@ -237,6 +237,9 @@ export default function PlatformOrganizations() {
     const viewOption = localStorage.getItem('organizationView');
     if (viewOption) {
       setView(viewOption as 'list' | 'grid');
+    } else {
+      setView('list');
+      localStorage.setItem('organizationView', 'list');
     }
   }, []);
 
@@ -476,7 +479,7 @@ export default function PlatformOrganizations() {
                             <Flex align={'center'} color={'gray.500'} gap={1} fontSize={'md'}>
                               <Icon as={BiRefresh} />
                               <Text color={'gray.500'}>
-                                Updated{" "}{!organizationsLoading ? toRelativeTime(organization.updatedAt) : "Last Updated"}
+                                {!organizationsLoading ? toRelativeTime(organization.updatedAt) : "Last Updated"}
                               </Text>
                             </Flex>
                           </Flex>
