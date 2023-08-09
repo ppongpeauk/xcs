@@ -106,9 +106,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         });
     }
 
-    delete req.body.email;
+    // sanitize body to only include allowed fields
+    const allowedFields = ['displayName', 'bio', 'avatar', 'email', 'emailVerified', 'lastUpdatedAt'];
+    const sanitizedBody = Object.keys(req.body)
+      .filter((key) => allowedFields.includes(key))
+      .reduce((obj: any, key) => {
+        obj[key as string] = req.body[key as string];
+        return obj;
+      }, {});
 
-    await users.updateOne({ id: uid }, { $set: req.body });
+    await users.updateOne({ id: uid }, { $set: sanitizedBody });
 
     return res.status(200).json({ message: 'Successfully updated profile!', success: true });
   }

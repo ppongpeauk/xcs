@@ -84,13 +84,6 @@ function TableEntry({ key, organization, skeleton }: { key: number | string, org
         </Stack>
       </Td>
       <Td isNumeric>
-        {/* TODO: implement avatars */}
-        {/* <AvatarGroup max={3} size={"sm"}>
-          <Avatar src='/images/logo.jpg' />
-          <Avatar src='/images/logo.jpg' />
-          <Avatar src='/images/logo.jpg' />
-          <Avatar src='/images/logo.jpg' />
-        </AvatarGroup> */}
         <Skeleton isLoaded={!skeleton}>
           <Text>
             {!skeleton ? organization?.statistics?.numMembers : 0}
@@ -128,7 +121,7 @@ function TableEntry({ key, organization, skeleton }: { key: number | string, org
       <Td isNumeric>
         <Skeleton isLoaded={!skeleton}>
           <ButtonGroup>
-            <Button
+            {/* <Button
               as={Link}
               href={`/platform/organizations/${organization?.id}`}
               size={"sm"}
@@ -137,7 +130,7 @@ function TableEntry({ key, organization, skeleton }: { key: number | string, org
               textDecor={"unset !important"}
             >
               View Profile
-            </Button>
+            </Button> */}
             <Button
               as={Link}
               href={`/platform/organizations/${organization?.id}/edit`}
