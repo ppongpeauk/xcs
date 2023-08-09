@@ -317,12 +317,12 @@ export default function Settings() {
               <SettingsAdmin />
             </TabPanel>
             <TabPanel p={0}>
-              <Heading>Invite</Heading>
+              <Heading>Referrals</Heading>
               <Text
                 fontSize={'md'}
                 color={'gray.500'}
               >
-                Invite users to the platform.
+                Sponsor users to the platform.
               </Text>
               <Divider
                 mt={4}

@@ -3,6 +3,7 @@ import { generate } from 'randomstring';
 
 import { authToken } from '@/lib/auth';
 import clientPromise from '@/lib/mongodb';
+import { Invitation } from '@/types';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   let { senderId, maxUses, code, comment } = req.body;
@@ -63,16 +64,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const result = await invitations.insertOne({
       type: 'xcs',
-      inviteCode: code,
-      fromId: senderId || uid,
+      code: code,
+      isSponsor: false,
 
       uses: 0,
       maxUses: maxUses,
 
       comment: comment,
-      createdAt: new Date(),
-      createdBy: uid
-    });
+      createdAt: new Date().toISOString(),
+      createdBy: user.id,
+    } as Invitation);
 
     return res.status(200).json({
       success: true,

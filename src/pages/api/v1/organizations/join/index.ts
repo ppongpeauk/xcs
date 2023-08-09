@@ -3,6 +3,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 
 import { authToken } from '@/lib/auth';
 import clientPromise from '@/lib/mongodb';
+import { Invitation } from '@/types';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const uid = await authToken(req);
@@ -26,8 +27,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const inviteCodeData = await invitations.findOne({
-      inviteCode: inviteCode
-    });
+      code: inviteCode
+    }) as Invitation | null;
 
     if (!inviteCodeData) {
       return res.status(404).json({
@@ -67,7 +68,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         $push: {
           logs: {
             type: 'user-joined',
-            performer: inviteCodeData.creatorId,
+            performer: inviteCodeData.createdBy,
             target: uid,
             timestamp: timestamp
           }
@@ -83,7 +84,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           [`members.${uid}`]: {
             type: 'user',
             id: uid,
-            role: inviteCodeData.role || 1,
+            role: inviteCodeData.organizationRole || 1,
             accessGroups: [],
             joinedAt: new Date().getTime(),
             updatedAt: new Date().getTime()
@@ -93,7 +94,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     );
 
     // Remove the invite code if it's single use
-    if (inviteCodeData.singleUse) {
+    if (inviteCodeData.maxUses > 0 && inviteCodeData.uses >= inviteCodeData.maxUses) {
       await invitations.deleteOne({ inviteCode: inviteCode });
     }
 

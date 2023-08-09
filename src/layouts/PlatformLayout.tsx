@@ -54,7 +54,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   // get platform alerts
   useEffect(() => {
-    fetch('/api/v1/alerts').then(async (res) => {
+    fetch('/api/v1/platform/alerts').then(async (res) => {
       const data = await res.json();
       setAlerts(data);
     });

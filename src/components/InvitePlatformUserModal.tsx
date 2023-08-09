@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import {
   Button,
@@ -72,77 +72,19 @@ export default function InvitePlatformUserModal({
     });
   };
 
-  const getUserSearchResults = async (inputValue: string, callback: any) => {
-    if (!inputValue) {
-      callback([]);
-      return;
-    }
-    await user.getIdToken().then((token: any) => {
-      fetch(`/api/v1/admin/search-users/${encodeURIComponent(inputValue)}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        }
-      })
-        .then((res) => {
-          if (res.status === 200) {
-            return res.json();
-          } else {
-            return res.json().then((json) => {
-              throw new Error(json.message);
-            });
-          }
-        })
-        .then((data) => {
-          callback(
-            data.map((user: any) => ({
-              label: `${user.displayName} (${user.username})`,
-              value: user.id
-            }))
-          );
-        })
-        .catch((error) => {
-          toast({
-            title: 'There was an error searching for users.',
-            description: error.message,
-            status: 'error',
-            duration: 5000,
-            isClosable: true
-          });
-        });
-    });
-  };
-
   return (
     <>
       <Formik
         enableReinitialize={true}
-        initialValues={{
-          code: '',
-          senderId: null as
-            | {
-              label: string;
-              value: string;
-            }
-            | any,
-          maxUses: 1,
-          comment: ''
-        }}
+        initialValues={{}}
         onSubmit={(values, actions) => {
           user.getIdToken().then((token: any) => {
-            fetch(`/api/v1/self/invite-link/create`, {
+            fetch(`/api/v1/me/referrals`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`
               },
-              body: JSON.stringify({
-                maxUses: values.maxUses,
-                code: values.code,
-                senderId: values.senderId?.value,
-                comment: values.comment
-              })
             })
               .then((res) => {
                 if (res.status === 200) {
@@ -190,12 +132,15 @@ export default function InvitePlatformUserModal({
             <ModalOverlay />
             <Form>
               <ModalContent bg={useColorModeValue('white', 'gray.800')}>
-                <ModalHeader pb={2}>Create Invitation Link</ModalHeader>
+                <ModalHeader pb={2}>Sponsor a User</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody pb={4}>
                   <VStack spacing={2}>
                     {!inviteCode ? (
                       <>
+                        <Text>
+                          Create an invitation link to invite people to join the platform.
+                        </Text>
                       </>
                     ) : (
                       <>

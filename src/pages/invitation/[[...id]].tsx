@@ -8,11 +8,13 @@ export async function getServerSideProps({ query }: any) {
   if (!query.id) {
     return {
       props: {
-        invite: null
+        invite: null,
+        errorMessage: null
       }
     };
   }
 
+  let errorMessage = null;
   const invite = await fetch(`${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/invitations/${query.id}`, {
     method: 'GET',
     headers: {
@@ -21,17 +23,23 @@ export async function getServerSideProps({ query }: any) {
   })
     .then((res) => res.json())
     .then((ret) => {
-      return ret.invitation || null;
+      if (ret.invitation) {
+        return ret.invitation;
+      } else {
+        errorMessage = ret.message;
+        return null;
+      }
     });
 
   return {
     props: {
-      invite: invite || null
+      invite: invite || null,
+      errorMessage
     }
   };
 }
 
-export default function Invite({ invite }: any) {
+export default function Invite({ invite, errorMessage }: { invite: any; errorMessage: string | null }) {
   const { query } = useRouter();
 
   const inviteTypeSwitch = (type: string) => {
@@ -70,18 +78,17 @@ export default function Invite({ invite }: any) {
             />
             <meta
               name="og:image"
-              content={invite.from.avatar}
+              content={invite.creator.avatar}
             />
             <meta
               name="og:description"
-              content={`You've been invited by ${invite?.from.displayName || invite.from.name.first} to ${
-                inviteTypeSwitch(invite.type) || 'join their organization'
-              }.`}
+              content={`You've been invited by ${invite?.creator.displayName || invite.creator.name.first} to ${inviteTypeSwitch(invite.type) || 'join their organization'
+                }.`}
             />
           </>
         ) : null}
       </Head>
-      <Invitation invite={invite} />
+      <Invitation invite={invite} errorMessage={errorMessage} />
     </>
   );
 }

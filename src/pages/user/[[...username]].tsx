@@ -51,7 +51,14 @@ export default function UserProfileNS({ user }: any) {
   const { query, push } = useRouter();
   const { currentUser } = useAuthContext();
   let { username: queryUsername } = query;
-  const username = queryUsername?.length ? queryUsername[0] : currentUser?.username;
+  const username = queryUsername ? queryUsername[0] : null;
+
+  useEffect(() => {
+    if (!currentUser) return;
+    if (!queryUsername) {
+      push(`/user/${currentUser?.username}`);
+    }
+  }, [queryUsername, currentUser]);
 
   return (
     <>

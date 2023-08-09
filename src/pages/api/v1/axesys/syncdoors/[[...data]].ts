@@ -1,4 +1,4 @@
-import { Location } from '@/types';
+import { Location, OrganizationMember } from '@/types';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import clientPromise from '@/lib/mongodb';
@@ -61,14 +61,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     legacyResponse[accessPoint.id] = {
       DoorSettings: {
         DoorName: accessPoint.name,
-        Active: accessPoint.configuration.active ? '1' : '0',
-        Locked: accessPoint.configuration.armed ? '1' : '0',
-        Timer: accessPoint.configuration.timer || 8
+        Active: accessPoint.config.active ? '1' : '0',
+        Locked: accessPoint.config.armed ? '1' : '0',
+        Timer: accessPoint.config.unlockTime || 8
       },
       AuthorizedUsers: {},
       AuthorizedGroups: {}
     };
-    for (let user of accessPoint.configuration.alwaysAllowed.users) {
+    for (let user of accessPoint.config.alwaysAllowed.users || []) {
       legacyResponse[accessPoint.id].AuthorizedUsers[user.robloxId] = user.robloxUsername;
     }
     // TODO: add group support

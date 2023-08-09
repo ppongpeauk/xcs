@@ -221,7 +221,8 @@ function NavLink({
   pathname,
   children,
   leftIcon,
-  disabled
+  disabled,
+  exact = false
 }: {
   href?: string;
   target?: string;
@@ -231,7 +232,17 @@ function NavLink({
   children: React.ReactNode;
   leftIcon: React.ReactElement;
   disabled?: boolean;
+  exact?: boolean;
 }) {
+  const isCurrent = useMemo(() => {
+    if (!href || !pathname) return false;
+    if (exact) {
+      return pathname === href;
+    } else {
+      return pathname.startsWith(href as any);
+    }
+  }, [pathname, href, exact]);
+
   return (
     <Button
       isDisabled={disabled}
@@ -260,10 +271,10 @@ function NavLink({
       rounded={'lg'}
       // fontSize={"lg"}
       fontWeight={'900'}
-      color={pathname === href ? useColorModeValue('gray.100', 'gray.900') : useColorModeValue('gray.900', 'gray.100')}
-      bg={pathname === href ? useColorModeValue('gray.900', 'gray.200') : 'none'}
+      color={isCurrent ? useColorModeValue('gray.100', 'gray.900') : useColorModeValue('gray.900', 'gray.100')}
+      bg={isCurrent ? useColorModeValue('gray.900', 'gray.200') : 'none'}
       _hover={
-        pathname === href
+        (isCurrent)
           ? {}
           : {
             color: useColorModeValue('gray.900', 'gray.100'),
@@ -271,7 +282,7 @@ function NavLink({
           }
       }
       _active={
-        pathname === href
+        (isCurrent)
           ? {
             color: useColorModeValue('gray.100', 'gray.900'),
             bg: useColorModeValue('gray.700', 'gray.400')

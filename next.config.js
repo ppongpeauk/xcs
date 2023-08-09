@@ -66,6 +66,11 @@ module.exports = withPWA({
         permanent: false
       },
       {
+        source: '/invite/:slug*',
+        destination: '/invitation/:slug*',
+        permanent: false
+      },
+      {
         source: '/@:username*',
         destination: '/platform/user/:username*',
         permanent: false

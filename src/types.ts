@@ -17,7 +17,7 @@ export interface User {
   }; // deprecated
   displayName?: string;
   username: string;
-  bio?: string;
+  bio?: string | null;
   avatar: string | null;
   email: {
     address: string;
@@ -25,14 +25,19 @@ export interface User {
   };
   roblox: {
     id: string | null;
-    displayName?: string;
-    username?: string
+    displayName?: string | null;
+    username?: string | null;
     verified: boolean;
   };
   platform: {
     staff: number | boolean;
-    membership: number
-  }
+    membership: number;
+    invites: number;
+  };
+  statistics: {
+    referrals: number;
+    scans: number;
+  };
 }
 
 export interface Organization {
@@ -104,4 +109,23 @@ export interface Dialog {
   confirmButtonText?: string,
   cancelButtonText?: string,
   callback?: () => void
+}
+
+export interface Invitation {
+  type: 'xcs' | 'organization';
+  code: string;
+  isSponsor?: boolean;
+
+  organizationId?: string;
+  organizationRole?: number;
+  organization?: Organization;
+
+  uses: number;
+  maxUses: number;
+
+  comment?: string;
+
+  createdBy: string;
+  createdAt: string;
+  creator?: User;
 }

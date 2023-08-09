@@ -1,4 +1,5 @@
 import { admin, app, tokenToID } from '@/pages/api/firebase';
+import { Invitation, User } from '@/types';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { generate as generateString } from 'randomstring';
@@ -8,26 +9,28 @@ const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === 'GET') {
-    let { activationCode } = req.query as { activationCode: string };
+  const mongoClient = await clientPromise;
+  const db = mongoClient.db(process.env.MONGODB_DB as string);
+  const invitations = db.collection('invitations');
+  let { activationCode } = req.query as { activationCode: string };
 
-    const mongoClient = await clientPromise;
-    const db = mongoClient.db(process.env.MONGODB_DB as string);
-    const invitations = db.collection('invitations');
-    // console.log(activationCode);
-    const invitation = await invitations.findOne({
+  const invitation = await invitations.findOne(
+    {
       type: 'xcs',
-      inviteCode: activationCode[0]
+      code: activationCode[0]
+    },
+  ) as Invitation | null;
+
+  if (!invitation) {
+    return res.status(404).json({
+      valid: false,
+      message: 'Invalid activation code.'
     });
+  }
 
-    if (!invitation) {
-      return res.status(404).json({
-        valid: false,
-        message: 'Invalid activation code.'
-      });
-    }
+  if (req.method === 'GET') {
 
-    if (invitation?.uses >= invitation?.maxUses) {
+    if (invitation?.maxUses > -1 && invitation?.uses >= invitation?.maxUses) {
       return res.status(403).json({
         valid: false,
         message: `This activation code has reached its maximum uses.`
@@ -52,24 +55,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const mongoClient = await clientPromise;
     const db = mongoClient.db(process.env.MONGODB_DB as string);
-    const invitations = db.collection('invitations');
     const users = db.collection('users');
 
-    let invitation = await invitations.findOne(
-      {
-        type: 'xcs',
-        inviteCode: activationCode[0]
-      },
-      { projection: { _id: 0, uses: 1, maxUses: 1 } }
-    );
-
-    if (!invitation) {
-      return res.status(404).json({
-        message: 'Invalid activation code. This code may have already been used.'
-      });
-    }
-
-    if (invitation?.uses !== 0 && invitation?.uses >= invitation?.maxUses) {
+    if (invitation.uses > -1 && invitation.uses >= invitation.maxUses) {
       return res.status(403).json({
         message: `This activation code has reached its maximum uses.`
       });
@@ -187,15 +175,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     }
 
-    const createMongoUser = await users
+    await users
       .insertOne({
         displayName: displayName,
+        username: username.toLowerCase(),
+        id: firebaseUser.uid,
+        avatar: `${process.env.NEXT_PUBLIC_ROOT_URL}/images/default-avatar.png`,
+        bio: null,
         email: {
           address: email.trim().toLowerCase(),
           privacyLevel: 2,
           verified: false
         },
-        username: username.toLowerCase(),
         notifications: {
           email: {
             enabled: true,
@@ -214,7 +205,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           }
         ],
         platform: {
-          membership: 'basic'
+          staff: false,
+          membership: 0,
+          invites: 2
         },
         payment: {
           customerId: null
@@ -231,19 +224,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           verified: false,
           verifiedAt: null
         },
-        avatar: `${process.env.NEXT_PUBLIC_ROOT_URL}/images/default-avatar.png`,
-        bio: null,
-        id: firebaseUser.uid,
+        statistics: {
+          referrals: 0,
+          scans: 0,
+        },
+
         createdAt: new Date(),
         updatedAt: new Date()
-      })
+      } as User)
       .then(async (result) => {
-        if (invitation?.uses + 1 >= invitation?.maxUses) {
+        // max uses
+        if (invitation.maxUses > -1 && invitation.uses + 1 >= invitation.maxUses) {
           await invitations.deleteOne({
-            inviteCode: activationCode[0]
+            code: activationCode[0]
           });
         } else {
-          await invitations.updateOne({ inviteCode: activationCode[0] }, { $inc: { uses: 1 } });
+          await invitations.updateOne({ code: activationCode[0] }, { $inc: { uses: 1 } });
+        }
+        // sponsors
+        if (invitation.isSponsor) {
+          await users.updateOne({ id: invitation.createdBy }, { $inc: { 'platform.invites': -1 } });
         }
       })
       .catch((error) => {

@@ -2,6 +2,7 @@ import { tokenToID } from '@/pages/api/firebase';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import clientPromise from '@/lib/mongodb';
+import { Invitation, User } from '@/types';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { invitationId } = req.query as { invitationId: string };
@@ -13,16 +14,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const users = db.collection('users');
 
   let invitation = (await invitations.findOne({
-    inviteCode: invitationId
-  })) as any;
+    code: invitationId
+  })) as Invitation | null;
   if (!invitation) {
     return res.status(404).json({ valid: false, message: 'Invitation not found.' });
   }
 
   let creator = (await users.findOne(
-    { id: invitation.fromId },
+    { id: invitation.createdBy },
     {
-      projection: { id: 1, username: 1, name: 1, avatar: 1, displayName: 1 }
+      projection: { id: 1, username: 1, name: 1, avatar: 1, displayName: 1, platform: 1 }
     }
   )) as any;
   if (!creator) {
@@ -30,7 +31,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   if (req.method === 'GET') {
-    invitation.from = creator;
+    invitation.creator = creator;
     if (invitation?.type === 'organization') {
       let organization = (await organizations.findOne(
         {
@@ -43,12 +44,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
       invitation.organization = organization;
     } else if (invitation?.type === 'xcs') {
-      if (invitation.uses >= invitation.maxUses) {
+      if (invitation.maxUses > -1 && invitation.uses >= invitation.maxUses) {
         // await invitations.deleteOne({ inviteCode: invitationId });
         return res.status(404).json({
           valid: false,
           message: 'This invitation has reached its maximum uses.'
         });
+      }
+
+      // if sponsor, check if user has invites left
+      if (invitation.isSponsor) {
+        if (!creator) {
+          return res.status(404).json({ valid: false, message: 'The creator of this invite was not found.' });
+        }
+        if (creator.platform.invites < 1) {
+          return res.status(403).json({ valid: false, message: 'The sponsor of this code has no invitations left.' });
+        }
       }
     }
     return res.status(200).json({ invitation: invitation });

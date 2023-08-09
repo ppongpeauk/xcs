@@ -27,7 +27,7 @@ import Head from 'next/head';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 
-export default function Invitation({ invite }: { invite: any }) {
+export default function Invitation({ invite, errorMessage }: { invite: any, errorMessage: string | null }) {
   const { query, push } = useRouter();
   const toast = useToast();
   const [isAcceptLoading, setIsAcceptLoading] = useState<boolean>(false);
@@ -133,7 +133,7 @@ export default function Invitation({ invite }: { invite: any }) {
                 >
                   {invite ? (
                     <>
-                      {invite?.from?.displayName || invite?.from?.name.first} has invited you to{' '}
+                      {invite?.creator?.displayName || invite?.creator?.name.first} has invited you to{' '}
                       {inviteTypeSwitch(invite?.type)}
                       {invite?.type === 'organization' ? (
                         <Text
@@ -146,7 +146,7 @@ export default function Invitation({ invite }: { invite: any }) {
                       ) : null}
                     </>
                   ) : (
-                    <>The invitation you are looking for is either invalid or no longer exists.</>
+                    <>{!errorMessage ? "The invitation you are looking for is either invalid or no longer exists." : errorMessage}</>
                   )}
                 </Text>
               </Skeleton>
@@ -168,7 +168,7 @@ export default function Invitation({ invite }: { invite: any }) {
                     rounded={'full'}
                   >
                     <Avatar
-                      src={invite?.from?.avatar}
+                      src={invite?.creator?.avatar}
                       size={'full'}
                       maxW={'240px'}
                       aspectRatio={1 / 1}

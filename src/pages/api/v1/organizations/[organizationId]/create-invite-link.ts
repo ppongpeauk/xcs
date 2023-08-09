@@ -4,6 +4,7 @@ import { generate as generateString } from 'randomstring';
 
 import { authToken } from '@/lib/auth';
 import clientPromise from '@/lib/mongodb';
+import { Invitation } from '@/types';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -44,13 +45,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     await invitations.insertOne({
       type: 'organization',
-      inviteCode: inviteCode,
-      fromId: uid,
-      organizationId: organization.id,
+      code: inviteCode,
+
+      organizationId: organizationId,
       role: role,
-      createdAt: timestamp,
-      singleUse: singleUse
-    });
+      singleUse: singleUse,
+
+      uses: 0,
+      maxUses: singleUse ? 1 : -1,
+
+      createdAt: timestamp.toISOString(),
+      createdBy: uid
+    } as Invitation);
 
     await organizations.updateOne(
       { id: organization.id },

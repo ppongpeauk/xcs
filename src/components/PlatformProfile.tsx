@@ -73,7 +73,7 @@ function OrganizationItem({ organization }: { organization: any }) {
   );
 }
 
-export default function Profile({ username, user: serverUser }: { username?: string; user?: User }) {
+export default function Profile({ username, user: serverUser }: { username?: string | null; user?: User }) {
   const router = useRouter();
   const { currentUser, user: authUser } = useAuthContext();
   const [user, setUser] = useState<any | undefined>(undefined);
@@ -87,7 +87,6 @@ export default function Profile({ username, user: serverUser }: { username?: str
       }
     })
       .then((res) => {
-        if (res.status === 404) return router.push('/404');
         return res.json();
       })
       .then((res) => {
@@ -193,7 +192,7 @@ export default function Profile({ username, user: serverUser }: { username?: str
               <Skeleton isLoaded={!!user}>
                 <Text
                   as={'h1'}
-                  fontSize={user?.displayName?.length > 20 ? '2xl' : '3xl'}
+                  fontSize={user?.displayName?.length > 16 ? '2xl' : '3xl'}
                   fontWeight={'900'}
                   textAlign={'center'}
                 >

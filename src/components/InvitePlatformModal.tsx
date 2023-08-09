@@ -131,7 +131,7 @@ export default function InvitePlatformModal({
         }}
         onSubmit={(values, actions) => {
           user.getIdToken().then((token: any) => {
-            fetch(`/api/v1/admin/invite-link/create`, {
+            fetch(`/api/v1/admin/invite-link`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',

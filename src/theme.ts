@@ -1,8 +1,10 @@
 import { modalAnatomy as parts } from '@chakra-ui/anatomy';
-import { AlertDialog, Modal, defineStyle, defineStyleConfig, extendTheme, type ThemeConfig } from '@chakra-ui/react';
+import { AlertDialog, Modal, defineStyle, defineStyleConfig, extendTheme, useColorMode, type ThemeConfig } from '@chakra-ui/react';
 import { createMultiStyleConfigHelpers } from '@chakra-ui/styled-system';
 
 const { defineMultiStyleConfig } = createMultiStyleConfigHelpers(parts.keys)
+
+// styles
 
 const unselected = defineStyle({
   background: 'gray.50',
@@ -23,6 +25,12 @@ const unselected = defineStyle({
   }
 });
 
+const subtext = defineStyle({
+  color: 'gray.500',
+  _dark: {
+    color: 'gray.400'
+  }
+});
 
 const config: ThemeConfig = {
   useSystemColorMode: true,
@@ -34,16 +42,32 @@ Modal.defaultProps = {
 };
 
 export const buttonTheme = defineStyleConfig({
-  variants: { unselected }
+  variants: { unselected },
+  baseStyle: {
+    textDecor: 'none !important'
+  }
+});
+
+export const textTheme = defineStyleConfig({
+  variants: { subtext }
 });
 
 const theme = {
   components: {
+    FormHelperText: {
+      baseStyle: {
+        color: 'gray.500',
+        _dark: {
+          color: 'gray.400'
+        }
+      }
+    },
     Skeleton: {
       baseStyle: {
         borderRadius: 'lg'
       }
     },
+    Text: textTheme,
     Button: buttonTheme,
     IconButton: buttonTheme,
   },
