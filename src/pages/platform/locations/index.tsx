@@ -59,40 +59,56 @@ export default function PlatformLocations() {
     onClose: onCreateLocationModalClose
   } = useDisclosure();
 
-  useEffect(() => {
-    if (!idToken) return;
-    setOrganizationsLoading(true);
-    fetch('/api/v1/me/organizations', {
-      method: 'GET',
-      headers: { Authorization: `Bearer ${idToken}` }
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setOrganizations(data.organizations);
-        if (data?.organizations?.length === 0) {
-          setLocationsLoading(false);
-        }
+  const refreshOrganizations = useCallback(async () => {
+    if (!user) return;
+    await user.getIdToken().then(async (token: string) => {
+      await fetch('/api/v1/me/organizations', {
+        method: 'GET',
+        headers: { Authorization: `Bearer ${token}` }
       })
-      .finally(() => {
-        setOrganizationsLoading(false);
-      });
-  }, [idToken]);
+        .then((res) => res.json())
+        .then((data) => {
+          setOrganizations(data.organizations);
+          if (data?.organizations?.length === 0) {
+            setLocationsLoading(false);
+          }
+        })
+        .finally(() => {
+          setOrganizationsLoading(false);
+        });
+    });
+  }, []);
+
+  const refreshLocations = useCallback(async () => {
+    if (!user) return;
+    if (!selectedOrganization) return;
+    await user.getIdToken().then(async (token: string) => {
+      await fetch(`/api/v1/organizations/${selectedOrganization.id}/locations`, {
+        method: 'GET',
+        headers: { Authorization: `Bearer ${token}` }
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setLocations(data.locations);
+          if (data?.locations?.length === 0) {
+            setLocationsLoading(false);
+          }
+        })
+        .finally(() => {
+          setLocationsLoading(false);
+        });
+    });
+  }, [selectedOrganization]);
 
   useEffect(() => {
-    if (!selectedOrganization) return;
-    setLocationsLoading(true);
-    fetch(`/api/v1/organizations/${selectedOrganization.id}/locations`, {
-      method: 'GET',
-      headers: { Authorization: `Bearer ${idToken}` }
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setLocations(data.locations);
-      })
-      .finally(() => {
-        setLocationsLoading(false);
-      });
-  }, [idToken, selectedOrganization]);
+    if (!user) return;
+    refreshOrganizations();
+  }, [user, refreshOrganizations]);
+
+  useEffect(() => {
+    if (!user || !selectedOrganization) return;
+    refreshLocations();
+  }, [selectedOrganization, user, refreshLocations]);
 
   useEffect(() => {
     if (!organizations) return;
@@ -104,13 +120,6 @@ export default function PlatformLocations() {
     const organization = organizations.find((organization: any) => organization.id === query.organization);
     setSelectedOrganization(organization);
   }, [organizations, query.organization]);
-
-  useEffect(() => {
-    if (!user) return;
-    user.getIdToken().then((token: string) => {
-      setIdToken(token);
-    });
-  }, [user]);
 
   return (
     <>

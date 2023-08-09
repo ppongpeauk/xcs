@@ -34,11 +34,14 @@ function StatBox({ label, value, helper }: { label: string; value: string; helpe
       border={'1px solid'}
       borderColor={useColorModeValue('gray.200', 'gray.700')}
       p={4}
+      px={8}
+      minW={'256px'}
+      h={'full'}
     >
       <Stat>
-        <StatLabel>{label}</StatLabel>
+        <Text>{label}</Text>
         <StatNumber>{value}</StatNumber>
-        <StatHelpText>{helper}</StatHelpText>
+        <Text color={'gray.500'}>{helper}</Text>
       </Stat>
     </Box>
   );
@@ -107,51 +110,49 @@ export default function PlatformHome() {
         maxW={'full'}
         p={8}
       >
-        {/* Greeting */}
-        <Box id={'greeting'}>
-          <Skeleton isLoaded={!!currentUser}>
-            <Stack
-              direction={{ base: 'column', md: 'row' }}
-              spacing={8}
-              align={'center'}
-              justify={{
-                base: 'center',
-                md: 'flex-start'
-              }}
-            >
-              <Avatar
-                size={'2xl'}
-                src={currentUser?.avatar || ''}
-              />
-              <Box textAlign={{ base: 'center', md: 'left' }}>
-                <Heading fontSize={'4xl'}>
-                  Good {new Date().getHours() < 12 ? 'morning' : 'afternoon'},{' '}
-                  {currentUser?.displayName || currentUser?.username}.
-                </Heading>
-                <Text
-                  fontSize={'xl'}
-                  color={'gray.500'}
-                >
-                  {randomSubGreeting}
-                </Text>
-              </Box>
-            </Stack>
-          </Skeleton>
-          <Box py={8}>
-            {/* Global Stats */}
-            <Skeleton isLoaded={!!stats.total} w={'container.md'}>
+        <Flex flexDir={'column'} gap={4}>
+          {/* Greeting */}
+          <Box id={'greeting'}>
+            <Skeleton isLoaded={!!currentUser}>
+              <Stack
+                direction={{ base: 'column', md: 'row' }}
+                gap={8}
+                align={'center'}
+                justify={{
+                  base: 'center',
+                  md: 'flex-start'
+                }}
+              >
+                <Avatar
+                  size={'2xl'}
+                  src={currentUser?.avatar || ''}
+                />
+                <Box textAlign={{ base: 'center', md: 'left' }}>
+                  <Heading fontSize={'4xl'}>
+                    Good {new Date().getHours() < 12 ? 'morning' : 'afternoon'},{' '}
+                    {currentUser?.displayName || currentUser?.username}.
+                  </Heading>
+                  <Text
+                    fontSize={'xl'}
+                    color={'gray.500'}
+                  >
+                    {randomSubGreeting}
+                  </Text>
+                </Box>
+              </Stack>
+            </Skeleton>
+          </Box>
+          {/* Global Stats */}
+          <Box>
+            <Skeleton isLoaded={!!stats.total} w={'fit-content'}>
               <Heading
                 fontSize={'3xl'}
                 my={4}
               >
-                Global Statistics
+                Statistics
               </Heading>
             </Skeleton>
-            <SimpleGrid
-              columns={{ base: 1, md: 3 }}
-              gap={{ base: '5', md: '6' }}
-              maxW={'720px'}
-            >
+            <Flex flexDir={{ base: 'column', md: 'row' }} gap={4}>
               <Skeleton isLoaded={!!stats.total}>
                 {/* <Stat label={"Total"} value={`${stats.total} scans total`} /> */}
                 <StatBox
@@ -178,29 +179,30 @@ export default function PlatformHome() {
                   helper={'Scans that were denied.'}
                 />
               </Skeleton>
-            </SimpleGrid>
-
-            {/* Platform Announcements */}
-            <Skeleton isLoaded w={'container.md'}>
+            </Flex>
+          </Box>
+          {/* Platform Announcements */}
+          <Box>
+            <Skeleton isLoaded w={'fit-content'}>
               <Heading
                 fontSize={'3xl'}
                 my={4}
               >
                 Announcements
               </Heading>
-              <Stack
-                direction={{ base: 'column', md: 'row' }}
-                spacing={4}
-                align={'center'}
-                justify={'space-between'}
-              >
-                <Flex w={"full"} h={"128px"} borderRadius={'lg'} border={'1px solid'} borderColor={useColorModeValue('gray.200', 'gray.700')} p={4}>
-                  <Text fontSize={'2xl'} m={'auto'}>Coming soon!</Text>
-                </Flex>
-              </Stack>
             </Skeleton>
+            <Stack
+              direction={{ base: 'column', md: 'row' }}
+              spacing={4}
+              align={'center'}
+              justify={'space-between'}
+            >
+              <Flex w={"full"} h={"128px"} borderRadius={'lg'} border={'1px solid'} borderColor={useColorModeValue('gray.200', 'gray.700')} p={4}>
+                <Text fontSize={'2xl'} m={'auto'}>Coming soon!</Text>
+              </Flex>
+            </Stack>
           </Box>
-        </Box>
+        </Flex>
       </Container>
     </>
   );

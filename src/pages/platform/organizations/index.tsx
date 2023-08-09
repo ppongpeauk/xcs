@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import {
   Avatar,
@@ -16,9 +16,12 @@ import {
   HStack,
   Heading,
   Icon,
+  IconButton,
+  Input,
   Select,
   Skeleton,
   SkeletonCircle,
+  Spacer,
   Stack,
   Table,
   TableCaption,
@@ -52,118 +55,26 @@ import JoinOrganizationDialog from '@/components/JoinOrganizationDialog';
 import { Organization } from '@/types';
 import moment from 'moment';
 import 'moment-timezone';
-import { BiRefresh, BiSolidExit } from 'react-icons/bi';
+import { BiGrid, BiRefresh, BiSolidExit } from 'react-icons/bi';
+import { BsListUl } from 'react-icons/bs';
 
-function TableEntry({ key, organization, skeleton }: { key: number | string, organization?: Organization, skeleton?: boolean }) {
-  return <>
-    <Tr key={key}>
-      <Td>
-        <Stack flexDir={'row'} align={'center'}>
-          <Skeleton isLoaded={!skeleton}>
-            <Avatar borderRadius={'lg'} size={'md'} src={organization?.avatar || '/images/default-avatar.png'} />
-          </Skeleton>
-
-          <Flex flexDir={'column'} mx={2} justify={'center'}>
-            <Skeleton isLoaded={!skeleton}>
-              <Text fontWeight={'bold'}>
-                {!skeleton ? organization?.name : "Organization Name"}
-              </Text>
-              <Text size={'sm'} color={'gray.500'}>
-                Owned by {!skeleton ? organization?.owner?.displayName : "Organization Owner"}
-              </Text>
-              <Flex align={'center'} color={'gray.500'} gap={1}>
-                <Icon as={BiRefresh} />
-                <Text size={'sm'}>
-                  {!skeleton ? moment(new Date(organization?.updatedAt as string)).fromNow() : "Last Updated"}
-                  {!skeleton && organization?.updatedBy && " by "}
-                  {!skeleton ? organization?.updatedBy?.displayName : "Organization Owner"}
-                </Text>
-              </Flex>
-            </Skeleton>
-          </Flex>
-        </Stack>
-      </Td>
-      <Td isNumeric>
-        <Skeleton isLoaded={!skeleton}>
-          <Text>
-            {!skeleton ? organization?.statistics?.numMembers : 0}
-          </Text>
-        </Skeleton>
-      </Td>
-      <Td isNumeric>
-        <Skeleton isLoaded={!skeleton}>
-          <Text>
-            {!skeleton ? organization?.statistics?.numLocations : 0}
-          </Text>
-        </Skeleton>
-      </Td>
-      {/* <Td>
-        <Skeleton isLoaded={!skeleton}>
-          {useMemo(() => {
-            const date = moment(new Date(organization?.updatedAt as string)).fromNow();
-            return date as string;
-          }, [organization])}
-
-          {organization?.updatedBy && " by "}
-
-          {organization?.updatedBy &&
-            <Link href={`/platform/profile/${organization?.updatedBy?.username}`} textUnderlineOffset={4}>
-              <Flex flexDir={'row'} align={"center"} gap={1} py={1}>
-                <Avatar size={'xs'} src={organization?.updatedBy?.avatar || '/images/default-avatar.png'} />
-                <Text fontWeight={'bold'}>
-                  {organization?.updatedBy?.displayName}
-                </Text>
-              </Flex>
-            </Link>
-          }
-        </Skeleton>
-      </Td> */}
-      <Td isNumeric>
-        <Skeleton isLoaded={!skeleton}>
-          <ButtonGroup>
-            {/* <Button
-              as={Link}
-              href={`/platform/organizations/${organization?.id}`}
-              size={"sm"}
-              variant={"outline"}
-              colorScheme='blue'
-              textDecor={"unset !important"}
-            >
-              View Profile
-            </Button> */}
-            <Button
-              as={Link}
-              href={`/platform/organizations/${organization?.id}/edit`}
-              size={"sm"}
-              variant={"solid"}
-              colorScheme='blue'
-              textDecor={"unset !important"}
-            >
-              View Details
-            </Button>
-            {/* <Button
-            size={"sm"}
-            variant={"solid"}
-            colorScheme='red'
-            leftIcon={<BiSolidExit />}
-          >
-            Leave
-          </Button> */}
-          </ButtonGroup>
-        </Skeleton>
-      </Td>
-    </Tr>
-  </>
-}
+import TableEntry from './TableEntry';
 export default function PlatformOrganizations() {
-  const { push, query } = useRouter();
-  const [organizations, setOrganizations] = useState<any>([]);
-  const [organizationsLoading, setOrganizationsLoading] = useState<boolean>(true);
-  const [queryLoading, setQueryLoading] = useState<boolean>(true);
   const { user } = useAuthContext();
-  const [idToken, setIdToken] = useState<string | null>(null);
-  const [initialInviteCodeValue, setInitialInviteCodeValue] = useState<string | null>(null);
+  const { push, query } = useRouter();
   const toast = useToast();
+
+  const [queryLoading, setQueryLoading] = useState<boolean>(true);
+  const [organizationsLoading, setOrganizationsLoading] = useState<boolean>(true);
+
+  const [organizations, setOrganizations] = useState<any>([]);
+  const [filteredOrganizations, setFilteredOrganizations] = useState<any>([]);
+  const [initialInviteCodeValue, setInitialInviteCodeValue] = useState<string | null>(null);
+  const searchRef = useRef<HTMLInputElement>(null);
+
+  const [view, setView] = useState<'list' | 'grid' | null>(null);
+
+  // modal disclosure hooks
 
   const {
     isOpen: isCreateOrganizationModalOpen,
@@ -177,21 +88,23 @@ export default function PlatformOrganizations() {
     onClose: onJoinOrganizationModalClose
   } = useDisclosure();
 
-  useEffect(() => {
-    if (!idToken) return;
+  const refreshData = useCallback(async () => {
     setOrganizationsLoading(true);
+    const token = await user?.getIdToken().then((token: string) => token);
     fetch('/api/v1/me/organizations', {
       method: 'GET',
-      headers: { Authorization: `Bearer ${idToken}` }
+      headers: { Authorization: `Bearer ${token}` }
     }).then((res) => {
       if (res.status !== 200) {
-        throw new Error('failed to fetch organizations');
+        throw new Error('Failed to fetch organizations.');
       }
       res
         .json()
         .then((data) => {
-          setOrganizations(data.organizations);
-          setOrganizationsLoading(false);
+          setTimeout(() => {
+            setOrganizations(data.organizations);
+            setOrganizationsLoading(false);
+          }, 100);
         })
         .catch((err) => {
           toast({
@@ -203,7 +116,12 @@ export default function PlatformOrganizations() {
           });
         });
     });
-  }, [idToken, toast]);
+  }, [toast, user]);
+
+  useEffect(() => {
+    if (!user) return;
+    refreshData();
+  }, [user, refreshData]);
 
   const joinOrganizationPrompt = (inviteCode: string) => {
     setQueryLoading(true);
@@ -234,12 +152,39 @@ export default function PlatformOrganizations() {
     }
   }, [query.invitation]);
 
-  useEffect(() => {
-    if (!user) return;
-    user.getIdToken().then((token: string) => {
-      setIdToken(token);
+  const filterOrganizations = useCallback((query: string) => {
+    if (!query) {
+      setFilteredOrganizations(organizations);
+      return;
+    }
+    const filtered = organizations.filter((organization: Organization) => {
+      return organization.name.toLowerCase().includes(query.toLowerCase()) || organization.owner?.displayName?.toLowerCase().includes(query.toLowerCase());
     });
-  }, [user]);
+    setFilteredOrganizations(filtered);
+  }, [organizations]);
+
+  const toRelativeTime = useMemo(() => (date: string) => {
+    return moment(new Date(date)).fromNow();
+  }, []);
+
+  useEffect(() => {
+    // load view option from local storage
+    const viewOption = localStorage.getItem('organizationView');
+    if (viewOption) {
+      setView(viewOption as 'list' | 'grid');
+    }
+  }, []);
+
+  useEffect(() => {
+    // cache view option in local storage
+    if (!view) return;
+    localStorage.setItem('organizationView', view);
+  }, [view]);
+
+  useEffect(() => {
+    if (!organizations) return;
+    setFilteredOrganizations(organizations);
+  }, [organizations]);
 
   return (
     <>
@@ -291,46 +236,61 @@ export default function PlatformOrganizations() {
           as={'h1'}
           fontSize={'4xl'}
           fontWeight={'900'}
+          pb={4}
         >
           Organizations
         </Text>
-        <HStack
+        <Stack
+          flexDir={{ base: 'column', md: 'row' }}
           display={'flex'}
-          py={4}
           justify={'flex-start'}
-          align={'flex-end'}
-          spacing={4}
+          gap={4}
         >
-          <FormControl w={'fit-content'}>
-            <Button
-              variant={'solid'}
-              leftIcon={<MdOutlineAddCircle />}
-              onClick={onCreateOrganizationModalOpen}
-            >
-              New
-            </Button>
-          </FormControl>
-          <FormControl w={'fit-content'}>
-            <Button
-              variant={'solid'}
-              leftIcon={<MdOutlineJoinRight />}
-              onClick={onJoinOrganizationModalOpen}
-            >
-              Join
-            </Button>
-          </FormControl>
-          <FormControl w={'fit-content'}>
-            <Button
-              variant={'solid'}
-              leftIcon={<MdMail />}
-              onClick={onJoinOrganizationModalOpen}
-              isDisabled={true}
-            >
-              View Invitations
-            </Button>
-          </FormControl>
-        </HStack>
-        <Box>
+          <Button
+            variant={'solid'}
+            leftIcon={<MdOutlineAddCircle />}
+            onClick={onCreateOrganizationModalOpen}
+          >
+            New
+          </Button>
+          <Button
+            variant={'solid'}
+            leftIcon={<MdOutlineJoinRight />}
+            onClick={onJoinOrganizationModalOpen}
+          >
+            Join
+          </Button>
+          <Button
+            variant={'solid'}
+            leftIcon={<MdMail />}
+            onClick={onJoinOrganizationModalOpen}
+            isDisabled={true}
+          >
+            View Invitations
+          </Button>
+          <Input
+            placeholder={'Search'}
+            variant={'filled'}
+            w={{ base: 'full', md: 'auto' }}
+            ref={searchRef}
+            onChange={(e) => {
+              filterOrganizations(e.target.value);
+            }}
+          />
+          <Spacer />
+          <Flex w={'fit-content'} gap={4}>
+            <ButtonGroup>
+              <IconButton aria-label={'Refresh'} icon={<BiRefresh />}
+                onClick={refreshData}
+              />
+            </ButtonGroup>
+            <ButtonGroup isAttached>
+              <IconButton aria-label={'List'} variant={view === "list" ? "solid" : "unselected"} onClick={() => { setView('list') }} icon={<BsListUl />} />
+              <IconButton aria-label={'Grid'} variant={view === "grid" ? "solid" : "unselected"} onClick={() => { setView('grid') }} icon={<BiGrid />} />
+            </ButtonGroup>
+          </Flex>
+        </Stack>
+        <Box w={"full"}>
           <Flex
             as={Stack}
             direction={'row'}
@@ -339,172 +299,146 @@ export default function PlatformOrganizations() {
             overflow={'auto'}
             flexWrap={'wrap'}
           >
-            <TableContainer
-              py={2}
-              maxW={{ base: 'full', md: 'container.lg' }}
-              overflowY={'auto'}
-              flexGrow={1}
-              px={4}
-            >
-              <Table size={{ base: 'sm', md: 'md' }}>
-                <Thead>
-                  <Tr>
-                    <Th>Organization</Th>
-                    <Th isNumeric># Members</Th>
-                    <Th isNumeric># Locations</Th>
-                    {/* <Th>Last Updated</Th> */}
-                    <Th isNumeric>Actions</Th>
-                  </Tr>
-                </Thead>
-                {/* display list of organizations */}
-                <Tbody>
-
+            {
+              view === 'list' ? (
+                <TableContainer
+                  py={2}
+                  maxW={{ base: 'full' }}
+                  overflowY={'auto'}
+                  flexGrow={1}
+                  px={4}
+                >
+                  <Table size={{ base: 'md', md: 'md' }}>
+                    <Thead>
+                      <Tr>
+                        <Th>Organization</Th>
+                        <Th isNumeric># Members</Th>
+                        <Th isNumeric># Locations</Th>
+                        {/* <Th>Last Updated</Th> */}
+                        <Th isNumeric>Actions</Th>
+                      </Tr>
+                    </Thead>
+                    {/* display list of organizations */}
+                    <Tbody>
+                      {
+                        organizationsLoading ? (
+                          Array.from({ length: 6 }).map((_, i) => (
+                            <TableEntry key={i} organization={undefined} skeleton={true} />
+                          ))
+                        ) : (filteredOrganizations.map((organization: Organization) => (
+                          <TableEntry key={organization.id as string} organization={organization} skeleton={false} />
+                        )))
+                      }
+                    </Tbody>
+                  </Table>
+                </TableContainer>
+              ) : (
+                <Flex py={8} gap={4} wrap={'wrap'}>
                   {
                     organizationsLoading ? (
-                      Array.from({ length: 6 }).map((_, i) => (
-                        <TableEntry key={i} organization={undefined} skeleton={true} />
+                      Array.from({ length: 16 }).map((_, i) => (
+                        <Flex key={i} flexDir={'column'} w={"196px"}>
+                          <Skeleton>
+                            <Flex
+                              border={'1px solid'}
+                              borderRadius={'lg'}
+                              borderColor={useColorModeValue('gray.200', 'gray.700')}
+                              aspectRatio={1}
+                            >
+                            </Flex>
+                          </Skeleton>
+                          <Flex py={4} flexDir={'column'} textUnderlineOffset={4} gap={2}>
+                            <Skeleton>
+                              <Heading
+                                as={'h3'}
+                                size={'md'}
+                                fontWeight={'bold'}
+                              >
+                                Organization
+                              </Heading>
+                            </Skeleton>
+                            <Skeleton>
+                              <Text color={"gray.500"}>
+                                Author
+                              </Text>
+                            </Skeleton>
+                            <Flex align={'center'} color={'gray.500'} gap={1} fontSize={'md'}>
+                              <Skeleton>
+                                <Text color={'gray.500'}>
+                                  Updated Date
+                                </Text>
+                              </Skeleton>
+                            </Flex>
+                          </Flex>
+                        </Flex>
                       ))
-                    ) : (organizations.map((organization: Organization) => (
-                      <TableEntry key={organization.id as string} organization={organization} skeleton={false} />
-                    )))
+                    ) : (
+                      filteredOrganizations.map((organization: Organization) => (
+                        <Flex key={organization.id} flexDir={'column'} w={"196px"}>
+                          {/* icon */}
+                          <Flex
+                            border={'1px solid'}
+                            borderRadius={'lg'}
+                            borderColor={useColorModeValue('gray.200', 'gray.700')}
+                            aspectRatio={1}
+                          >
+                            <Link href={`/platform/organizations/${organization.id}/edit`}>
+                              <Avatar
+                                ignoreFallback={true}
+                                borderRadius={'lg'}
+                                size={'lg'}
+                                src={organization.avatar || '/images/default-avatar.png'}
+                                cursor={'pointer'}
+                                w={'full'}
+                                h={'full'}
+                              />
+                            </Link>
+                          </Flex>
+                          {/* text */}
+                          <Flex p={4} flexDir={'column'} textUnderlineOffset={4}>
+                            <Heading
+                              as={'h3'}
+                              size={'md'}
+                              fontWeight={'bold'}
+                            >
+                              <Link href={`/platform/organizations/${organization.id}/edit`}>
+                                {organization.name}
+                              </Link>
+                            </Heading>
+                            <Link color={"gray.500"} href={`/platform/profile/${organization.owner?.username}`}>
+                              by {organization.owner?.displayName}
+                            </Link>
+                            <Flex align={'center'} color={'gray.500'} gap={1} fontSize={'md'}>
+                              <Icon as={BiRefresh} />
+                              <Text color={'gray.500'}>
+                                Updated{" "}{!organizationsLoading ? toRelativeTime(organization.updatedAt) : "Last Updated"}
+                              </Text>
+                            </Flex>
+                          </Flex>
+                        </Flex>
+                      ))
+                    )
                   }
-                </Tbody>
-              </Table>
-            </TableContainer>
-            {/* {organizationsLoading ? (
-              Array.from({ length: 6 }).map((_, i) => (
-                <Box
-                  key={i}
-                  as={Skeleton}
-                  w={{ base: 'full', md: '384px' }}
-                  h={'max-content'}
+                </Flex>
+              )}
+            {
+              !organizationsLoading && filteredOrganizations.length === 0 && (
+                <Flex
+                  flexDir={'column'}
+                  align={'center'}
+                  justify={'center'}
+                  w={'full'}
+                  h={'full'}
                   py={4}
-                  px={8}
-                  borderWidth={1}
-                  borderRadius={'xl'}
-                  borderColor={useColorModeValue('gray.200', 'gray.700')}
                 >
-                  <HStack
-                    p={2}
-                    w={'full'}
-                  >
-                    <Box flexGrow={1}>
-                      <Text
-                        fontSize={'2xl'}
-                        fontWeight={'bold'}
-                      >
-                        Loading...
-                      </Text>
-                      <Text color={'gray.500'}>0 Members</Text>
-                      <Text color={'gray.500'}>Owned by</Text>
-                      <Text>Organization</Text>
-                    </Box>
-                  </HStack>
-                </Box>
-              ))
-            ) : organizations.length !== 0 ? (
-              organizations.map((organization: any) => (
-                <Box
-                  key={organization.id}
-                  w={{ base: 'full', md: '384px' }}
-                  h={'max-content'}
-                  p={6}
-                  borderWidth={1}
-                  borderRadius={'xl'}
-                  borderColor={useColorModeValue('gray.200', 'gray.700')}
-                >
-                  <HStack
-                    px={2}
-                    w={'full'}
-                  >
-                    <Box flexGrow={1}>
-                      <Text
-                        fontSize={'xl'}
-                        fontWeight={'bold'}
-                        noOfLines={1}
-                      >
-                        {organization.name}
-                      </Text>
-                      <Text color={'gray.500'}>
-                        {Object.keys(organization.members).length} member
-                        {Object.keys(organization.members).length !== 1 ? 's' : ''}
-                      </Text>
-                      <Text color={'gray.500'}>
-                        Owned by{' '}
-                        <Link
-                          as={NextLink}
-                          textUnderlineOffset={4}
-                          href={`/platform/profile/${organization?.owner.username}`}
-                        >
-                          {organization?.owner.displayName || 'Organization Owner'}
-                        </Link>
-                      </Text>
-                      <Text>{organization.description}</Text>
-                    </Box>
-                    <Avatar
-                      as={NextLink}
-                      href={`/platform/organizations/${organization.id}/edit`}
-                      alignSelf={'flex-start'}
-                      name={organization.name}
-                      src={organization.avatar}
-                      aspectRatio={1 / 1}
-                      borderRadius={'md'}
-                      overflow={'hidden'}
-                      objectFit={'cover'}
-                      size={'lg'}
-                    />
-                  </HStack>
-                  <Stack pt={4}>
-                    <Button
-                      as={NextLink}
-                      href={`/platform/organizations/${organization.id}/edit`}
-                      variant={'solid'}
-                    >
-                      View
-                    </Button>
-                  </Stack>
-                </Box>
-              ))
-            ) : (
-              <Text>
-                You are currently not a member of any organization.{' '}
-                <Text as={'span'}>
-                  <Button
-                    minW={'unset'}
-                    variant={'link'}
-                    color={'unset'}
-                    textDecor={'underline'}
-                    textUnderlineOffset={4}
-                    onClick={onCreateOrganizationModalOpen}
-                    _hover={{
-                      color: useColorModeValue('gray.600', 'gray.400')
-                    }}
-                  >
-                    Create
-                  </Button>
-                </Text>{' '}
-                or{' '}
-                <Text as={'span'}>
-                  <Button
-                    minW={'unset'}
-                    variant={'link'}
-                    color={'unset'}
-                    textDecor={'underline'}
-                    textUnderlineOffset={4}
-                    onClick={onJoinOrganizationModalOpen}
-                    _hover={{
-                      color: useColorModeValue('gray.600', 'gray.400')
-                    }}
-                  >
-                    join
-                  </Button>
-                </Text>{' '}
-                an organization to get started.
-              </Text>
-            )} */}
+                  <Text fontSize={'2xl'} fontWeight={'bold'}>No Organizations Found</Text>
+                  <Text color={'gray.500'}>Try adjusting your search query or creating a new organization.</Text>
+                </Flex>
+              )
+            }
           </Flex>
         </Box>
-      </Container>
+      </Container >
     </>
   );
 }

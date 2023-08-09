@@ -11,6 +11,7 @@ import { useRouter } from 'next/router';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
 import { auth } from '@/lib/firebase';
+import { Alert as AlertType } from '@/types';
 
 // Authentication
 import { useAuthContext } from '@/contexts/AuthContext';
@@ -23,10 +24,15 @@ import PlatformNav from '@/components/PlatformNav';
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { user, currentUser, isAuthLoaded } = useAuthContext();
   const [firebaseUser, loading, error] = useAuthState(auth);
+
   const [sendVerificationEmailLoading, setSendVerificationEmailLoading] = useState<boolean>(false);
+
   const { push } = useRouter();
   const pathname = usePathname();
   const toast = useToast();
+
+  // platform alerts
+  const [alerts, setAlerts] = useState<any[]>([]);
 
   // Wait for the router to be ready before checking if the user is logged in
   useEffect(() => {
@@ -45,6 +51,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       }
     }, 500);
   }, [loading]);
+
+  // get platform alerts
+  useEffect(() => {
+    fetch('/api/v1/platform/alerts').then(async (res) => {
+      const data = await res.json();
+      setAlerts(data);
+    });
+  }, [firebaseUser]);
 
   // Return nothing if the user is not logged in
   return (
@@ -69,7 +83,23 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             spacing={0}
             w={'full'}
             h={'full'}
+            zIndex={500}
           >
+            {/* Platform Alerts */}
+            {
+              alerts.map((alert: AlertType) => {
+                return (
+                  <PlatformAlert
+                    key={alert.id}
+                    status={'info'}
+                    title={alert.title || 'Alert'}
+                    description={alert.description}
+                    isClosable={false}
+
+                  />
+                )
+              })
+            }
             {/* Email not verified */}
             {currentUser && (
               <>

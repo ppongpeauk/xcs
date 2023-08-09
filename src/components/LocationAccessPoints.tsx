@@ -118,40 +118,41 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
       </Text>
       <Stack
         mb={4}
-        direction={{ base: 'column', xl: 'row' }}
+        direction={{ base: 'column', md: 'row' }}
       >
         <Button
+          px={4}
           leftIcon={<MdOutlineAddCircle />}
           onClick={onCreateAccessPointModalOpen}
           isDisabled={accessPoints?.self?.role <= 1}
         >
           New Access Point
         </Button>
-        <Stack direction={{ base: 'column', xl: 'row' }}>
-          <FormControl>
-            <Input
-              placeholder="Filter by name..."
-              onChange={(e) => {
-                setNameFilter(e.target.value);
-              }}
-              value={nameFilter}
-            />
-          </FormControl>
-          <FormControl>
-            <Select
-              options={tagsOptions}
-              placeholder="Filter by tag..."
-              onChange={(value) => {
-                setSelectedTags(value);
-              }}
-              value={selectedTags}
-              isMulti
-              closeMenuOnSelect={false}
-              hideSelectedOptions={false}
-              selectedOptionStyle={'check'}
-            />
-          </FormControl>
-        </Stack>
+        <FormControl w={"fit-content"}>
+          <Input
+            placeholder="Filter by name..."
+            variant={'filled'}
+            onChange={(e) => {
+              setNameFilter(e.target.value);
+            }}
+            value={nameFilter}
+          />
+        </FormControl>
+        <FormControl h={'1'} w={"fit-content"}>
+          <Select
+            options={tagsOptions}
+            placeholder="Filter by tag..."
+            onChange={(value) => {
+              setSelectedTags(value);
+            }}
+            variant={'filled'}
+            value={selectedTags}
+            isMulti
+            closeMenuOnSelect={false}
+            hideSelectedOptions={false}
+            selectedOptionStyle={'check'}
+          />
+        </FormControl>
       </Stack>
       <Flex
         as={Stack}

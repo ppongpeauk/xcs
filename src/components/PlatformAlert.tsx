@@ -12,13 +12,15 @@ import {
 } from '@chakra-ui/react';
 
 export default function PlatformAlert({
+  status = 'error',
   title,
   description,
   isClosable = true,
   button
 }: {
+  status?: 'error' | 'info' | 'success' | 'warning';
   title: string;
-  description: string;
+  description?: string;
   isClosable: boolean;
   button?: {
     isLoading?: boolean;
@@ -32,10 +34,10 @@ export default function PlatformAlert({
     isVisible && (
       <>
         <Alert
-          status={'error'}
+          status={status}
           backdropFilter={'blur(24px)'}
         >
-          <AlertIcon />
+          <AlertIcon mx={2} />
           <Stack
             pl={{ base: 0, md: 2 }}
             direction={['column', 'row']}
@@ -43,10 +45,7 @@ export default function PlatformAlert({
             justify={'space-between'}
             w={'full'}
           >
-            <Box
-              w={'full'}
-              h={'full'}
-            >
+            <Box>
               <AlertTitle>{title}</AlertTitle>
               <AlertDescription>{description}</AlertDescription>
             </Box>

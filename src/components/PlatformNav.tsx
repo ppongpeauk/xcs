@@ -207,7 +207,8 @@ function NavLink({
   variant = 'ghost',
   pathname,
   children,
-  leftIcon
+  leftIcon,
+  disabled
 }: {
   href?: string;
   target?: string;
@@ -216,9 +217,11 @@ function NavLink({
   pathname: string;
   children: React.ReactNode;
   leftIcon: React.ReactElement;
+  disabled?: boolean;
 }) {
   return (
     <Button
+      isDisabled={disabled}
       as={!onClick ? NextLink : undefined}
       href={!onClick ? href : undefined}
       target={target ? target : undefined}

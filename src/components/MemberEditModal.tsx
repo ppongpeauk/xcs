@@ -183,15 +183,22 @@ export default function MemberEditModal({
     [organization]
   );
 
+  const toRelativeTime = useMemo(() => (date: string) => {
+    return moment(new Date(date)).fromNow();
+  }, []);
+
+  const toDate = useMemo(() => (date: string) => {
+    return moment(new Date(date)).format('MMMM Do YYYY');
+  }, []);
+
   return (
     <>
       <DeleteDialog
         isOpen={deleteUserDialogOpen}
         onClose={deleteUserDialogOnClose}
         title="Remove Member"
-        body={`Are you sure you want to remove ${
-          focusedMember?.displayName || focusedMember?.name
-        } from this organization?`}
+        body={`Are you sure you want to remove ${focusedMember?.displayName || focusedMember?.name
+          } from this organization?`}
         buttonText="Remove"
         onDelete={() => {
           deleteUserDialogOnClose();
@@ -203,7 +210,7 @@ export default function MemberEditModal({
         isOpen={inviteModalOpen}
         onOpen={inviteModalOnOpen}
         onClose={inviteModalOnClose}
-        onCreate={() => {}}
+        onCreate={() => { }}
         organizationId={organization?.id}
       />
       <InviteOrganizationRobloxModal
@@ -402,7 +409,7 @@ export default function MemberEditModal({
                                     fontSize="sm"
                                     color="gray.500"
                                   >
-                                    Joined {moment(member?.joinedAt).format('MMMM Do YYYY')}
+                                    Joined {toDate(member?.joinedAt)}
                                   </Text>
                                   {member?.type === 'roblox-group' && (
                                     <Flex
@@ -571,7 +578,7 @@ export default function MemberEditModal({
                               fontSize={'sm'}
                               color={'gray.500'}
                             >
-                              Joined {moment(focusedMember?.joinedAt).format('MMMM Do YYYY')}
+                              Joined {toDate(focusedMember?.joinedAt)}
                             </Text>
                             <Text
                               fontSize={'sm'}
@@ -586,8 +593,8 @@ export default function MemberEditModal({
                                   focusedMember?.type === 'user'
                                     ? `/platform/profile/${focusedMember?.username}`
                                     : focusedMember?.type === 'roblox'
-                                    ? `https://www.roblox.com/users/${focusedMember?.id}/profile`
-                                    : `https://www.roblox.com/groups/${focusedMember?.id}/group`
+                                      ? `https://www.roblox.com/users/${focusedMember?.id}/profile`
+                                      : `https://www.roblox.com/groups/${focusedMember?.id}/group`
                                 }
                                 size={'sm'}
                                 mt={2}
@@ -625,8 +632,7 @@ export default function MemberEditModal({
                           onSubmit={(values, actions) => {
                             user.getIdToken().then((token: string) => {
                               fetch(
-                                `/api/v1/organizations/${organization?.id}/members/${
-                                  focusedMember?.formattedId || focusedMember?.id
+                                `/api/v1/organizations/${organization?.id}/members/${focusedMember?.formattedId || focusedMember?.id
                                 }`,
                                 {
                                   method: 'PATCH',
@@ -749,27 +755,27 @@ export default function MemberEditModal({
                                             focusedMember.role < 3
                                               ? ['roblox', 'roblox-group'].includes(focusedMember.type)
                                                 ? [
-                                                    {
-                                                      label: 'Guest',
-                                                      value: 1
-                                                    }
-                                                  ]
-                                                : [
-                                                    {
-                                                      label: 'Member',
-                                                      value: 1
-                                                    },
-                                                    {
-                                                      label: 'Manager',
-                                                      value: 2
-                                                    }
-                                                  ]
-                                              : [
                                                   {
-                                                    label: 'Owner',
-                                                    value: 3
+                                                    label: 'Guest',
+                                                    value: 1
                                                   }
                                                 ]
+                                                : [
+                                                  {
+                                                    label: 'Member',
+                                                    value: 1
+                                                  },
+                                                  {
+                                                    label: 'Manager',
+                                                    value: 2
+                                                  }
+                                                ]
+                                              : [
+                                                {
+                                                  label: 'Owner',
+                                                  value: 3
+                                                }
+                                              ]
                                           }
                                           placeholder="Select a role..."
                                           onChange={(value) => {

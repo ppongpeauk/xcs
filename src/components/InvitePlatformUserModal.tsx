@@ -40,7 +40,7 @@ import { textToRole } from '@/lib/utils';
 
 import { useAuthContext } from '@/contexts/AuthContext';
 
-export default function InvitePlatformModal({
+export default function InvitePlatformUserModal({
   isOpen,
   onOpen,
   onClose,
@@ -131,7 +131,7 @@ export default function InvitePlatformModal({
         }}
         onSubmit={(values, actions) => {
           user.getIdToken().then((token: any) => {
-            fetch(`/api/v1/admin/invite-link/create`, {
+            fetch(`/api/v1/self/invite-link/create`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -196,91 +196,6 @@ export default function InvitePlatformModal({
                   <VStack spacing={2}>
                     {!inviteCode ? (
                       <>
-                        <InputGroup gap={4}>
-                          <Field name="code">
-                            {({ field, form }: any) => (
-                              <FormControl>
-                                <FormLabel>Custom Invite Code</FormLabel>
-                                <Input
-                                  {...field}
-                                  variant={'outline'}
-                                  autoComplete="off"
-                                  placeholder="Custom Invite Code (optional)"
-                                />
-                              </FormControl>
-                            )}
-                          </Field>
-                          <Field name="maxUses">
-                            {({ field, form }: any) => (
-                              <FormControl w={'fit-content'}>
-                                <FormLabel>Maximum Uses</FormLabel>
-                                <InputGroup>
-                                  <NumberInput
-                                    {...field}
-                                    autoComplete="off"
-                                    placeholder="Maximum Uses"
-                                    variant={'outline'}
-                                    min={1}
-                                    max={100}
-                                    defaultValue={1}
-                                    onChange={(value) => {
-                                      form.setFieldValue('maxUses', value);
-                                    }}
-                                  >
-                                    <NumberInputField />
-                                    <NumberInputStepper>
-                                      <NumberIncrementStepper />
-                                      <NumberDecrementStepper />
-                                    </NumberInputStepper>
-                                  </NumberInput>
-                                </InputGroup>
-                              </FormControl>
-                            )}
-                          </Field>
-                        </InputGroup>
-                        <Field name="senderId">
-                          {({ field, form }: any) => (
-                            <FormControl>
-                              <FormLabel>Sender</FormLabel>
-                              <AsyncSelect
-                                {...field}
-                                name="senderId"
-                                ref={senderRef}
-                                options={[]}
-                                placeholder="Search for a user... (optional)"
-                                isMulti={false}
-                                closeMenuOnSelect={true}
-                                isClearable={true}
-                                size="md"
-                                noOptionsMessage={() => 'No search results found.'}
-                                loadOptions={(inputValue, callback) => {
-                                  getUserSearchResults(inputValue, callback);
-                                }}
-                                onChange={(value) => {
-                                  form.setFieldValue('senderId', value);
-                                }}
-                                value={field.value || []}
-                              />
-                              <FormHelperText>If left blank, you will be the sender.</FormHelperText>
-                            </FormControl>
-                          )}
-                        </Field>
-                        <Field name="comment">
-                          {({ field, form }: any) => (
-                            <FormControl isRequired>
-                              <FormLabel>Comment</FormLabel>
-                              <Input
-                                {...field}
-                                variant={'outline'}
-                                autoComplete="off"
-                                placeholder="Comment"
-                              />
-                              <FormHelperText>
-                                All invitation links expire after 14 days.
-                              </FormHelperText>
-                            </FormControl>
-                          )}
-                        </Field>
                       </>
                     ) : (
                       <>

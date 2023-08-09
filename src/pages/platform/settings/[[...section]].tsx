@@ -30,7 +30,7 @@ import { HamburgerIcon } from '@chakra-ui/icons';
 import { BiSolidUserBadge, BiSolidUserDetail } from 'react-icons/bi';
 import { FaIdBadge, FaLink, FaPaintBrush } from 'react-icons/fa';
 import { FiExternalLink } from 'react-icons/fi';
-import { RiAdminFill } from 'react-icons/ri';
+import { RiAdminFill, RiMailAddFill } from 'react-icons/ri';
 
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -43,6 +43,7 @@ import Layout from '@/layouts/PlatformLayout';
 
 import SettingsAdmin from '@/components/SettingsAdmin';
 import SettingsAppearance from '@/components/SettingsAppearance';
+import SettingsInvite from '@/components/SettingsInvite';
 import SettingsLinkedAccounts from '@/components/SettingsLinkedAccounts';
 import SettingsProfile from '@/components/SettingsProfile';
 
@@ -59,14 +60,14 @@ function StyledTab({ children, index, icon }: { children: React.ReactNode; index
       rounded={'lg'}
       fontWeight={'bold'}
       _hover={{
-        bg: useColorModeValue('gray.100', 'gray.700')
+        bg: useColorModeValue('gray.100', 'whiteAlpha.100')
       }}
       _active={{
-        bg: useColorModeValue('gray.200', 'gray.600'),
+        bg: useColorModeValue('gray.200', 'whiteAlpha.300'),
         color: useColorModeValue('gray.900', 'white')
       }}
       _selected={{
-        bg: useColorModeValue('gray.100', '#fff'),
+        bg: useColorModeValue('gray.100', 'white'),
         color: useColorModeValue('black', 'gray.900')
       }}
       onClick={() => {
@@ -198,6 +199,13 @@ export default function Settings() {
                   Staff Settings
                 </MenuItem>
               )}
+              <MenuItem
+                onClick={() => {
+                  setIndex(4);
+                }}
+              >
+                Referrals
+              </MenuItem>
             </MenuList>
           </Menu>
         </Box>
@@ -243,6 +251,12 @@ export default function Settings() {
                 <Text>Staff Settings</Text>
               </StyledTab>
             )}
+            <StyledTab
+              index={4}
+              icon={RiMailAddFill}
+            >
+              <Text>Referrals</Text>
+            </StyledTab>
           </TabList>
 
           <TabPanels px={{ base: 0, md: 8 }}>
@@ -301,6 +315,20 @@ export default function Settings() {
                 mb={8}
               />
               <SettingsAdmin />
+            </TabPanel>
+            <TabPanel p={0}>
+              <Heading>Invite</Heading>
+              <Text
+                fontSize={'md'}
+                color={'gray.500'}
+              >
+                Invite users to the platform.
+              </Text>
+              <Divider
+                mt={4}
+                mb={8}
+              />
+              <SettingsInvite />
             </TabPanel>
           </TabPanels>
         </Tabs>

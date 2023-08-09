@@ -1,6 +1,13 @@
 import { APIApplicationCommandInteraction, APIInteractionResponse } from 'discord-api-types/v8';
 import { NextApiRequest, NextApiResponse } from 'next';
 
+export interface Alert {
+  id: string;
+  title: string;
+  description?: string;
+  type: 'info' | 'warning' | 'error';
+  createdAt: string;
+}
 export interface User {
   id: string;
   name?: {
