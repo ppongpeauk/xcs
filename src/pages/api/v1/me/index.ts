@@ -9,8 +9,9 @@ const sharp = require('sharp');
 
 export const config = {
   api: {
+    responseLimit: '16mb',
     bodyParser: {
-      sizeLimit: '12mb'
+      sizeLimit: '16mb'
     }
   }
 };
