@@ -433,6 +433,13 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
           mt={'auto'}
         >
           <NavLink
+            href={'/settings'}
+            pathname={pathname}
+            leftIcon={<AiFillSetting />}
+          >
+            Settings
+          </NavLink>
+          <NavLink
             href={'https://xcs-docs.restrafes.co/'}
             target={'_blank'}
             pathname={pathname}
