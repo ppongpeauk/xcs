@@ -37,7 +37,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const id = generateString({ length: 16, charset: 'alphanumeric' });
 
   if (req.method === 'POST') {
-    if (organization.members[uid].role < 3) {
+    if (organization.members[uid].role < 2) {
       return res.status(403).json({
         message: "You don't have edit permissions.",
         success: false

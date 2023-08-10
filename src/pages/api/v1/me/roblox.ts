@@ -20,6 +20,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(404).json({ message: 'User not found' });
   }
 
+  const timestamp = new Date();
+
   if (req.method === 'POST') {
     const { code } = req.body;
     if (!code) {
@@ -92,12 +94,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         {
           $set: {
             [`members.${user.id}`]: {
+              // type: 'user',
+              // id: user.id,
+              // role: organizationRobloxUser.role,
+              // accessGroups: organizationRobloxUser.accessGroups,
+              // scanData: organizationRobloxUser.scanData,
+              // joinedAt: organizationRobloxUser.joinedAt
+              ...organizationRobloxUser,
               type: 'user',
               id: user.id,
+              formattedId: undefined,
               role: organizationRobloxUser.role,
-              accessGroups: organizationRobloxUser.accessGroups,
-              scanData: organizationRobloxUser.scanData,
-              joinedAt: organizationRobloxUser.joinedAt
+              updatedAt: timestamp
             }
           },
           $unset: {
@@ -108,7 +116,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     // verify user
-    const timestamp = new Date();
     await users
       .updateOne(
         { id: uid },

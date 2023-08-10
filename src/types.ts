@@ -49,7 +49,7 @@ export interface Organization {
   description: string;
   isPersonal: boolean;
 
-  members: {};
+  members: Record<string, OrganizationMember>;
   invitations: [];
   logs: {};
   apiKeys: {};
@@ -67,6 +67,22 @@ export interface Organization {
     numLocations?: number,
     numMembers?: number
   }
+}
+
+export interface OrganizationMember {
+  type: "xcs" | "roblox" | "roblox-group";
+  id: string;
+  role: number;
+
+  displayName?: string;
+  username?: string;
+  avatar?: string;
+
+  roblox?: {
+    id: string;
+    displayName?: string;
+    username?: string;
+  };
 }
 
 export interface OrganizationMember {

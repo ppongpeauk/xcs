@@ -42,7 +42,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   // Edit Access Group
   if (req.method === 'PATCH') {
-    if (organization.members[uid].role < 3) {
+    if (organization.members[uid].role < 2) {
       return res.status(403).json({
         message: "You don't have edit permissions.",
         success: false

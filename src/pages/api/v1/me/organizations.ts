@@ -17,6 +17,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const mongoClient = await clientPromise;
   const db = mongoClient.db(process.env.MONGODB_DB as string);
+
   let organizations = await db
     .collection('organizations')
     .find(
@@ -24,6 +25,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       { projection: { id: 1, name: 1, description: 1, avatar: 1, members: 1, updatedAt: 1, createdAt: 1, updatedById: 1, updatedBy: 1 } }
     )
     .toArray();
+
+  // filter out organizations where the member's role is 0
+  organizations = organizations.filter((organization) => organization.members[uid].role > 0);
 
   organizations = await Promise.all(
     organizations.map(async (organization) => {

@@ -60,6 +60,7 @@ import DeleteDialog from '@/components/DeleteDialog';
 import InviteOrganizationModal from '@/components/InviteOrganizationModal';
 import InviteOrganizationRobloxGroupModal from '@/components/InviteOrganizationRobloxGroupModal';
 import InviteOrganizationRobloxModal from '@/components/InviteOrganizationRobloxModal';
+import { Link } from '@chakra-ui/next-js';
 
 const ChakraEditor = chakra(Editor);
 
@@ -339,11 +340,21 @@ export default function MemberEditModal({
                                 my={2}
                               >
                                 <Avatar
+                                  as={Link}
+                                  href={
+                                    member?.type === 'user'
+                                      ? `/user/${member?.username}`
+                                      : member?.type === 'roblox'
+                                        ? `https://www.roblox.com/users/${member?.id}/profile`
+                                        : `https://www.roblox.com/groups/${member?.id}/group`
+                                  }
+                                  target='_blank'
                                   size="md"
                                   src={member?.avatar}
                                   mr={4}
                                   bg={'gray.300'}
                                   borderRadius={member?.type === 'roblox-group' ? 'lg' : 'full'}
+                                  transition={'opacity 0.2s ease-out'} _hover={{ opacity: 0.75 }} _active={{ opacity: 0.5 }}
                                 />
 
                                 <Flex flexDir={'column'}>
@@ -550,11 +561,21 @@ export default function MemberEditModal({
                           h={'fit-content'}
                         >
                           <Avatar
+                            as={Link}
+                            href={
+                              focusedMember?.type === 'user'
+                                ? `/user/${focusedMember?.username}`
+                                : focusedMember?.type === 'roblox'
+                                  ? `https://www.roblox.com/users/${focusedMember?.id}/profile`
+                                  : `https://www.roblox.com/groups/${focusedMember?.id}/group`
+                            }
+                            target='_blank'
                             size={'xl'}
                             src={focusedMember?.avatar}
                             mr={4}
                             bg={'gray.300'}
                             borderRadius={focusedMember?.type === 'roblox-group' ? 'lg' : 'full'}
+                            transition={'opacity 0.2s ease-out'} _hover={{ opacity: 0.75 }} _active={{ opacity: 0.5 }}
                           />
                           <Flex flexDir={'column'}>
                             <Flex align={'center'}>

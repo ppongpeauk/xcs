@@ -45,7 +45,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(404).json({ message: 'Organization not found' });
   }
 
-  if (!organization.members[uid]) {
+  if (!organization.members[uid] || organization.members[uid].role < 1) {
     return res.status(401).json({ message: 'Unauthorized.' });
   }
 

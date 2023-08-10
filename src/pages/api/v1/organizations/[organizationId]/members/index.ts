@@ -5,6 +5,7 @@ import { generate as generateString } from 'randomstring';
 import { authToken } from '@/lib/auth';
 import clientPromise from '@/lib/mongodb';
 import { getRobloxUsersByUsernames } from '@/lib/utils';
+import { Organization, User } from '@/types';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   // Organization ID
@@ -25,7 +26,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   let organization = (await organizations.findOne({
     id: organizationId
-  })) as any;
+  })) as Organization | null;
 
   if (!organization) {
     return res.status(404).json({ message: 'Organization not found' });
@@ -62,7 +63,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       const robloxId = robloxUsers[0].id;
-      const user = await users.findOne({ 'roblox.id': robloxId.toString() });
+      const user = await users.findOne({ 'roblox.id': robloxId.toString() }) as User | null;
 
       if (organization.members[uid].role < 2) {
         return res.status(403).json({
@@ -71,9 +72,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         });
       }
 
-      if (user) {
+      // if (user) {
+      //   return res.status(409).json({
+      //     message: 'An account with this Roblox ID already exists. Please send them an invitation instead.',
+      //     success: false
+      //   });
+      // }
+
+      if (user && organization.members[user.id]) {
         return res.status(409).json({
-          message: 'An account with this Roblox ID already exists. Please send them an invitation instead.',
+          message: `This user is already in the organization as ${user.displayName}.`,
           success: false
         });
       }
