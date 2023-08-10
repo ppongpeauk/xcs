@@ -84,6 +84,9 @@ function TableEntry({ key, location, skeleton }: { key: number | string, locatio
                   {!skeleton ? toRelativeTime(location?.updatedAt as string) : "Last Updated"}
                 </Text>
               </Flex>
+              <Text variant={'subtext'}>
+                {!skeleton ? location?.description || "No description available." : "Location Description"}
+              </Text>
             </Skeleton>
           </Flex>
         </Stack>
