@@ -78,17 +78,14 @@ export interface OrganizationMember {
   username?: string;
   avatar?: string;
 
+  groupRoles?: number[];
+  roleset?: number[];
+
   roblox?: {
     id: string;
     displayName?: string;
     username?: string;
   };
-}
-
-export interface OrganizationMember {
-  type: "xcs" | "roblox-user" | "roblox-group";
-  id: string;
-  role: number;
 }
 export interface Location {
   id: string;
