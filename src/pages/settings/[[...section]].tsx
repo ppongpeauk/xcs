@@ -190,22 +190,22 @@ export default function Settings() {
               >
                 Linked Accounts
               </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  setIndex(3);
+                }}
+              >
+                Referrals
+              </MenuItem>
               {currentUser?.platform.staff && (
                 <MenuItem
                   onClick={() => {
-                    setIndex(3);
+                    setIndex(4);
                   }}
                 >
                   Staff Settings
                 </MenuItem>
               )}
-              <MenuItem
-                onClick={() => {
-                  setIndex(4);
-                }}
-              >
-                Referrals
-              </MenuItem>
             </MenuList>
           </Menu>
         </Box>
@@ -243,20 +243,20 @@ export default function Settings() {
             >
               <Text>Linked Accounts</Text>
             </StyledTab>
+            <StyledTab
+              index={3}
+              icon={RiMailAddFill}
+            >
+              <Text>Referrals</Text>
+            </StyledTab>
             {currentUser?.platform.staff && (
               <StyledTab
-                index={3}
+                index={4}
                 icon={RiAdminFill}
               >
                 <Text>Staff Settings</Text>
               </StyledTab>
             )}
-            <StyledTab
-              index={4}
-              icon={RiMailAddFill}
-            >
-              <Text>Referrals</Text>
-            </StyledTab>
           </TabList>
 
           <TabPanels px={{ base: 0, md: 8 }}>
@@ -303,20 +303,6 @@ export default function Settings() {
               <SettingsLinkedAccounts />
             </TabPanel>
             <TabPanel p={0}>
-              <Heading>Staff Settings</Heading>
-              <Text
-                fontSize={'md'}
-                color={'gray.500'}
-              >
-                Super secret settings.
-              </Text>
-              <Divider
-                mt={4}
-                mb={8}
-              />
-              <SettingsAdmin />
-            </TabPanel>
-            <TabPanel p={0}>
               <Heading>Referrals</Heading>
               <Text
                 fontSize={'md'}
@@ -329,6 +315,20 @@ export default function Settings() {
                 mb={8}
               />
               <SettingsInvite />
+            </TabPanel>
+            <TabPanel p={0}>
+              <Heading>Staff Settings</Heading>
+              <Text
+                fontSize={'md'}
+                color={'gray.500'}
+              >
+                Super secret settings.
+              </Text>
+              <Divider
+                mt={4}
+                mb={8}
+              />
+              <SettingsAdmin />
             </TabPanel>
           </TabPanels>
         </Tabs>
