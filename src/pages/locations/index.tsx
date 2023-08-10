@@ -192,7 +192,7 @@ export default function PlatformLocations() {
       return location.name.toLowerCase().includes(query.toLowerCase());
     });
     setFilteredLocations(filtered);
-  }, [organizations]);
+  }, [locations]);
 
   useEffect(() => {
     if (!user) return;
