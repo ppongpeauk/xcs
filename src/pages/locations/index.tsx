@@ -155,14 +155,14 @@ export default function PlatformLocations() {
         .then((data) => {
           setOrganizations(data.organizations);
           if (data?.organizations?.length === 0) {
-            setLocationsLoading(false);
+            setOrganizationsLoading(false);
           }
         })
         .finally(() => {
           setOrganizationsLoading(false);
         });
     });
-  }, []);
+  }, [user]);
 
   const refreshLocations = useCallback(async () => {
     if (!user) return;
@@ -181,7 +181,7 @@ export default function PlatformLocations() {
           }, 100);
         })
     });
-  }, [selectedOrganization]);
+  }, [selectedOrganization, user]);
 
   const filterLocations = useCallback((query: string) => {
     if (!query) {
