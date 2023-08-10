@@ -198,7 +198,6 @@ export default function PlatformOrganization() {
   };
 
   let refreshData = async () => {
-    // setOrganization(null);
     await user.getIdToken().then((token: string) => {
       fetch(`/api/v1/organizations/${query.id}`, {
         method: 'GET',
@@ -619,6 +618,10 @@ export default function PlatformOrganization() {
                           avatarChooser.current?.click();
                         }}
                         cursor={'pointer'}
+                        transition={'opacity 0.2s ease-in-out'}
+                        _hover={{
+                          opacity: 0.75
+                        }}
                       />
                       <HStack
                         w={'full'}
