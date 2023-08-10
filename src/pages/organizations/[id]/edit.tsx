@@ -618,10 +618,7 @@ export default function PlatformOrganization() {
                           avatarChooser.current?.click();
                         }}
                         cursor={'pointer'}
-                        transition={'opacity 0.2s ease-in-out'}
-                        _hover={{
-                          opacity: 0.75
-                        }}
+                        transition={'opacity 0.2s ease-out'} _hover={{ opacity: 0.75 }} _active={{ opacity: 0.5 }}
                       />
                       <HStack
                         w={'full'}

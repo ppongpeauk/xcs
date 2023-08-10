@@ -47,10 +47,7 @@ function OrganizationItem({ organization }: { organization: any }) {
       href={`/organizations/${organization.id}`}
       w={'auto'}
       h={'auto'}
-      transition={'filter 0.2s ease-in-out'}
-      _hover={{
-        filter: useColorModeValue('opacity(0.75)', 'brightness(0.75)')
-      }}
+      transition={'opacity 0.2s ease-out'} _hover={{ opacity: 0.75 }} _active={{ opacity: 0.5 }}
     >
       <Avatar
         name={organization?.name}

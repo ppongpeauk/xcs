@@ -83,6 +83,7 @@ function AvatarPopover({ currentUser, onLogoutOpen }: { currentUser?: any; onLog
             variant={'unstyled'}
             h={'full'}
             onClick={() => { }}
+            transition={'opacity 0.2s ease-out'} _hover={{ opacity: 0.75 }} _active={{ opacity: 0.5 }}
           >
             <Skeleton
               isLoaded={!!currentUser}

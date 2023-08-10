@@ -65,7 +65,7 @@ function TableEntry({ key, location, skeleton }: { key: number | string, locatio
       <Td>
         <Stack flexDir={'row'} align={'center'}>
           <Skeleton isLoaded={!skeleton}>
-            <Avatar as={Link} href={`https://www.roblox.com/games/${location?.roblox?.place?.rootPlaceId}/game`} target='_blank' borderRadius={'lg'} size={'md'} src={location?.roblox?.place?.thumbnail || '/images/default-avatar.png'} />
+            <Avatar as={Link} href={location?.roblox?.place ? `https://www.roblox.com/games/${location?.roblox?.place?.rootPlaceId}/game` : `/locations/${location?.id}`} target={location?.roblox?.place ? '_blank' : '_self'} transition={'opacity 0.2s ease-out'} _hover={{ opacity: 0.75 }} _active={{ opacity: 0.5 }} borderRadius={'lg'} size={'md'} src={location?.roblox?.place?.thumbnail || '/images/default-avatar.png'} />
           </Skeleton>
 
           <Flex flexDir={'column'} mx={2} justify={'center'}>
@@ -73,6 +73,11 @@ function TableEntry({ key, location, skeleton }: { key: number | string, locatio
               <Text fontWeight={'bold'}>
                 {!skeleton ? location?.name : "Location Name"}
               </Text>
+              {!skeleton && location?.roblox?.place && (
+                <Text variant={'subtext'}>
+                  {location?.roblox?.place?.name}
+                </Text>
+              )}
               <Flex align={'center'} color={'gray.500'} gap={1}>
                 <Icon as={BiRefresh} />
                 <Text size={'sm'}>
@@ -86,17 +91,21 @@ function TableEntry({ key, location, skeleton }: { key: number | string, locatio
       <Td isNumeric>
         <Skeleton isLoaded={!skeleton}>
           <ButtonGroup>
-            <Button
-              as={Link}
-              href={`https://www.roblox.com/games/${location?.roblox?.place?.rootPlaceId}/game`}
-              target='_blank'
-              size={"sm"}
-              variant={"solid"}
-              colorScheme='gray'
-              textDecor={"unset !important"}
-            >
-              View Experience
-            </Button>
+            {
+              location?.roblox?.place && (
+                <Button
+                  as={Link}
+                  href={`https://www.roblox.com/games/${location?.roblox?.place?.rootPlaceId}/game`}
+                  target='_blank'
+                  size={"sm"}
+                  variant={"solid"}
+                  colorScheme='gray'
+                  textDecor={"unset !important"}
+                >
+                  View Experience
+                </Button>
+              )
+            }
             <Button
               as={Link}
               href={`/locations/${location?.id}/general`}
@@ -110,7 +119,7 @@ function TableEntry({ key, location, skeleton }: { key: number | string, locatio
           </ButtonGroup>
         </Skeleton>
       </Td>
-    </Tr>
+    </Tr >
   </>
 }
 
@@ -439,6 +448,7 @@ export default function PlatformLocations() {
                                 cursor={'pointer'}
                                 w={'full'}
                                 h={'full'}
+                                transition={'opacity 0.2s ease-out'} _hover={{ opacity: 0.75 }} _active={{ opacity: 0.5 }}
                               />
                             </Link>
                           </Flex>
