@@ -45,7 +45,7 @@ import { MdEditSquare } from 'react-icons/md';
 import { RiMailAddFill } from 'react-icons/ri';
 import { SiRoblox } from 'react-icons/si';
 
-import { AccessGroup, Organization } from '@/types';
+import { AccessGroup, Organization, OrganizationMember } from '@/types';
 import Editor from '@monaco-editor/react';
 import { AsyncSelect, CreatableSelect, Select } from 'chakra-react-select';
 import { Field, Form, Formik } from 'formik';
@@ -106,7 +106,9 @@ export default function MemberEditModal({
       return members.filter(
         (member: any) =>
           member.displayName.toLowerCase().includes(query.toLowerCase()) ||
-          member.username.toLowerCase().includes(query.toLowerCase())
+          member.username.toLowerCase().includes(query.toLowerCase()) ||
+          member.groupName?.toLowerCase().includes(query.toLowerCase()) ||
+          member.name?.toLowerCase().includes(query.toLowerCase())
       );
     },
     [members]
@@ -332,8 +334,8 @@ export default function MemberEditModal({
                     </Thead>
                     <Tbody>
                       {organization ? (
-                        (filteredMembers || []).map((member: any) => (
-                          <Tr key={member?.id}>
+                        (filteredMembers || []).map((member: OrganizationMember) => (
+                          <Tr key={member.formattedId || member.id}>
                             <Td>
                               <Flex
                                 align={'center'}

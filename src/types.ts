@@ -2,65 +2,65 @@ import { APIApplicationCommandInteraction, APIInteractionResponse } from 'discor
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export interface Alert {
-  id: string;
-  title: string;
-  description?: string;
-  type: 'info' | 'warning' | 'error';
-  createdAt: string;
+  id: string,
+  title: string,
+  description?: string,
+  type: 'info' | 'warning' | 'error',
+  createdAt: string,
 }
 export interface User {
-  id: string;
+  id: string,
   name?: {
     first: string
     last?: string
     privacyLevel: number
-  }; // deprecated
-  displayName?: string;
-  username: string;
-  bio?: string | null;
-  avatar: string | null;
+  }, // deprecated
+  displayName?: string,
+  username: string,
+  bio?: string | null,
+  avatar: string | null,
   email: {
-    address: string;
-    privacyLevel: number;
-  };
+    address: string,
+    privacyLevel: number,
+  },
   roblox: {
-    id: string | null;
-    displayName?: string | null;
-    username?: string | null;
-    verified: boolean;
-  };
+    id: string | null,
+    displayName?: string | null,
+    username?: string | null,
+    verified: boolean,
+  },
   platform: {
-    staff: number | boolean;
-    membership: number;
-    invites: number;
-  };
+    staff: number | boolean,
+    membership: number,
+    invites: number,
+  },
   statistics: {
-    referrals: number;
-    scans: number;
-  };
+    referrals: number,
+    scans: number,
+  },
 }
 
 export interface Organization {
-  id: string;
+  id: string,
 
-  name: string;
-  ownerId: string;
-  owner?: User;
-  description: string;
-  isPersonal: boolean;
+  name: string,
+  ownerId: string,
+  owner?: User,
+  description: string,
+  isPersonal: boolean,
 
-  members: Record<string, OrganizationMember>;
-  invitations: [];
-  logs: {};
-  apiKeys: {};
+  members: Record<string, OrganizationMember>,
+  invitations: [],
+  logs: {},
+  apiKeys: {},
 
-  createdAt: string;
-  updatedAt: string;
-  updatedById?: string;
-  updatedBy?: User;
+  createdAt: string,
+  updatedAt: string,
+  updatedById?: string,
+  updatedBy?: User,
 
-  avatar?: string;
-  accessGroups?: {};
+  avatar?: string,
+  accessGroups?: AccessGroup[],
 
   // not stored in mongoDB, but added to organization data on some endpoints
   statistics?: {
@@ -70,45 +70,52 @@ export interface Organization {
 }
 
 export interface OrganizationMember {
-  type: "xcs" | "roblox" | "roblox-group";
-  id: string;
-  role: number;
+  type: "user" | "roblox" | "roblox-group",
+  id: string,
+  role: number,
+  formattedId?: string,
 
-  displayName?: string;
-  username?: string;
-  avatar?: string;
+  name?: string,
+  displayName?: string,
+  username?: string,
+  avatar?: string,
 
-  groupRoles?: number[];
-  roleset?: number[];
+  groupName?: string,
+  groupRoles?: number[],
+  roleset?: any[],
 
   roblox?: {
-    id: string;
-    displayName?: string;
-    username?: string;
-  };
+    id: string,
+    displayName?: string,
+    username?: string,
+  },
+
+  joinedAt: string,
+  updatedAt?: string,
 }
 export interface Location {
-  id: string;
-  name: string;
-  description?: string;
-  tags: [];
-  organizationId: string;
-  avatar?: string;
+  id: string,
+  name: string,
+  description?: string,
+  tags: [],
+  organizationId: string,
+  organization?: Organization,
+  avatar?: string,
   roblox: {
-    place?: any;
-    placeId?: number;
-  };
-  enabled: true;
-  createdAt: string;
-  updatedAt: string;
+    place?: any,
+    placeId?: number,
+  },
+  enabled: true,
+  createdAt: string,
+  updatedAt: string,
 }
 
 export interface AccessGroup {
-  id: string;
-  name: string;
-  locationName?: string;
-  locationId?: string;
-  type: 'organization' | 'location';
+  id: string,
+  name: string,
+  locationName?: string,
+  locationId?: string,
+  type: 'organization' | 'location',
 }
 
 export type DiscordInteractionApiHandler = (
@@ -126,20 +133,20 @@ export interface Dialog {
 }
 
 export interface Invitation {
-  type: 'xcs' | 'organization';
-  code: string;
-  isSponsor?: boolean;
+  type: 'xcs' | 'organization',
+  code: string,
+  isSponsor?: boolean,
 
-  organizationId?: string;
-  role?: number;
-  organization?: Organization;
+  organizationId?: string,
+  role?: number,
+  organization?: Organization,
 
-  uses: number;
-  maxUses: number;
+  uses: number,
+  maxUses: number,
 
-  comment?: string;
+  comment?: string,
 
-  createdBy: string;
-  createdAt: string;
-  creator?: User;
+  createdBy: string,
+  createdAt: string,
+  creator?: User,
 }
