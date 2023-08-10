@@ -506,7 +506,7 @@ export default function PlatformOrganizations() {
             }
           </Flex>
         </Box>
-      </Container >
+      </Container>
     </>
   );
 }

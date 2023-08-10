@@ -82,7 +82,8 @@ export interface Location {
   organizationId: string;
   avatar?: string;
   roblox: {
-    placeId?: string;
+    place?: any;
+    placeId?: number;
   };
   enabled: true;
   createdAt: string;

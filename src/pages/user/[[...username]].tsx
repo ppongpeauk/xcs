@@ -80,7 +80,7 @@ export default function UserProfileNS({ user }: any) {
             <meta
               property="og:description"
               content={`Join ${user?.displayName || user.name.first
-                } and a community of architects in managing access points effortlessly on Restrafes XCS.`}
+                } and a community of architects in managing access points on Restrafes XCS.`}
             />
             <meta
               property="og:image"
@@ -99,7 +99,7 @@ export default function UserProfileNS({ user }: any) {
             />
             <meta
               property="og:description"
-              content={`Join a community of architects in managing access points effortlessly on Restrafes XCS.`}
+              content={`Join a community of architects in managing access points on Restrafes XCS.`}
             />
           </>
         )}

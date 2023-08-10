@@ -435,7 +435,7 @@ export default function PlatformOrganization() {
                       <Avatar
                         as={NextLink}
                         key={member?.id}
-                        href={`https://www.roblox.com/users/${member?.id}/user`}
+                        href={`https://www.roblox.com/users/${member?.id}/profile`}
                         src={member?.avatar}
                         bg={'gray.300'}
                         target={'_blank'}

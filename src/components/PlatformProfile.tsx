@@ -39,6 +39,7 @@ import { useRouter } from 'next/router';
 
 // Authentication
 import { useAuthContext } from '@/contexts/AuthContext';
+import { FaAddressBook } from 'react-icons/fa';
 
 function OrganizationItem({ organization }: { organization: any }) {
   return (
@@ -132,6 +133,7 @@ export default function Profile({ username, user: serverUser }: { username?: str
         pt={8}
         flexDir={'column'}
       >
+        {/* User Badge */}
         <Box
           pos={'relative'}
           width={{ base: 'full', md: 'min-content' }}

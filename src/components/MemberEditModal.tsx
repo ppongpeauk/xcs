@@ -593,7 +593,7 @@ export default function MemberEditModal({
                                   focusedMember?.type === 'user'
                                     ? `/user/${focusedMember?.username}`
                                     : focusedMember?.type === 'roblox'
-                                      ? `https://www.roblox.com/users/${focusedMember?.id}/user`
+                                      ? `https://www.roblox.com/users/${focusedMember?.id}/profile`
                                       : `https://www.roblox.com/groups/${focusedMember?.id}/group`
                                 }
                                 size={'sm'}

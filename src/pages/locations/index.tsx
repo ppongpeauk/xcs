@@ -1,10 +1,11 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import {
   Avatar,
   Box,
   Button,
+  ButtonGroup,
   Code,
   Container,
   Flex,
@@ -12,16 +13,29 @@ import {
   FormLabel,
   HStack,
   Heading,
+  Icon,
   IconButton,
   Image,
+  Input,
   InputGroup,
   Skeleton,
+  Spacer,
   Stack,
+  Table,
+  TableCaption,
+  TableContainer,
+  Tbody,
+  Td,
   Text,
+  Tfoot,
+  Th,
+  Thead,
+  Tr,
   useColorModeValue,
   useDisclosure
 } from '@chakra-ui/react';
 
+import { Link } from '@chakra-ui/next-js';
 import { FaBuilding, FaUserAlt } from 'react-icons/fa';
 import { MdOutlineAddCircle } from 'react-icons/md';
 
@@ -36,6 +50,69 @@ import { useAuthContext } from '@/contexts/AuthContext';
 import Layout from '@/layouts/PlatformLayout';
 
 import CreateLocationDialog from '@/components/CreateLocationDialog';
+import { Location } from '@/types';
+import { BiGrid, BiRefresh } from 'react-icons/bi';
+import { BsListUl } from 'react-icons/bs';
+
+
+function TableEntry({ key, location, skeleton }: { key: number | string, location?: Location, skeleton?: boolean }) {
+  const toRelativeTime = useMemo(() => (date: string) => {
+    return moment(new Date(date)).fromNow();
+  }, []);
+
+  return <>
+    <Tr key={key}>
+      <Td>
+        <Stack flexDir={'row'} align={'center'}>
+          <Skeleton isLoaded={!skeleton}>
+            <Avatar as={Link} href={`https://www.roblox.com/games/${location?.roblox?.place?.rootPlaceId}/game`} target='_blank' borderRadius={'lg'} size={'md'} src={location?.roblox?.place?.thumbnail || '/images/default-avatar.png'} />
+          </Skeleton>
+
+          <Flex flexDir={'column'} mx={2} justify={'center'}>
+            <Skeleton isLoaded={!skeleton}>
+              <Text fontWeight={'bold'}>
+                {!skeleton ? location?.name : "Location Name"}
+              </Text>
+              <Flex align={'center'} color={'gray.500'} gap={1}>
+                <Icon as={BiRefresh} />
+                <Text size={'sm'}>
+                  {!skeleton ? toRelativeTime(location?.updatedAt as string) : "Last Updated"}
+                </Text>
+              </Flex>
+            </Skeleton>
+          </Flex>
+        </Stack>
+      </Td>
+      <Td isNumeric>
+        <Skeleton isLoaded={!skeleton}>
+          <ButtonGroup>
+            <Button
+              as={Link}
+              href={`https://www.roblox.com/games/${location?.roblox?.place?.rootPlaceId}/game`}
+              target='_blank'
+              size={"sm"}
+              variant={"solid"}
+              colorScheme='gray'
+              textDecor={"unset !important"}
+            >
+              View Experience
+            </Button>
+            <Button
+              as={Link}
+              href={`/locations/${location?.id}/general`}
+              size={"sm"}
+              variant={"solid"}
+              colorScheme='blue'
+              textDecor={"unset !important"}
+            >
+              View Details
+            </Button>
+          </ButtonGroup>
+        </Skeleton>
+      </Td>
+    </Tr>
+  </>
+}
 
 export default function PlatformLocations() {
   const { query, push } = useRouter();
@@ -43,6 +120,7 @@ export default function PlatformLocations() {
   // Fetch locations
   const [locations, setLocations] = useState<any>([]);
   const [locationsLoading, setLocationsLoading] = useState<boolean>(true);
+  const [filteredLocations, setFilteredLocations] = useState<any>([]);
 
   // Fetch organizations
   const [organizations, setOrganizations] = useState<any>([]);
@@ -53,11 +131,18 @@ export default function PlatformLocations() {
   const { user } = useAuthContext();
   const [idToken, setIdToken] = useState<string | null>(null);
 
+  const [view, setView] = useState<'list' | 'grid' | null>(null);
+  const searchRef = useRef<HTMLInputElement>(null);
+
   const {
     isOpen: isCreateLocationModalOpen,
     onOpen: onCreateLocationModalOpen,
     onClose: onCreateLocationModalClose
   } = useDisclosure();
+
+  const toRelativeTime = useMemo(() => (date: string) => {
+    return moment(new Date(date)).fromNow();
+  }, []);
 
   const refreshOrganizations = useCallback(async () => {
     if (!user) return;
@@ -82,6 +167,7 @@ export default function PlatformLocations() {
   const refreshLocations = useCallback(async () => {
     if (!user) return;
     if (!selectedOrganization) return;
+    setLocationsLoading(true);
     await user.getIdToken().then(async (token: string) => {
       await fetch(`/api/v1/organizations/${selectedOrganization.id}/locations`, {
         method: 'GET',
@@ -89,16 +175,24 @@ export default function PlatformLocations() {
       })
         .then((res) => res.json())
         .then((data) => {
-          setLocations(data.locations);
-          if (data?.locations?.length === 0) {
+          setTimeout(() => {
+            setLocations(data.locations);
             setLocationsLoading(false);
-          }
+          }, 100);
         })
-        .finally(() => {
-          setLocationsLoading(false);
-        });
     });
   }, [selectedOrganization]);
+
+  const filterLocations = useCallback((query: string) => {
+    if (!query) {
+      setFilteredLocations(locations);
+      return;
+    }
+    const filtered = locations.filter((location: Location) => {
+      return location.name.toLowerCase().includes(query.toLowerCase());
+    });
+    setFilteredLocations(filtered);
+  }, [organizations]);
 
   useEffect(() => {
     if (!user) return;
@@ -120,6 +214,28 @@ export default function PlatformLocations() {
     const organization = organizations.find((organization: any) => organization.id === query.organization);
     setSelectedOrganization(organization);
   }, [organizations, query.organization]);
+
+  useEffect(() => {
+    // load view option from local storage
+    const viewOption = localStorage.getItem('locationView');
+    if (viewOption) {
+      setView(viewOption as 'list' | 'grid');
+    } else {
+      setView('list');
+      localStorage.setItem('locationView', 'list');
+    }
+  }, []);
+
+  useEffect(() => {
+    // cache view option in local storage
+    if (!view) return;
+    localStorage.setItem('locationView', view);
+  }, [view]);
+
+  useEffect(() => {
+    if (!locations) return;
+    setFilteredLocations(locations);
+  }, [locations]);
 
   return (
     <>
@@ -165,22 +281,22 @@ export default function PlatformLocations() {
         >
           Locations
         </Text>
-        <HStack
+        <Stack
+          flexDir={{ base: 'column', md: 'row' }}
           display={'flex'}
-          py={4}
           justify={'flex-start'}
-          align={'flex-end'}
-          spacing={4}
+          gap={4}
+          pt={4}
         >
-          <FormControl
-            w={{
-              base: 'unset',
-              md: '256px',
-              lg: '384px'
-            }}
-          >
-            <FormLabel>Organization</FormLabel>
-            <>
+          <Flex flexDir={{ base: 'column', md: 'row' }} gap={4}>
+            <Button
+              leftIcon={<MdOutlineAddCircle />}
+              onClick={onCreateLocationModalOpen}
+              isDisabled={!selectedOrganization}
+            >
+              New Location
+            </Button>
+            <FormControl w={{ base: 'full', md: '320px' }}>
               <Select
                 value={
                   {
@@ -202,158 +318,174 @@ export default function PlatformLocations() {
                 variant='filled'
                 selectedOptionStyle="check"
               />
-            </>
-          </FormControl>
-          <Button
-            leftIcon={<MdOutlineAddCircle />}
-            onClick={onCreateLocationModalOpen}
-            isDisabled={!selectedOrganization}
-          >
-            New Location
-          </Button>
-        </HStack>
+            </FormControl>
+            <Input
+              placeholder={'Search'}
+              variant={'filled'}
+              w={{ base: 'full', md: 'auto' }}
+              ref={searchRef}
+              onChange={(e) => {
+                filterLocations(e.target.value);
+              }}
+            />
+          </Flex>
+          <Spacer />
+          <Flex w={'fit-content'} gap={4}>
+            <ButtonGroup>
+              <IconButton aria-label={'Refresh'} icon={<BiRefresh />}
+                onClick={refreshLocations}
+              />
+            </ButtonGroup>
+            <ButtonGroup isAttached>
+              <IconButton aria-label={'List'} variant={view === "list" ? "solid" : "unselected"} onClick={() => { setView('list') }} icon={<BsListUl />} />
+              <IconButton aria-label={'Grid'} variant={view === "grid" ? "solid" : "unselected"} onClick={() => { setView('grid') }} icon={<BiGrid />} />
+            </ButtonGroup>
+          </Flex>
+        </Stack>
 
-        <Box>
-          {locationsLoading ? (
-            <Flex
-              as={Stack}
-              direction={'row'}
-              h={'full'}
-              spacing={4}
-              overflow={'auto'}
-              flexWrap={'wrap'}
-            >
-              {
-                Array.from({ length: 6 }).map((_, i) => (
-                  <Box
-                    key={i}
-                    as={Skeleton}
-                    w={{ base: 'full', md: '384px' }}
-                    h={'max-content'}
-                    py={4}
-                    px={8}
-                    borderWidth={1}
-                    borderRadius={'lg'}
-                    borderColor={useColorModeValue('gray.200', 'gray.700')}
-                  >
-                    <HStack
-                      p={2}
-                      w={'full'}
-                    >
-                      <Box flexGrow={1}>
-                        <Text
-                          fontSize={'2xl'}
-                          fontWeight={'bold'}
-                        >
-                          Loading...
-                        </Text>
-                        <Text color={'gray.500'}>0 Members</Text>
-                        <Text color={'gray.500'}>Owned by</Text>
-                        <Text>Organization</Text>
-                      </Box>
-                    </HStack>
-                  </Box>
-                )) as any
-              }
-            </Flex>
-          ) : organizations.length === 0 ? (
-            <Text>You are currently not a member of any organization.</Text>
-          ) : (
-            <Flex>
-              {locations.length === 0 ? (
-                <Text>
-                  This organization does not have any locations yet.{' '}
-                  <Text as={'span'}>
-                    <Button
-                      variant={'link'}
-                      color={'unset'}
-                      textDecor={'underline'}
-                      textUnderlineOffset={4}
-                      onClick={onCreateLocationModalOpen}
-                      _hover={{
-                        color: useColorModeValue('gray.600', 'gray.400')
-                      }}
-                    >
-                      Create one
-                    </Button>
-                  </Text>{' '}
-                  to get started.
-                </Text>
-              ) : (
-                <Stack
-                  direction={{ base: 'column', md: 'row' }}
-                  w={'full'}
-                  spacing={4}
+        <Box w={"full"}>
+          <Flex
+            as={Stack}
+            direction={'row'}
+            h={'full'}
+            spacing={4}
+            overflow={'auto'}
+            flexWrap={'wrap'}
+          >
+            {
+              view === 'list' ? (
+                <TableContainer
+                  py={2}
+                  maxW={{ base: 'full' }}
+                  overflowY={'auto'}
+                  flexGrow={1}
+                  px={4}
                 >
-                  {locations?.map((location: any) => (
-                    <Flex
-                      key={location.id}
-                      w={{ base: 'full', md: '384px' }}
-                      h={'auto'}
-                      p={6}
-                      borderWidth={1}
-                      borderRadius={'lg'}
-                      borderColor={useColorModeValue('gray.200', 'gray.700')}
-                      mr={4}
-                      align={'center'}
-                      justify={'space-between'}
-                      flexDir={'column'}
-                    >
-                      <HStack
-                        px={2}
-                        w={'full'}
-                      >
-                        <Box flexGrow={1}>
-                          <Text
-                            fontSize={'xl'}
-                            fontWeight={'bold'}
+                  <Table size={{ base: 'md', md: 'md' }}>
+                    <Thead>
+                      <Tr>
+                        <Th>Location</Th>
+                        <Th isNumeric>Actions</Th>
+                      </Tr>
+                    </Thead>
+                    {/* display list of organizations */}
+                    <Tbody>
+                      {
+                        locationsLoading ? (
+                          Array.from({ length: 6 }).map((_, i) => (
+                            <TableEntry key={i} location={undefined} skeleton={true} />
+                          ))
+                        ) : (filteredLocations.map((location: Location) => (
+                          <TableEntry key={location.id as string} location={location} skeleton={false} />
+                        )))
+                      }
+                    </Tbody>
+                  </Table>
+                </TableContainer>
+              ) : (
+                <Flex py={8} gap={4} wrap={'wrap'}>
+                  {
+                    locationsLoading ? (
+                      Array.from({ length: 6 }).map((_, i) => (
+                        <Flex key={i} flexDir={'column'} w={"196px"}>
+                          <Skeleton>
+                            <Flex
+                              border={'1px solid'}
+                              borderRadius={'lg'}
+                              borderColor={useColorModeValue('gray.200', 'gray.700')}
+                              aspectRatio={1}
+                            >
+                            </Flex>
+                          </Skeleton>
+                          <Flex py={4} flexDir={'column'} textUnderlineOffset={4} gap={2}>
+                            <Skeleton>
+                              <Heading
+                                as={'h3'}
+                                size={'md'}
+                                fontWeight={'bold'}
+                              >
+                                Location
+                              </Heading>
+                            </Skeleton>
+                            <Skeleton>
+                              <Text color={"gray.500"}>
+                                Author
+                              </Text>
+                            </Skeleton>
+                            <Flex align={'center'} color={'gray.500'} gap={1} fontSize={'md'}>
+                              <Skeleton>
+                                <Text color={'gray.500'}>
+                                  Updated Date
+                                </Text>
+                              </Skeleton>
+                            </Flex>
+                          </Flex>
+                        </Flex>
+                      ))
+                    ) : (
+                      filteredLocations.map((location: Location) => (
+                        <Flex key={location.id} flexDir={'column'} w={"196px"}>
+                          {/* icon */}
+                          <Flex
+                            border={'1px solid'}
+                            borderRadius={'lg'}
+                            borderColor={useColorModeValue('gray.200', 'gray.700')}
+                            aspectRatio={1}
                           >
-                            {location?.name}
-                          </Text>
-                          <Text color={'gray.500'}>{location?.roblox?.place?.name}</Text>
-                          {location?.description ? (
-                            <Text>{location?.description}</Text>
-                          ) : (
-                            <Text color={'gray.500'}>No description available.</Text>
-                          )}
-                        </Box>
-                        {location?.roblox?.place && (
-                          <Avatar
-                            as={NextLink}
-                            href={`https://www.roblox.com/games/${location?.roblox?.place?.rootPlaceId}/game`}
-                            target={'_blank'}
-                            alignSelf={'flex-start'}
-                            name={location?.roblox?.place?.name}
-                            src={location?.roblox?.place?.thumbnail}
-                            aspectRatio={1 / 1}
-                            borderRadius={'md'}
-                            overflow={'hidden'}
-                            objectFit={'cover'}
-                            size={'lg'}
-                          />
-                        )}
-                      </HStack>
-                      <Stack
-                        pt={4}
-                        w={'full'}
-                      >
-                        <Button
-                          as={NextLink}
-                          href={`/locations/${location?.id}`}
-                          variant={'solid'}
-                          w={'full'}
-                        >
-                          View
-                        </Button>
-                      </Stack>
-                    </Flex>
-                  ))}
-                </Stack>
+                            <Link href={`/locations/${location.id}/general`}>
+                              <Avatar
+                                ignoreFallback={true}
+                                borderRadius={'lg'}
+                                size={'lg'}
+                                src={location?.roblox?.place?.thumbnail || '/images/default-avatar.png'}
+                                cursor={'pointer'}
+                                w={'full'}
+                                h={'full'}
+                              />
+                            </Link>
+                          </Flex>
+                          {/* text */}
+                          <Flex p={4} flexDir={'column'} textUnderlineOffset={4}>
+                            <Heading
+                              as={'h3'}
+                              size={'md'}
+                              fontWeight={'bold'}
+                            >
+                              <Link href={`/locations/${location.id}/edit`}>
+                                {location.name}
+                              </Link>
+                            </Heading>
+                            <Flex align={'center'} color={'gray.500'} gap={1} fontSize={'md'}>
+                              <Icon as={BiRefresh} />
+                              <Text color={'gray.500'}>
+                                {!organizationsLoading ? toRelativeTime(location.updatedAt) : "Last Updated"}
+                              </Text>
+                            </Flex>
+                          </Flex>
+                        </Flex>
+                      ))
+                    )
+                  }
+                </Flex>
               )}
-            </Flex>
-          )}
+            {
+              !locationsLoading && filteredLocations.length === 0 && (
+                <Flex
+                  flexDir={'column'}
+                  align={'center'}
+                  justify={'center'}
+                  w={'full'}
+                  h={'full'}
+                  py={4}
+                >
+                  <Text fontSize={'2xl'} fontWeight={'bold'}>No Locations Found</Text>
+                  <Text color={'gray.500'}>Try adjusting your search query or creating a new location.</Text>
+                </Flex>
+              )
+            }
+          </Flex>
         </Box>
-      </Container>
+      </Container >
     </>
   );
 }
