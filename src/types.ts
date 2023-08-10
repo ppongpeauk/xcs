@@ -131,7 +131,7 @@ export interface Invitation {
   isSponsor?: boolean;
 
   organizationId?: string;
-  organizationRole?: number;
+  role?: number;
   organization?: Organization;
 
   uses: number;

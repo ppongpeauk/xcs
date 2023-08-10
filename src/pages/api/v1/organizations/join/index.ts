@@ -92,7 +92,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               type: 'user',
               id: uid,
               formattedId: undefined,
-              role: inviteCodeData.organizationRole || 1,
+              role: inviteCodeData.role || 1,
               joinedAt: timestamp,
               updatedAt: timestamp
             }
@@ -112,7 +112,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             [`members.${uid}`]: {
               type: 'user',
               id: uid,
-              role: inviteCodeData.organizationRole || 1,
+              role: inviteCodeData.role || 1,
               accessGroups: [],
               joinedAt: timestamp,
               updatedAt: timestamp
