@@ -3,6 +3,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 
 import { authToken } from '@/lib/auth';
 import clientPromise from '@/lib/mongodb';
+import { User } from '@/types';
 
 const sharp = require('sharp');
 
@@ -23,7 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const mongoClient = await clientPromise;
   const db = mongoClient.db(process.env.MONGODB_DB as string);
   const users = db.collection('users');
-  const user = await users.findOne({ id: uid });
+  const user = await users.findOne({ id: uid }) as User | null;
 
   if (!user) {
     return res.status(404).json({ message: 'User not found' });
@@ -92,12 +93,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // check if avatar is valid
     if (req.body.avatar) {
       let avatar = req.body.avatar;
+
+      let imageFormat = avatar.split(';')[0].split('/')[1]; // ex: jpeg
+      // limit gifs for only staff
+      if (imageFormat === 'gif' && !user.platform.staff) {
+        return res.status(400).json({ message: 'Invalid icon format.' });
+      }
+
       const imageData = Buffer.from(avatar.split(',')[1], 'base64');
-      const image = await sharp(imageData).resize(256, 256).jpeg({ quality: 80 }).toBuffer();
+
+      let image;
+      if (imageFormat === 'gif') {
+        image = await sharp(imageData, { animated: true }).resize(256, 256).gif({ quality: 80, pageHeight: 256 }).toBuffer();
+      } else {
+        image = await sharp(imageData).resize(256, 256).jpeg({ quality: 80 }).toBuffer();
+      }
       // avatar = `data:image/jpeg;base64,${image.toString("base64")}`;
 
       // upload to firebase
-      const url = await uploadProfilePicture(uid, image)
+      const url = await uploadProfilePicture('user', uid, image, imageFormat)
         .then((url) => {
           req.body.avatar = url;
         })

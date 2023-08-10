@@ -156,7 +156,7 @@ export default function PlatformOrganizations() {
   const refreshData = useCallback(async () => {
     setOrganizationsLoading(true);
     const token = await user?.getIdToken().then((token: string) => token);
-    fetch('/api/v1/me/organizations', {
+    await fetch('/api/v1/me/organizations', {
       method: 'GET',
       headers: { Authorization: `Bearer ${token}` }
     }).then((res) => {
@@ -180,6 +180,14 @@ export default function PlatformOrganizations() {
             isClosable: true
           });
         });
+    }).catch((err) => {
+      toast({
+        title: 'There was an error fetching your organizations.',
+        description: err.message,
+        status: 'error',
+        duration: 5000,
+        isClosable: true
+      });
     });
   }, [toast, user]);
 
@@ -309,7 +317,7 @@ export default function PlatformOrganizations() {
           Organizations
         </Text>
         <Stack
-          flexDir={{ base: 'column', md: 'row' }}
+          flexDir={{ base: 'column', lg: 'row' }}
           display={'flex'}
           justify={'flex-start'}
           gap={4}
@@ -405,7 +413,7 @@ export default function PlatformOrganizations() {
                   {
                     organizationsLoading ? (
                       Array.from({ length: 6 }).map((_, i) => (
-                        <Flex key={i} flexDir={'column'} w={"196px"}>
+                        <Flex key={i} flexDir={'column'} w={{ base: 'full', md: '224px' }}>
                           <Skeleton>
                             <Flex
                               border={'1px solid'}
@@ -442,7 +450,7 @@ export default function PlatformOrganizations() {
                       ))
                     ) : (
                       filteredOrganizations.map((organization: Organization) => (
-                        <Flex key={organization.id} flexDir={'column'} w={"196px"}>
+                        <Flex key={organization.id} flexDir={'column'} w={{ base: 'full', md: '224px' }}>
                           {/* icon */}
                           <Flex
                             border={'1px solid'}

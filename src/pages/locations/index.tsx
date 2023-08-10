@@ -282,53 +282,51 @@ export default function PlatformLocations() {
           Locations
         </Text>
         <Stack
-          flexDir={{ base: 'column', md: 'row' }}
+          flexDir={{ base: 'column', lg: 'row' }}
           display={'flex'}
           justify={'flex-start'}
           gap={4}
           pt={4}
         >
-          <Flex flexDir={{ base: 'column', md: 'row' }} gap={4}>
-            <Button
-              leftIcon={<MdOutlineAddCircle />}
-              onClick={onCreateLocationModalOpen}
-              isDisabled={!selectedOrganization}
-            >
-              New Location
-            </Button>
-            <FormControl w={{ base: 'full', md: '320px' }}>
-              <Select
-                value={
-                  {
-                    label: selectedOrganization?.name,
-                    value: selectedOrganization?.id
-                  } as any
-                }
-                onChange={(e: { label: string; value: string }) => {
-                  const organization = organizations.find((organization: any) => organization.id === e.value);
-                  setSelectedOrganization(organization);
-                }}
-                isReadOnly={organizationsLoading}
-                options={
-                  organizations.map((organization: any) => ({
-                    label: organization.name,
-                    value: organization.id
-                  })) || []
-                }
-                variant='filled'
-                selectedOptionStyle="check"
-              />
-            </FormControl>
-            <Input
-              placeholder={'Search'}
-              variant={'filled'}
-              w={{ base: 'full', md: 'auto' }}
-              ref={searchRef}
-              onChange={(e) => {
-                filterLocations(e.target.value);
+          <Button
+            leftIcon={<MdOutlineAddCircle />}
+            onClick={onCreateLocationModalOpen}
+            isDisabled={!selectedOrganization}
+          >
+            New Location
+          </Button>
+          <FormControl w={{ base: 'full', md: '320px' }}>
+            <Select
+              value={
+                {
+                  label: selectedOrganization?.name,
+                  value: selectedOrganization?.id
+                } as any
+              }
+              onChange={(e: { label: string; value: string }) => {
+                const organization = organizations.find((organization: any) => organization.id === e.value);
+                setSelectedOrganization(organization);
               }}
+              isReadOnly={organizationsLoading}
+              options={
+                organizations.map((organization: any) => ({
+                  label: organization.name,
+                  value: organization.id
+                })) || []
+              }
+              variant='filled'
+              selectedOptionStyle="check"
             />
-          </Flex>
+          </FormControl>
+          <Input
+            placeholder={'Search'}
+            variant={'filled'}
+            w={{ base: 'full', md: 'auto' }}
+            ref={searchRef}
+            onChange={(e) => {
+              filterLocations(e.target.value);
+            }}
+          />
           <Spacer />
           <Flex w={'fit-content'} gap={4}>
             <ButtonGroup>
@@ -387,7 +385,7 @@ export default function PlatformLocations() {
                   {
                     locationsLoading ? (
                       Array.from({ length: 6 }).map((_, i) => (
-                        <Flex key={i} flexDir={'column'} w={"196px"}>
+                        <Flex key={i} flexDir={'column'} w={{ base: 'full', md: '224px' }}>
                           <Skeleton>
                             <Flex
                               border={'1px solid'}
@@ -424,7 +422,7 @@ export default function PlatformLocations() {
                       ))
                     ) : (
                       filteredLocations.map((location: Location) => (
-                        <Flex key={location.id} flexDir={'column'} w={"196px"}>
+                        <Flex key={location.id} flexDir={'column'} w={{ base: 'full', md: '224px' }}>
                           {/* icon */}
                           <Flex
                             border={'1px solid'}

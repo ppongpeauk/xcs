@@ -186,7 +186,7 @@ export default function SettingsProfile() {
                         avatarChooser.current?.click();
                       }}
                     >
-                      Choose Avatar
+                      Choose Icon
                     </Button>
                     <Button
                       variant={'outline'}
@@ -195,7 +195,7 @@ export default function SettingsProfile() {
                         removeAvatar();
                       }}
                     >
-                      Remove Avatar
+                      Remove Icon
                     </Button>
                   </VStack>
                 </Flex>

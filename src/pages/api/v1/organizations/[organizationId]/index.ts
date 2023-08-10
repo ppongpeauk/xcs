@@ -1,10 +1,20 @@
-import { tokenToID } from '@/pages/api/firebase';
+import { tokenToID, uploadProfilePicture } from '@/pages/api/firebase';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import { authToken } from '@/lib/auth';
 import clientPromise from '@/lib/mongodb';
 import { getRobloxGroups, getRobloxUsers } from '@/lib/utils';
-import { OrganizationMember } from '@/types';
+import { OrganizationMember, User } from '@/types';
+
+const sharp = require('sharp');
+
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '4mb'
+    }
+  }
+};
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   // Organization ID
@@ -22,6 +32,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const invitations = db.collection('invitations');
   const accessPoints = db.collection('accessPoints');
   const users = db.collection('users');
+  const user = await users.findOne({ id: uid }) as User | null;
+
+  if (!user) {
+    return res.status(404).json({ message: 'User not found' });
+  }
+
   let organization = (await organizations.findOne({ id: organizationId }, { projection: { apiKeys: 0 } })) as any;
 
   if (!organization) {
@@ -34,7 +50,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (req.method === 'GET') {
     organization.user = organization.members[uid];
-    
+
     let ownerMember = Object.values(organization.members).find(
       (member: any) => member.id === organization.ownerId) as OrganizationMember
 
@@ -167,6 +183,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ message: 'No body provided' });
     }
 
+    if (organization.members[uid]?.role < 2) {
+      return res.status(401).json({ message: 'Unauthorized.' });
+    }
+
     let body = req.body as any;
 
     // Character limits
@@ -221,6 +241,34 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (checkName && checkName.id !== organization.id) {
         return res.status(400).json({ message: 'This name is taken. Please choose another.' });
       }
+    }
+
+    // check if avatar is valid
+    if (req.body.avatar) {
+      let avatar = req.body.avatar;
+      let imageFormat = avatar.split(';')[0].split('/')[1]; // ex: jpeg
+      // limit gifs for only staff
+      if (imageFormat === 'gif' && !user.platform.staff) {
+        return res.status(400).json({ message: 'Invalid icon format.' });
+      }
+
+      const imageData = Buffer.from(avatar.split(',')[1], 'base64');
+      let image;
+      if (imageFormat === 'gif') {
+        image = await sharp(imageData, { animated: true }).resize(256, 256).gif({ quality: 80, pageHeight: 256 }).toBuffer();
+      } else {
+        image = await sharp(imageData).resize(256, 256).jpeg({ quality: 80 }).toBuffer();
+      }
+      // avatar = `data:image/jpeg;base64,${image.toString("base64")}`;
+
+      // upload to firebase
+      const url = await uploadProfilePicture('organization', organizationId, image, imageFormat)
+        .then((url) => {
+          req.body.avatar = url;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
 
     const timestamp = new Date();

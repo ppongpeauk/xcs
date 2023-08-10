@@ -510,6 +510,22 @@ export default function PlatformAccessPoint() {
                       </FormControl>
                     )}
                   </Field>
+                  <Field name="description">
+                    {({ field, form }: any) => (
+                      <FormControl w={{ base: 'full', md: '320px' }}>
+                        <Skeleton isLoaded={accessPoint}>
+                          <FormLabel>Description</FormLabel>
+                          <Textarea
+                            {...field}
+                            type="text"
+                            autoComplete="off"
+                            placeholder="Access Point Description"
+                            maxH={'240px'}
+                          />
+                        </Skeleton>
+                      </FormControl>
+                    )}
+                  </Field>
                   <Field name="tags">
                     {({ field, form }: any) => (
                       <FormControl w={{ base: 'full', md: '320px' }}>
@@ -539,22 +555,6 @@ export default function PlatformAccessPoint() {
                             Tags are used to organize access points, and can be used to filter
                             access points in the access point list.
                           </FormHelperText>
-                        </Skeleton>
-                      </FormControl>
-                    )}
-                  </Field>
-                  <Field name="description">
-                    {({ field, form }: any) => (
-                      <FormControl w={{ base: 'full', md: '320px' }}>
-                        <Skeleton isLoaded={accessPoint}>
-                          <FormLabel>Description</FormLabel>
-                          <Textarea
-                            {...field}
-                            type="text"
-                            autoComplete="off"
-                            placeholder="Access Point Description"
-                            maxH={'240px'}
-                          />
                         </Skeleton>
                       </FormControl>
                     )}

@@ -235,6 +235,22 @@ export default function Profile({ username, user: serverUser }: { username?: str
             </Box>
           </Flex>
         </Box>
+        {/* {
+          currentUser?.id === user?.id && (
+            <Button w={{ base: '300px', md: '300px' }} mb={4}>
+              <Icon
+                as={FaAddressBook}
+                mr={2}
+              />
+              <Text
+                size={'md'}
+                fontWeight={'900'}
+              >
+                Edit Profile
+              </Text>
+            </Button>
+          )
+        } */}
         {/* User Bio */}
         <Box my={2}>
           <Box

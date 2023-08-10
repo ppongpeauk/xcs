@@ -51,20 +51,20 @@ export async function tokenToID(token: string) {
   }
 }
 
-export async function uploadProfilePicture(uid: string, picture: string) {
-  // upload profile picture function
-  // picture is passed as base64 string
-
-  // convert to buffer
-  // const buffer = Buffer.from(picture, "base64");
-
+export async function uploadProfilePicture(type: 'organization' | 'user' = 'user', id: string, picture: string, imageFormat: string = 'jpeg') {
   // upload to firebase storage
-  const file = bucket.file(`profile-pictures/${uid}.jpeg`);
+  let file;
+  let format = imageFormat === 'gif' ? 'gif' : 'jpeg';
+  if (type === 'organization') {
+    file = bucket.file(`organizations/${id}/profile.${format}`);
+  } else {
+    file = bucket.file(`users/${id}/profile.${format}`);
+  }
 
   await file
     .save(picture, {
       metadata: {
-        contentType: 'image/jpeg'
+        contentType: format === 'gif' ? 'image/gif' : 'image/jpeg'
       }
     })
     .then(() => {

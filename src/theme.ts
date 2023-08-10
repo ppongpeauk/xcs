@@ -54,6 +54,11 @@ export const textTheme = defineStyleConfig({
 
 const theme = {
   components: {
+    Badge: {
+      baseStyle: {
+        textTransform: 'unset',
+      }
+    },
     FormHelperText: {
       baseStyle: {
         color: 'gray.500',
