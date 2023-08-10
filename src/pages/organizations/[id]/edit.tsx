@@ -611,7 +611,7 @@ export default function PlatformOrganization() {
                     >
                       <Avatar
                         name={organization?.name}
-                        src={image || ''}
+                        src={image || defaultImage}
                         boxSize={{ base: '6rem', md: '10rem' }}
                         borderRadius={'lg'}
                         onClick={() => {
