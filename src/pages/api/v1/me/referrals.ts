@@ -18,7 +18,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const user = await users.findOne({ id: uid }) as User | null;
 
   if (!user) return res.status(404).json({ message: 'User not found.' });
-  if (!user.platform.staff) return res.status(403).json({ message: 'Forbidden.' });
+  // if (!user.platform.staff) return res.status(403).json({ message: 'Forbidden.' });
   if (user.platform.invites < 1) return res.status(403).json({ message: 'You have no invites left.' });
 
   if (req.method === 'POST') {
