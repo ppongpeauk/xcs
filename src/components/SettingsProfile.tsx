@@ -140,10 +140,10 @@ export default function SettingsProfile() {
 
                     if (values.email !== currentUser?.email?.address) {
                       toast({
-                        title: 'You&apos;ve been logged out.',
-                        description: 'Because you&apos;ve changed your email address, you have been logged out. Please log in again to continue using Restrafes XCS.',
+                        title: 'You\'ve been logged out.',
+                        description: 'Because you\'ve changed your email address, you have been logged out. Please log in again to continue using Restrafes XCS.',
                         status: 'info',
-                        duration: 5000,
+                        duration: 9000,
                         isClosable: true
                       });
                       push('/auth/logout');
