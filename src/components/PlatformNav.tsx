@@ -183,7 +183,7 @@ function AvatarPopover({ currentUser, onLogoutOpen }: { currentUser?: any; onLog
                     onClose();
                   }}
                 >
-                  Staff Panel
+                  Staff Settings
                 </Button>
               )}
               <Button
@@ -620,7 +620,7 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
                       icon={<RiAdminFill />}
                       href="/settings/4"
                     >
-                      Staff Panel
+                      Staff Settings
                     </MenuItem>
                   )}
                   <MenuItem

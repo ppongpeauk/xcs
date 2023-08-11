@@ -13,6 +13,7 @@ import { AuthProvider } from '@/contexts/AuthContext';
 // Theme
 import PageProgress from '@/components/PageProgress';
 import { DialogProvider } from '@/contexts/DialogContext';
+import { CacheProvider } from '@chakra-ui/next-js';
 
 const font = Familjen_Grotesk({ subsets: ['latin'] });
 
