@@ -36,43 +36,38 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   if (req.method === 'POST') {
-    try {
-      const adminApp = await app();
+    const adminApp = await app();
 
-      const email = user.email.address.trim().toLowerCase();
-      const email_link = await adminApp.auth().generateEmailVerificationLink(email, {
-        url: `${process.env.NEXT_PUBLIC_ROOT_URL}/onboarding/verify-email`,
-        handleCodeInApp: true
-      }).then((link) => {
-        return link;
-      }).catch((error) => {
-        console.log(error);
-        throw error;
+    const email = user.email.address.trim().toLowerCase();
+    const email_link = await adminApp.auth().generateEmailVerificationLink(email, {
+      url: `${process.env.NEXT_PUBLIC_ROOT_URL}/home`,
+      handleCodeInApp: true
+    }).then((link) => {
+      return link;
+    }).catch((error) => {
+      return res.status(500).json({ success: false, message: error });
+    });
+
+    const msg = {
+      to: email,
+      from: 'xcs-noreply@restrafes.co',
+      subject: 'Verify your email address',
+      template_id: 'd-9dd7e88dbb554984867e7da76c9d6c6f',
+      dynamic_template_data: {
+        name: user.displayName,
+        link: email_link
+      }
+    }
+
+    await sgMail
+      .send(msg)
+      .then(() => {
+        return res.status(200).json({ success: true, message: 'Verification email sent.' });
+      })
+      .catch((error: any) => {
+        return res.status(500).json({ success: false, message: error });
       });
 
-      const msg = {
-        to: email,
-        from: 'xcs-noreply@restrafes.co',
-        subject: 'Verify your email address',
-        template_id: 'd-9dd7e88dbb554984867e7da76c9d6c6f',
-        dynamic_template_data: {
-          name: user.displayName,
-          link: email_link
-        }
-      }
-
-      await sgMail
-        .send(msg)
-        .then(() => {
-          return res.status(200).json({ success: true, message: 'Verification email sent.' });
-        })
-        .catch((error: any) => {
-          return res.status(500).json({ success: false, message: error });
-        });
-
-      return res.status(200).json({ success: true, message: 'Verification email sent.' });
-    } catch (error: any) {
-      return res.status(500).json({ success: false, message: error.message });
-    }
+    return res.status(200).json({ success: true, message: 'Verification email sent.' });
   }
 }

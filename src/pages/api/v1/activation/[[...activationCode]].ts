@@ -253,7 +253,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     try {
       const email_link = await admin.auth().generateEmailVerificationLink(email.trim().toLowerCase(), {
-        url: `${process.env.NEXT_PUBLIC_ROOT_URL}/onboarding/verify-email`,
+        url: `${process.env.NEXT_PUBLIC_ROOT_URL}/home`,
         handleCodeInApp: true
       }).then((link) => {
         return link;
