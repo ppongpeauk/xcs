@@ -352,7 +352,6 @@ export default function PlatformLocations() {
             </ButtonGroup>
           </Flex>
         </Stack>
-
         <Box w={"full"}>
           <Flex
             as={Stack}
@@ -363,7 +362,7 @@ export default function PlatformLocations() {
             flexWrap={'wrap'}
           >
             {
-              view === 'list' ? (
+              !organizationsLoading && !locationsLoading ? (view === 'list' ? (
                 <TableContainer
                   py={2}
                   maxW={{ base: 'full' }}
@@ -478,7 +477,7 @@ export default function PlatformLocations() {
                     )
                   }
                 </Flex>
-              )}
+              )) : null}
             {
               !locationsLoading && filteredLocations.length === 0 && (
                 <Flex
@@ -491,6 +490,21 @@ export default function PlatformLocations() {
                 >
                   <Text fontSize={'2xl'} fontWeight={'bold'}>No Locations Found</Text>
                   <Text color={'gray.500'}>Try adjusting your search query or creating a new location.</Text>
+                </Flex>
+              )
+            }
+            {
+              !organizationsLoading && !organizations.length && (
+                <Flex
+                  flexDir={'column'}
+                  align={'center'}
+                  justify={'center'}
+                  w={'full'}
+                  h={'full'}
+                  py={16}
+                >
+                  <Text fontSize={'2xl'} fontWeight={'bold'}>No Organizations Found</Text>
+                  <Text color={'gray.500'}>Create or join a new organization to get started.</Text>
                 </Flex>
               )
             }

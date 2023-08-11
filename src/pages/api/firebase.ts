@@ -92,6 +92,9 @@ export async function deleteOrganizationProfilePicture(id: string) {
   if (!(await file.exists())[0]) {
     file = bucket.file(`organizations/${id}/profile.gif`);
   }
+  if (!(await file.exists())[0]) {
+    return;
+  }
   await file
     .delete()
     .then(() => {
