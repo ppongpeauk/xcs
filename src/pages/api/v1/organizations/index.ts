@@ -49,7 +49,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     let organizationLimit = 1;
     switch (user.platform.membership) {
       case 0:
-        organizationLimit = 1;
+        organizationLimit = 4;
         break;
       case 1:
         organizationLimit = 8;
@@ -119,6 +119,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       logs: [],
       apiKeys: {},
       createdAt: timestamp,
+      createdBy: uid,
       updatedAt: timestamp
     });
 

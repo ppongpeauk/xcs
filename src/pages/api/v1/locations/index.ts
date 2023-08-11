@@ -62,7 +62,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     // Check if organization has less than 3 locations
-    const ownedOrganizations = await locations
+    const ownedLocations = await locations
       .find({
         organizationId: organizationId
       })
@@ -72,7 +72,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       id: organization.ownerId
     });
 
-    if (ownedOrganizations.length >= 3 && !organizationOwner?.platform?.staff) {
+    if (ownedLocations.length >= 4 && !organizationOwner?.platform?.staff) {
       return res.status(403).json({
         message:
           'This organization has reached the maximum amount of locations. ' +
