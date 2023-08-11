@@ -111,7 +111,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     await locations.insertOne({
       id: id,
       name: name,
-      description: '',
+      description: description || '',
       tags: [],
       organizationId: organizationId,
       avatar: null,
