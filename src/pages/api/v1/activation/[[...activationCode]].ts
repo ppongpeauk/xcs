@@ -207,7 +207,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         platform: {
           staff: false,
           membership: 0,
-          invites: 2
+          invites: invitation.startingReferrals || 0,
         },
         payment: {
           customerId: null

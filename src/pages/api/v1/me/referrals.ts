@@ -42,6 +42,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       uses: 0,
       maxUses: 1,
+      startingReferrals: 0,
 
       createdAt: new Date().toISOString(),
       createdBy: user.id,

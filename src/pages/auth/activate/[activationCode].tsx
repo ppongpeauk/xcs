@@ -60,7 +60,7 @@ export default function Activate() {
             });
           }
         })
-        .then((res) => {})
+        .then((res) => { })
         .catch((error) => {
           toast({
             title: error.message,

@@ -6,7 +6,7 @@ import clientPromise from '@/lib/mongodb';
 import { Invitation } from '@/types';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  let { senderId, maxUses, code, comment } = req.body;
+  let { senderId, maxUses, code, comment, referrals } = req.body;
 
   const uid = await authToken(req);
   if (!uid) {
@@ -70,6 +70,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       uses: 0,
       maxUses: maxUses,
 
+      startingReferrals: referrals || 0,
       comment: comment,
       createdAt: new Date().toISOString(),
       createdBy: user.id,

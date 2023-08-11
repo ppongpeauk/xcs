@@ -143,6 +143,7 @@ export interface Invitation {
 
   uses: number,
   maxUses: number,
+  startingReferrals?: number,
 
   comment?: string,
 

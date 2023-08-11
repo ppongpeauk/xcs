@@ -127,6 +127,7 @@ export default function InvitePlatformModal({
             }
             | any,
           maxUses: 1,
+          referrals: 0,
           comment: ''
         }}
         onSubmit={(values, actions) => {
@@ -141,6 +142,7 @@ export default function InvitePlatformModal({
                 maxUses: values.maxUses,
                 code: values.code,
                 senderId: values.senderId?.value,
+                referrals: values.referrals || 0,
                 comment: values.comment
               })
             })
@@ -262,6 +264,36 @@ export default function InvitePlatformModal({
                                 value={field.value || []}
                               />
                               <FormHelperText>If left blank, you will be the sender.</FormHelperText>
+                            </FormControl>
+                          )}
+                        </Field>
+                        <Field name="referrals">
+                          {({ field, form }: any) => (
+                            <FormControl w={'fit-content'} alignSelf={'flex-start'}>
+                              <FormLabel>Starting Referrals</FormLabel>
+                              <InputGroup>
+                                <NumberInput
+                                  {...field}
+                                  autoComplete="off"
+                                  placeholder="Starting Referrals"
+                                  variant={'outline'}
+                                  min={0}
+                                  max={100}
+                                  defaultValue={0}
+                                  onChange={(value) => {
+                                    form.setFieldValue('referrals', value);
+                                  }}
+                                >
+                                  <NumberInputField />
+                                  <NumberInputStepper>
+                                    <NumberIncrementStepper />
+                                    <NumberDecrementStepper />
+                                  </NumberInputStepper>
+                                </NumberInput>
+                              </InputGroup>
+                              <FormHelperText>
+                                If you want to give the user referrals to invite others, enter the number of referrals you want to give them here.
+                              </FormHelperText>
                             </FormControl>
                           )}
                         </Field>
