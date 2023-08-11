@@ -362,7 +362,7 @@ export default function PlatformLocations() {
             flexWrap={'wrap'}
           >
             {
-              !organizationsLoading && !locationsLoading ? (view === 'list' ? (
+              organizations.length ? (view === 'list' ? (
                 <TableContainer
                   py={2}
                   maxW={{ base: 'full' }}
