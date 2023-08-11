@@ -29,9 +29,11 @@ import { IoSave } from 'react-icons/io5';
 import { Field, Form, Formik } from 'formik';
 
 import { useAuthContext } from '@/contexts/AuthContext';
+import { useRouter } from 'next/router';
 
 export default function SettingsProfile() {
   const { currentUser, refreshCurrentUser, user, isAuthLoaded } = useAuthContext();
+  const { push } = useRouter();
 
   const defaultImage = `${process.env.NEXT_PUBLIC_ROOT_URL}/images/default-avatar.png`;
   const [image, setImage] = useState<null | undefined | string>(undefined);
@@ -135,6 +137,17 @@ export default function SettingsProfile() {
                         email: currentUser?.email?.address as string
                       }
                     });
+
+                    if (values.email !== currentUser?.email?.address) {
+                      toast({
+                        title: 'You&apos;ve been logged out.',
+                        description: 'Because you&apos;ve changed your email address, you have been logged out. Please log in again to continue using Restrafes XCS.',
+                        status: 'info',
+                        duration: 5000,
+                        isClosable: true
+                      });
+                      push('/auth/logout');
+                    }
                   })
                   .catch((err) => {
                     toast({

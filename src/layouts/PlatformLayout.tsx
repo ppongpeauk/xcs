@@ -104,7 +104,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             {currentUser && (
               <>
                 {/* Email not verified */}
-                {!user?.email.verified && (
+                {!user?.emailVerified && (
                   <PlatformAlert
                     title={'Action needed'}
                     description={'Please verify your email address to continue using Restrafes XCS.'}

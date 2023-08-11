@@ -88,7 +88,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       await admin.auth().updateUser(uid, {
         emailVerified: false
       });
+
       await users.updateOne({ id: uid }, { $set: { 'email.address': req.body.email, 'email.verified': false } });
+
+      // send verification email
+      const userToken = await admin.auth().createCustomToken(uid).then((token) => token);
+      await fetch(`${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/verify/email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userToken}`
+        }
+      });
     }
 
     // check if avatar is valid
