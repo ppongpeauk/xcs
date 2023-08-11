@@ -338,7 +338,7 @@ export default function Profile({ username, user: serverUser }: { username?: str
                   <WrapItem>
                     <Button
                       as={Link}
-                      href={`https://roblox.com/users/${user?.roblox.id}/user`}
+                      href={`https://roblox.com/users/${user?.roblox.id}/profile`}
                       target="_blank"
                       size={'sm'}
                       variant={'ghost'}
