@@ -1,4 +1,4 @@
-import { tokenToID, uploadProfilePicture } from '@/pages/api/firebase';
+import { deleteOrganizationProfilePicture, tokenToID, uploadProfilePicture } from '@/pages/api/firebase';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import { authToken } from '@/lib/auth';
@@ -310,6 +310,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Delete All Access Points in Organization
     await accessPoints.deleteMany({ organizationId: organizationId });
+
+    // Delete Profile Picture
+    try {
+      await deleteOrganizationProfilePicture(organizationId);
+    } catch (error) { }
 
     return res.status(200).json({ message: 'Successfully deleted organization!', success: true });
   }

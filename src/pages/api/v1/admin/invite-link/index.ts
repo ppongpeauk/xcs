@@ -73,7 +73,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       startingReferrals: referrals || 0,
       comment: comment,
       createdAt: new Date().toISOString(),
-      createdBy: user.id,
+      createdBy: senderId || user.id,
     } as Invitation);
 
     return res.status(200).json({

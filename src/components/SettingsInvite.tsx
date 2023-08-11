@@ -38,7 +38,7 @@ import InvitePlatformUserModal from '@/components/InvitePlatformUserModal';
 import LocationResetUniverseIdModal from '@/components/LocationResetUniverseIdModal';
 
 export default function SettingsInvite() {
-  const { currentUser, isAuthLoaded } = useAuthContext();
+  const { currentUser, isAuthLoaded, refreshCurrentUser } = useAuthContext();
 
   // Platform Invite Creation Modal
   const {
@@ -46,6 +46,10 @@ export default function SettingsInvite() {
     onOpen: platformInviteModalOnOpen,
     onClose: platformInviteModalOnClose
   } = useDisclosure();
+
+  useEffect(() => {
+    refreshCurrentUser();
+  }, [refreshCurrentUser]);
 
   return (
     <>

@@ -36,6 +36,7 @@ import { useAuthContext } from '@/contexts/AuthContext';
 
 import InvitePlatformModal from '@/components/InvitePlatformModal';
 import LocationResetUniverseIdModal from '@/components/LocationResetUniverseIdModal';
+import ReferralCreditsModal from './ReferralCreditsModal';
 
 export default function SettingsProfile() {
   const { currentUser, refreshCurrentUser, user, isAuthLoaded } = useAuthContext();
@@ -70,6 +71,12 @@ export default function SettingsProfile() {
     onClose: locationUniverseIdResetModalOnClose
   } = useDisclosure();
 
+  const {
+    isOpen: referralCreditModalOpen,
+    onOpen: referralCreditModalOnOpen,
+    onClose: referralCreditModalOnClose
+  } = useDisclosure();
+
   return (
     <>
       <InvitePlatformModal
@@ -82,6 +89,11 @@ export default function SettingsProfile() {
         isOpen={locationUniverseIdResetModalOpen}
         onClose={locationUniverseIdResetModalOnClose}
       />
+      <ReferralCreditsModal
+        isOpen={referralCreditModalOpen}
+        onOpen={referralCreditModalOnOpen}
+        onClose={referralCreditModalOnClose}
+      />
       {isAuthLoaded && currentUser && (
         <Box w={'fit-content'}>
           <Heading
@@ -91,13 +103,32 @@ export default function SettingsProfile() {
             Platform
           </Heading>
           <Stack py={4}>
-            <Button
-              mb={2}
-              leftIcon={<AiOutlineUser />}
-              onClick={platformInviteModalOnOpen}
-            >
-              Create Registration Invite
-            </Button>
+            <FormControl>
+              <Button
+                mb={2}
+                leftIcon={<AiOutlineUser />}
+                onClick={platformInviteModalOnOpen}
+              >
+                Create Registration Invite
+              </Button>
+            </FormControl>
+            <FormControl>
+              <Button
+                mb={2}
+                leftIcon={<BiReset />}
+                onClick={referralCreditModalOnOpen}
+              >
+                Add Referral Credits
+              </Button>
+            </FormControl>
+          </Stack>
+          <Heading
+            as={'h2'}
+            size={'lg'}
+          >
+            Customer Support
+          </Heading>
+          <Stack py={4}>
             <FormControl>
               <Button
                 mb={2}

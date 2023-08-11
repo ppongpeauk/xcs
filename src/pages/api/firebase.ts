@@ -85,3 +85,19 @@ export async function uploadProfilePicture(type: 'organization' | 'user' = 'user
 
   return url;
 }
+
+export async function deleteOrganizationProfilePicture(id: string) {
+  let file = bucket.file(`organizations/${id}/profile.jpeg`);
+  // if file doesn't exist, try gif
+  if (!(await file.exists())[0]) {
+    file = bucket.file(`organizations/${id}/profile.gif`);
+  }
+  await file
+    .delete()
+    .then(() => {
+      console.log('Deleted profile picture');
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
