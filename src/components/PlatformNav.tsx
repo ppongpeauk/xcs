@@ -175,7 +175,7 @@ function AvatarPopover({ currentUser, onLogoutOpen }: { currentUser?: any; onLog
               {currentUser?.platform.staff && (
                 <Button
                   as={NextLink}
-                  href={'/settings/4'}
+                  href={'/settings/5'}
                   variant={'outline'}
                   size={'md'}
                   leftIcon={<RiAdminFill />}
@@ -618,7 +618,7 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
                     <MenuItem
                       as={MenuLink}
                       icon={<RiAdminFill />}
-                      href="/settings/4"
+                      href="/settings/5"
                     >
                       Staff Settings
                     </MenuItem>
