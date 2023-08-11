@@ -131,20 +131,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                                 });
                               }
                             })
-                            .then(async (res) => {
-                              toast({
-                                title: res.message,
-                                status: 'success',
-                                duration: 5000,
-                              });
-                            })
-                            .catch((err) => {
-                              toast({
-                                title: 'There was an error while sending the verification email. Please try again later.',
-                                status: 'error',
-                                duration: 5000,
-                              });
-                            })
+                            .then(async (res) => { })
+                            .catch((err) => { })
                             .finally(() => {
                               setSendVerificationEmailLoading(false);
                             });

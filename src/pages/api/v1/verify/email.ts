@@ -47,6 +47,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }).catch((error) => {
       return res.status(500).json({ success: false, message: error });
     });
+    if (!email_link) {
+      return res.status(500).json({ success: false, message: 'Error generating email link.' });
+    }
 
     const msg = {
       to: email,
