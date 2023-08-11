@@ -4,6 +4,8 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import clientPromise from '@/lib/mongodb';
 import { Invitation, User } from '@/types';
 
+const defaultMessage = 'The invitation you are looking for is either invalid or no longer exists.';
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { invitationId } = req.query as { invitationId: string };
 
@@ -17,7 +19,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     code: invitationId
   })) as Invitation | null;
   if (!invitation) {
-    return res.status(404).json({ valid: false, message: 'Invitation not found.' });
+    return res.status(404).json({ valid: false, message: defaultMessage });
   }
 
   let creator = (await users.findOne(
@@ -27,7 +29,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   )) as any;
   if (!creator) {
-    return res.status(404).json({ valid: false, message: 'Creator not found.' });
+    return res.status(404).json({ valid: false, message: defaultMessage });
   }
 
   if (req.method === 'GET') {
@@ -40,7 +42,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         { projection: { id: 1, name: 1 } }
       )) as any;
       if (!organization) {
-        return res.status(404).json({ valid: false, message: 'Organization not found.' });
+        return res.status(404).json({ valid: false, message: defaultMessage });
       }
       invitation.organization = organization;
     } else if (invitation?.type === 'xcs') {
@@ -48,14 +50,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         // await invitations.deleteOne({ inviteCode: invitationId });
         return res.status(404).json({
           valid: false,
-          message: 'This invitation has reached its maximum uses.'
+          message: 'This invitation has reached its maximum uses. Please contact the creator of this invitation to receive a new one.'
         });
       }
 
       // if sponsor, check if user has invites left
       if (invitation.isSponsor) {
         if (!creator) {
-          return res.status(404).json({ valid: false, message: 'The creator of this invite was not found.' });
+          return res.status(404).json({ valid: false, message: defaultMessage });
         }
         if (creator.platform.invites < 1) {
           return res.status(403).json({ valid: false, message: 'The sponsor of this code has no invitations left.' });
