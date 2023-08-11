@@ -200,7 +200,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             type: 'warning',
             action: {
               title: 'Verify email',
-              url: `${process.env.NEXT_PUBLIC_ROOT_URL}/onboarding/verify-email`
+              url: `${process.env.NEXT_PUBLIC_ROOT_URL}/home`
             }
           }
         ],
@@ -265,8 +265,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       // console.log(email_link);
 
       const msg = {
-        to: email.trim().toLowerCase(), // Change to your recipient
-        from: 'xcs-noreply@restrafes.co', // Change to your verified sender
+        to: email.trim().toLowerCase(),
+        from: 'xcs-noreply@restrafes.co',
         subject: 'Verify your email address',
         template_id: 'd-9dd7e88dbb554984867e7da76c9d6c6f',
         dynamic_template_data: {

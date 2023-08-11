@@ -104,7 +104,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             {currentUser && (
               <>
                 {/* Email not verified */}
-                {!user?.emailVerified && (
+                {!user?.email.verified && (
                   <PlatformAlert
                     title={'Action needed'}
                     description={'Please verify your email address to continue using Restrafes XCS.'}
@@ -114,8 +114,40 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                       isLoading: sendVerificationEmailLoading,
                       onClick: async () => {
                         setSendVerificationEmailLoading(true);
-                        await sendEmailVerification(user).finally(() => {
-                          setSendVerificationEmailLoading(false);
+                        user.getIdToken().then(async (token: string) => {
+                          await fetch('/api/v1/verify/email', {
+                            method: 'POST',
+                            headers: {
+                              'Content-Type': 'application/json',
+                              'Authorization': `Bearer ${token}`
+                            }
+                          })
+                            .then((res) => {
+                              if (res.status === 200) {
+                                return res.json();
+                              } else {
+                                return res.json().then((json) => {
+                                  throw new Error(json.message);
+                                });
+                              }
+                            })
+                            .then(async (res) => {
+                              toast({
+                                title: res.message,
+                                status: 'success',
+                                duration: 5000,
+                              });
+                            })
+                            .catch((err) => {
+                              toast({
+                                title: 'There was an error while sending the verification email. Please try again later.',
+                                status: 'error',
+                                duration: 5000,
+                              });
+                            })
+                            .finally(() => {
+                              setSendVerificationEmailLoading(false);
+                            });
                         });
                       }
                     }}
@@ -134,7 +166,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                       }
                     }}
                   />
-                )}
+                )
+                }
               </>
             )}
           </Stack>

@@ -122,7 +122,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     // sanitize body to only include allowed fields
-    const allowedFields = ['displayName', 'bio', 'avatar', 'email', 'emailVerified', 'lastUpdatedAt'];
+    const allowedFields = ['displayName', 'bio', 'avatar', 'emailVerified', 'lastUpdatedAt'];
     const sanitizedBody = Object.keys(req.body)
       .filter((key) => allowedFields.includes(key))
       .reduce((obj: any, key) => {
