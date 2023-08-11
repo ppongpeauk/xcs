@@ -249,7 +249,7 @@ export default function Profile({ username, user: serverUser }: { username?: str
           )
         } */}
         {/* User Bio */}
-        <Box my={2}>
+        <Box py={2}>
           <Box
             w={{ base: 'full', md: '384px' }}
             rounded={'lg'}
@@ -284,7 +284,7 @@ export default function Profile({ username, user: serverUser }: { username?: str
           </Box>
         </Box>
         {/* User Linked Accounts */}
-        {/* <Box my={4}>
+        <Box py={2}>
           <Box
             rounded={'lg'}
             w={{ base: 'full', md: '384px' }}
@@ -294,7 +294,7 @@ export default function Profile({ username, user: serverUser }: { username?: str
               fontSize={'2xl'}
               fontWeight={'900'}
             >
-              Connected Accounts
+              Linked Accounts
             </Text>
             <Skeleton isLoaded={!!user}>
               <Wrap
@@ -361,11 +361,10 @@ export default function Profile({ username, user: serverUser }: { username?: str
               </Wrap>
             </Skeleton>
           </Box>
-        </Box> */}
-        <Flex py={4}>
+        </Box>
+        <Flex py={2}>
           {/* Organizations */}
           <Box
-            py={2}
             w={{ base: 'full', md: '320px' }}
             mr={{ base: 0, md: 16 }}
           >
