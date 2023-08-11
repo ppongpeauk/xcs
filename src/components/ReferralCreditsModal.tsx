@@ -204,7 +204,7 @@ export default function ReferralCreditsModal({
                       <Field name="referrals">
                         {({ field, form }: any) => (
                           <FormControl w={'fit-content'} alignSelf={'flex-start'}>
-                            <FormLabel>Referrals</FormLabel>
+                            <FormLabel>Referral Credits</FormLabel>
                             <InputGroup>
                               <NumberInput
                                 {...field}
@@ -226,7 +226,7 @@ export default function ReferralCreditsModal({
                               </NumberInput>
                             </InputGroup>
                             <FormHelperText>
-                              Enter the number of referrals you want to give to the user here.
+                              Enter the number of referral credits you want to give to the user here.
                             </FormHelperText>
                           </FormControl>
                         )}
