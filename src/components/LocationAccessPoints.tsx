@@ -205,7 +205,7 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
             {accessPoints?.accessPoints
               ?.filter(
                 (accessPoint: any) =>
-                  (!selectedTags.length || selectedTags.some((tag: any) => accessPoint?.tags?.includes(tag.value))) &&
+                  (!selectedTags.length || selectedTags.every((tag: any) => accessPoint?.tags?.includes(tag.value))) &&
                   (!nameFilter || accessPoint?.name?.toLowerCase().includes(nameFilter.toLowerCase()))
               )
               .map((accessPoint: any) => (
