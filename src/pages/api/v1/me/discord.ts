@@ -53,7 +53,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         grant_type: 'authorization_code',
         scope: 'identify',
         code: code,
-        redirect_uri: `${process.env.NEXT_PUBLIC_ROOT_URL}/settings/discord`
+        redirect_uri: `${process.env.NEXT_PUBLIC_ROOT_URL}/verify/oauth2/discord`
       }).toString()
     }).then((res) => res.json());
 
