@@ -460,49 +460,53 @@ export default function PlatformOrganizations() {
                       ))
                     ) : (
                       filteredOrganizations.map((organization: Organization) => (
-                        <Flex key={organization.id} flexDir={'column'} w={{ base: 'full', md: '224px' }}>
-                          {/* icon */}
-                          <Flex
-                            border={'1px solid'}
-                            borderRadius={'lg'}
-                            borderColor={useColorModeValue('gray.200', 'gray.700')}
-                            aspectRatio={1}
-                          >
-                            <Link href={`/organizations/${organization.id}/settings`}>
-                              <Avatar
-                                ignoreFallback={true}
-                                borderRadius={'lg'}
-                                size={'lg'}
-                                src={organization.avatar || '/images/default-avatar.png'}
-                                cursor={'pointer'}
-                                w={'full'}
-                                h={'full'}
-                                transition={'opacity 0.2s ease-out'} _hover={{ opacity: 0.75 }} _active={{ opacity: 0.5 }}
-                              />
-                            </Link>
-                          </Flex>
-                          {/* text */}
-                          <Flex p={4} flexDir={'column'} textUnderlineOffset={4}>
-                            <Heading
-                              as={'h3'}
-                              size={'md'}
-                              fontWeight={'bold'}
+                        <Tooltip label={organization.name} placement={'top'} key={organization.id}>
+                          <Flex key={organization.id} flexDir={'column'} w={{ base: 'full', md: '224px' }}>
+                            {/* icon */}
+                            <Flex
+                              border={'1px solid'}
+                              borderRadius={'lg'}
+                              borderColor={useColorModeValue('gray.200', 'gray.700')}
+                              aspectRatio={1}
                             >
                               <Link href={`/organizations/${organization.id}/settings`}>
-                                {organization.name}
+                                <Avatar
+                                  ignoreFallback={true}
+                                  borderRadius={'lg'}
+                                  size={'lg'}
+                                  src={organization.avatar || '/images/default-avatar.png'}
+                                  cursor={'pointer'}
+                                  w={'full'}
+                                  h={'full'}
+                                  transition={'opacity 0.2s ease-out'} _hover={{ opacity: 0.75 }} _active={{ opacity: 0.5 }}
+                                />
                               </Link>
-                            </Heading>
-                            <Link color={"gray.500"} href={`/@${organization.owner?.username}`}>
-                              by {organization.owner?.displayName}
-                            </Link>
-                            <Flex align={'center'} color={'gray.500'} gap={1} fontSize={'md'}>
-                              <Icon as={BiRefresh} />
-                              <Text color={'gray.500'}>
-                                {!organizationsLoading ? toRelativeTime(organization.updatedAt) : "Last Updated"}
-                              </Text>
+                            </Flex>
+                            {/* text */}
+                            <Flex p={4} flexDir={'column'} textUnderlineOffset={4}>
+                              <Heading
+                                as={'h3'}
+                                size={'md'}
+                                fontWeight={'bold'}
+                                noOfLines={1}
+                                wordBreak={'break-word'}
+                              >
+                                <Link href={`/organizations/${organization.id}/settings`}>
+                                  {organization.name}
+                                </Link>
+                              </Heading>
+                              <Link color={"gray.500"} href={`/@${organization.owner?.username}`}>
+                                by {organization.owner?.displayName}
+                              </Link>
+                              <Flex align={'center'} color={'gray.500'} gap={1} fontSize={'md'}>
+                                <Icon as={BiRefresh} />
+                                <Text color={'gray.500'}>
+                                  {!organizationsLoading ? toRelativeTime(organization.updatedAt) : "Last Updated"}
+                                </Text>
+                              </Flex>
                             </Flex>
                           </Flex>
-                        </Flex>
+                        </Tooltip>
                       ))
                     )
                   }
