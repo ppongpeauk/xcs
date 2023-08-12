@@ -7,6 +7,7 @@ import {
 } from '@chakra-ui/next-js';
 import {
   Avatar,
+  AvatarBadge,
   AvatarGroup,
   Box,
   Button,
@@ -25,6 +26,7 @@ import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
 import { AiFillSetting } from 'react-icons/ai';
 import { MdJoinRight } from 'react-icons/md';
+import { VscVerifiedFilled } from 'react-icons/vsc';
 
 export default function OrganizationPublic() {
   const { query, push } = useRouter();
@@ -108,7 +110,8 @@ export default function OrganizationPublic() {
               boxSize={{ base: '6rem', md: '10rem' }}
               borderRadius={'lg'}
               overflow={'hidden'}
-            />
+            >
+            </Avatar>
           </Skeleton>
           <Flex flexDir={'column'}>
             <Skeleton isLoaded={!!organization}>
@@ -160,7 +163,7 @@ export default function OrganizationPublic() {
                       member.id !== organization?.owner?.id &&
                       (!member.type.startsWith('roblox') ? (
                         <TooltipAvatar
-                          name={member?.name}
+                          name={member?.displayName}
                           as={Link}
                           key={member?.id}
                           href={`/@${member?.username}`}
