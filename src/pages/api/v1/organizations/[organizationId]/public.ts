@@ -33,7 +33,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const users = db.collection('users');
   let canEdit = false;
 
-  let organization = (await organizations.findOne({ id: organizationId }, { projection: { apiKeys: 0 } })) as any;
+  let organization = (await organizations.findOne({ id: organizationId }, {
+    projection: {
+      id: 1,
+      name: 1,
+      description: 1,
+      avatar: 1,
+      ownerId: 1,
+      members: 1,
+      createdAt: 1,
+      updatedAt: 1,
+      verified: 1,
+      isPersonal: 1,
+    }
+  })) as any;
 
   if (!organization) {
     return res.status(404).json({ message: 'Organization not found' });
