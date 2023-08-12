@@ -414,6 +414,7 @@ export default function PlatformOrganization() {
           spacing="8px"
           mb={2}
           separator={<ChevronRightIcon color="gray.500" />}
+          fontSize={{ base: 'sm', md: 'md' }}
         >
           <BreadcrumbItem>
             <BreadcrumbLink

@@ -175,6 +175,7 @@ export default function PlatformLocation() {
             spacing="8px"
             mb={4}
             separator={<ChevronRightIcon color="gray.500" />}
+            fontSize={{ base: 'sm', md: 'md' }}
           >
             <BreadcrumbItem>
               <BreadcrumbLink
