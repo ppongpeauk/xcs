@@ -171,7 +171,7 @@ export default function PlatformLocation() {
       >
         <Skeleton isLoaded={!!location}>
           <Breadcrumb
-            display={{ base: 'none', md: 'flex' }}
+            // display={{ base: 'none', md: 'flex' }}
             spacing="8px"
             mb={4}
             separator={<ChevronRightIcon color="gray.500" />}
