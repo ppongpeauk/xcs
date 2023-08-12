@@ -116,7 +116,7 @@ function AvatarPopover({ currentUser, onLogoutOpen }: { currentUser?: any; onLog
               <Flex
                 as={Button}
                 onClick={() => {
-                  push('/user');
+                  push(`/@${currentUser?.username}`);
                   onClose();
                 }}
                 variant={'ghost'}
