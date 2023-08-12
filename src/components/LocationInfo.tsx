@@ -76,7 +76,7 @@ export default function LocationInfo({ location, query, idToken, refreshData }: 
             duration: 5000,
             isClosable: true
           });
-          push('/locations');
+          push(`/locations/?organization=${location?.organizationId}`);
         })
         .catch((err) => {
           toast({
