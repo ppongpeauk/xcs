@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useRef } from 'react';
+import { useCallback, useRef } from 'react';
 
 import {
   Button,
@@ -42,7 +42,7 @@ export default function CreateOrganizationDialog({
   const finalRef = useRef(null);
   const { user } = useAuthContext();
 
-  const namePlaceholder = getRandomOrganizationName();
+  const namePlaceholder = useCallback(getRandomOrganizationName, []);
 
   return (
     <>

@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useRef } from 'react';
+import { useCallback, useRef } from 'react';
 
 import {
   Button,
@@ -42,7 +42,7 @@ export default function CreateLocationDialog({
   const finalRef = useRef(null);
   const { user } = useAuthContext();
 
-  const namePlaceholder = getRandomLocationName();
+  const namePlaceholder = useCallback(getRandomLocationName, []);
 
   return (
     <>
