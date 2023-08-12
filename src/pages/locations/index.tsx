@@ -66,7 +66,9 @@ function TableEntry({ key, location, skeleton }: { key: number | string, locatio
       <Td>
         <Stack flexDir={'row'} align={'center'}>
           <Skeleton isLoaded={!skeleton}>
-            <Avatar as={Link} href={location?.roblox?.place ? `https://www.roblox.com/games/${location?.roblox?.place?.rootPlaceId}/game` : `/locations/${location?.id}/general`} target={location?.roblox?.place ? '_blank' : '_self'} transition={'opacity 0.2s ease-out'} _hover={{ opacity: 0.75 }} _active={{ opacity: 0.5 }} borderRadius={'lg'} size={'md'} src={location?.roblox?.place?.thumbnail || '/images/default-avatar.png'} />
+            <Tooltip label={location?.roblox?.place?.name || location?.name} placement={'top'}>
+              <Avatar as={Link} href={location?.roblox?.place ? `https://www.roblox.com/games/${location?.roblox?.place?.rootPlaceId}/game` : `/locations/${location?.id}/general`} target={location?.roblox?.place ? '_blank' : '_self'} transition={'opacity 0.2s ease-out'} _hover={{ opacity: 0.75 }} _active={{ opacity: 0.5 }} borderRadius={'lg'} size={'md'} src={location?.roblox?.place?.thumbnail || '/images/default-avatar.png'} />
+            </Tooltip>
           </Skeleton>
 
           <Flex flexDir={'column'} mx={2} justify={'center'}>
