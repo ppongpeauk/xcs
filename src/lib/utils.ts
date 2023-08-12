@@ -227,6 +227,108 @@ const getRandomAccessPointName = () => {
   return accessPointNames[Math.floor(Math.random() * accessPointNames.length)];
 };
 
+const getRandomLocationName = () => {
+  let locationNames = [
+    "Acme Headquarters",
+    "Century Plaza",
+    "Commerce Tower",
+    "Innovation Park",
+    "Paragon Office Complex",
+    "Park Avenue Tower",
+    "Riverfront Corporate Center",
+    "Skyline Tower",
+    "Spark Innovation Campus",
+    "Tech City Center",
+    "Guardia Tower",
+    "Zenith Tower",
+    "Alpha Office Park",
+    "Gamma Plaza",
+    "Epsilon Square",
+    "Zeta Tower",
+    "Sigma Center",
+    "Omega Complex",
+    "Delta Hub",
+    "Phi Tower",
+    "Halcyon Center",
+    "Prometheus Tower",
+    "Athena Complex",
+    "Helix Hub",
+    "Cortex Building",
+    "Foresight Headquarters",
+    "Apex Facility",
+    "Photon Power Plant",
+    "Galactus Arena",
+    "Wayne Tech Offices",
+    "Tyrell Offices",
+    "Weyland Hangar",
+    "Hyperion Headquarters",
+    "Stark Hangar",
+    "Sanctuary Clinic",
+    "Tranquility Hospital",
+    "Gattaca Spaceport",
+    "Artemis Test Site",
+    "Kronos Annex",
+    "Zephyrus Plant",
+    "Atlas Factory",
+    "Achilles Facility",
+    "Hera Building",
+    "Poseidon Rig",
+    "Apollo Launchpad",
+    "Hades Data Center",
+    "Erebus Reactor",
+    "Nyx Labs",
+    "Selene Space Center",
+    "Helios Solar Array",
+    "Iris Optics Lab",
+    "Kairos Institute",
+    "Themis Distribution Center",
+    "Janus Clinic",
+    "Rhea Habitat",
+    "Kronos Lab",
+    "Hyperion Plant",
+    "Neptune Aquatic Center",
+    "Juno Space Observatory",
+    "Mercury Testing Grounds",
+    "Venus Atmospheric Station",
+    "Saturn Orbital Platform",
+    "Jupiter Gas Mining Rig",
+    "Mars Terraforming Site",
+    "Uranus Weather Station",
+    "Pluto Research Base",
+    "Europa Underground Ocean Lab",
+    "Ganymede Hydroponics Dome",
+  ]
+
+  return locationNames[Math.floor(Math.random() * locationNames.length)];
+}
+
+const getRandomOrganizationName = () => {
+  let organizationNames = [
+    "Halcyon Industries",
+    "Prometheus Labs",
+    "Athena Robotics",
+    "Helix Technologies",
+    "Cortex Systems",
+    "Apex Aerospace",
+    "Hollow Enterprises",
+    "Aperture Science",
+    "Hera Labs",
+    "Guardia Corporation",
+    "Hyperion Corporation",
+    "Stark Industries",
+    "Gattaca Aerospace",
+    "Kronos Technologies",
+    "Atlas Robotics",
+    "Achilles Cybernetics",
+    "Hades Computing",
+    "Luna Systems",
+    "Polaris Enterprises",
+    "Ganymede Agricorp",
+  ]
+
+  return organizationNames[Math.floor(Math.random() * organizationNames.length)];
+}
+
 const agNames = (organization: any, names: string[]) => {
   if (!organization?.accessGroups) {
     console.warn('No access groups found', organization, names);
@@ -358,9 +460,12 @@ export {
   getAccessGroupOptions,
   getAccessGroupType,
   getRandomAccessPointName,
+  getRandomLocationName,
+  getRandomOrganizationName,
   getRobloxGroups,
   getRobloxUsers,
   getRobloxUsersByUsernames,
   roleToText,
   textToRole
 };
+

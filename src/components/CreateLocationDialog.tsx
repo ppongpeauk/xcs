@@ -24,6 +24,7 @@ import {
 import { Field, Form, Formik } from 'formik';
 
 import { useAuthContext } from '@/contexts/AuthContext';
+import { getRandomLocationName } from '@/lib/utils';
 
 export default function CreateLocationDialog({
   isOpen,
@@ -40,6 +41,8 @@ export default function CreateLocationDialog({
   const initialRef = useRef(null);
   const finalRef = useRef(null);
   const { user } = useAuthContext();
+
+  const namePlaceholder = getRandomLocationName();
 
   return (
     <>
@@ -114,7 +117,7 @@ export default function CreateLocationDialog({
                           <Input
                             {...field}
                             variant={'outline'}
-                            placeholder={'Location Name'}
+                            placeholder={namePlaceholder || 'Location Name'}
                             ref={initialRef}
                             autoComplete='off'
                           />

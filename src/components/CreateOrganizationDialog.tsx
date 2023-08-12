@@ -26,6 +26,7 @@ import { Field, Form, Formik } from 'formik';
 import NextLink from 'next/link';
 
 import { useAuthContext } from '@/contexts/AuthContext';
+import { getRandomOrganizationName } from '@/lib/utils';
 
 export default function CreateOrganizationDialog({
   isOpen,
@@ -40,6 +41,8 @@ export default function CreateOrganizationDialog({
   const initialRef = useRef(null);
   const finalRef = useRef(null);
   const { user } = useAuthContext();
+
+  const namePlaceholder = getRandomOrganizationName();
 
   return (
     <>
@@ -112,7 +115,7 @@ export default function CreateOrganizationDialog({
                           <Input
                             {...field}
                             variant={'outline'}
-                            placeholder={'Organization Name'}
+                            placeholder={namePlaceholder || 'Organization Name'}
                             ref={initialRef}
                             autoComplete={'off'}
                           />
