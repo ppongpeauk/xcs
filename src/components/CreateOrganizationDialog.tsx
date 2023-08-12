@@ -42,7 +42,7 @@ export default function CreateOrganizationDialog({
   const finalRef = useRef(null);
   const { user } = useAuthContext();
 
-  const namePlaceholder = useCallback(getRandomOrganizationName, []);
+  const namePlaceholder = getRandomOrganizationName();
 
   return (
     <>

@@ -43,7 +43,7 @@ export default function CreateAccessPointDialog({
   const finalRef = useRef(null);
   const { user } = useAuthContext();
 
-  const namePlaceholder = useCallback(getRandomAccessPointName, []);
+  const namePlaceholder = getRandomAccessPointName();
 
   return (
     <>

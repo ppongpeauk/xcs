@@ -42,7 +42,7 @@ export default function CreateLocationDialog({
   const finalRef = useRef(null);
   const { user } = useAuthContext();
 
-  const namePlaceholder = useCallback(getRandomLocationName, []);
+  const namePlaceholder = getRandomLocationName();
 
   return (
     <>
