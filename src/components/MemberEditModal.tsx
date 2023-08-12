@@ -345,7 +345,7 @@ export default function MemberEditModal({
                                   as={Link}
                                   href={
                                     member?.type === 'user'
-                                      ? `/user/${member?.username}`
+                                      ? `/@${member?.username}`
                                       : member?.type === 'roblox'
                                         ? `https://www.roblox.com/users/${member?.id}/profile`
                                         : `https://www.roblox.com/groups/${member?.id}/group`
@@ -566,7 +566,7 @@ export default function MemberEditModal({
                             as={Link}
                             href={
                               focusedMember?.type === 'user'
-                                ? `/user/${focusedMember?.username}`
+                                ? `/@${focusedMember?.username}`
                                 : focusedMember?.type === 'roblox'
                                   ? `https://www.roblox.com/users/${focusedMember?.id}/profile`
                                   : `https://www.roblox.com/groups/${focusedMember?.id}/group`
@@ -614,7 +614,7 @@ export default function MemberEditModal({
                                 as={NextLink}
                                 href={
                                   focusedMember?.type === 'user'
-                                    ? `/user/${focusedMember?.username}`
+                                    ? `/@${focusedMember?.username}`
                                     : focusedMember?.type === 'roblox'
                                       ? `https://www.roblox.com/users/${focusedMember?.id}/profile`
                                       : `https://www.roblox.com/groups/${focusedMember?.id}/group`

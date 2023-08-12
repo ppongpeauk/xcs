@@ -400,7 +400,7 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
               Event Logs
             </NavLink>
             <NavLink
-              href={'/user'}
+              href={`/@${currentUser?.username}`}
               pathname={pathname}
               leftIcon={<FaIdBadge />}
             >
@@ -588,7 +588,7 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
                   <MenuItem
                     as={MenuLink}
                     icon={<FaIdBadge />}
-                    href="/user"
+                    href={`/@${currentUser?.username}`}
                   >
                     Profile
                   </MenuItem>

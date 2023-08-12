@@ -32,6 +32,7 @@ import {
   Tfoot,
   Th,
   Thead,
+  Tooltip,
   Tr,
   useColorModeValue,
   useDisclosure,
@@ -68,7 +69,7 @@ function TableEntry({ key, organization, skeleton }: { key: number | string, org
       <Td>
         <Stack flexDir={'row'} align={'center'}>
           <Skeleton isLoaded={!skeleton}>
-            <Avatar as={Link} href={`/organizations/${organization?.id}/edit`} transition={'opacity 0.2s ease-out'} _hover={{ opacity: 0.75 }} _active={{ opacity: 0.5 }} borderRadius={'lg'} size={'md'} src={organization?.avatar || '/images/default-avatar.png'} />
+            <Avatar as={Link} href={`/organizations/${organization?.id}/settings`} transition={'opacity 0.2s ease-out'} _hover={{ opacity: 0.75 }} _active={{ opacity: 0.5 }} borderRadius={'lg'} size={'md'} src={organization?.avatar || '/images/default-avatar.png'} />
           </Skeleton>
 
           <Flex flexDir={'column'} mx={2} justify={'center'}>
@@ -76,17 +77,20 @@ function TableEntry({ key, organization, skeleton }: { key: number | string, org
               <Text fontWeight={'bold'}>
                 {!skeleton ? organization?.name : "Organization Name"}
               </Text>
-              <Text size={'sm'} color={'gray.500'}>
-                Owned by {!skeleton ? organization?.owner?.displayName : "Organization Owner"}
+              <Text size={'sm'} variant={'subtext'} textUnderlineOffset={4}>
+                Owned by {!skeleton ? <Link href={`/@${organization?.owner?.username}`}>{organization?.owner?.displayName}</Link> : "Organization Owner"}
               </Text>
               <Flex align={'center'} color={'gray.500'} gap={1}>
                 <Icon as={BiRefresh} />
-                <Text size={'sm'}>
+                <Text size={'sm'} textUnderlineOffset={4}>
                   {!skeleton ? toRelativeTime(organization?.updatedAt as string) : "Last Updated"}
                   {!skeleton && organization?.updatedBy && " by "}
-                  {!skeleton ? organization?.updatedBy?.displayName : "Organization Owner"}
+                  {!skeleton ? <Link href={`/@${organization?.updatedBy?.username}`}>{organization?.updatedBy?.displayName}</Link> : "Organization Owner"}
                 </Text>
               </Flex>
+              <Text size={'sm'} variant={'subtext'} maxW={{ base: '500px', md: '384px', lg: '500px' }} overflow={'hidden'} textOverflow={'ellipsis'}>
+                {!skeleton ? organization?.description : "Organization Description"}
+              </Text>
             </Skeleton>
           </Flex>
         </Stack>
@@ -110,7 +114,7 @@ function TableEntry({ key, organization, skeleton }: { key: number | string, org
           <ButtonGroup>
             <Button
               as={Link}
-              href={`/organizations/${organization?.id}/edit`}
+              href={`/organizations/${organization?.id}/settings`}
               size={"sm"}
               variant={"solid"}
               colorScheme='blue'
@@ -291,7 +295,7 @@ export default function PlatformOrganizations() {
         isOpen={isCreateOrganizationModalOpen}
         onClose={onCreateOrganizationModalClose}
         onCreate={(id) => {
-          push(`/organizations/${id}/edit`);
+          push(`/organizations/${id}/settings`);
         }}
       />
       {!queryLoading && (
@@ -299,7 +303,7 @@ export default function PlatformOrganizations() {
           isOpen={isJoinOrganizationModalOpen}
           onClose={onJoinOrganizationModalClose}
           onJoin={(id) => {
-            push(`/organizations/${id}/edit`);
+            push(`/organizations/${id}/settings`);
           }}
           initialValue={initialInviteCodeValue || ''}
         />
@@ -356,13 +360,19 @@ export default function PlatformOrganizations() {
           <Spacer />
           <Flex w={'fit-content'} gap={4}>
             <ButtonGroup>
-              <IconButton aria-label={'Refresh'} icon={<BiRefresh />}
-                onClick={refreshData}
-              />
+              <Tooltip label={'Refresh'} placement={'top'}>
+                <IconButton aria-label={'Refresh'} icon={<BiRefresh />}
+                  onClick={refreshData}
+                />
+              </Tooltip>
             </ButtonGroup>
             <ButtonGroup isAttached>
-              <IconButton aria-label={'List'} variant={view === "list" ? "solid" : "unselected"} onClick={() => { setView('list') }} icon={<BsListUl />} />
-              <IconButton aria-label={'Grid'} variant={view === "grid" ? "solid" : "unselected"} onClick={() => { setView('grid') }} icon={<BiGrid />} />
+              <Tooltip label={'List'} placement={'top'}>
+                <IconButton aria-label={'List'} variant={view === "list" ? "solid" : "unselected"} onClick={() => { setView('list') }} icon={<BsListUl />} />
+              </Tooltip>
+              <Tooltip label={'Grid'} placement={'top'}>
+                <IconButton aria-label={'Grid'} variant={view === "grid" ? "solid" : "unselected"} onClick={() => { setView('grid') }} icon={<BiGrid />} />
+              </Tooltip>
             </ButtonGroup>
           </Flex>
         </Stack>
@@ -458,7 +468,7 @@ export default function PlatformOrganizations() {
                             borderColor={useColorModeValue('gray.200', 'gray.700')}
                             aspectRatio={1}
                           >
-                            <Link href={`/organizations/${organization.id}/edit`}>
+                            <Link href={`/organizations/${organization.id}/settings`}>
                               <Avatar
                                 ignoreFallback={true}
                                 borderRadius={'lg'}
@@ -478,11 +488,11 @@ export default function PlatformOrganizations() {
                               size={'md'}
                               fontWeight={'bold'}
                             >
-                              <Link href={`/organizations/${organization.id}/edit`}>
+                              <Link href={`/organizations/${organization.id}/settings`}>
                                 {organization.name}
                               </Link>
                             </Heading>
-                            <Link color={"gray.500"} href={`/user/${organization.owner?.username}`}>
+                            <Link color={"gray.500"} href={`/@${organization.owner?.username}`}>
                               by {organization.owner?.displayName}
                             </Link>
                             <Flex align={'center'} color={'gray.500'} gap={1} fontSize={'md'}>

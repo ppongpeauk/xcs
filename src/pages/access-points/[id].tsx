@@ -339,7 +339,7 @@ export default function PlatformAccessPoint() {
             <BreadcrumbItem>
               <BreadcrumbLink
                 as={NextLink}
-                href={`/organizations/${accessPoint?.organizationId}/edit`}
+                href={`/organizations/${accessPoint?.organizationId}/settings`}
                 textUnderlineOffset={4}
               >
                 {accessPoint?.organization?.name}

@@ -91,7 +91,7 @@ export default function Terms() {
             Our services are not directed at children under 13. We do not knowingly collect personal information from
             children under 13. If we become aware that a child under 13 has provided us with personal information, we
             will delete such information from our systems. Users must be over the age of 13 to use our services. If you
-            are between 13 and 18 years old, you may only use our services with the consent and supervision of a parent
+            are between 13 and 18 years old, you may only use our services with the consent of a parent
             or legal guardian.
           </Text>
 

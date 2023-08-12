@@ -30,6 +30,7 @@ import {
   Tfoot,
   Th,
   Thead,
+  Tooltip,
   Tr,
   useColorModeValue,
   useDisclosure
@@ -65,7 +66,7 @@ function TableEntry({ key, location, skeleton }: { key: number | string, locatio
       <Td>
         <Stack flexDir={'row'} align={'center'}>
           <Skeleton isLoaded={!skeleton}>
-            <Avatar as={Link} href={location?.roblox?.place ? `https://www.roblox.com/games/${location?.roblox?.place?.rootPlaceId}/game` : `/locations/${location?.id}`} target={location?.roblox?.place ? '_blank' : '_self'} transition={'opacity 0.2s ease-out'} _hover={{ opacity: 0.75 }} _active={{ opacity: 0.5 }} borderRadius={'lg'} size={'md'} src={location?.roblox?.place?.thumbnail || '/images/default-avatar.png'} />
+            <Avatar as={Link} href={location?.roblox?.place ? `https://www.roblox.com/games/${location?.roblox?.place?.rootPlaceId}/game` : `/locations/${location?.id}/general`} target={location?.roblox?.place ? '_blank' : '_self'} transition={'opacity 0.2s ease-out'} _hover={{ opacity: 0.75 }} _active={{ opacity: 0.5 }} borderRadius={'lg'} size={'md'} src={location?.roblox?.place?.thumbnail || '/images/default-avatar.png'} />
           </Skeleton>
 
           <Flex flexDir={'column'} mx={2} justify={'center'}>
@@ -342,13 +343,19 @@ export default function PlatformLocations() {
           <Spacer />
           <Flex w={'fit-content'} gap={4}>
             <ButtonGroup>
-              <IconButton aria-label={'Refresh'} icon={<BiRefresh />}
-                onClick={refreshLocations}
-              />
+              <Tooltip label={'Refresh'} placement={'top'}>
+                <IconButton aria-label={'Refresh'} icon={<BiRefresh />}
+                  onClick={refreshLocations}
+                />
+              </Tooltip>
             </ButtonGroup>
             <ButtonGroup isAttached>
-              <IconButton aria-label={'List'} variant={view === "list" ? "solid" : "unselected"} onClick={() => { setView('list') }} icon={<BsListUl />} />
-              <IconButton aria-label={'Grid'} variant={view === "grid" ? "solid" : "unselected"} onClick={() => { setView('grid') }} icon={<BiGrid />} />
+              <Tooltip label={'List'} placement={'top'}>
+                <IconButton aria-label={'List'} variant={view === "list" ? "solid" : "unselected"} onClick={() => { setView('list') }} icon={<BsListUl />} />
+              </Tooltip>
+              <Tooltip label={'Grid'} placement={'top'}>
+                <IconButton aria-label={'Grid'} variant={view === "grid" ? "solid" : "unselected"} onClick={() => { setView('grid') }} icon={<BiGrid />} />
+              </Tooltip>
             </ButtonGroup>
           </Flex>
         </Stack>
@@ -461,7 +468,7 @@ export default function PlatformLocations() {
                               size={'md'}
                               fontWeight={'bold'}
                             >
-                              <Link href={`/locations/${location.id}/edit`}>
+                              <Link href={`/locations/${location.id}/general`}>
                                 {location.name}
                               </Link>
                             </Heading>

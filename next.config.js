@@ -17,6 +17,10 @@ module.exports = withPWA({
         destination: '/verify/:slug*'
       },
       {
+        source: '/@:username',
+        destination: '/users/:username'
+      },
+      {
         source: '/api/v1/roblox/users/:slug*',
         destination: 'https://users.roblox.com/:slug*'
       },
@@ -68,11 +72,6 @@ module.exports = withPWA({
       {
         source: '/invite/:slug*',
         destination: '/invitation/:slug*',
-        permanent: false
-      },
-      {
-        source: '/@:username*',
-        destination: '/platform/user/:username*',
         permanent: false
       },
       {

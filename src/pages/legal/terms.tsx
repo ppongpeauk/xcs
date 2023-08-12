@@ -31,7 +31,7 @@ export default function Terms() {
             <ListItem>
               <Text as="span">
                 You must be at least 13 years old to use the Services. If you are under 18 years old, you may only use
-                the Services with the consent and supervision of a parent or legal guardian.
+                the Services with the consent of a parent or legal guardian.
               </Text>
             </ListItem>
 

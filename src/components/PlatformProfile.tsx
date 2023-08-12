@@ -71,7 +71,7 @@ function OrganizationItem({ organization }: { organization: any }) {
   );
 }
 
-export default function Profile({ username, user: serverUser }: { username?: string | null; user?: User }) {
+export default function Profile({ username, user: serverUser }: { username: string | null; user?: User }) {
   const router = useRouter();
   const { currentUser, user: authUser } = useAuthContext();
   const [user, setUser] = useState<any | undefined>(undefined);

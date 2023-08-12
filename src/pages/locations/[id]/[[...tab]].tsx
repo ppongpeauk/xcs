@@ -188,7 +188,7 @@ export default function PlatformLocation() {
             <BreadcrumbItem>
               <BreadcrumbLink
                 as={NextLink}
-                href={`/organizations/${location?.organization.id}/edit`}
+                href={`/organizations/${location?.organization.id}/settings`}
                 textUnderlineOffset={4}
               >
                 {location?.organization.name || 'Organization Name'}

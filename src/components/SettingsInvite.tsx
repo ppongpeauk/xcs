@@ -64,18 +64,17 @@ export default function SettingsInvite() {
           as={'h2'}
           size={'lg'}
         >
-          You have {currentUser?.platform?.invites || 0} invite{currentUser?.platform?.invites === 1 ? '' : 's'} left.
+          You have {currentUser?.platform?.invites || 0} referral credit{currentUser?.platform?.invites === 1 ? '' : 's'}.
         </Heading>
         <Text fontSize={'md'} color={"gray.500"}>
           Who&apos;s a great addition to XCS? Invite them to join!
         </Text>
         <Button
           mt={4}
-          colorScheme={'blue'}
           onClick={platformInviteModalOnOpen}
           isDisabled={currentUser?.platform?.invites === 0}
         >
-          Invite
+          Invite a User
         </Button>
       </Box>
     </>

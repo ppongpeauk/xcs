@@ -59,6 +59,12 @@ const theme = {
         textTransform: 'unset',
       }
     },
+    Card: {
+      baseStyle: {
+        borderRadius: 'lg',
+        boxShadow: 'unset'
+      }
+    },
     FormHelperText: {
       baseStyle: {
         color: 'gray.500',

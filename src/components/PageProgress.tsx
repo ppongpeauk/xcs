@@ -8,9 +8,13 @@ export default function PageProgress() {
   return (
     <NextNProgress
       color={useColorModeValue('#000', '#fff')}
-      startPosition={0.3}
-      stopDelayMs={250}
-      height={3}
+      startPosition={0}
+      // stopDelayMs={250}
+      height={2}
+      options={{
+        showSpinner: false
+      }}
+      showOnShallow={false}
     />
   );
 }

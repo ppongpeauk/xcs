@@ -50,15 +50,7 @@ export async function getServerSideProps({ query }: any) {
 export default function UserProfileNS({ user }: any) {
   const { query, push } = useRouter();
   const { currentUser } = useAuthContext();
-  let { username: queryUsername } = query;
-  const username = queryUsername ? queryUsername[0] : null;
-
-  useEffect(() => {
-    if (!currentUser) return;
-    if (!queryUsername) {
-      push(`/user/${currentUser?.username}`);
-    }
-  }, [queryUsername, currentUser]);
+  let { username } = query as { username: string };
 
   return (
     <>
@@ -75,7 +67,7 @@ export default function UserProfileNS({ user }: any) {
             />
             <meta
               property="og:url"
-              content={`https://xcs.restrafes.co/user/${username}`}
+              content={`https://xcs.restrafes.co/@${username}`}
             />
             <meta
               property="og:description"
