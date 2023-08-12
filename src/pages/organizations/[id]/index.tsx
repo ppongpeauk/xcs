@@ -24,6 +24,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
 import { AiFillSetting } from 'react-icons/ai';
+import { MdJoinRight } from 'react-icons/md';
 
 export default function OrganizationPublic() {
   const { query, push } = useRouter();
@@ -194,23 +195,32 @@ export default function OrganizationPublic() {
             </Skeleton>
           </Flex>
         </Flex>
-        <Flex flexDir={'column'} justify={'center'} py={2} w={'fit-content'}>
-          {
-            organization?.canEdit &&
-            <>
-              {/* <Text as={'h2'} fontSize={'md'} fontWeight={'bold'} mb={2}>
-                Actions
-              </Text> */}
-              <Button
-                leftIcon={<Icon as={AiFillSetting} />}
-                onClick={() => push(`/organizations/${query.id}/settings`)}
-              >
-                Edit Organization
-              </Button>
-            </>
-          }
+        {/* <Text as={'h2'} fontSize={'md'}>
+          Actions
+        </Text> */}
+        <Flex flexDir={'row'} align={'center'} py={2} w={'fit-content'}>
+          <Skeleton as={Flex} isLoaded={!!organization} gap={4}>
+            <Button
+              colorScheme={'blue'}
+              leftIcon={<Icon as={MdJoinRight} />}
+              isDisabled={true}
+            >
+              Request to Join
+            </Button>
+            {
+              organization?.canEdit &&
+              <>
+                <Button
+                  leftIcon={<Icon as={AiFillSetting} />}
+                  onClick={() => push(`/organizations/${query.id}/settings`)}
+                >
+                  Manage Organization
+                </Button>
+              </>
+            }
+          </Skeleton>
         </Flex>
-        <Skeleton isLoaded={!!organization} maxW={'container.md'} py={4}>
+        <Skeleton isLoaded={!!organization} maxW={'container.md'} my={4}>
           <Flex flexDir={'column'} p={8} border={'1px solid'} borderColor={useColorModeValue('gray.200', 'gray.700')} borderRadius={'lg'}>
             <Heading as={'h2'} fontSize={'2xl'} fontWeight={'900'} mb={2}>
               About {organization?.name}

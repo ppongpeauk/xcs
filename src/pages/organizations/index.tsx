@@ -69,7 +69,7 @@ function TableEntry({ key, organization, skeleton }: { key: number | string, org
       <Td>
         <Stack flexDir={'row'} align={'center'}>
           <Skeleton isLoaded={!skeleton}>
-            <Avatar as={Link} href={`/organizations/${organization?.id}/settings`} transition={'opacity 0.2s ease-out'} _hover={{ opacity: 0.75 }} _active={{ opacity: 0.5 }} borderRadius={'lg'} size={'md'} src={organization?.avatar || '/images/default-avatar.png'} />
+            <Avatar as={Link} href={`/organizations/${organization?.id}`} transition={'opacity 0.2s ease-out'} _hover={{ opacity: 0.75 }} _active={{ opacity: 0.5 }} borderRadius={'lg'} size={'md'} src={organization?.avatar || '/images/default-avatar.png'} />
           </Skeleton>
 
           <Flex flexDir={'column'} mx={2} justify={'center'}>
