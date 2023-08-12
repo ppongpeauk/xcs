@@ -578,7 +578,7 @@ export default function PlatformOrganization() {
               </ActionButton>
             </Flex>
             <Divider my={4} />
-            <Heading as="h1" size="lg" pt={2}>
+            <Heading as="h1" size="lg" my={2}>
               Settings
             </Heading>
             <Box
