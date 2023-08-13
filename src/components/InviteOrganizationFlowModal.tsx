@@ -52,7 +52,7 @@ import { FaIdBadge } from 'react-icons/fa';
 import { SiRoblox, SiRobloxstudio } from 'react-icons/si';
 
 const steps = [
-  { description: 'Select a Member Type' },
+  { description: 'Choose a Member Type' },
   { description: 'Enter Member Details' },
   // { description: 'Overview' },
 ]
@@ -437,7 +437,7 @@ export default function InviteOrganizationFlowModal({
                     <Text variant={'subtext'} fontSize={'sm'}>
                       {
                         activeStep === 0 && (
-                          'Select the type of member you want to add to your organization.'
+                          'Choose the type of member you want to add to your organization.'
                         )
                       }
                       {
