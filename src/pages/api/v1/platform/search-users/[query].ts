@@ -38,7 +38,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             id: 1,
             username: 1,
             displayName: 1,
-            email: 1,
             avatar: 1
           }
         }
