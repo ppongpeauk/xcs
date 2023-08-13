@@ -6,24 +6,17 @@ import {
   Button,
   Flex,
   FormControl,
-  FormHelperText,
   FormLabel,
   HStack,
   Input,
   InputGroup,
-  InputLeftElement,
-  Portal,
-  Skeleton,
   SkeletonCircle,
   Stack,
-  Switch,
-  Text,
   Textarea,
   VStack,
   useToast
 } from '@chakra-ui/react';
 
-import { AiOutlineUser } from 'react-icons/ai';
 import { IoSave } from 'react-icons/io5';
 
 import { Field, Form, Formik } from 'formik';

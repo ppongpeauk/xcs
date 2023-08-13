@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useCallback, useRef } from 'react';
+import { useRef } from 'react';
 
 import {
   Button,
@@ -14,7 +14,6 @@ import {
   ModalHeader,
   ModalOverlay,
   Text,
-  Textarea,
   VStack,
   useColorModeValue,
   useToast
@@ -40,8 +39,10 @@ export default function CheckActivationCodeModal({
     <>
       <Formik
         initialValues={{ code: '' }}
-        onSubmit={(values, actions) => {
-          fetch(`/api/v1/activation/${values.code}`, {
+        onSubmit={async (values, actions) => {
+          const reformatCode = values.code.replace(`${process.env.NEXT_PUBLIC_ROOT_URL}/invitation/`, '');
+          await actions.setValues({ 'code': reformatCode });
+          await fetch(`/api/v1/activation/${encodeURIComponent(reformatCode || 0)}`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json'
@@ -58,11 +59,11 @@ export default function CheckActivationCodeModal({
             })
             .then((data) => {
               onClose();
-              push(`/auth/activate/${values.code}`)
+              push(`/auth/activate/${reformatCode}`)
             })
             .catch((error) => {
               toast({
-                title: 'There was a problem while checking your activation code.',
+                title: 'Error',
                 description: error.message,
                 status: 'error',
                 duration: 5000,
@@ -95,6 +96,7 @@ export default function CheckActivationCodeModal({
                           <Input
                             {...field}
                             ref={initialRef}
+                            value={field.value}
                             variant={'outline'}
                             placeholder={'Code'}
                             autoComplete={'off'}
@@ -109,7 +111,7 @@ export default function CheckActivationCodeModal({
                     color={"gray.500"}
                     pt={2}
                   >
-                    Received an activation code? Enter it here to create an account.
+                    Have an activation code? Enter it here to create an account.
                   </Text>
                 </ModalBody>
 

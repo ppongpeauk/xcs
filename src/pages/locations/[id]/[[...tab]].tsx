@@ -1,35 +1,29 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { Suspense, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import {
   Box,
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
-  BreadcrumbSeparator, Container, Divider, Heading,
+  Divider,
   IconButton,
   Menu,
   MenuButton,
-  MenuDivider,
   MenuItem, MenuList, Skeleton, Tab,
   TabList,
   TabPanel,
   TabPanels,
   Tabs,
-  Text, useColorModeValue, useDisclosure, useToast
+  Text, useColorModeValue,
+  useToast
 } from '@chakra-ui/react';
 
-import { ChevronRightIcon, DeleteIcon, HamburgerIcon } from '@chakra-ui/icons';
+import { ChevronRightIcon, HamburgerIcon } from '@chakra-ui/icons';
 
-import { AiFillTag } from 'react-icons/ai';
-import { BiSolidGroup, BiSolidTime, BiSolidTrafficBarrier } from 'react-icons/bi';
-import { BsFillCloudDownloadFill } from 'react-icons/bs';
-import { IoIosRemoveCircle } from 'react-icons/io';
 import { IoBusiness } from 'react-icons/io5';
 import { MdSensors } from 'react-icons/md';
-import { SiRoblox } from 'react-icons/si';
 
-import { Field, Form, Formik } from 'formik';
 import Head from 'next/head';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
@@ -38,9 +32,7 @@ import { useAuthContext } from '@/contexts/AuthContext';
 
 import Layout from '@/layouts/PlatformLayout';
 
-import DeleteDialog from '@/components/DeleteDialog';
 import LocationAccessPoints from '@/components/LocationAccessPoints';
-import LocationEventLogs from '@/components/LocationEventLogs';
 import LocationInfo from '@/components/LocationInfo';
 
 function StyledTab({ children }: { children: React.ReactNode }) {

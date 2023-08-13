@@ -1,9 +1,7 @@
-import { Box, Divider, Flex, Icon, Image, Link, Spacer, Text, useColorModeValue } from '@chakra-ui/react';
+import { Divider, Flex, Icon, Link, Text, useColorModeValue } from '@chakra-ui/react';
 
 import NextLink from 'next/link';
 import { BiGitBranch } from 'react-icons/bi';
-
-import ThemeButton from './ThemeButton';
 
 export default function Footer() {
   return (

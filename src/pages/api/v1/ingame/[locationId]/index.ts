@@ -42,6 +42,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(401).json({ success: false, message: 'An invalid API key was provided.' });
   }
 
+  if (!universeId) return res.status(400).json({ success: false, message: 'Server received an empty universe ID.' });
+
   const locationUniverseId = location.roblox.universe?.id?.toString();
   if (!locationUniverseId && universeId) {
     // fetch experience details

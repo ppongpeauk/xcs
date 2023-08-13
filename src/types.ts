@@ -19,6 +19,7 @@ export interface User {
   username: string;
   bio?: string | null;
   avatar: string | null;
+  sponsorId?: string;
   email: {
     address: string;
     privacyLevel: number;

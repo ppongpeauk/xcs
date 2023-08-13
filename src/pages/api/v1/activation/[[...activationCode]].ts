@@ -13,23 +13,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const db = mongoClient.db(process.env.MONGODB_DB as string);
   const invitations = db.collection('invitations');
   let { activationCode } = req.query as { activationCode: string };
+  activationCode = decodeURIComponent(activationCode);
 
-  const invitation = await invitations.findOne(
-    {
-      type: 'xcs',
-      code: activationCode[0]
-    },
-  ) as Invitation | null;
+  const invitation = (await invitations.findOne({
+    type: 'xcs',
+    code: activationCode
+  })) as Invitation | null;
 
   if (!invitation) {
     return res.status(404).json({
       valid: false,
-      message: 'Invalid activation code.'
+      message: 'Invalid activation code. Please check the code and try again.'
     });
   }
 
   if (req.method === 'GET') {
-
     if (invitation?.maxUses > -1 && invitation?.uses >= invitation?.maxUses) {
       return res.status(403).json({
         valid: false,
@@ -207,7 +205,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         platform: {
           staff: false,
           membership: 0,
-          invites: invitation.startingReferrals || 0,
+          invites: invitation.startingReferrals || 0
         },
         payment: {
           customerId: null
@@ -226,9 +224,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         },
         statistics: {
           referrals: 0,
-          scans: 0,
+          scans: 0
         },
 
+        sponsorId: invitation.isSponsor ? invitation.createdBy : null,
         createdAt: new Date(),
         updatedAt: new Date()
       } as User)
@@ -252,15 +251,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
 
     try {
-      const email_link = await admin.auth().generateEmailVerificationLink(email.trim().toLowerCase(), {
-        url: `${process.env.NEXT_PUBLIC_ROOT_URL}/home`,
-        handleCodeInApp: true
-      }).then((link) => {
-        return link;
-      }).catch((error) => {
-        console.log(error);
-        throw error;
-      });
+      const email_link = await admin
+        .auth()
+        .generateEmailVerificationLink(email.trim().toLowerCase(), {
+          url: `${process.env.NEXT_PUBLIC_ROOT_URL}/home`,
+          handleCodeInApp: true
+        })
+        .then((link) => {
+          return link;
+        })
+        .catch((error) => {
+          console.log(error);
+          throw error;
+        });
 
       // console.log(email_link);
 
@@ -273,12 +276,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           name: displayName,
           link: email_link
         }
-      }
-      await sgMail
-        .send(msg)
-        .then(() => {
-          console.log('Email sent')
-        })
+      };
+      await sgMail.send(msg).then(() => {
+        console.log('Email sent');
+      });
     } catch (error) {
       console.log(error);
     }

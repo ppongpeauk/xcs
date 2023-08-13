@@ -3,33 +3,23 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import {
   Avatar,
-  AvatarGroup,
   Box,
   Button,
   ButtonGroup,
-  Code,
   Container,
-  Divider,
   Flex,
-  FormControl,
-  FormLabel,
-  HStack,
   Heading,
   Icon,
   IconButton,
   Input,
-  Select,
   Skeleton,
-  SkeletonCircle,
   Spacer,
   Stack,
   Table,
-  TableCaption,
   TableContainer,
   Tbody,
   Td,
   Text,
-  Tfoot,
   Th,
   Thead,
   Tooltip,
@@ -44,7 +34,6 @@ import { Link } from '@chakra-ui/next-js';
 import { MdMail, MdOutlineAddCircle, MdOutlineJoinRight } from 'react-icons/md';
 
 import Head from 'next/head';
-import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 
 import { useAuthContext } from '@/contexts/AuthContext';
@@ -56,8 +45,7 @@ import JoinOrganizationDialog from '@/components/JoinOrganizationDialog';
 import UserInvitationsModal from '@/components/UserInvitationsModal';
 import { Organization } from '@/types';
 import moment from 'moment';
-import 'moment-timezone';
-import { BiGrid, BiRefresh, BiSolidExit } from 'react-icons/bi';
+import { BiGrid, BiRefresh } from 'react-icons/bi';
 import { BsListUl } from 'react-icons/bs';
 
 function TableEntry({ key, organization, skeleton }: { key: number | string, organization?: Organization, skeleton?: boolean }) {

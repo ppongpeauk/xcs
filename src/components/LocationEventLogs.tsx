@@ -1,8 +1,7 @@
 import * as React from 'react';
 
-import { Box, Button, Checkbox, Flex, Heading, Text, useColorModeValue } from '@chakra-ui/react';
+import { Box, Checkbox, Flex, Text } from '@chakra-ui/react';
 
-import { TriangleDownIcon, TriangleUpIcon } from '@chakra-ui/icons';
 
 // import {
 //   DropdownMenu,
@@ -12,11 +11,9 @@ import { TriangleDownIcon, TriangleUpIcon } from '@chakra-ui/icons';
 //   DropdownMenuSeparator,
 //   DropdownMenuTrigger,
 // } from "@/components/ui/dropdown-menu";
-import { BsThreeDots } from 'react-icons/bs';
 
 import { ColumnDef } from '@tanstack/react-table';
 
-import { DataTable } from '@/components/event-logs-table/data-table';
 
 type EventLog = {
   id: string;
@@ -156,15 +153,11 @@ export default function LocationEventLogs() {
       <Flex
         w={'full'}
         h={'max-content'}
-        // rounded={"xl"}
-        // border={"1px solid"}
-        // borderColor={useColorModeValue("gray.300", "gray.700")}
-        // p={4}
+      // rounded={"xl"}
+      // border={"1px solid"}
+      // borderColor={useColorModeValue("gray.300", "gray.700")}
+      // p={4}
       >
-        <DataTable
-          columns={columns}
-          data={logs}
-        />
       </Flex>
     </Box>
   );

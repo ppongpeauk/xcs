@@ -1,19 +1,16 @@
 // Next
 // Chakra UI
-import { ChakraProvider, ColorModeScript, useColorModeValue } from '@chakra-ui/react';
+import { ChakraProvider } from '@chakra-ui/react';
 
 import '@/styles/globals.css';
 import theme from '@/theme';
-import { NextPage } from 'next';
-import type { AppProps } from 'next/app';
-import { Exo, Familjen_Grotesk, Roboto_Flex, Signika, Sora } from 'next/font/google';
+import { Familjen_Grotesk } from 'next/font/google';
 
 import { AuthProvider } from '@/contexts/AuthContext';
 
 // Theme
 import PageProgress from '@/components/PageProgress';
 import { DialogProvider } from '@/contexts/DialogContext';
-import { CacheProvider } from '@chakra-ui/next-js';
 
 const font = Familjen_Grotesk({ subsets: ['latin'] });
 

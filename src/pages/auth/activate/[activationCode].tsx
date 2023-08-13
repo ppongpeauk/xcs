@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import {
   Box,
@@ -12,69 +12,53 @@ import {
   InputLeftElement,
   Link,
   Skeleton,
-  SkeletonText,
   Text,
   useColorModeValue,
   useToast
 } from '@chakra-ui/react';
 
 import { BsDisplayFill } from 'react-icons/bs';
-import { FaKey, FaSmileWink, FaUser } from 'react-icons/fa';
-import { MdEmail, MdPin } from 'react-icons/md';
+import { FaKey, FaUser } from 'react-icons/fa';
+import { MdEmail } from 'react-icons/md';
 import { RiLockPasswordFill } from 'react-icons/ri';
 
-import { useDisclosure } from '@chakra-ui/hooks';
-import { signInWithEmailAndPassword } from 'firebase/auth';
 import { Field, Form, Formik } from 'formik';
 import Head from 'next/head';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 
-import { auth } from '@/lib/firebase';
-
 import Footer from '@/components/Footer';
 import Nav from '@/components/Nav';
 import Section from '@/components/section';
+import http from 'http';
 
-export default function Activate() {
+export const getServerSideProps = async ({ query, res }: { query: { activationCode?: string }, res: http.ServerResponse }) => {
+  if (!query.activationCode) {
+    return {
+      redirect: {
+        destination: '/auth/login',
+        permanent: false
+      }
+    };
+  }
+
+  const response = await fetch(`${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/activation/${query.activationCode}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+    .then((res) => res)
+
+  if (response.status !== 200) { return { redirect: { destination: '/auth/login', permanent: false } } };
+  return { props: { valid: true } };
+}
+
+export default function Activate({ valid }: { valid: boolean }) {
   const toast = useToast();
   const router = useRouter();
   const { activationCode } = router.query;
-  const [loading, setLoading] = useState<boolean>(true);
-
-  // Validate activation code
-  useEffect(() => {
-    if (activationCode) {
-      fetch(`/api/v1/activation/${activationCode}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-        .then((res) => {
-          if (res.status === 200) {
-            return res.json();
-          } else {
-            return res.json().then((json) => {
-              throw new Error(json.message);
-            });
-          }
-        })
-        .then((res) => { })
-        .catch((error) => {
-          toast({
-            title: error.message,
-            status: 'error',
-            duration: 5000,
-            isClosable: true
-          });
-          router.push('/auth/login');
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    }
-  }, [activationCode]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   return (
     <>
@@ -141,7 +125,7 @@ export default function Activate() {
               outline={['0px solid', '1px solid']}
               outlineColor={['unset', useColorModeValue('gray.200', 'gray.700')]}
               rounded={'lg'}
-              w={{ base: 'full', md: 'md', lg: 'lg' }}
+              maxW={{ base: '100%', md: 'md' }}
             >
               <Box
                 w={'full'}
