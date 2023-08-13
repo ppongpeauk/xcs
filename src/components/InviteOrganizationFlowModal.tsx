@@ -416,7 +416,7 @@ export default function InviteOrganizationFlowModal({
             <Form>
               <ModalContent bg={useColorModeValue('white', 'gray.800')}>
                 <ModalHeader>
-                  Add a Member
+                  Add Member
                 </ModalHeader>
                 <ModalCloseButton />
                 <ModalBody minH={'xl'}>

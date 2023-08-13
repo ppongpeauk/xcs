@@ -84,7 +84,7 @@ export default function AccessGroupEditModal({
 }: any) {
   const { user } = useAuthContext();
   const toast = useToast();
-  const [focusedGroup, setFocusedGroup] = useState<AccessGroup | null>(null);
+  const [focusedGroup, setFocusedGroup] = useState<any>(null);
   const themeBorderColor = useColorModeValue('gray.200', 'gray.700');
 
   const groupSearchRef = useRef<any>(null);
@@ -114,9 +114,9 @@ export default function AccessGroupEditModal({
   useEffect(() => {
     if (!organization) return;
     setFilteredGroups(filterGroups(groupSearchRef?.current?.value));
-    // if (focusedGroup) {
-    //   setFocusedGroup(Object.values(groups).find((group: AccessGroup) => group.id === focusedGroup.id));
-    // }
+    if (focusedGroup) {
+      setFocusedGroup(Object.values(groups as any).find((group: any) => group.id === focusedGroup.id));
+    }
   }, [organization]);
 
   return (
