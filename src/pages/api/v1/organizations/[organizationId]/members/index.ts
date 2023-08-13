@@ -94,7 +94,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       // check if the user has already been invited
       const invitation = (await db
         .collection('organizationInvitations')
-        .findOne({ organizationId: organizationId, recipient: user.id })) as OrganizationInvitation | null;
+        .findOne({ organizationId: organizationId, recipientId: user.id })) as OrganizationInvitation | null;
       if (invitation) {
         const invitedBy = (await users.findOne({ id: invitation.createdBy }, { projection: { displayName: 1 } })) as {
           displayName: string;
