@@ -507,7 +507,7 @@ export default function PlatformOrganization() {
                       src={organization?.owner?.avatar}
                     />
                     {organization?.members
-                      .filter((member: any) => member.type !== 'roblox-group')
+                      .filter((member: any) => ['user', 'roblox'].includes(member.type))
                       .map(
                         (member: any) =>
                           member.id !== organization?.owner?.id &&

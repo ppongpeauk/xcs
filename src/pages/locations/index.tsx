@@ -51,7 +51,7 @@ import { useAuthContext } from '@/contexts/AuthContext';
 import Layout from '@/layouts/PlatformLayout';
 
 import CreateLocationDialog from '@/components/CreateLocationDialog';
-import { Location } from '@/types';
+import { Location, Organization } from '@/types';
 import { BiGrid, BiRefresh } from 'react-icons/bi';
 import { BsListUl } from 'react-icons/bs';
 
@@ -133,7 +133,7 @@ export default function PlatformLocations() {
   const { query, push } = useRouter();
 
   // Fetch locations
-  const [locations, setLocations] = useState<any>([]);
+  const [locations, setLocations] = useState<Location[]>([]);
   const [locationsLoading, setLocationsLoading] = useState<boolean>(true);
   const [filteredLocations, setFilteredLocations] = useState<any>([]);
 
@@ -141,12 +141,11 @@ export default function PlatformLocations() {
   const [organizations, setOrganizations] = useState<any>([]);
   const [organizationsLoading, setOrganizationsLoading] = useState<boolean>(true);
 
-  const [selectedOrganization, setSelectedOrganization] = useState<any>(null);
+  const [selectedOrganization, setSelectedOrganization] = useState<Organization | null>(null);
 
   const { user } = useAuthContext();
-  const [idToken, setIdToken] = useState<string | null>(null);
 
-  const [view, setView] = useState<'list' | 'grid' | null>(null);
+  const [view, setView] = useState<'list' | 'grid' | undefined>();
   const searchRef = useRef<HTMLInputElement>(null);
 
   const {
@@ -217,6 +216,7 @@ export default function PlatformLocations() {
   useEffect(() => {
     if (!user || !selectedOrganization) return;
     refreshLocations();
+    localStorage.setItem('defaultOrganization', selectedOrganization.id);
   }, [selectedOrganization, user, refreshLocations]);
 
   useEffect(() => {
@@ -225,7 +225,15 @@ export default function PlatformLocations() {
   }, [organizations]);
 
   useEffect(() => {
-    if (!query.organization) return;
+    if (!query.organization) {
+      const defaultOrganization = localStorage.getItem('defaultOrganization');
+      if (organizations && defaultOrganization) {
+        const organizationOption = organizations.find((organization: any) => organization.id === defaultOrganization);
+        if (!organizationOption) return;
+        setSelectedOrganization(organizationOption);
+      }
+      return;
+    };
     const organization = organizations.find((organization: any) => organization.id === query.organization);
     setSelectedOrganization(organization);
   }, [organizations, query.organization]);

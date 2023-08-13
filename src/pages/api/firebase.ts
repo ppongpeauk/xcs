@@ -51,14 +51,19 @@ export async function tokenToID(token: string) {
   }
 }
 
-export async function uploadProfilePicture(type: 'organization' | 'user' = 'user', id: string, picture: string, imageFormat: string = 'jpeg') {
+export async function uploadProfilePicture(
+  type: 'organization' | 'user' = 'user',
+  id: string,
+  picture: string,
+  imageFormat: string = 'jpeg'
+) {
   // upload to firebase storage
   let file;
   let format = imageFormat === 'gif' ? 'gif' : 'jpeg';
   if (type === 'organization') {
-    file = bucket.file(`organizations/${id}/profile.${format}`);
+    file = bucket.file(`${process.env.NODE_ENV}/organizations/${id}/profile.${format}`);
   } else {
-    file = bucket.file(`users/${id}/profile.${format}`);
+    file = bucket.file(`${process.env.NODE_ENV}/users/${id}/profile.${format}`);
   }
 
   await file
@@ -87,10 +92,10 @@ export async function uploadProfilePicture(type: 'organization' | 'user' = 'user
 }
 
 export async function deleteOrganizationProfilePicture(id: string) {
-  let file = bucket.file(`organizations/${id}/profile.jpeg`);
+  let file = bucket.file(`${process.env.NODE_ENV}/organizations/${id}/profile.jpeg`);
   // if file doesn't exist, try gif
   if (!(await file.exists())[0]) {
-    file = bucket.file(`organizations/${id}/profile.gif`);
+    file = bucket.file(`${process.env.NODE_ENV}/organizations/${id}/profile.gif`);
   }
   if (!(await file.exists())[0]) {
     return;

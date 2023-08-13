@@ -18,34 +18,34 @@ export const config = {
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const uid = await authToken(req);
-  if (!uid) {
-    return res.status(401).json({ message: 'Unauthorized.' });
-  }
+  if (!uid) return res.status(401).json({ message: 'Unauthorized.' });
 
   const mongoClient = await clientPromise;
   const db = mongoClient.db(process.env.MONGODB_DB as string);
-  const users = db.collection('users');
-  const user = await users.findOne({ id: uid }) as User | null;
+  const user = (await db.collection('users').findOne({ id: uid })) as User | null;
+  if (!user) return res.status(404).json({ message: 'User not found.' });
 
-  if (!user) {
-    return res.status(404).json({ message: 'User not found' });
-  }
+  const notifications = (await db
+    .collection('notifications')
+    .find({ recipient: uid })
+    .toArray()) as unknown as Notification[];
 
   if (req.method === 'GET') {
+    // count org invitations
+    const invitationsCount = await db.collection('organizationInvitations').countDocuments({ recipientId: uid });
     return res.status(200).json({
-      user: user
+      user: {
+        ...user,
+        statistics: {
+          organizationInvitations: invitationsCount
+        },
+        notifications
+      }
     });
   }
-
-  // Updating User Data
   if (req.method === 'PATCH') {
-    if (!req.body) {
-      return res.status(400).json({ message: 'No body provided' });
-    }
-
-    let { displayName, bio } = req.body as any;
-
-    // Character limits
+    if (!req.body) return res.status(400).json({ message: 'No body provided.' });
+    let { displayName, bio, avatar, email } = req.body as any;
 
     if (displayName !== null) {
       displayName = displayName.trim();
@@ -64,48 +64,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const timestamp = new Date();
-
     req.body.lastUpdatedAt = timestamp;
 
-    if (req.body.email) {
-      req.body.email = req.body.email.trim().toLowerCase();
+    if (email) {
+      email = email.trim().toLowerCase();
 
       // check if email is already in use
-      const emailExists = await users.findOne({
-        'email.address': req.body.email
-      });
-      if (emailExists) {
-        return res.status(400).json({
-          message: 'Email is already in use.'
-        });
-      }
+      const emailExists = await db.collection('users').findOne({ 'email.address': email });
+      if (emailExists) return res.status(400).json({ message: 'Email already in use.' });
 
-      await admin.auth().updateUser(uid, {
-        email: req.body.email
-      });
+      // update email in firebase
+      await admin.auth().updateUser(uid, { email: req.body.email, emailVerified: false });
 
-      // update emailVerified to false
-      await admin.auth().updateUser(uid, {
-        emailVerified: false
-      });
-
-      await users.updateOne({ id: uid }, { $set: { 'email.address': req.body.email, 'email.verified': false } });
-
-      // // send verification email
-      // const userToken = await admin.auth().createCustomToken(uid).then((token) => token);
-      // await fetch(`${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/verify/email`, {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //     Authorization: `Bearer ${userToken}`
-      //   }
-      // });
+      await db
+        .collection('users')
+        .updateOne({ id: uid }, { $set: { 'email.address': req.body.email, 'email.verified': false } });
     }
 
     // check if avatar is valid
-    if (req.body.avatar) {
-      let avatar = req.body.avatar;
-
+    if (avatar) {
       let imageFormat = avatar.split(';')[0].split('/')[1]; // ex: jpeg
       // limit gifs for only staff
       if (imageFormat === 'gif' && !user.platform.staff) {
@@ -116,7 +93,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       let image;
       if (imageFormat === 'gif') {
-        image = await sharp(imageData, { animated: true }).resize(256, 256).gif({ quality: 80, pageHeight: 256 }).toBuffer();
+        image = await sharp(imageData, { animated: true })
+          .resize(256, 256)
+          .gif({ quality: 80, pageHeight: 256 })
+          .toBuffer();
       } else {
         image = await sharp(imageData).resize(256, 256).jpeg({ quality: 80 }).toBuffer();
       }
@@ -141,10 +121,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return obj;
       }, {});
 
-    await users.updateOne({ id: uid }, { $set: sanitizedBody });
-
+    await db.collection('users').updateOne({ id: uid }, { $set: sanitizedBody });
     return res.status(200).json({ message: 'Successfully updated profile!', success: true });
   }
 
-  return res.status(500).json({ message: 'Something went really wrong.' });
+  return res.status(500).json({ message: 'Something went really wrong. Please try again later.' });
 }

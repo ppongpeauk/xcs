@@ -33,7 +33,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const invitations = db.collection('invitations');
   const accessPoints = db.collection('accessPoints');
   const users = db.collection('users');
-  const user = await users.findOne({ id: uid }) as User | null;
+  const user = (await users.findOne({ id: uid })) as User | null;
 
   if (!user) {
     return res.status(404).json({ message: 'User not found' });
@@ -53,38 +53,46 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     organization.user = organization.members[uid];
 
     let ownerMember = Object.values(organization.members).find(
-      (member: any) => member.id === organization.ownerId) as OrganizationMember
+      (member: any) => member.id === organization.ownerId
+    ) as OrganizationMember;
 
     // update organization to have owner member
     if (!organization.ownerId) {
       // find owner
       const ownerMemberId = Object.keys(organization.members).find(
-        (key: any) => organization.members[key].role === 3) as string;
+        (key: any) => organization.members[key].role === 3
+      ) as string;
       ownerMember = organization.members[ownerMemberId] as OrganizationMember;
       await organizations.updateOne({ id: organizationId }, { $set: { ownerId: ownerMemberId } });
       organization.ownerId = ownerMemberId;
     }
 
-    let ownerUser = await users.findOne({ id: organization.ownerId }, {
-      projection: {
-        id: 1,
-        displayName: 1,
-        username: 1,
-        avatar: 1,
+    let ownerUser = await users.findOne(
+      { id: organization.ownerId },
+      {
+        projection: {
+          id: 1,
+          displayName: 1,
+          username: 1,
+          avatar: 1
+        }
       }
-    });
+    );
 
     organization.owner = ownerUser;
 
     // get last updated user
-    let lastUpdatedUser = await users.findOne({ id: organization.updatedById }, {
-      projection: {
-        id: 1,
-        displayName: 1,
-        username: 1,
-        avatar: 1,
+    let lastUpdatedUser = await users.findOne(
+      { id: organization.updatedById },
+      {
+        projection: {
+          id: 1,
+          displayName: 1,
+          username: 1,
+          avatar: 1
+        }
       }
-    });
+    );
 
     organization.updatedBy = lastUpdatedUser;
 
@@ -161,7 +169,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     organization.members = members.sort((a: any, b: any) =>
-      a.role > b.role || b.type === 'roblox-group' || b.type === 'roblox' ? -1 : 1
+      a.role > b.role || b.type === 'roblox-group' || b.type === 'card' ? -1 : 1
     ); // sort by role (descending)
 
     // Get Access Points
@@ -256,7 +264,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const imageData = Buffer.from(avatar.split(',')[1], 'base64');
       let image;
       if (imageFormat === 'gif') {
-        image = await sharp(imageData, { animated: true }).resize(256, 256).gif({ quality: 80, pageHeight: 256 }).toBuffer();
+        image = await sharp(imageData, { animated: true })
+          .resize(256, 256)
+          .gif({ quality: 80, pageHeight: 256 })
+          .toBuffer();
       } else {
         image = await sharp(imageData).resize(256, 256).jpeg({ quality: 80 }).toBuffer();
       }
@@ -314,7 +325,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Delete Profile Picture
     try {
       await deleteOrganizationProfilePicture(organizationId);
-    } catch (error) { }
+    } catch (error) {}
 
     return res.status(200).json({ message: 'Successfully deleted organization!', success: true });
   }

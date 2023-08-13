@@ -7,6 +7,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import clientPromise from '@/lib/mongodb';
 // @ts-ignore
 import { getRobloxUsers } from '@/lib/utils';
+import { AccessGroup, Organization, OrganizationMember } from '@/types';
 
 const mergicianOptions = { appendArrays: true, dedupArrays: true };
 
@@ -15,7 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(405).json({ message: 'Method not allowed.' });
   }
 
-  let { locationId, accessPointId, apiKey, userId } = req.query;
+  let { locationId, accessPointId, apiKey, userId, cardNumber } = req.query;
 
   const mongoClient = await clientPromise;
 
@@ -29,32 +30,32 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   // check if API key is empty
   if (!apiKey) {
-    return res.status(401).json({ success: false, message: 'No API key provided' });
+    return res.status(401).json({ success: false, message: 'No API key provided.' });
   }
 
   // get location
   const location = await dbLocations.findOne({ id: locationId });
   if (!location) {
-    return res.status(404).json({ success: false, message: 'Location not found' });
+    return res.status(404).json({ success: false, message: 'Location not found.' });
   }
 
   // get organization
-  const organization = await dbOrganizations.findOne({
+  const organization = (await dbOrganizations.findOne({
     id: location.organizationId
-  });
+  })) as unknown as Organization;
   if (!organization) {
-    return res.status(404).json({ success: false, message: 'Organization not found' });
+    return res.status(404).json({ success: false, message: 'Organization not found.' });
   }
 
   // check API key
   if (!((apiKey as string) in organization.apiKeys)) {
-    return res.status(401).json({ success: false, message: 'Invalid API key' });
+    return res.status(401).json({ success: false, message: 'Invalid API key.' });
   }
 
   // get access point
   const accessPoint = await dbAccessPoints.findOne({ id: accessPointId }, { projection: { _id: 0 } });
   if (!accessPoint) {
-    return res.status(404).json({ success: false, message: 'Access point not found' });
+    return res.status(404).json({ success: false, message: 'Access point not found.' });
   }
 
   // TODO: finish this
@@ -81,17 +82,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const allowedGroups = accessPoint.config.alwaysAllowed.groups;
   const allowedUsers = accessPoint.config.alwaysAllowed.users;
+  let allowedCards = accessPoint.config.alwaysAllowed.cards || [];
 
   // get all access groups that are open to everyone
   const openAccessGroups = Object.keys(organization.accessGroups).filter(
     (groupId) =>
       (organization.accessGroups[groupId].type === 'organization' ||
         organization.accessGroups[groupId].locationId === locationId) &&
+      organization.accessGroups[groupId]?.config?.active &&
       organization.accessGroups[groupId]?.config?.openToEveryone
   );
 
   // get all organization members that belong to allowed groups
-  let allowedOrganizationMembers = {} as any;
+  let allowedOrganizationMembers = {} as Record<string, string[]>;
   for (const group of allowedGroups) {
     for (const [memberId, member] of Object.entries(organization.members) as any) {
       if (!((memberId as string) in allowedOrganizationMembers) && member.accessGroups.includes(group)) {
@@ -127,7 +130,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   let allowedGroupRoles = {} as any; // roblox group roles that are allowed
 
   // make a list of allowed group roles from allowed groups
-  const robloxMemberGroups = Object.values(organization.members).filter(
+  const robloxMemberGroups = Object.values(organization.members as Record<string, OrganizationMember>).filter(
     (member: any) => member.type === 'roblox-group'
   );
   for (const member of robloxMemberGroups as any) {
@@ -135,6 +138,39 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (allowedGroups.includes(accessGroup)) {
         for (const roleset of member.groupRoles) {
           allowedGroupRoles[roleset] = member;
+        }
+      }
+    }
+  }
+
+  if (cardNumber) {
+    const cardMembers = Object.keys(allowedOrganizationMembers).filter(
+      (memberId) => organization.members[memberId].type === 'card'
+    );
+    let allowedCardNumbers = [] as string[];
+
+    // go through each card member and append their card numbers to the allowed cards list
+    for (const memberId of cardMembers) {
+      allowedCardNumbers = allowedCardNumbers.concat(organization.members[memberId].cardNumbers as any);
+    }
+
+    if (allowedCardNumbers.includes(cardNumber as string)) {
+      isAllowed = true;
+      // find each member that has the card number
+      for (const memberId of cardMembers) {
+        if ((organization.members[memberId]?.cardNumbers || []).includes(cardNumber as string)) {
+          // get scan data from allowed groups' access groups
+          for (const group of organization.members[memberId].accessGroups) {
+            if (organization.accessGroups[group]?.config?.active) {
+              groupScanData = mergician(mergicianOptions)(
+                groupScanData,
+                organization.accessGroups[group]?.scanData || {}
+              );
+              console.log('adding scan data from access group', group);
+            }
+          }
+          // get scan data from the member
+          groupScanData = mergician(mergicianOptions)(groupScanData, organization.members[memberId]?.scanData || {});
         }
       }
     }
@@ -168,6 +204,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   }
 
+  // check if card number is allowed
+
   // update global statistics
   await dbStatistics.updateOne(
     { id: 'global' },
@@ -175,6 +213,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       $inc: {
         [`scans.total`]: 1,
         [`scans.${isAllowed ? 'granted' : 'denied'}`]: 1
+      }
+    }
+  );
+
+  // update organization statistics
+  await db.collection('organizations').updateOne(
+    { id: organization.id },
+    {
+      $inc: {
+        [`statistics.scans.total`]: 1,
+        [`statistics.scans.${isAllowed ? 'granted' : 'denied'}`]: 1
       }
     }
   );
@@ -243,7 +292,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     value:
                       member?.type === 'roblox'
                         ? `${member.displayName} (${userId})`
-                        : `${member.displayName} (@${member.roblox.username}) (${userId})`
+                        : `${member.displayName} (@${member?.roblox?.username}) (${userId})`
                   },
                   {
                     name: 'Access Point',

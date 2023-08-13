@@ -37,13 +37,13 @@ import {
   useToast
 } from '@chakra-ui/react';
 
-import { AiFillEdit } from 'react-icons/ai';
+import { AiFillEdit, AiFillIdcard } from 'react-icons/ai';
 import { FaIdBadge } from 'react-icons/fa';
 import { IoIosRemoveCircle } from 'react-icons/io';
 import { IoSave } from 'react-icons/io5';
-import { MdEditSquare } from 'react-icons/md';
-import { RiMailAddFill } from 'react-icons/ri';
-import { SiRoblox } from 'react-icons/si';
+import { MdEditSquare, MdPersonAdd } from 'react-icons/md';
+import { RiMailAddFill, RiMailFill } from 'react-icons/ri';
+import { SiRoblox, SiRobloxstudio } from 'react-icons/si';
 
 import { AccessGroup, Organization, OrganizationMember } from '@/types';
 import Editor from '@monaco-editor/react';
@@ -60,7 +60,10 @@ import DeleteDialog from '@/components/DeleteDialog';
 import InviteOrganizationModal from '@/components/InviteOrganizationModal';
 import InviteOrganizationRobloxGroupModal from '@/components/InviteOrganizationRobloxGroupModal';
 import InviteOrganizationRobloxModal from '@/components/InviteOrganizationRobloxModal';
+import { AddIcon } from '@chakra-ui/icons';
 import { Link } from '@chakra-ui/next-js';
+import InviteOrganizationFlowModal from './InviteOrganizationFlowModal';
+import OrganizationInvitationsModal from './OrganizationInvitationsModal';
 
 const ChakraEditor = chakra(Editor);
 
@@ -93,6 +96,8 @@ export default function MemberEditModal({
 
   const { isOpen: inviteModalOpen, onOpen: inviteModalOnOpen, onClose: inviteModalOnClose } = useDisclosure();
   const { isOpen: robloxModalOpen, onOpen: robloxModalOnOpen, onClose: robloxModalOnClose } = useDisclosure();
+  const { isOpen: inviteFlowModalOpen, onOpen: inviteFlowModalOnOpen, onClose: inviteFlowModalOnClose } = useDisclosure();
+  const { isOpen: invitationsModalOpen, onOpen: invitationsModalOnOpen, onClose: invitationsModalOnClose } = useDisclosure();
 
   const {
     isOpen: robloxGroupModalOpen,
@@ -105,8 +110,9 @@ export default function MemberEditModal({
       if (!query) return members;
       return members.filter(
         (member: any) =>
-          member.displayName.toLowerCase().includes(query.toLowerCase()) ||
-          member.username.toLowerCase().includes(query.toLowerCase()) ||
+          member.name?.toLowerCase().includes(query.toLowerCase()) ||
+          member.displayName?.toLowerCase().includes(query.toLowerCase()) ||
+          member.username?.toLowerCase().includes(query.toLowerCase()) ||
           member.groupName?.toLowerCase().includes(query.toLowerCase()) ||
           member.name?.toLowerCase().includes(query.toLowerCase())
       );
@@ -139,7 +145,7 @@ export default function MemberEditModal({
   const getAccessGroupOptions = useCallback(
     (organization: Organization) => {
       if (!organization) return [];
-      const ags = Object.values(organization?.accessGroups as AccessGroup[]) || [];
+      const ags = Object.values(organization?.accessGroups) || {};
       interface Group {
         label: string;
         options: {
@@ -190,7 +196,7 @@ export default function MemberEditModal({
     return moment(new Date(date)).fromNow();
   }, []);
 
-  const toDate = useMemo(() => (date: string) => {
+  const toDate = useMemo(() => (date: string | Date) => {
     return moment(new Date(date)).format('MMMM Do YYYY');
   }, []);
 
@@ -233,6 +239,21 @@ export default function MemberEditModal({
         }}
         organization={organization}
         accessGroupOptions={accessGroupOptions}
+      />
+      <InviteOrganizationFlowModal
+        isOpen={inviteFlowModalOpen}
+        onClose={inviteFlowModalOnClose}
+        onAdd={() => {
+          onRefresh();
+        }}
+        organization={organization}
+        accessGroupOptions={accessGroupOptions}
+      />
+      <OrganizationInvitationsModal
+        isOpen={invitationsModalOpen}
+        onClose={invitationsModalOnClose}
+        organization={organization}
+        onRefresh={onRefresh}
       />
       <Modal
         isOpen={isOpen}
@@ -283,13 +304,35 @@ export default function MemberEditModal({
                     base: 'normal',
                     md: 'flex-end'
                   }}
+                  onClick={inviteFlowModalOnOpen}
+                  leftIcon={<MdPersonAdd />}
+                  isDisabled={clientMember?.role < 2}
+                >
+                  Add a Member
+                </Button>
+                <Button
+                  alignSelf={{
+                    base: 'normal',
+                    md: 'flex-end'
+                  }}
                   onClick={inviteModalOnOpen}
                   leftIcon={<RiMailAddFill />}
                   isDisabled={clientMember?.role < 2}
                 >
-                  Invite User
+                  Create Invite Link
                 </Button>
                 <Button
+                  alignSelf={{
+                    base: 'normal',
+                    md: 'flex-end'
+                  }}
+                  onClick={invitationsModalOnOpen}
+                  leftIcon={<RiMailFill />}
+                  isDisabled={clientMember?.role < 2}
+                >
+                  View Invitations
+                </Button>
+                {/* <Button
                   alignSelf={{
                     base: 'normal',
                     md: 'flex-end'
@@ -307,7 +350,7 @@ export default function MemberEditModal({
                   isDisabled={clientMember?.role < 2}
                 >
                   Add Roblox Group
-                </Button>
+                </Button> */}
               </Stack>
               <Flex
                 w={'full'}
@@ -342,20 +385,20 @@ export default function MemberEditModal({
                                 my={2}
                               >
                                 <Avatar
-                                  as={Link}
+                                  as={member.type !== 'card' ? Link : undefined}
                                   href={
-                                    member?.type === 'user'
+                                    member.type !== 'card' ? (member?.type === 'user'
                                       ? `/@${member?.username}`
                                       : member?.type === 'roblox'
                                         ? `https://www.roblox.com/users/${member?.id}/profile`
-                                        : `https://www.roblox.com/groups/${member?.id}/group`
+                                        : `https://www.roblox.com/groups/${member?.id}/group`) : undefined
                                   }
                                   target='_blank'
                                   size="md"
                                   src={member?.avatar}
                                   mr={4}
                                   bg={'gray.300'}
-                                  borderRadius={member?.type === 'roblox-group' ? 'lg' : 'full'}
+                                  borderRadius={['roblox-group', 'card'].includes(member?.type) ? 'lg' : 'full'}
                                   transition={'opacity 0.2s ease-out'} _hover={{ opacity: 0.75 }} _active={{ opacity: 0.5 }}
                                 />
 
@@ -382,12 +425,12 @@ export default function MemberEditModal({
                                         </Text>
                                       </Flex>
                                     </>
-                                  ) : member.type === 'roblox-group' ? (
+                                  ) : ['roblox-group', 'card'].includes(member?.type) ? (
                                     <>
                                       <Flex align={'center'}>
                                         <Icon
                                           size={'sm'}
-                                          as={SiRoblox}
+                                          as={member?.type === 'roblox-group' ? SiRobloxstudio : AiFillIdcard}
                                           mr={1}
                                         />
                                         <Text fontWeight="bold">{member?.name}</Text>
@@ -397,7 +440,7 @@ export default function MemberEditModal({
                                         fontWeight={'500'}
                                         color="gray.500"
                                       >
-                                        {member?.groupName}
+                                        {member?.type === 'roblox-group' ? member?.groupName : 'Card Group'}
                                       </Text>
                                     </>
                                   ) : (
@@ -563,20 +606,20 @@ export default function MemberEditModal({
                           h={'fit-content'}
                         >
                           <Avatar
-                            as={Link}
+                            as={focusedMember?.type !== 'card' ? Link : undefined}
                             href={
-                              focusedMember?.type === 'user'
+                              focusedMember?.type !== 'card' ? (focusedMember?.type === 'user'
                                 ? `/@${focusedMember?.username}`
                                 : focusedMember?.type === 'roblox'
                                   ? `https://www.roblox.com/users/${focusedMember?.id}/profile`
-                                  : `https://www.roblox.com/groups/${focusedMember?.id}/group`
+                                  : `https://www.roblox.com/groups/${focusedMember?.id}/group`) : undefined
                             }
                             target='_blank'
                             size={'xl'}
                             src={focusedMember?.avatar}
                             mr={4}
                             bg={'gray.300'}
-                            borderRadius={focusedMember?.type === 'roblox-group' ? 'lg' : 'full'}
+                            borderRadius={['roblox-group', 'card'].includes(focusedMember?.type) ? 'lg' : 'full'}
                             transition={'opacity 0.2s ease-out'} _hover={{ opacity: 0.75 }} _active={{ opacity: 0.5 }}
                           />
                           <Flex flexDir={'column'}>
@@ -584,7 +627,15 @@ export default function MemberEditModal({
                               {focusedMember.type.startsWith('roblox') && (
                                 <Icon
                                   size={'sm'}
-                                  as={SiRoblox}
+                                  as={focusedMember.type === 'roblox-group' ? SiRobloxstudio : SiRoblox}
+                                  mr={2}
+                                  h={'full'}
+                                />
+                              )}
+                              {focusedMember.type === 'card' && (
+                                <Icon
+                                  size={'sm'}
+                                  as={AiFillIdcard}
                                   mr={2}
                                   h={'full'}
                                 />
@@ -594,7 +645,7 @@ export default function MemberEditModal({
                                 fontSize={'xl'}
                                 fontWeight={'bold'}
                               >
-                                {focusedMember?.type === 'roblox-group' ? focusedMember?.name : focusedMember?.displayName}
+                                {['roblox-group', 'card'].includes(focusedMember?.type) ? focusedMember?.name : focusedMember?.displayName}
                               </Text>
                             </Flex>
                             <Text
@@ -603,13 +654,15 @@ export default function MemberEditModal({
                             >
                               Joined {toDate(focusedMember?.joinedAt)}
                             </Text>
-                            <Text
+
+                            {focusedMember?.type === 'user' && <Text
                               fontSize={'sm'}
                               color={'gray.500'}
                             >
                               {roleToText(focusedMember?.role)}
-                            </Text>
+                            </Text>}
                             {
+                              focusedMember?.type !== 'card' &&
                               <Button
                                 as={NextLink}
                                 href={
@@ -634,11 +687,15 @@ export default function MemberEditModal({
                         <Formik
                           enableReinitialize={true}
                           initialValues={{
-                            name: focusedMember?.type === 'roblox-group' ? focusedMember?.name : focusedMember?.displayName,
+                            name: ['roblox-group', 'card'].includes(focusedMember?.type) ? focusedMember?.name : focusedMember?.displayName,
                             role: {
                               label: roleToText(focusedMember?.role),
                               value: focusedMember?.role
                             },
+                            cardNumbers: focusedMember?.cardNumbers?.map((cardNumber: string) => ({
+                              label: cardNumber,
+                              value: cardNumber
+                            })),
                             robloxGroupRoles:
                               focusedMember?.groupRoles?.map((role: any) => ({
                                 label: focusedMember?.roleset?.find((r: any) => r.id === role)?.name || 'Unknown',
@@ -665,8 +722,9 @@ export default function MemberEditModal({
                                   },
                                   body: JSON.stringify({
                                     type: focusedMember?.type,
-                                    name: focusedMember?.type === 'roblox-group' ? values?.name : undefined,
+                                    name: ['roblox-group', 'card'].includes(focusedMember?.type) ? values?.name : undefined,
                                     groupRoles: values?.robloxGroupRoles?.map((role: any) => role?.value),
+                                    cardNumbers: focusedMember?.type === 'card' ? values?.cardNumbers?.map((cardNumber: any) => cardNumber?.value) : undefined,
                                     role: values?.role?.value,
                                     scanData: values?.scanData || '{}',
 
@@ -733,7 +791,7 @@ export default function MemberEditModal({
                                           name="name"
                                           placeholder="Name"
                                           value={field?.value}
-                                          isDisabled={focusedMember?.type !== 'roblox-group'}
+                                          isDisabled={!['roblox-group', 'card'].includes(focusedMember?.type)}
                                         />
                                       </FormControl>
                                     )}
@@ -764,58 +822,84 @@ export default function MemberEditModal({
                                       )}
                                     </Field>
                                   )}
-                                  <Field name="role">
-                                    {({ field, form }: any) => (
-                                      <FormControl
-                                        w={'fit-content'}
-                                        minW={'240px'}
-                                      >
-                                        <FormLabel>Organization Role</FormLabel>
-                                        <Select
-                                          {...field}
-                                          name="role"
-                                          options={
-                                            focusedMember.role < 3
-                                              ? ['roblox', 'roblox-group'].includes(focusedMember.type)
-                                                ? [
-                                                  {
-                                                    label: 'Guest',
-                                                    value: 1
-                                                  }
-                                                ]
+                                  {!['roblox', 'roblox-group', 'card'].includes(focusedMember.type) && (
+                                    <Field name="role">
+                                      {({ field, form }: any) => (
+                                        <FormControl
+                                          w={'fit-content'}
+                                          minW={'240px'}
+                                        >
+                                          <FormLabel>Organization Role</FormLabel>
+                                          <Select
+                                            {...field}
+                                            name="role"
+                                            options={
+                                              focusedMember.role < 3
+                                                ? ['roblox', 'roblox-group'].includes(focusedMember.type)
+                                                  ? [
+                                                    {
+                                                      label: 'Guest',
+                                                      value: 1
+                                                    }
+                                                  ]
+                                                  : [
+                                                    {
+                                                      label: 'Member',
+                                                      value: 1
+                                                    },
+                                                    {
+                                                      label: 'Manager',
+                                                      value: 2
+                                                    }
+                                                  ]
                                                 : [
                                                   {
-                                                    label: 'Member',
-                                                    value: 1
-                                                  },
-                                                  {
-                                                    label: 'Manager',
-                                                    value: 2
+                                                    label: 'Owner',
+                                                    value: 3
                                                   }
                                                 ]
-                                              : [
-                                                {
-                                                  label: 'Owner',
-                                                  value: 3
-                                                }
-                                              ]
-                                          }
-                                          placeholder="Select a role..."
-                                          onChange={(value) => {
-                                            form.setFieldValue('role', value || ('' as string));
-                                          }}
-                                          value={field?.value}
-                                          isDisabled={
-                                            ['roblox', 'roblox-group'].includes(focusedMember.type) ||
-                                            focusedMember.role === 3 ||
-                                            focusedMember === clientMember
-                                          }
-                                          hideSelectedOptions={false}
-                                          selectedOptionStyle={'check'}
-                                        />
-                                      </FormControl>
-                                    )}
-                                  </Field>
+                                            }
+                                            placeholder="Select a role..."
+                                            onChange={(value) => {
+                                              form.setFieldValue('role', value || ('' as string));
+                                            }}
+                                            value={field?.value}
+                                            isDisabled={
+                                              ['roblox', 'roblox-group'].includes(focusedMember.type) ||
+                                              focusedMember.role === 3 ||
+                                              focusedMember === clientMember
+                                            }
+                                            hideSelectedOptions={false}
+                                            selectedOptionStyle={'check'}
+                                          />
+                                        </FormControl>
+                                      )}
+                                    </Field>
+                                  )}
+                                  {
+                                    focusedMember.type === 'card' &&
+                                    <Field name="cardNumbers">
+                                      {({ field, form }: any) => (
+                                        <FormControl>
+                                          <FormLabel>Card Numbers</FormLabel>
+                                          <CreatableSelect
+                                            {...field}
+                                            variant={'outline'}
+                                            options={[]}
+                                            onChange={(value) => {
+                                              form.setFieldValue('cardNumbers', value);
+                                            }}
+                                            value={field.value || []}
+                                            placeholder="Enter card numbers..."
+                                            isMulti
+                                            closeMenuOnSelect={false}
+                                            hideSelectedOptions={false}
+                                            selectedOptionStyle="check"
+                                          />
+                                        </FormControl>
+                                      )}
+                                    </Field>
+                                  }
                                   <Field name="accessGroups">
                                     {({ field, form }: any) => (
                                       <FormControl>

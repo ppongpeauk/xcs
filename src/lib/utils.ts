@@ -10,7 +10,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-const roleToText = (role: number) => {
+export const roleToText = (role: number) => {
   role = Number(role);
   switch (role) {
     case 0:
@@ -26,7 +26,7 @@ const roleToText = (role: number) => {
   }
 };
 
-const textToRole = (role: string) => {
+export const textToRole = (role: string) => {
   role = role.toString().toLowerCase();
   switch (role) {
     case 'guest':
@@ -42,7 +42,15 @@ const textToRole = (role: string) => {
   }
 };
 
-const getRobloxUsersByUsernames = async (usernames: string[]) => {
+export interface RobloxUserByUsernamesResponseValue {
+  requestedUsername: string;
+  hasVerifiedBadge: boolean;
+  id: number;
+  name: string; // username
+  displayName?: string;
+}
+
+export const getRobloxUsersByUsernames = async (usernames: string[]) => {
   if (!usernames.length) return {};
   let robloxResponse = await fetch(`${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/roblox/users/v1/usernames/users`, {
     method: 'POST',
@@ -57,13 +65,13 @@ const getRobloxUsersByUsernames = async (usernames: string[]) => {
     .then((res) => res.json())
     .then((res) => res.data)
     .catch((err) => {
-      return {}
+      return [];
     });
 
-  return robloxResponse;
+  return robloxResponse as RobloxUserByUsernamesResponseValue[];
 };
 
-const getRobloxUsers = async (userIds: string[]) => {
+export const getRobloxUsers = async (userIds: string[]) => {
   if (!userIds.length) return {};
   let robloxResponse = await fetch(`${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/roblox/users/v1/users`, {
     method: 'POST',
@@ -78,7 +86,7 @@ const getRobloxUsers = async (userIds: string[]) => {
     .then((res) => res.json())
     .then((res) => res.data)
     .catch((err) => {
-      return {}
+      return {};
     });
 
   let robloxUserAvatar = await fetch(
@@ -109,7 +117,7 @@ const getRobloxUsers = async (userIds: string[]) => {
   return response;
 };
 
-const getRobloxGroups = async (groupIds: string[]) => {
+export const getRobloxGroups = async (groupIds: string[]) => {
   if (!groupIds.length) return {};
   let robloxResponse = await fetch(
     `${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/roblox/groups/v2/groups?groupIds=${groupIds?.join(',') || 0}`,
@@ -137,7 +145,7 @@ const getRobloxGroups = async (groupIds: string[]) => {
     .then((res) => res.json())
     .then((res) => res.data)
     .catch((err) => {
-      return {}
+      return {};
     });
 
   for (let i = 0; i < robloxResponse.length; i++) {
@@ -170,7 +178,7 @@ const getRobloxGroups = async (groupIds: string[]) => {
   return response;
 };
 
-const getRandomAccessPointName = () => {
+export const getRandomAccessPointName = () => {
   let accessPointNames = [
     'Front Entrance',
     'Back Entrance',
@@ -199,115 +207,115 @@ const getRandomAccessPointName = () => {
     'Storage Room',
     'Mechanical Room',
     'Telecom Room',
-    'Electrical Closet',
+    'Electrical Closet'
   ];
 
   return accessPointNames[Math.floor(Math.random() * accessPointNames.length)];
 };
 
-const getRandomLocationName = () => {
+export const getRandomLocationName = () => {
   let locationNames = [
-    "Acme Headquarters",
-    "Century Plaza",
-    "Commerce Tower",
-    "Innovation Park",
-    "Paragon Office Complex",
-    "Park Avenue Tower",
-    "Riverfront Corporate Center",
-    "Skyline Tower",
-    "Spark Innovation Campus",
-    "Tech City Center",
-    "Guardia Tower",
-    "Zenith Tower",
-    "Alpha Office Park",
-    "Gamma Plaza",
-    "Epsilon Square",
-    "Zeta Tower",
-    "Sigma Center",
-    "Omega Complex",
-    "Delta Hub",
-    "Phi Tower",
-    "Halcyon Center",
-    "Prometheus Tower",
-    "Athena Complex",
-    "Helix Hub",
-    "Cortex Building",
-    "Foresight Headquarters",
-    "Apex Facility",
-    "Photon Power Plant",
-    "Galactus Arena",
-    "Wayne Tech Offices",
-    "Tyrell Offices",
-    "Weyland Hangar",
-    "Hyperion Headquarters",
-    "Stark Hangar",
-    "Sanctuary Clinic",
-    "Tranquility Hospital",
-    "Gattaca Spaceport",
-    "Artemis Test Site",
-    "Kronos Annex",
-    "Zephyrus Plant",
-    "Atlas Factory",
-    "Achilles Facility",
-    "Hera Building",
-    "Poseidon Rig",
-    "Apollo Launchpad",
-    "Hades Data Center",
-    "Erebus Reactor",
-    "Nyx Labs",
-    "Selene Space Center",
-    "Helios Solar Array",
-    "Iris Optics Lab",
-    "Kairos Institute",
-    "Themis Distribution Center",
-    "Janus Clinic",
-    "Rhea Habitat",
-    "Kronos Lab",
-    "Hyperion Plant",
-    "Neptune Aquatic Center",
-    "Juno Space Observatory",
-    "Mercury Testing Grounds",
-    "Venus Atmospheric Station",
-    "Saturn Orbital Platform",
-    "Jupiter Gas Mining Rig",
-    "Mars Terraforming Site",
-    "Uranus Weather Station",
-    "Pluto Research Base",
-    "Europa Underground Ocean Lab",
-    "Ganymede Hydroponics Dome",
-  ]
+    'Acme Headquarters',
+    'Century Plaza',
+    'Commerce Tower',
+    'Innovation Park',
+    'Paragon Office Complex',
+    'Park Avenue Tower',
+    'Riverfront Corporate Center',
+    'Skyline Tower',
+    'Spark Innovation Campus',
+    'Tech City Center',
+    'Guardia Tower',
+    'Zenith Tower',
+    'Alpha Office Park',
+    'Gamma Plaza',
+    'Epsilon Square',
+    'Zeta Tower',
+    'Sigma Center',
+    'Omega Complex',
+    'Delta Hub',
+    'Phi Tower',
+    'Halcyon Center',
+    'Prometheus Tower',
+    'Athena Complex',
+    'Helix Hub',
+    'Cortex Building',
+    'Foresight Headquarters',
+    'Apex Facility',
+    'Photon Power Plant',
+    'Galactus Arena',
+    'Wayne Tech Offices',
+    'Tyrell Offices',
+    'Weyland Hangar',
+    'Hyperion Headquarters',
+    'Stark Hangar',
+    'Sanctuary Clinic',
+    'Tranquility Hospital',
+    'Gattaca Spaceport',
+    'Artemis Test Site',
+    'Kronos Annex',
+    'Zephyrus Plant',
+    'Atlas Factory',
+    'Achilles Facility',
+    'Hera Building',
+    'Poseidon Rig',
+    'Apollo Launchpad',
+    'Hades Data Center',
+    'Erebus Reactor',
+    'Nyx Labs',
+    'Selene Space Center',
+    'Helios Solar Array',
+    'Iris Optics Lab',
+    'Kairos Institute',
+    'Themis Distribution Center',
+    'Janus Clinic',
+    'Rhea Habitat',
+    'Kronos Lab',
+    'Hyperion Plant',
+    'Neptune Aquatic Center',
+    'Juno Space Observatory',
+    'Mercury Testing Grounds',
+    'Venus Atmospheric Station',
+    'Saturn Orbital Platform',
+    'Jupiter Gas Mining Rig',
+    'Mars Terraforming Site',
+    'Uranus Weather Station',
+    'Pluto Research Base',
+    'Europa Underground Ocean Lab',
+    'Ganymede Hydroponics Dome'
+  ];
 
   return locationNames[Math.floor(Math.random() * locationNames.length)];
-}
+};
 
-const getRandomOrganizationName = () => {
+export const getRandomOrganizationName = () => {
   let organizationNames = [
-    "Halcyon Industries",
-    "Prometheus Labs",
-    "Athena Robotics",
-    "Helix Technologies",
-    "Cortex Systems",
-    "Apex Aerospace",
-    "Hollow Enterprises",
-    "Aperture Science",
-    "Hera Labs",
-    "Guardia Corporation",
-    "Hyperion Corporation",
-    "Stark Industries",
-    "Gattaca Aerospace",
-    "Kronos Technologies",
-    "Atlas Robotics",
-    "Achilles Cybernetics",
-    "Hades Computing",
-    "Luna Systems",
-    "Polaris Enterprises",
-    "Ganymede Agricorp",
-  ]
+    'Halcyon Industries',
+    'Prometheus Labs',
+    'Athena Robotics',
+    'Helix Technologies',
+    'Cortex Systems',
+    'Apex Aerospace',
+    'Hollow Enterprises',
+    'Aperture Science',
+    'Hera Labs',
+    'Guardia Corporation',
+    'Hyperion Corporation',
+    'Stark Industries',
+    'Gattaca Aerospace',
+    'Kronos Technologies',
+    'Atlas Robotics',
+    'Achilles Cybernetics',
+    'Hades Computing',
+    'Luna Systems',
+    'Polaris Enterprises',
+    'Ganymede Agricorp'
+  ];
 
   return organizationNames[Math.floor(Math.random() * organizationNames.length)];
-}
+};
 
-const agNames = (organization: any, names: string[]) => {
+export const agNames = (organization: any, names: string[]) => {
   if (!organization?.accessGroups) {
     console.warn('No access groups found', organization, names);
     return [];
@@ -324,7 +332,7 @@ const agNames = (organization: any, names: string[]) => {
   return res;
 };
 
-const agIds = (organization: any, ids: string[]) => {
+export const agIds = (organization: any, ids: string[]) => {
   if (!organization?.accessGroups) return [];
   let res = [];
   for (let id of ids) {
@@ -338,7 +346,7 @@ const agIds = (organization: any, ids: string[]) => {
   return res;
 };
 
-const agKV = (organization: any) => {
+export const agKV = (organization: any) => {
   if (!organization?.accessGroups) return [];
   let res = [];
   for (let key of Object.keys(organization.accessGroups)) {
@@ -350,7 +358,7 @@ const agKV = (organization: any) => {
   return res;
 };
 
-const getLocation = async (locationId: string) => {
+export const getLocation = async (locationId: string) => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const { user } = useAuthContext();
 
@@ -371,7 +379,7 @@ const getLocation = async (locationId: string) => {
   return location;
 };
 
-const getAccessGroupType = (organization: Organization, ag: AccessGroup) => {
+export const getAccessGroupType = (organization: Organization, ag: AccessGroup) => {
   if (ag.type === 'organization') {
     return 'Organization';
   } else if (ag.type === 'location') {
@@ -385,9 +393,9 @@ const getAccessGroupType = (organization: Organization, ag: AccessGroup) => {
   }
 };
 
-const getAccessGroupOptions = (organization: Organization) => {
+export const getAccessGroupOptions = (organization: Organization) => {
   if (!organization) return [];
-  const ags = Object.values(organization?.accessGroups as AccessGroup[]) || [];
+  const ags = Object.values(organization?.accessGroups) || [];
   interface Group {
     label: string;
     options: {
@@ -431,19 +439,18 @@ const getAccessGroupOptions = (organization: Organization) => {
   return groups;
 };
 
-export {
-  agIds,
-  agKV,
-  agNames,
-  getAccessGroupOptions,
-  getAccessGroupType,
-  getRandomAccessPointName,
-  getRandomLocationName,
-  getRandomOrganizationName,
-  getRobloxGroups,
-  getRobloxUsers,
-  getRobloxUsersByUsernames,
-  roleToText,
-  textToRole
-};
-
+// export {
+//   agIds,
+//   agKV,
+//   agNames,
+//   getAccessGroupOptions,
+//   getAccessGroupType,
+//   getRandomAccessPointName,
+//   getRandomLocationName,
+//   getRandomOrganizationName,
+//   getRobloxGroups,
+//   getRobloxUsers,
+//   getRobloxUsersByUsernames,
+//   roleToText,
+//   textToRole
+// };

@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 
 import {
   Avatar,
@@ -22,6 +22,11 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
   Portal,
   Skeleton,
   SkeletonCircle,
@@ -61,6 +66,7 @@ import { useAuthContext } from '@/contexts/AuthContext';
 
 import DeleteDialog from '@/components/DeleteDialog';
 
+import { AccessGroup } from '@/types';
 import CreateAccessGroupDialog from './CreateAccessGroupDialog';
 
 const ChakraEditor = chakra(Editor);
@@ -78,7 +84,7 @@ export default function AccessGroupEditModal({
 }: any) {
   const { user } = useAuthContext();
   const toast = useToast();
-  const [focusedGroup, setFocusedGroup] = useState<any>(null);
+  const [focusedGroup, setFocusedGroup] = useState<AccessGroup | null>(null);
   const themeBorderColor = useColorModeValue('gray.200', 'gray.700');
 
   const groupSearchRef = useRef<any>(null);
@@ -94,12 +100,12 @@ export default function AccessGroupEditModal({
 
   const { isOpen: createModalOpen, onOpen: createModalOnOpen, onClose: createModalOnClose } = useDisclosure();
 
-  const filterGroups = (query: string) => {
+  const filterGroups = useCallback((query: string) => {
     if (!query) return groups;
     return Object.keys(groups)
       .filter((group: any) => groups[group].name.toLowerCase().includes(query.toLowerCase()))
       .map((group: any) => groups[group]);
-  };
+  }, [groups]);
 
   useEffect(() => {
     setFilteredGroups(groups || {});
@@ -108,7 +114,9 @@ export default function AccessGroupEditModal({
   useEffect(() => {
     if (!organization) return;
     setFilteredGroups(filterGroups(groupSearchRef?.current?.value));
-    setFocusedGroup(groups[focusedGroup?.id]);
+    // if (focusedGroup) {
+    //   setFocusedGroup(Object.values(groups).find((group: AccessGroup) => group.id === focusedGroup.id));
+    // }
   }, [organization]);
 
   return (
@@ -359,6 +367,7 @@ export default function AccessGroupEditModal({
                           initialValues={{
                             name: focusedGroup?.name,
                             description: focusedGroup?.description || '',
+                            priority: focusedGroup?.priority || 1,
                             scanData: JSON.stringify(focusedGroup?.scanData, null, 3),
                             // config
                             configActive: focusedGroup?.config?.active,
@@ -377,6 +386,7 @@ export default function AccessGroupEditModal({
                                   locationId: location?.id,
                                   description: values?.description,
                                   scanData: values?.scanData,
+                                  priority: values?.priority,
                                   config: {
                                     active: values?.configActive,
                                     openToEveryone: values?.configOpenToEveryone
@@ -466,6 +476,32 @@ export default function AccessGroupEditModal({
                                             autoComplete={'off'}
                                             autoCorrect={'off'}
                                           />
+                                        </FormControl>
+                                      )}
+                                    </Field>
+                                    <Field name="priority">
+                                      {({ field, form }: any) => (
+                                        <FormControl w={'fit-content'}>
+                                          <FormLabel>Priority</FormLabel>
+                                          <InputGroup>
+                                            <NumberInput
+                                              {...field}
+                                              autoComplete="off"
+                                              placeholder="Priority"
+                                              variant={'outline'}
+                                              min={1}
+                                              defaultValue={1}
+                                              onChange={(value) => {
+                                                form.setFieldValue('priority', value);
+                                              }}
+                                            >
+                                              <NumberInputField />
+                                              <NumberInputStepper>
+                                                <NumberIncrementStepper />
+                                                <NumberDecrementStepper />
+                                              </NumberInputStepper>
+                                            </NumberInput>
+                                          </InputGroup>
                                         </FormControl>
                                       )}
                                     </Field>

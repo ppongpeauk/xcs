@@ -43,7 +43,7 @@ export default function RobloxOauth2() {
           console.log(err);
         });
     }
-  }, [user, code]);
+  }, [user, code, push, query, refreshCurrentUser]);
 
   return <></>;
 }

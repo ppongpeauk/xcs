@@ -1,7 +1,7 @@
 import { TooltipAvatar } from '@/components/TooltipAvatar';
 import { useAuthContext } from '@/contexts/AuthContext';
 import Layout from '@/layouts/PlatformLayout';
-import { Organization } from '@/types';
+import { Organization, OrganizationMember } from '@/types';
 import {
   Link
 } from '@chakra-ui/next-js';
@@ -28,6 +28,20 @@ import { AiFillSetting } from 'react-icons/ai';
 import { MdJoinRight } from 'react-icons/md';
 import { VscVerifiedFilled } from 'react-icons/vsc';
 
+// export async function getServerSideProps({ params, req, res }: any) {
+//   const id = params.id;
+//   if (!id) return { notFound: true };
+
+//   // fetch organization data
+//   const data = await fetch(`${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/organizations/${id}/public`);
+//   if (data.status === 404) return { notFound: true };
+//   if (data.status !== 200) {
+//     res.statusCode = data.status;
+//     return { props: {} };
+//   }
+//   const organization: Organization = await data.json();
+//   return { props: organization };
+// }
 export default function OrganizationPublic() {
   const { query, push } = useRouter();
   const toast = useToast();
@@ -82,7 +96,7 @@ export default function OrganizationPublic() {
         <title>Restrafes XCS – {organization?.name}</title>
         <meta
           property="og:title"
-          content="Restrafes XCS - Manage Organization"
+          content={`Restrafes XCS - ${organization?.name}`}
         />
         <meta
           property="og:site_name"
@@ -154,10 +168,10 @@ export default function OrganizationPublic() {
                   as={Link}
                   key={organization?.owner?.id}
                   href={`/@${organization?.owner?.username}`}
-                  src={organization?.owner?.avatar}
+                  src={organization?.owner?.avatar || '/images/default-avatar.png'}
                 />
                 {organization?.members
-                  .filter((member: any) => member.type !== 'roblox-group')
+                  .filter((member: OrganizationMember) => ['user', 'roblox'].includes(member.type))
                   .map(
                     (member: any) =>
                       member.id !== organization?.owner?.id &&
@@ -201,8 +215,8 @@ export default function OrganizationPublic() {
         {/* <Text as={'h2'} fontSize={'md'}>
           Actions
         </Text> */}
-        <Flex flexDir={'row'} align={'center'} py={2} w={'fit-content'}>
-          <Skeleton as={Flex} isLoaded={!!organization} gap={4}>
+        <Flex align={'center'} py={2} w={'fit-content'}>
+          <Skeleton as={Flex} isLoaded={!!organization} gap={4} flexDir={{ base: 'column', md: 'row' }}>
             <Button
               colorScheme={'blue'}
               leftIcon={<Icon as={MdJoinRight} />}

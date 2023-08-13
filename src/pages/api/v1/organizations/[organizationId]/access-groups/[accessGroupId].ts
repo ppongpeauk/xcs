@@ -38,7 +38,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const user = await users.findOne({ id: uid });
 
   const timestamp = new Date();
-  let { name, description, locationId, scanData, config } = req.body as any;
+  let { name, description, priority, locationId, scanData, config } = req.body as any;
 
   // Edit Access Group
   if (req.method === 'PATCH') {
@@ -94,6 +94,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             ...organization.accessGroups[accessGroupId],
             name,
             description,
+            priority,
             scanData,
             config,
             lastUpdated: timestamp

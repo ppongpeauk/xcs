@@ -53,6 +53,7 @@ import Layout from '@/layouts/PlatformLayout';
 
 import CreateOrganizationDialog from '@/components/CreateOrganizationDialog';
 import JoinOrganizationDialog from '@/components/JoinOrganizationDialog';
+import UserInvitationsModal from '@/components/UserInvitationsModal';
 import { Organization } from '@/types';
 import moment from 'moment';
 import 'moment-timezone';
@@ -116,6 +117,15 @@ function TableEntry({ key, organization, skeleton }: { key: number | string, org
           <ButtonGroup>
             <Button
               as={Link}
+              href={`/organizations/${organization?.id}`}
+              size={"sm"}
+              variant={"solid"}
+              textDecor={"unset !important"}
+            >
+              View Public Page
+            </Button>
+            <Button
+              as={Link}
               href={`/organizations/${organization?.id}/settings`}
               size={"sm"}
               variant={"solid"}
@@ -131,7 +141,7 @@ function TableEntry({ key, organization, skeleton }: { key: number | string, org
   </>
 }
 export default function PlatformOrganizations() {
-  const { user } = useAuthContext();
+  const { user, currentUser } = useAuthContext();
   const { push, query } = useRouter();
   const toast = useToast();
 
@@ -157,6 +167,12 @@ export default function PlatformOrganizations() {
     isOpen: isJoinOrganizationModalOpen,
     onOpen: onJoinOrganizationModalOpen,
     onClose: onJoinOrganizationModalClose
+  } = useDisclosure();
+
+  const {
+    isOpen: isViewInvitationsModalOpen,
+    onOpen: onViewInvitationsModalOpen,
+    onClose: onViewInvitationsModalClose
   } = useDisclosure();
 
   const refreshData = useCallback(async () => {
@@ -310,6 +326,11 @@ export default function PlatformOrganizations() {
           initialValue={initialInviteCodeValue || ''}
         />
       )}
+      <UserInvitationsModal
+        isOpen={isViewInvitationsModalOpen}
+        onClose={onViewInvitationsModalClose}
+        onRefresh={refreshData}
+      />
       <Container
         maxW={'full'}
         p={8}
@@ -345,10 +366,9 @@ export default function PlatformOrganizations() {
           <Button
             variant={'solid'}
             leftIcon={<MdMail />}
-            onClick={onJoinOrganizationModalOpen}
-            isDisabled={true}
+            onClick={onViewInvitationsModalOpen}
           >
-            View Invitations
+            View Invitations ({currentUser?.statistics?.organizationInvitations || 0})
           </Button>
           <Input
             placeholder={'Search'}

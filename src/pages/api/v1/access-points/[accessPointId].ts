@@ -3,6 +3,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 
 import clientPromise from '@/lib/mongodb';
 import { getRobloxUsers } from '@/lib/utils';
+import { OrganizationMember } from '@/types';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   // Access Point ID
@@ -51,7 +52,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(404).json({ message: 'Organization not found.' });
   }
 
-  let member = organization.members[uid as any];
+  let member = organization.members[uid as string] as OrganizationMember;
   if (!member) {
     return res.status(401).json({ message: 'Unauthorized.' });
   }
@@ -127,6 +128,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   // Updating Data
   if (req.method === 'PUT') {
+    // check permissions
+    if (member.role < 1 && !member.permissions?.accessPoints.edit) {
+      return res.status(401).json({ message: 'Unauthorized.' });
+    }
+
     if (!req.body) {
       return res.status(400).json({ message: 'No body provided' });
     }
@@ -269,7 +275,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         $set: {
           updatedAt: timestamp,
           updatedById: uid
-        },
+        }
       }
     );
     await organizations.updateOne(

@@ -2,120 +2,164 @@ import { APIApplicationCommandInteraction, APIInteractionResponse } from 'discor
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export interface Alert {
-  id: string,
-  title: string,
-  description?: string,
-  type: 'info' | 'warning' | 'error',
-  createdAt: string,
+  id: string;
+  title: string;
+  description?: string;
+  type: 'info' | 'warning' | 'error';
+  createdAt: string;
 }
 export interface User {
-  id: string,
+  id: string;
   name?: {
-    first: string
-    last?: string
-    privacyLevel: number
-  }, // deprecated
-  displayName?: string,
-  username: string,
-  bio?: string | null,
-  avatar: string | null,
+    first: string;
+    last?: string;
+    privacyLevel: number;
+  }; // deprecated
+  displayName?: string;
+  username: string;
+  bio?: string | null;
+  avatar: string | null;
   email: {
-    address: string,
-    privacyLevel: number,
-  },
+    address: string;
+    privacyLevel: number;
+  };
   roblox: {
-    id: string | null,
-    displayName?: string | null,
-    username?: string | null,
-    verified: boolean,
-  },
+    id: string | null;
+    displayName?: string | null;
+    username?: string | null;
+    verified: boolean;
+  };
   platform: {
-    staff: number | boolean,
-    membership: number,
-    invites: number,
-  },
-  statistics: {
-    referrals: number,
-    scans: number,
-  },
+    staff: number | boolean;
+    membership: number;
+    invites: number;
+  };
+  statistics?: {
+    referrals: number;
+    scans: number;
+    organizationInvitations?: number;
+  };
 }
 
 export interface Organization {
-  id: string,
+  id: string;
 
-  name: string,
-  ownerId: string,
-  owner?: User,
-  description: string,
-  isPersonal: boolean,
+  name: string;
+  ownerId: string;
+  owner?: User;
+  description: string;
+  isPersonal: boolean;
 
-  members: Record<string, OrganizationMember>,
-  invitations: [],
-  logs: {},
-  apiKeys: {},
+  members: Record<string, OrganizationMember>;
+  invitations: [];
+  logs: {};
+  apiKeys: {};
 
-  createdAt: string,
-  updatedAt: string,
-  updatedById?: string,
-  updatedBy?: User,
+  createdAt: string;
+  updatedAt: string;
+  updatedById?: string;
+  updatedBy?: User;
 
-  avatar?: string,
-  accessGroups?: AccessGroup[],
+  avatar?: string;
+  accessGroups: Record<string, AccessGroup>;
 
   // not stored in mongoDB, but added to organization data on some endpoints
   statistics?: {
-    numLocations?: number,
-    numMembers?: number
-  }
+    numLocations?: number;
+    numMembers?: number;
+    scans?: {
+      total: number;
+      granted: number;
+      denied: number;
+    };
+  };
 }
 
 export interface OrganizationMember {
-  type: "user" | "roblox" | "roblox-group",
-  id: string,
-  role: number,
-  formattedId?: string,
+  type: 'user' | 'roblox' | 'roblox-group' | 'card';
+  id: string;
+  role: number;
+  accessGroups: string[];
+  scanData?: any;
+  permissions?: {
+    all: boolean;
+    organization: {
+      owner: boolean;
+      edit: boolean;
+      members: {
+        create: boolean;
+        edit: boolean;
+        delete: boolean;
+      };
+    };
+    locations: {
+      create: boolean;
+      edit: boolean;
+      delete: boolean;
+    };
+    accessPoints: {
+      create: boolean;
+      edit: boolean;
+      delete: boolean;
+    };
+    accessGroups: {
+      create: boolean;
+      edit: boolean;
+      delete: boolean;
+    };
+  };
+  formattedId?: string;
 
-  name?: string,
-  displayName?: string,
-  username?: string,
-  avatar?: string,
+  name?: string;
+  displayName?: string;
+  username?: string;
+  avatar?: string;
 
-  groupName?: string,
-  groupRoles?: number[],
-  roleset?: any[],
+  groupName?: string;
+  groupRoles?: number[];
+  roleset?: any[];
+
+  cardNumbers?: string[];
 
   roblox?: {
-    id: string,
-    displayName?: string,
-    username?: string,
-  },
+    id: string;
+    displayName?: string;
+    username?: string;
+  };
 
-  joinedAt: string,
-  updatedAt?: string,
+  joinedAt: string | Date;
+  updatedAt?: string | Date;
 }
 export interface Location {
-  id: string,
-  name: string,
-  description?: string,
-  tags: [],
-  organizationId: string,
-  organization?: Organization,
-  avatar?: string,
+  id: string;
+  name: string;
+  description?: string;
+  tags: [];
+  organizationId: string;
+  organization?: Organization;
+  avatar?: string;
   roblox: {
-    place?: any,
-    placeId?: number,
-  },
-  enabled: true,
-  createdAt: string,
-  updatedAt: string,
+    place?: any;
+    placeId?: number;
+  };
+  enabled: true;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface AccessGroup {
-  id: string,
-  name: string,
-  locationName?: string,
-  locationId?: string,
-  type: 'organization' | 'location',
+  id: string;
+  name: string;
+  type: 'organization' | 'location';
+  description: string;
+  priority?: number;
+  scanData?: any;
+  config: {
+    active: boolean;
+    openToEveryone: boolean;
+  };
+  locationName?: string;
+  locationId?: string;
 }
 
 export type DiscordInteractionApiHandler = (
@@ -125,29 +169,63 @@ export type DiscordInteractionApiHandler = (
 ) => void | Promise<void>;
 
 export interface Dialog {
-  title?: string,
-  description?: string,
-  confirmButtonText?: string,
-  cancelButtonText?: string,
-  callback?: () => void
+  title?: string;
+  description?: string;
+  confirmButtonText?: string;
+  cancelButtonText?: string;
+  callback?: () => void;
 }
 
 export interface Invitation {
-  type: 'xcs' | 'organization',
-  code: string,
-  isSponsor?: boolean,
+  type: 'xcs' | 'organization';
+  code: string;
+  isSponsor?: boolean;
 
-  organizationId?: string,
-  role?: number,
-  organization?: Organization,
+  organizationId?: string;
+  role?: number;
+  organization?: Organization;
 
-  uses: number,
-  maxUses: number,
-  startingReferrals?: number,
+  uses: number;
+  maxUses: number;
+  startingReferrals?: number;
 
-  comment?: string,
+  comment?: string;
 
-  createdBy: string,
-  createdAt: string,
-  creator?: User,
+  createdBy: string;
+  createdAt: string;
+  creator?: User;
+}
+
+export interface OrganizationInvitation {
+  id: string;
+  recipientId: string;
+  organizationId: string;
+  comment?: string;
+
+  organization?: Organization;
+  recipient?: User;
+  createdBy?: User;
+
+  role: number;
+  accessGroups: string[];
+
+  createdById: string;
+  createdAt: string | Date;
+  expiresAt?: string | Date | -1;
+}
+
+export interface Notification {
+  id: string;
+  recipient: string;
+  type: 'alert' | 'organization-invitation';
+  read: boolean;
+  data: {
+    status: 'success' | 'info' | 'warning' | 'error';
+    title: string;
+    description?: string;
+    icon?: string;
+    link?: string;
+  };
+  createdAt: string;
+  expiresAt?: string | Date | -1;
 }

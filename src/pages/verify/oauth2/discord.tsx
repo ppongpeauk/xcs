@@ -45,7 +45,7 @@ export default function Discord() {
     if (query.error) {
       push('/settings/3?discordLinked=false');
     }
-  }, [user, query]);
+  }, [user, query, push, refreshCurrentUser]);
 
   return <></>;
 }

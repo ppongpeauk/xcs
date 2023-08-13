@@ -179,7 +179,6 @@ export default function PlatformAccessPoint() {
     if (ag.type === 'organization') {
       return 'Organization';
     } else if (ag.type === 'location') {
-      // TODO: get location name
       return ag.locationName || ag.locationId || 'Unknown';
     } else {
       return ag.type;
@@ -189,7 +188,7 @@ export default function PlatformAccessPoint() {
   const getAccessGroupOptions = useCallback(
     (organization: Organization) => {
       if (!organization) return [];
-      const ags = Object.values(organization?.accessGroups as AccessGroup[]) || [];
+      const ags = Object.values(organization?.accessGroups) || [];
       interface Group {
         label: string;
         options: {
@@ -200,6 +199,7 @@ export default function PlatformAccessPoint() {
       let groups = [] as any;
 
       ags.forEach((ag: AccessGroup) => {
+        if (ag.type === 'location' && ag.locationId !== accessPoint?.locationId) return;
         // check if the group is already in the groups object
         if (groups.find((g: Group) => g.label === getAccessGroupType(ag))) {
           // if it is, add the option to the options array
@@ -221,6 +221,7 @@ export default function PlatformAccessPoint() {
             ]
           });
         }
+
       });
 
       // sort the groups so organizations are at the bottom

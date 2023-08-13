@@ -61,7 +61,7 @@ export default function InviteOrganizationRobloxModal({
   const getAccessGroupOptions = useCallback(
     (organization: Organization) => {
       if (!organization) return [];
-      const ags = Object.values(organization?.accessGroups as AccessGroup[]) || [];
+      const ags = Object.values(organization?.accessGroups) || [];
       interface Group {
         label: string;
         options: {
