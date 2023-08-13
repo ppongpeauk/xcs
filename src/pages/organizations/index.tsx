@@ -368,7 +368,7 @@ export default function PlatformOrganizations() {
             leftIcon={<MdMail />}
             onClick={onViewInvitationsModalOpen}
           >
-            View Invitations ({currentUser?.statistics?.organizationInvitations || 0})
+            View Invitations<Flex as={'span'} fontFamily={'sans-serif'} align={'center'} justify={'center'} ml={2} px={2} borderRadius={'full'} minW={'1.5em'} h={'1.5em'} bg={'whiteAlpha.200'}>{" "}{currentUser?.statistics?.organizationInvitations || 0}</Flex>
           </Button>
           <Input
             placeholder={'Search'}

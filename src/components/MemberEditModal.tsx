@@ -720,7 +720,7 @@ export default function MemberEditModal({
                               )?.name,
                               value: ag
                             })),
-                            scanData: JSON.stringify(focusedMember?.scanData, null, 3)
+                            scanData: JSON.stringify(focusedMember?.scanData || {}, null, 3)
                           }}
                           onSubmit={(values, actions) => {
                             user.getIdToken().then((token: string) => {
