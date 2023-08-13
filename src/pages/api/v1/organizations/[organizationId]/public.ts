@@ -33,26 +33,29 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const users = db.collection('users');
   let canEdit = false;
 
-  let organization = (await organizations.findOne({ id: organizationId }, {
-    projection: {
-      id: 1,
-      name: 1,
-      description: 1,
-      avatar: 1,
-      ownerId: 1,
-      members: 1,
-      createdAt: 1,
-      updatedAt: 1,
-      verified: 1,
-      isPersonal: 1,
+  let organization = (await organizations.findOne(
+    { id: organizationId },
+    {
+      projection: {
+        id: 1,
+        name: 1,
+        description: 1,
+        avatar: 1,
+        ownerId: 1,
+        members: 1,
+        createdAt: 1,
+        updatedAt: 1,
+        verified: 1,
+        isPersonal: 1
+      }
     }
-  })) as any;
+  )) as any;
 
   if (!organization) {
     return res.status(404).json({ message: 'Organization not found' });
   }
 
-  if (organization.members[uid] && organization.members[uid].role > 1) {
+  if (organization.members[uid] && organization.members[uid].role > 0) {
     canEdit = true;
   }
 
@@ -60,26 +63,31 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     organization.user = organization.members[uid];
 
     let ownerMember = Object.values(organization.members).find(
-      (member: any) => member.id === organization.ownerId) as OrganizationMember
+      (member: any) => member.id === organization.ownerId
+    ) as OrganizationMember;
 
     // update organization to have owner member
     if (!organization.ownerId) {
       // find owner
       const ownerMemberId = Object.keys(organization.members).find(
-        (key: any) => organization.members[key].role === 3) as string;
+        (key: any) => organization.members[key].role === 3
+      ) as string;
       ownerMember = organization.members[ownerMemberId] as OrganizationMember;
       await organizations.updateOne({ id: organizationId }, { $set: { ownerId: ownerMemberId } });
       organization.ownerId = ownerMemberId;
     }
 
-    let ownerUser = await users.findOne({ id: organization.ownerId }, {
-      projection: {
-        id: 1,
-        displayName: 1,
-        username: 1,
-        avatar: 1,
+    let ownerUser = await users.findOne(
+      { id: organization.ownerId },
+      {
+        projection: {
+          id: 1,
+          displayName: 1,
+          username: 1,
+          avatar: 1
+        }
       }
-    });
+    );
 
     organization.owner = ownerUser;
 
@@ -162,7 +170,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     organization.canEdit = canEdit;
 
     return res.status(200).json({
-      organization: organization,
+      organization: organization
     });
   }
 

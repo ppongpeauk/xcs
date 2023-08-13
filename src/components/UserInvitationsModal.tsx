@@ -197,7 +197,7 @@ export default function UserInvitationsModal({
           if (action === 'accept') {
             await onRefresh();
             if (invitation.organization?.id)
-              await push(`/organizations/${invitation.organization?.id}`);
+              await push(`/organizations/${invitation.organization?.id}/settings`);
             onClose();
           }
         } else {
