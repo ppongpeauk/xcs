@@ -138,13 +138,13 @@ export default function InviteOrganizationFlowModal({
       icon: SiRoblox,
       value: 'roblox',
       label: 'Roblox User',
-      description: 'A roblox user.'
+      description: 'A Roblox user.'
     },
     {
       icon: SiRobloxstudio,
       value: 'roblox-group',
       label: 'Roblox Group',
-      description: 'A roblox group with roles (member, staff, etc.)'
+      description: 'A Roblox group with roles (member, staff, etc.)'
     },
     {
       icon: AiFillIdcard,
