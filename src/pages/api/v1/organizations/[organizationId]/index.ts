@@ -31,6 +31,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const organizations = db.collection('organizations');
   const locations = db.collection('locations');
   const invitations = db.collection('invitations');
+  const organizationInvitations = db.collection('organizationInvitations');
   const accessPoints = db.collection('accessPoints');
   const users = db.collection('users');
   const user = (await users.findOne({ id: uid })) as User | null;
@@ -321,6 +322,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Delete All Access Points in Organization
     await accessPoints.deleteMany({ organizationId: organizationId });
+
+    // Delete All Invitations in Organization
+    await organizationInvitations.deleteMany({ organizationId: organizationId });
 
     // Delete Profile Picture
     try {
