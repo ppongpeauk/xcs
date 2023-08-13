@@ -96,7 +96,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         .collection('organizationInvitations')
         .findOne({ organizationId: organizationId, recipientId: user.id })) as OrganizationInvitation | null;
       if (invitation) {
-        const invitedBy = (await users.findOne({ id: invitation.createdBy }, { projection: { displayName: 1 } })) as {
+        const invitedBy = (await users.findOne({ id: invitation.createdById }, { projection: { displayName: 1 } })) as {
           displayName: string;
         } | null;
         return res.status(409).json({
