@@ -440,7 +440,7 @@ export default function MemberEditModal({
                                         fontWeight={'500'}
                                         color="gray.500"
                                       >
-                                        {member?.type === 'roblox-group' ? member?.groupName : 'Card Group'}
+                                        {member?.type === 'roblox-group' ? member?.groupName : 'Card Number Set'}
                                       </Text>
                                     </>
                                   ) : (
@@ -461,20 +461,14 @@ export default function MemberEditModal({
                                       </Flex>
                                     </>
                                   )}
-                                  <Text
-                                    fontSize="sm"
-                                    color="gray.500"
-                                  >
-                                    Joined {toDate(member?.joinedAt)}
-                                  </Text>
                                   {member?.type === 'roblox-group' && (
                                     <Flex
                                       flexWrap={'wrap'}
-                                      pt={1}
+                                      py={1}
+                                      gap={1}
                                     >
                                       {!member?.groupRoles?.length && (
                                         <Badge
-                                          m={0.5}
                                           colorScheme={'red'}
                                         >
                                           Roles Not Configured
@@ -483,18 +477,53 @@ export default function MemberEditModal({
                                       {member?.groupRoles?.map((role: any) => (
                                         <Badge
                                           key={role}
-                                          m={0.5}
                                         >
                                           {member?.roleset?.find((r: any) => r.id === role)?.name}
                                         </Badge>
                                       ))}
                                     </Flex>
                                   )}
+                                  {
+                                    member.type === 'card' &&
+                                    <Flex
+                                      flexWrap={'wrap'}
+                                      py={1}
+                                      gap={1}
+                                    >
+                                      {!member?.cardNumbers?.length && (
+                                        <Badge
+                                          colorScheme={'red'}
+                                        >
+                                          Set Not Configured
+                                        </Badge>
+                                      )}
+                                      {member?.cardNumbers?.map((cn: any) => (
+                                        <Badge
+                                          key={cn}
+                                        >
+                                          {cn}
+                                        </Badge>
+                                      ))}
+                                    </Flex>
+                                  }
+                                  {
+                                    member.type === 'user' && (
+                                      <Text
+                                        fontSize="sm"
+                                        color="gray.500"
+                                      >
+                                        Joined {toDate(member?.joinedAt)}
+                                      </Text>
+                                    )
+                                  }
                                 </Flex>
                               </Flex>
                             </Td>
                             <Td>
-                              <Text>{roleToText(member?.role)}</Text>
+                              {
+                                member?.type === 'user' &&
+                                <Text>{roleToText(member?.role)}</Text>
+                              }
                             </Td>
                             <Td isNumeric>
                               <Button
@@ -618,6 +647,7 @@ export default function MemberEditModal({
                             size={'xl'}
                             src={focusedMember?.avatar}
                             mr={4}
+                            my={2}
                             bg={'gray.300'}
                             borderRadius={['roblox-group', 'card'].includes(focusedMember?.type) ? 'lg' : 'full'}
                             transition={'opacity 0.2s ease-out'} _hover={{ opacity: 0.75 }} _active={{ opacity: 0.5 }}
@@ -648,39 +678,22 @@ export default function MemberEditModal({
                                 {['roblox-group', 'card'].includes(focusedMember?.type) ? focusedMember?.name : focusedMember?.displayName}
                               </Text>
                             </Flex>
-                            <Text
-                              fontSize={'sm'}
-                              color={'gray.500'}
-                            >
-                              Joined {toDate(focusedMember?.joinedAt)}
-                            </Text>
-
+                            {
+                              focusedMember?.type === 'user' && (
+                                <Text
+                                  fontSize={'sm'}
+                                  color={'gray.500'}
+                                >
+                                  Joined {toDate(focusedMember?.joinedAt)}
+                                </Text>
+                              )
+                            }
                             {focusedMember?.type === 'user' && <Text
                               fontSize={'sm'}
                               color={'gray.500'}
                             >
                               {roleToText(focusedMember?.role)}
                             </Text>}
-                            {
-                              focusedMember?.type !== 'card' &&
-                              <Button
-                                as={NextLink}
-                                href={
-                                  focusedMember?.type === 'user'
-                                    ? `/@${focusedMember?.username}`
-                                    : focusedMember?.type === 'roblox'
-                                      ? `https://www.roblox.com/users/${focusedMember?.id}/profile`
-                                      : `https://www.roblox.com/groups/${focusedMember?.id}/group`
-                                }
-                                size={'sm'}
-                                mt={2}
-                                target={'_blank'}
-                                w={'fit-content'}
-                                px={8}
-                              >
-                                View Profile
-                              </Button>
-                            }
                           </Flex>
                         </Flex>
                         {/* Body */}
@@ -896,6 +909,9 @@ export default function MemberEditModal({
                                             hideSelectedOptions={false}
                                             selectedOptionStyle="check"
                                           />
+                                          <FormHelperText>
+                                            These are the card numbers that will be assigned to this member.
+                                          </FormHelperText>
                                         </FormControl>
                                       )}
                                     </Field>
@@ -918,6 +934,9 @@ export default function MemberEditModal({
                                           selectedOptionStyle={'check'}
                                           hideSelectedOptions={false}
                                         />
+                                        <FormHelperText>
+                                          Enter the access groups that this member has access to.
+                                        </FormHelperText>
                                       </FormControl>
                                     )}
                                   </Field>

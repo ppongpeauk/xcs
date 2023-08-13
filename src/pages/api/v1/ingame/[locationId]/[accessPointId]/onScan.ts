@@ -11,12 +11,24 @@ import { AccessGroup, Organization, OrganizationMember } from '@/types';
 
 const mergicianOptions = { appendArrays: true, dedupArrays: true };
 
+const sortByPriority = (organization: Organization, array: string[]) => {
+  return array.sort((a, b) => {
+    return (organization.accessGroups[a]?.priority || 0) - (organization.accessGroups[b]?.priority || 0);
+  });
+};
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'GET') {
     return res.status(405).json({ message: 'Method not allowed.' });
   }
 
-  let { locationId, accessPointId, apiKey, userId, cardNumber } = req.query;
+  let { locationId, accessPointId, apiKey, userId, cardNumbers } = req.query as {
+    locationId: string;
+    accessPointId: string;
+    apiKey: string;
+    userId: string;
+    cardNumbers: string;
+  };
 
   const mongoClient = await clientPromise;
 
@@ -85,7 +97,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   let allowedCards = accessPoint.config.alwaysAllowed.cards || [];
 
   // get all access groups that are open to everyone
-  const openAccessGroups = Object.keys(organization.accessGroups).filter(
+  const openAccessGroups = sortByPriority(organization, Object.keys(organization.accessGroups)).filter(
     (groupId) =>
       (organization.accessGroups[groupId].type === 'organization' ||
         organization.accessGroups[groupId].locationId === locationId) &&
@@ -134,7 +146,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     (member: any) => member.type === 'roblox-group'
   );
   for (const member of robloxMemberGroups as any) {
-    for (const accessGroup of member.accessGroups) {
+    for (const accessGroup of sortByPriority(organization, member.accessGroups)) {
       if (allowedGroups.includes(accessGroup)) {
         for (const roleset of member.groupRoles) {
           allowedGroupRoles[roleset] = member;
@@ -143,7 +155,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   }
 
-  if (cardNumber) {
+  if (cardNumbers) {
     const cardMembers = Object.keys(allowedOrganizationMembers).filter(
       (memberId) => organization.members[memberId].type === 'card'
     );
@@ -154,23 +166,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       allowedCardNumbers = allowedCardNumbers.concat(organization.members[memberId].cardNumbers as any);
     }
 
-    if (allowedCardNumbers.includes(cardNumber as string)) {
-      isAllowed = true;
-      // find each member that has the card number
-      for (const memberId of cardMembers) {
-        if ((organization.members[memberId]?.cardNumbers || []).includes(cardNumber as string)) {
-          // get scan data from allowed groups' access groups
-          for (const group of organization.members[memberId].accessGroups) {
-            if (organization.accessGroups[group]?.config?.active) {
-              groupScanData = mergician(mergicianOptions)(
-                groupScanData,
-                organization.accessGroups[group]?.scanData || {}
-              );
-              console.log('adding scan data from access group', group);
+    for (const cardNumber of cardNumbers.split(',')) {
+      if (allowedCardNumbers.includes(cardNumber as string)) {
+        isAllowed = true;
+        // find each member that has the card number
+        for (const memberId of cardMembers) {
+          if ((organization.members[memberId]?.cardNumbers || []).includes(cardNumber as string)) {
+            // get scan data from allowed groups' access groups
+            for (const group of sortByPriority(organization, organization.members[memberId].accessGroups)) {
+              if (organization.accessGroups[group]?.config?.active) {
+                groupScanData = mergician(mergicianOptions)(
+                  groupScanData,
+                  organization.accessGroups[group]?.scanData || {}
+                );
+                console.log('adding scan data from access group', group);
+              }
             }
+            // get scan data from the member
+            groupScanData = mergician(mergicianOptions)(groupScanData, organization.members[memberId]?.scanData || {});
           }
-          // get scan data from the member
-          groupScanData = mergician(mergicianOptions)(groupScanData, organization.members[memberId]?.scanData || {});
         }
       }
     }
@@ -195,7 +209,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       isAllowed = true;
       groupScanData = mergician(mergicianOptions)(groupScanData, allowedGroupRoles[role]?.scanData || {});
       // get scan data from allowed groups' access groups
-      for (const group of allowedGroupRoles[role]?.accessGroups) {
+      for (const group of sortByPriority(organization, allowedGroupRoles[role]?.accessGroups)) {
         if (organization.accessGroups[group]?.config?.active) {
           groupScanData = mergician(mergicianOptions)(groupScanData, organization.accessGroups[group]?.scanData || {});
           console.log('adding scan data from access group', group);

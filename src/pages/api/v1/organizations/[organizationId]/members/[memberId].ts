@@ -104,7 +104,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           [`members.${memberId}.name`]: name || user?.displayName || user?.groupName || 'Untitled',
           [`members.${memberId}.role`]: role,
           [`members.${memberId}.groupRoles`]: groupRoles !== undefined ? groupRoles : undefined,
-          [`members.${memberId}.cardNumbers`]: cardNumbers !== undefined ? cardNumbers : undefined,
+          [`members.${memberId}.cardNumbers`]: cardNumbers !== undefined ? cardNumbers.sort() : undefined,
           [`members.${memberId}.accessGroups`]: accessGroups,
           [`members.${memberId}.scanData`]: scanData || {},
           [`members.${memberId}.updatedAt`]: timestamp

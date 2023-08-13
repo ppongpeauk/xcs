@@ -270,7 +270,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               name: name?.trim(),
               role: 0,
               scanData: {},
-              cardNumbers: cardNumbers,
+              cardNumbers: (cardNumbers || []).sort(),
 
               accessGroups: accessGroups,
 

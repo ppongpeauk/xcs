@@ -150,7 +150,7 @@ export default function InviteOrganizationFlowModal({
       icon: AiFillIdcard,
       value: 'card',
       label: 'Card Numbers',
-      description: 'A group of card numbers.'
+      description: 'A set of card numbers.'
     }
   ]
 
