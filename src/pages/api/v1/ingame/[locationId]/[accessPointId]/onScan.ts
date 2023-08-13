@@ -22,12 +22,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(405).json({ message: 'Method not allowed.' });
   }
 
-  let { locationId, accessPointId, apiKey, userId, cardNumbers } = req.query as {
+  let { locationId, accessPointId, apiKey, userId, cardNumbers, universeId } = req.query as {
     locationId: string;
     accessPointId: string;
     apiKey: string;
     userId: string;
     cardNumbers: string;
+    universeId: string;
   };
 
   const mongoClient = await clientPromise;

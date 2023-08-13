@@ -222,7 +222,7 @@ export default function OrganizationInvitationsModal({
             <Flex pb={4}>
               <IconButton ml={'auto'} onClick={fetchInvitations} aria-label={'Refresh'} icon={<Icon as={BiRefresh} />} />
             </Flex>
-            <TableContainer overflow={'scroll'} maxH={'md'}>
+            <TableContainer overflow={'auto'} maxH={'md'}>
               <Table>
                 <Thead>
                   <Tr>

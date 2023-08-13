@@ -130,6 +130,41 @@ export interface OrganizationMember {
   joinedAt: string | Date;
   updatedAt?: string | Date;
 }
+
+export interface RobloxAPIResponsePlace {
+  id: number;
+  rootPlaceId: number;
+  name: string;
+  description: string;
+  sourceName: string | null;
+  sourceDescription: string | null;
+  creator: {
+    id: number;
+    name: string;
+    type: string;
+    isRNVAccount: boolean;
+    hasVerifiedBadge: boolean;
+  };
+  price: number | null;
+  allowedGearGenres: string[];
+  allowedGearCategories: string[];
+  isGenreEnforced: boolean;
+  copyingAllowed: boolean;
+  playing: number;
+  visits: number;
+  maxPlayers: number;
+  created: string;
+  updated: string;
+  studioAccessToApisAllowed: boolean;
+  createVipServersAllowed: boolean;
+  universeAvatarType: string;
+  genre: string;
+  isAllGenre: boolean;
+  isFavoritedByUser: boolean;
+  favoritedCount: number;
+
+  thumbnail?: string;
+}
 export interface Location {
   id: string;
   name: string;
@@ -139,8 +174,11 @@ export interface Location {
   organization?: Organization;
   avatar?: string;
   roblox: {
-    place?: any;
-    placeId?: number;
+    place?: RobloxAPIResponsePlace;
+    placeId?: number | string;
+    universe?: {
+      id: number | string;
+    };
   };
   enabled: true;
   createdAt: string;

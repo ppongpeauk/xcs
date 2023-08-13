@@ -43,6 +43,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           }
         }
       )
+      .limit(10)
       .toArray();
 
     return res.status(200).json(result);

@@ -77,13 +77,13 @@ export default function LocationResetUniverseIdModal({
           );
         })
         .catch((error) => {
-          toast({
-            title: 'There was an error searching for users.',
-            description: error.message,
-            status: 'error',
-            duration: 5000,
-            isClosable: true
-          });
+          // toast({
+          //   title: 'There was an error searching for users.',
+          //   description: error.message,
+          //   status: 'error',
+          //   duration: 5000,
+          //   isClosable: true
+          // });
         });
     });
   }, []);
