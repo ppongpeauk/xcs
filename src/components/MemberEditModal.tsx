@@ -308,7 +308,7 @@ export default function MemberEditModal({
                   leftIcon={<MdPersonAdd />}
                   isDisabled={clientMember?.role < 2}
                 >
-                  Add a Member
+                  Add Member
                 </Button>
                 <Button
                   alignSelf={{
@@ -319,7 +319,7 @@ export default function MemberEditModal({
                   leftIcon={<RiMailAddFill />}
                   isDisabled={clientMember?.role < 2}
                 >
-                  Create Invite Link
+                  Create Invitation Link
                 </Button>
                 <Button
                   alignSelf={{
