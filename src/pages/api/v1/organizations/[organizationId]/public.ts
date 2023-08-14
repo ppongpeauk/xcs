@@ -1,10 +1,9 @@
-import { deleteOrganizationProfilePicture, tokenToID, uploadProfilePicture } from '@/pages/api/firebase';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import { authToken } from '@/lib/auth';
 import clientPromise from '@/lib/mongodb';
 import { getRobloxGroups, getRobloxUsers } from '@/lib/utils';
-import { OrganizationMember, User } from '@/types';
+import { OrganizationMember } from '@/types';
 
 const sharp = require('sharp');
 
@@ -92,7 +91,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     organization.owner = ownerUser;
 
     // get all members
-    let members = [];
+    let members: Record<string, OrganizationMember> = {};
 
     // xcs users
     for (const [key, value] of Object.entries(organization.members) as any) {
@@ -101,7 +100,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           { id: key },
           {
             projection: {
-              type: 1,
               name: 1,
               id: 1,
               displayName: 1,
@@ -110,16 +108,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
           }
         );
-        members.push({
+        // console.log(member);
+        members[key] = {
           type: 'user',
           id: key,
           displayName: member?.displayName,
           username: member?.username,
           avatar: member?.avatar,
           ...value
-        });
+        };
+        console.log(members[key]);
       }
-      if (members.length > 99) break;
+      if (Object.keys(members).length > 99) break;
     }
 
     // roblox users
@@ -143,34 +143,46 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // add roblox users to members array
     for (const [key, value] of Object.entries(organization.members) as any) {
       if (value.type === 'roblox') {
-        members.push({
+        members[key] = {
           id: key,
           displayName: robloxUsers[value.id].displayName,
           username: robloxUsers[value.id].name,
           avatar: robloxUsers[value.id].avatar,
           ...value
-        });
+        };
       } else if (value.type === 'roblox-group') {
-        members.push({
+        members[key] = {
           id: key,
           displayName: robloxGroups[value.id].name,
           username: robloxGroups[value.id].name,
           avatar: robloxGroups[value.id].avatar,
           roleset: robloxGroups[value.id].roles,
           ...value
-        });
+        };
       }
-      if (members.length > 99) break;
+      if (Object.keys(members).length > 99) break;
     }
 
-    organization.members = members.sort((a: any, b: any) =>
-      a.role > b.role || b.type === 'roblox-group' || b.type === 'roblox' ? -1 : 1
-    ); // sort by role (descending)
+    // members = members.sort((a: any, b: any) =>
+    //   a.role > b.role || b.type === 'roblox-group' || b.type === 'card' ? -1 : 1
+    // ); // sort by role (descending)
+
+    // sort object by role (descending)
+    members = Object.fromEntries(Object.entries(members).sort(([, a], [, b]) => a.role - b.role));
+
+    // Get Access Points
+    for (const accessGroupId in organization.accessGroups) {
+      const accessGroup = organization.accessGroups[accessGroupId];
+      if (accessGroup.locationId) {
+        const location = await locations.findOne({ id: accessGroup.locationId }, { projection: { name: 1, id: 1 } });
+        if (location) organization.accessGroups[accessGroupId].locationName = location.name;
+      }
+    }
 
     organization.canEdit = canEdit;
 
     return res.status(200).json({
-      organization: organization
+      organization: { ...organization, members }
     });
   }
 

@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { Link } from '@chakra-ui/next-js';
 import {
@@ -7,18 +7,10 @@ import {
   AvatarBadge,
   Box,
   Button,
-  Center,
   Container,
   Flex,
-  Grid,
-  Heading,
   Icon,
-  Image,
   Skeleton,
-  SkeletonCircle,
-  SkeletonText,
-  Stack,
-  StackItem,
   Text,
   Tooltip,
   Wrap,
@@ -39,7 +31,6 @@ import { useRouter } from 'next/router';
 
 // Authentication
 import { useAuthContext } from '@/contexts/AuthContext';
-import { FaAddressBook } from 'react-icons/fa';
 
 function OrganizationItem({ organization }: { organization: any }) {
   return (
@@ -77,7 +68,7 @@ export default function Profile({ username, user: serverUser }: { username: stri
   const [user, setUser] = useState<any | undefined>(undefined);
   const toast = useToast();
 
-  const fetchUser = async (token?: string) => {
+  const fetchUser = useCallback(async (token?: string) => {
     fetch(`/api/v1/users/${username}`, {
       method: 'GET',
       headers: {
@@ -99,7 +90,7 @@ export default function Profile({ username, user: serverUser }: { username: stri
           isClosable: true
         });
       });
-  };
+  }, [username, toast]);
 
   useEffect(() => {
     // if (!currentUser) return;
@@ -112,7 +103,7 @@ export default function Profile({ username, user: serverUser }: { username: stri
     } else {
       fetchUser();
     }
-  }, [username, currentUser, router, toast]);
+  }, [username, currentUser, router, toast, authUser, fetchUser]);
 
   return (
     <>
@@ -172,6 +163,7 @@ export default function Profile({ username, user: serverUser }: { username: stri
               overflow={'hidden'}
               border={'2px solid'}
               borderColor={useColorModeValue('gray.300', 'gray.600')}
+              background={useColorModeValue('gray.200', 'gray.700')}
               aspectRatio={1 / 1}
             >
               <Skeleton isLoaded={!!user}>

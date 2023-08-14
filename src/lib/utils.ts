@@ -93,6 +93,11 @@ export const getRobloxUsers = async (userIds: string[]) => {
     .then((res) => res.json())
     .then((res) => res.data);
 
+  if (!robloxResponse || !robloxUserAvatar) {
+    console.warn('No roblox users found', robloxResponse, robloxUserAvatar);
+    return {};
+  }
+
   for (let i = 0; i < robloxResponse.length; i++) {
     robloxResponse[i].avatar = robloxUserAvatar[i].imageUrl;
   }
@@ -137,6 +142,11 @@ export const getRobloxGroups = async (groupIds: string[]) => {
     .catch((err) => {
       return {};
     });
+
+  if (!robloxResponse) {
+    console.warn('No roblox groups found', robloxResponse);
+    return {};
+  }
 
   for (let i = 0; i < robloxResponse.length; i++) {
     robloxResponse[i].avatar = robloxGroupThumbnail[i].imageUrl;

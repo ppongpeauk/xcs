@@ -1,21 +1,13 @@
-import { Suspense, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import {
   Avatar,
   Box,
-  Card, CardBody, CardFooter, CardHeader,
   Container,
   Flex,
   Heading,
-  SimpleGrid,
   Skeleton,
   Stack,
-  Stat,
-  StatArrow,
-  StatGroup,
-  StatHelpText,
-  StatLabel,
-  StatNumber,
   Text,
   useColorModeValue
 } from '@chakra-ui/react';
@@ -23,43 +15,23 @@ import {
 import Head from 'next/head';
 
 import { useAuthContext } from '@/contexts/AuthContext';
-import { useDialogContext } from '@/contexts/DialogContext';
 
+import StatBox from '@/components/StatBox';
 import Layout from '@/layouts/PlatformLayout';
 
-function StatBox({ label, value, helper }: { label: string; value: string; helper?: string }) {
-  return (
-    <Box
-      borderRadius={'lg'}
-      border={'1px solid'}
-      borderColor={useColorModeValue('gray.200', 'gray.700')}
-      p={4}
-      px={8}
-      minW={'256px'}
-      h={'full'}
-    >
-      <Stat>
-        <Text>{label}</Text>
-        <StatNumber>{value}</StatNumber>
-        <Text color={'gray.500'}>{helper}</Text>
-      </Stat>
-    </Box>
-  );
-}
+const randomSubGreetings = [
+  'Securing your facility starts here.',
+  'Building trust through access.',
+  'Managing access with ease.',
+  'Security made simple.',
+  'Where security meets flexibility.',
+  'Take control of your entry points.',
+  'Intelligent access management.',
+  'Making security seamless.',
+];
 export default function PlatformHome() {
   const { currentUser, user } = useAuthContext();
   const [stats, setStats] = useState({ total: 0, granted: 0, denied: 0 });
-  const randomSubGreetings = [
-    'Securing your facility starts here.',
-    'Building trust through access.',
-    'Managing access with ease.',
-    'Security made simple.',
-    'Where security meets flexibility.',
-    'Take control of your entry points.',
-    'Intelligent access management.',
-    'Making security seamless.',
-  ];
-
   const [randomSubGreeting, setRandomSubGreeting] = useState('');
 
   useEffect(() => {

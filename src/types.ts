@@ -65,10 +65,12 @@ export interface Organization {
   accessGroups: Record<string, AccessGroup>;
 
   // not stored in mongoDB, but added to organization data on some endpoints
-  statistics?: {
+  self?: OrganizationMember;
+  canEdit?: boolean;
+  statistics: {
     numLocations?: number;
     numMembers?: number;
-    scans?: {
+    scans: {
       total: number;
       granted: number;
       denied: number;

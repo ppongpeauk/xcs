@@ -39,7 +39,7 @@ export default function InviteOrganizationModal({
   onOpen: () => void;
   onClose: () => void;
   onCreate: (location: any) => void;
-  organizationId: string;
+  organizationId?: string;
 }) {
   const toast = useToast();
   const { user } = useAuthContext();

@@ -62,6 +62,7 @@ import InviteOrganizationFlowModal from './InviteOrganizationFlowModal';
 import OrganizationInvitationsModal from './OrganizationInvitationsModal';
 
 const ChakraEditor = chakra(Editor);
+const memberTypeOrder = ['user', 'roblox', 'roblox-group', 'card'];
 
 export default function MemberEditModal({
   isOpen,
@@ -72,13 +73,22 @@ export default function MemberEditModal({
   members,
   organization,
   onMemberRemove
-}: any) {
+}: {
+  isOpen: boolean;
+  onOpen: () => void;
+  onClose: () => void;
+  onRefresh: () => void;
+  clientMember: OrganizationMember | null;
+  members: Record<string, OrganizationMember>;
+  organization?: Organization | null;
+  onMemberRemove: (member?: OrganizationMember | null) => void;
+}) {
   const { user } = useAuthContext();
   const toast = useToast();
 
   const themeBorderColor = useColorModeValue('gray.200', 'gray.700');
-  const [filteredMembers, setFilteredMembers] = useState<any>(null);
-  const [focusedMember, setFocusedMember] = useState<any>(null);
+  const [filteredMembers, setFilteredMembers] = useState<OrganizationMember[] | null>(null);
+  const [focusedMember, setFocusedMember] = useState<OrganizationMember | null>(null);
   const [accessGroupOptions, setAccessGroupOptions] = useState<any>(null);
 
   const memberSearchRef = useRef<any>(null);
@@ -103,29 +113,29 @@ export default function MemberEditModal({
 
   const filterMembers = useCallback(
     (query: string) => {
-      if (!query) return members;
-      return members.filter(
-        (member: any) =>
+      if (!query) return Object.values(members);
+      return Object.values(members).filter(
+        (member: OrganizationMember) =>
           member.name?.toLowerCase().includes(query.toLowerCase()) ||
           member.displayName?.toLowerCase().includes(query.toLowerCase()) ||
           member.username?.toLowerCase().includes(query.toLowerCase()) ||
           member.groupName?.toLowerCase().includes(query.toLowerCase()) ||
           member.name?.toLowerCase().includes(query.toLowerCase())
       );
-    },
-    [members]
-  );
+    }, [members]);
 
   useEffect(() => {
-    setFilteredMembers(members);
+    setFilteredMembers(Object.values(members));
   }, [members]);
 
   useEffect(() => {
     if (!organization) return;
     setFilteredMembers(filterMembers(memberSearchRef?.current?.value));
-    setFocusedMember(organization.members.find((member: any) => member.id === focusedMember?.id));
+    // setFocusedMember(
+    //   Object.values(members || {}).find((member: any) => member.id === focusedMember.id)
+    // );
     getAccessGroupOptions(organization);
-  }, [organization]);
+  }, [organization, filterMembers, focusedMember?.id]);
 
   const getAccessGroupType = useCallback((ag: AccessGroup) => {
     if (ag.type === 'organization') {
@@ -258,10 +268,11 @@ export default function MemberEditModal({
         closeOnOverlayClick={false}
         blockScrollOnMount={false}
         scrollBehavior="inside"
+        size={{ base: 'full', xl: 'xl' }}
       >
         <ModalOverlay />
         <ModalContent
-          maxW={{ base: 'full', lg: 'container.xl' }}
+          maxW={{ base: 'full', lg: 'container.2xl' }}
           bg={useColorModeValue('white', 'gray.800')}
           h="100%"
         >
@@ -290,7 +301,7 @@ export default function MemberEditModal({
                       if (e.target?.value) {
                         setFilteredMembers(filterMembers(e.target?.value));
                       } else {
-                        setFilteredMembers(members);
+                        setFilteredMembers(Object.values(members));
                       }
                     }}
                   />
@@ -303,7 +314,8 @@ export default function MemberEditModal({
                   }}
                   onClick={inviteFlowModalOnOpen}
                   leftIcon={<MdPersonAdd />}
-                  isDisabled={clientMember?.role < 2}
+                  isDisabled={clientMember!?.role < 2}
+                  size={{ base: 'sm', md: 'md' }}
                 >
                   Add Member
                 </Button>
@@ -314,7 +326,8 @@ export default function MemberEditModal({
                   }}
                   onClick={inviteModalOnOpen}
                   leftIcon={<RiMailAddFill />}
-                  isDisabled={clientMember?.role < 2}
+                  isDisabled={clientMember!?.role < 2}
+                  size={{ base: 'sm', md: 'md' }}
                 >
                   Create Invitation Link
                 </Button>
@@ -325,7 +338,8 @@ export default function MemberEditModal({
                   }}
                   onClick={invitationsModalOnOpen}
                   leftIcon={<RiMailFill />}
-                  isDisabled={clientMember?.role < 2}
+                  isDisabled={clientMember!?.role < 2}
+                  size={{ base: 'sm', md: 'md' }}
                 >
                   View Invitations
                 </Button>
@@ -374,7 +388,7 @@ export default function MemberEditModal({
                     </Thead>
                     <Tbody>
                       {organization ? (
-                        (filteredMembers || []).map((member: OrganizationMember) => (
+                        (Object.values(filteredMembers || {})).sort((a: OrganizationMember, b: OrganizationMember) => ((memberTypeOrder.indexOf(a.type) - a.role) - (memberTypeOrder.indexOf(b.type) - b.role))).map((member: OrganizationMember) => (
                           <Tr key={member.formattedId || member.id}>
                             <Td>
                               <Flex
@@ -384,18 +398,18 @@ export default function MemberEditModal({
                                 <Avatar
                                   as={member.type !== 'card' ? Link : undefined}
                                   href={
-                                    member.type !== 'card' ? (member?.type === 'user'
-                                      ? `/@${member?.username}`
+                                    member.type !== 'card' ? (member.type === 'user'
+                                      ? `/@${member.username}`
                                       : member?.type === 'roblox'
                                         ? `https://www.roblox.com/users/${member?.id}/profile`
                                         : `https://www.roblox.com/groups/${member?.id}/group`) : undefined
                                   }
                                   target='_blank'
                                   size="md"
-                                  src={member?.avatar}
+                                  src={member.avatar}
                                   mr={4}
                                   bg={'gray.300'}
-                                  borderRadius={['roblox-group', 'card'].includes(member?.type) ? 'lg' : 'full'}
+                                  borderRadius={['roblox-group', 'card'].includes(member.type) ? 'lg' : 'full'}
                                   transition={'opacity 0.2s ease-out'} _hover={{ opacity: 0.75 }} _active={{ opacity: 0.5 }}
                                 />
 
@@ -412,7 +426,7 @@ export default function MemberEditModal({
                                             as={SiRoblox}
                                             mr={1}
                                           />
-                                          <Text fontWeight="bold">{member?.displayName}</Text>
+                                          <Text fontWeight="bold">{member.displayName}</Text>
                                         </Flex>
                                         <Text
                                           fontSize="sm"
@@ -509,7 +523,7 @@ export default function MemberEditModal({
                                         fontSize="sm"
                                         color="gray.500"
                                       >
-                                        Joined {toDate(member?.joinedAt)}
+                                        Member since {toDate(member?.joinedAt)}
                                       </Text>
                                     )
                                   }
@@ -545,7 +559,7 @@ export default function MemberEditModal({
                                 isDisabled={
                                   clientMember?.id === member?.id ||
                                   member?.role >= 3 ||
-                                  member?.role >= clientMember?.role
+                                  member?.role >= clientMember!.role
                                 }
                               />
                             </Td>
@@ -588,12 +602,12 @@ export default function MemberEditModal({
                         </>
                       )}
                     </Tbody>
-                    {filteredMembers?.length < 1 && <TableCaption>No members found.</TableCaption>}
+                    {Object.keys(filteredMembers || {}).length < 1 && <TableCaption>No members found.</TableCaption>}
                   </Table>
                 </TableContainer>
                 {/* Edit Member */}
                 <Skeleton
-                  isLoaded={organization}
+                  isLoaded={!!organization}
                   rounded={'lg'}
                   minW={{
                     base: 'unset',
@@ -609,7 +623,7 @@ export default function MemberEditModal({
                     rounded={'lg'}
                     border={'1px solid'}
                     borderColor={themeBorderColor}
-                    //minH={{ base: "unset", xl: "512px" }}
+                    minH={{ base: "384px", xl: "unset" }}
                     //maxH={{ base: "unset", xl: "512px" }}
                     h={'full'}
                     overflowY={'auto'}
@@ -651,7 +665,7 @@ export default function MemberEditModal({
                           />
                           <Flex flexDir={'column'}>
                             <Flex align={'center'}>
-                              {focusedMember.type.startsWith('roblox') && (
+                              {focusedMember?.type?.startsWith('roblox') && (
                                 <Icon
                                   size={'sm'}
                                   as={focusedMember.type === 'roblox-group' ? SiRobloxstudio : SiRoblox}
@@ -659,7 +673,7 @@ export default function MemberEditModal({
                                   h={'full'}
                                 />
                               )}
-                              {focusedMember.type === 'card' && (
+                              {focusedMember?.type === 'card' && (
                                 <Icon
                                   size={'sm'}
                                   as={AiFillIdcard}
@@ -681,7 +695,7 @@ export default function MemberEditModal({
                                   fontSize={'sm'}
                                   color={'gray.500'}
                                 >
-                                  Joined {toDate(focusedMember?.joinedAt)}
+                                  Member since {toDate(focusedMember?.joinedAt)}
                                 </Text>
                               )
                             }
@@ -711,12 +725,12 @@ export default function MemberEditModal({
                                 label: focusedMember?.roleset?.find((r: any) => r.id === role)?.name || 'Unknown',
                                 value: role || 'Unknown'
                               })) || [],
-                            accessGroups: focusedMember?.accessGroups.map((ag: AccessGroup) => ({
-                              label: Object.values(organization?.accessGroups as AccessGroup[]).find(
-                                (oag: any) => oag.id === ag
+                            accessGroups: focusedMember?.accessGroups.map((ag: string) => ({
+                              label: Object.values(organization?.accessGroups).find(
+                                (oag: AccessGroup) => oag.id === ag
                               )?.name,
                               value: ag
-                            })),
+                            } as any)),
                             scanData: JSON.stringify(focusedMember?.scanData || {}, null, 3)
                           }}
                           onSubmit={(values, actions) => {
@@ -1006,7 +1020,7 @@ export default function MemberEditModal({
                                     isDisabled={
                                       clientMember?.id === focusedMember?.id ||
                                       focusedMember?.role >= 3 ||
-                                      focusedMember?.role >= clientMember?.role
+                                      focusedMember?.role >= clientMember!?.role
                                     }
                                   >
                                     Remove

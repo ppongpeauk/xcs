@@ -1,7 +1,6 @@
 import {
   AlertDialog,
   AlertDialogBody,
-  AlertDialogCloseButton,
   AlertDialogContent,
   AlertDialogFooter,
   AlertDialogHeader,
@@ -14,7 +13,7 @@ import {
   Text,
   useColorModeValue
 } from '@chakra-ui/react';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
 function DeleteButtonIcon() {
   return <>
@@ -58,7 +57,7 @@ export default function DeleteDialogOrganization({
             </AlertDialogHeader>
 
             <AlertDialogBody>
-              Are you sure you want to delete this organization? This will remove all associated data, including locations, access points, access groups, and API keys. <br/><Text as={'strong'}>This action cannot be undone.</Text>
+              Are you sure you want to delete this organization? This will remove all associated data, including locations, access points, access groups, and API keys. <br /><Text as={'strong'}>This action cannot be undone.</Text>
               <FormControl my={4}>
                 <FormLabel>Organization Name</FormLabel>
                 <Input

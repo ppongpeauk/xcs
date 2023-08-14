@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+import { Link } from '@chakra-ui/next-js';
 import {
   Avatar,
   AvatarGroup,
@@ -17,7 +18,6 @@ import {
   Icon,
   Input,
   InputGroup,
-  Link,
   Portal,
   Skeleton,
   Stack,
@@ -40,7 +40,6 @@ import { RiProfileFill } from 'react-icons/ri';
 
 import { Field, Form, Formik } from 'formik';
 import Head from 'next/head';
-import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 
 import { useAuthContext } from '@/contexts/AuthContext';
@@ -51,13 +50,17 @@ import AccessGroupEditModal from '@/components/AccessGroupEditModal';
 import DeleteDialog from '@/components/DeleteDialog';
 import DeleteDialogOrganization from '@/components/DeleteDialogOrganization';
 import MemberEditModal from '@/components/MemberEditModal';
+import StatBox from '@/components/StatBox';
 import { TooltipAvatar } from '@/components/TooltipAvatar';
+import { Organization, OrganizationMember } from '@/types';
+
+const memberTypeOrder = ['user', 'roblox', 'roblox-group', 'card'];
 
 function ActionButton({ children, ...props }: any) {
   return (
     <Flex
       {...props}
-      w={'auto'} h={'128px'} aspectRatio={1} border='1px solid' borderColor={useColorModeValue('gray.200', 'gray.700')} borderRadius='lg'
+      w={'128px'} h={'auto'} aspectRatio={1} border='1px solid' borderColor={useColorModeValue('gray.200', 'gray.700')} borderRadius='lg'
       transition={'background 0.2s ease-out'}
       _hover={{
         bg: useColorModeValue('gray.50', 'gray.700')
@@ -76,8 +79,8 @@ function ActionButton({ children, ...props }: any) {
 }
 export default function PlatformOrganization() {
   const { query, push } = useRouter();
-  const { user } = useAuthContext();
-  const [organization, setOrganization] = useState<any>(null);
+  const { user, currentUser } = useAuthContext();
+  const [organization, setOrganization] = useState<Organization | null>(null);
   const toast = useToast();
 
   const { isOpen: isDeleteDialogOpen, onOpen: onDeleteDialogOpen, onClose: onDeleteDialogClose } = useDisclosure();
@@ -214,7 +217,7 @@ export default function PlatformOrganization() {
     });
   };
 
-  let refreshData = async () => {
+  let refreshData = useCallback(async () => {
     await user.getIdToken().then((token: string) => {
       fetch(`/api/v1/organizations/${query.id}`, {
         method: 'GET',
@@ -249,7 +252,7 @@ export default function PlatformOrganization() {
           });
         });
     });
-  };
+  }, [push, query.id, toast, user]);
 
   const onMemberRemove = async (member: any) => {
     await user.getIdToken().then((token: string) => {
@@ -329,7 +332,7 @@ export default function PlatformOrganization() {
     if (!user) return;
     if (!query.id) return;
     refreshData();
-  }, [query.id, user]);
+  }, [query.id, user, refreshData]);
 
   return (
     <>
@@ -376,7 +379,7 @@ export default function PlatformOrganization() {
         onClose={roleModalOnClose}
         onRefresh={refreshData}
         organization={organization}
-        clientMember={organization?.members.find((member: any) => member.id === user?.uid)}
+        clientMember={Object.values(organization?.members || {}).find((member: any) => member.id === user?.uid) || null}
         // filter groups to only include groups that contain locationId
         groups={Object.values(organization?.accessGroups || {}).filter((group: any) => group.type === 'organization')}
         onGroupRemove={onGroupRemove}
@@ -386,9 +389,9 @@ export default function PlatformOrganization() {
         onOpen={memberModalOnOpen}
         onClose={memberModalOnClose}
         onRefresh={refreshData}
-        members={organization?.members}
+        members={organization?.members || {}}
         organization={organization}
-        clientMember={organization?.members.find((member: any) => member.id === user?.uid)}
+        clientMember={Object.values(organization?.members || {}).find((member: any) => member.id === user?.uid) || null}
         onMemberRemove={onMemberRemove}
       />
       <Container
@@ -404,7 +407,7 @@ export default function PlatformOrganization() {
         >
           <BreadcrumbItem>
             <BreadcrumbLink
-              as={NextLink}
+              as={Link}
               href="/home"
               textUnderlineOffset={4}
             >
@@ -413,7 +416,7 @@ export default function PlatformOrganization() {
           </BreadcrumbItem>
           <BreadcrumbItem>
             <BreadcrumbLink
-              as={NextLink}
+              as={Link}
               href={`/organizations`}
               textUnderlineOffset={4}
             >
@@ -430,7 +433,7 @@ export default function PlatformOrganization() {
           </BreadcrumbItem>
         </Breadcrumb>
 
-        <Flex flexDir={'row'} justify={'space-between'} align={'flex-start'} minH={'calc(100vh - 6rem)'} gap={16}>
+        <Flex flexDir={{ base: 'column', '2xl': 'row' }} justify={'space-between'} align={'flex-start'} minH={'calc(100vh - 6rem)'} gap={{ base: 4, '2xl': 16 }}>
           <Flex flexDir={'column'} flex={1} h={'100%'}>
             <Stack
               direction={'row'}
@@ -439,7 +442,7 @@ export default function PlatformOrganization() {
               py={4}
             >
               <Skeleton
-                isLoaded={organization}
+                isLoaded={!!organization}
                 borderRadius={'lg'}
                 ref={avatarRef}
                 onClick={() => {
@@ -448,7 +451,7 @@ export default function PlatformOrganization() {
               >
               </Skeleton>
               <Flex flexDir={'column'}>
-                <Skeleton isLoaded={organization}>
+                <Skeleton isLoaded={!!organization}>
                   <Text
                     as={'h1'}
                     fontSize={{ base: '2xl', md: '4xl' }}
@@ -459,7 +462,7 @@ export default function PlatformOrganization() {
                   </Text>
                 </Skeleton>
                 <Skeleton
-                  isLoaded={organization}
+                  isLoaded={!!organization}
                   my={2}
                 >
                   <Text
@@ -469,7 +472,7 @@ export default function PlatformOrganization() {
                   >
                     Owned by{' '}
                     <Link
-                      as={NextLink}
+                      as={Link}
                       textUnderlineOffset={4}
                       href={`/@${organization?.owner?.username}`}
                     >
@@ -478,7 +481,7 @@ export default function PlatformOrganization() {
                   </Text>
                 </Skeleton>
                 <Skeleton
-                  isLoaded={organization}
+                  isLoaded={!!organization}
                 >
                   <AvatarGroup
                     size={'md'}
@@ -489,12 +492,13 @@ export default function PlatformOrganization() {
                       as={Link}
                       key={organization?.owner?.id}
                       href={`/@${organization?.owner?.username}`}
-                      src={organization?.owner?.avatar}
+                      src={organization?.owner?.avatar || defaultImage}
                     />
-                    {organization?.members
-                      .filter((member: any) => ['user', 'roblox'].includes(member.type))
+                    {Object.values(organization?.members || {})
+                      .filter((member: OrganizationMember) => ['user', 'roblox'].includes(member.type))
+                      .sort((a: OrganizationMember, b: OrganizationMember) => ((memberTypeOrder.indexOf(a.type) - a.role) - (memberTypeOrder.indexOf(b.type) - b.role)))
                       .map(
-                        (member: any) =>
+                        (member: OrganizationMember) =>
                           member.id !== organization?.owner?.id &&
                           (!member.type.startsWith('roblox') ? (
                             <TooltipAvatar
@@ -534,7 +538,7 @@ export default function PlatformOrganization() {
               </Flex>
             </Stack>
             <Divider my={4} />
-            <Flex flexWrap={'wrap'} w={'full'} h={'auto'} py={4} gap={4} justify={'space-evenly'}>
+            <Flex flexWrap={'wrap'} w={'full'} h={'auto'} py={2} gap={2} justify={'space-evenly'}>
               <ActionButton
                 onClick={() => {
                   push(`/organizations/${query.id}`);
@@ -745,7 +749,7 @@ export default function PlatformOrganization() {
                         >
                           Save Changes
                         </Button>
-                        {organization?.user.role >= 3 ? (
+                        {organization?.self && organization.self.role >= 3 ? (
                           <Button
                             colorScheme="red"
                             mb={2}
@@ -771,19 +775,47 @@ export default function PlatformOrganization() {
               </Skeleton>
             </Box>
           </Flex>
-          <Flex display={{ base: 'none', lg: 'flex' }} flexDir={'column'} w={'100%'} flex={1} gap={4}>
+          <Flex display={{ base: 'none', lg: 'flex' }} flexDir={'column'} flex={1} gap={4}>
+            {/* Global Stats */}
+            <Box>
+              <Skeleton isLoaded={!!organization} w={'fit-content'}>
+                <Heading
+                  fontSize={'3xl'}
+                  w={'fit-content'}
+                  my={4}
+                >
+                  Statistics
+                </Heading>
+              </Skeleton>
+              <Flex flexDir={{ base: 'column', md: 'row' }} gap={4}>
+                <Skeleton isLoaded={!!organization}>
+                  {/* <Stat label={"Total"} value={`${stats.total} scans total`} /> */}
+                  <StatBox
+                    label={'Total Scans'}
+                    value={`${organization?.statistics?.scans?.total || 0} scan${organization?.statistics?.scans?.total === 1 ? '' : 's'}`}
+                    helper={'Since the beginning of time.'}
+                  />
+                </Skeleton>
+                <Skeleton isLoaded={!!organization}>
+                  <StatBox
+                    label={'Successful Scans'}
+                    value={`${organization?.statistics?.scans?.granted || 0} scan${organization?.statistics?.scans?.total === 1 ? '' : 's'}`}
+                    helper={'Scans that were successful.'}
+                  />
+                </Skeleton>
+                <Skeleton isLoaded={!!organization}>
+                  <StatBox
+                    label={'Failed Scans'}
+                    value={`${organization?.statistics?.scans?.denied || 0} scan${organization?.statistics?.scans?.total === 1 ? '' : 's'}`}
+                    helper={'Scans that were denied.'}
+                  />
+                </Skeleton>
+              </Flex>
+            </Box>
+            <Heading as="h1" size="lg">
+              Event Logs
+            </Heading>
             <Flex flexDir={'column'} border={'1px solid'} borderRadius={'lg'} borderColor={useColorModeValue('gray.200', 'gray.700')} p={8}>
-              <Heading as="h1" size="lg">
-                Statistics
-              </Heading>
-              <Text fontSize="lg" variant={'subtext'}>
-                Coming soon.
-              </Text>
-            </Flex>
-            <Flex flexDir={'column'} border={'1px solid'} borderRadius={'lg'} borderColor={useColorModeValue('gray.200', 'gray.700')} p={8}>
-              <Heading as="h1" size="lg">
-                Event Logs
-              </Heading>
               <Text fontSize="lg" variant={'subtext'}>
                 Coming soon.
               </Text>

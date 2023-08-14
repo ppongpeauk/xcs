@@ -7,9 +7,7 @@ import {
 } from '@chakra-ui/next-js';
 import {
   Avatar,
-  AvatarBadge,
   AvatarGroup,
-  Box,
   Button,
   Container,
   Flex,
@@ -17,7 +15,6 @@ import {
   Icon,
   Skeleton,
   Text,
-  Tooltip,
   useColorModeValue,
   useToast
 } from '@chakra-ui/react';
@@ -26,7 +23,8 @@ import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
 import { AiFillSetting } from 'react-icons/ai';
 import { MdJoinRight } from 'react-icons/md';
-import { VscVerifiedFilled } from 'react-icons/vsc';
+
+const memberTypeOrder = ['user', 'roblox', 'roblox-group', 'card'];
 
 // export async function getServerSideProps({ params, req, res }: any) {
 //   const id = params.id;
@@ -46,7 +44,7 @@ export default function OrganizationPublic() {
   const { query, push } = useRouter();
   const toast = useToast();
   const { user } = useAuthContext();
-  const [organization, setOrganization] = useState<any>();
+  const [organization, setOrganization] = useState<Organization>();
 
   let refreshData = useCallback(async () => {
     await user.getIdToken().then((token: string) => {
@@ -170,10 +168,11 @@ export default function OrganizationPublic() {
                   href={`/@${organization?.owner?.username}`}
                   src={organization?.owner?.avatar || '/images/default-avatar.png'}
                 />
-                {organization?.members
+                {Object.values(organization?.members || {})
                   .filter((member: OrganizationMember) => ['user', 'roblox'].includes(member.type))
+                  .sort((a: OrganizationMember, b: OrganizationMember) => ((memberTypeOrder.indexOf(a.type) - a.role) - (memberTypeOrder.indexOf(b.type) - b.role)))
                   .map(
-                    (member: any) =>
+                    (member: OrganizationMember) =>
                       member.id !== organization?.owner?.id &&
                       (!member.type.startsWith('roblox') ? (
                         <TooltipAvatar

@@ -1,17 +1,13 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
   Avatar,
   Button,
   ButtonGroup,
   Flex,
-  FormControl,
-  FormHelperText,
-  FormLabel,
   Icon,
   IconButton,
-  Input,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -20,20 +16,14 @@ import {
   ModalHeader,
   ModalOverlay,
   Skeleton,
-  Stack,
   Table,
-  TableCaption,
   TableContainer,
   Tbody,
   Td,
   Text,
-  Textarea,
-  Tfoot,
   Th,
   Thead,
-  Tooltip,
   Tr,
-  VStack,
   useColorModeValue,
   useToast
 } from '@chakra-ui/react';
@@ -41,7 +31,6 @@ import {
 import { Link } from '@chakra-ui/next-js';
 
 import { useAuthContext } from '@/contexts/AuthContext';
-import { getRandomOrganizationName } from '@/lib/utils';
 import { Organization, OrganizationInvitation } from '@/types';
 import { useRouter } from 'next/router';
 import { BiRefresh } from 'react-icons/bi';
@@ -129,7 +118,7 @@ export default function OrganizationInvitationsModal({
 }: {
   isOpen: boolean;
   onClose: () => void;
-  organization?: Organization;
+  organization?: Organization | null;
   onRefresh: () => void;
 }) {
   const toast = useToast();
@@ -198,13 +187,14 @@ export default function OrganizationInvitationsModal({
         setInvitationsLoading(false);
       });
     });
-  }, [user, toast, fetchInvitations, onRefresh, organization?.id]);
+  }, [user, toast, fetchInvitations, organization?.id]);
 
   useEffect(() => {
     if (!user) return;
     if (!organization) return;
+    if (!isOpen) return;
     fetchInvitations();
-  }, [user, fetchInvitations, organization]);
+  }, [user, fetchInvitations, organization, isOpen]);
 
   return (
     <>
