@@ -131,41 +131,6 @@ export interface OrganizationMember {
   joinedAt: string | Date;
   updatedAt?: string | Date;
 }
-
-export interface RobloxAPIResponsePlace {
-  id: number;
-  rootPlaceId: number;
-  name: string;
-  description: string;
-  sourceName: string | null;
-  sourceDescription: string | null;
-  creator: {
-    id: number;
-    name: string;
-    type: string;
-    isRNVAccount: boolean;
-    hasVerifiedBadge: boolean;
-  };
-  price: number | null;
-  allowedGearGenres: string[];
-  allowedGearCategories: string[];
-  isGenreEnforced: boolean;
-  copyingAllowed: boolean;
-  playing: number;
-  visits: number;
-  maxPlayers: number;
-  created: string;
-  updated: string;
-  studioAccessToApisAllowed: boolean;
-  createVipServersAllowed: boolean;
-  universeAvatarType: string;
-  genre: string;
-  isAllGenre: boolean;
-  isFavoritedByUser: boolean;
-  favoritedCount: number;
-
-  thumbnail?: string;
-}
 export interface Location {
   id: string;
   name: string;
@@ -199,6 +164,45 @@ export interface AccessGroup {
   };
   locationName?: string;
   locationId?: string;
+}
+
+export interface AccessPoint {
+  id: string;
+  name: string;
+  description: string;
+  locationId: string;
+  organizationId: string;
+
+  organization?: Organization;
+  location?: Location;
+
+  tags: string[];
+  config: {
+    active: boolean;
+    armed: boolean;
+    unlockTime: number;
+    alwaysAllowed: {
+      users?: string[];
+      groups: string[];
+      cards: string[];
+    };
+    webhook: {
+      url: string;
+      eventGranted: boolean;
+      eventDenied: boolean;
+    };
+    scanData?: {
+      disarmed: any;
+      ready: any;
+      granted: any;
+      denied: any;
+    };
+  };
+  updatedById?: string;
+  updatedBy?: User;
+  updatedAt: string;
+  createdAt: string;
+  createdBy: string;
 }
 
 export type DiscordInteractionApiHandler = (
@@ -267,4 +271,39 @@ export interface Notification {
   };
   createdAt: string;
   expiresAt?: string | Date | -1;
+}
+
+export interface RobloxAPIResponsePlace {
+  id: number;
+  rootPlaceId: number;
+  name: string;
+  description: string;
+  sourceName: string | null;
+  sourceDescription: string | null;
+  creator: {
+    id: number;
+    name: string;
+    type: string;
+    isRNVAccount: boolean;
+    hasVerifiedBadge: boolean;
+  };
+  price: number | null;
+  allowedGearGenres: string[];
+  allowedGearCategories: string[];
+  isGenreEnforced: boolean;
+  copyingAllowed: boolean;
+  playing: number;
+  visits: number;
+  maxPlayers: number;
+  created: string;
+  updated: string;
+  studioAccessToApisAllowed: boolean;
+  createVipServersAllowed: boolean;
+  universeAvatarType: string;
+  genre: string;
+  isAllGenre: boolean;
+  isFavoritedByUser: boolean;
+  favoritedCount: number;
+
+  thumbnail?: string;
 }

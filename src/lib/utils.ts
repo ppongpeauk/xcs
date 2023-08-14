@@ -1,14 +1,4 @@
-import { memo, useCallback } from 'react';
-
 import { AccessGroup, Organization } from '@/types';
-import { clsx, type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
-
-import { useAuthContext } from '@/contexts/AuthContext';
-
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
 
 export const roleToText = (role: number) => {
   role = Number(role);
@@ -356,27 +346,6 @@ export const agKV = (organization: any) => {
     });
   }
   return res;
-};
-
-export const getLocation = async (locationId: string) => {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const { user } = useAuthContext();
-
-  let location;
-  await user.getIdToken().then(async (token: string) => {
-    const ret = await fetch(`${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/locations/${locationId}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      }
-    })
-      .then((res) => res.json())
-      .then((res) => res.data);
-    location = ret;
-  });
-
-  return location;
 };
 
 export const getAccessGroupType = (organization: Organization, ag: AccessGroup) => {

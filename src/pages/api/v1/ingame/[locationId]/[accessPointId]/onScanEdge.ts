@@ -1,26 +1,81 @@
 // @ts-ignore
 import mergician from 'mergician';
-import { NextApiRequest, NextApiResponse } from 'next';
 
-import clientPromise from '@/lib/mongodb';
+// import clientPromise from '@/lib/mongodb';
 // @ts-ignore
 import { getRobloxUsers } from '@/lib/utils';
-import { Organization, OrganizationMember } from '@/types';
+import { AccessPoint, Location, Organization, OrganizationMember } from '@/types';
+import { NextRequest, NextResponse } from 'next/server';
+
+const mongoRequestHeaders = {
+  'Content-Type': 'application/json',
+  'User-Agent': 'XCS/1.0',
+  apiKey: process.env.MONGODB_DATA_API_KEY as string
+};
+const mongoBody = {
+  dataSource: 'mongodb-atlas',
+  database: 'xcs'
+};
+
+const findOne = async (collection: string, filter: any, projection: any) => {
+  return await fetch(`${process.env.MONGODB_DATA_API_ROOT_URL}/action/findOne`, {
+    method: 'POST',
+    headers: {
+      ...mongoRequestHeaders
+    } as any,
+    body: JSON.stringify({
+      ...mongoBody,
+      collection,
+      filter,
+      projection
+    })
+  })
+    .then((res) => res.json())
+    .then((res) => res.document || null);
+};
+
+const updateOne = async (collection: string, filter: any, update: any) => {
+  return await fetch(`${process.env.MONGODB_DATA_API_ROOT_URL}/action/updateOne`, {
+    method: 'POST',
+    headers: {
+      ...mongoRequestHeaders
+    } as any,
+    body: JSON.stringify({
+      ...mongoBody,
+      collection,
+      filter,
+      update
+    })
+  })
+    .then((res) => res.json())
+    .then((res) => res.document || null);
+};
+
+// this is where the magic happens
+// only execute this edge function in D.C., as the database is located in Ashburn
+export const config = {
+  runtime: 'edge',
+  regions: ['iad1']
+};
 
 const mergicianOptions = { appendArrays: true, dedupArrays: true };
-
 const sortByPriority = (organization: Organization, array: string[]) => {
   return array.sort((a, b) => {
     return (organization.accessGroups[a]?.priority || 0) - (organization.accessGroups[b]?.priority || 0);
   });
 };
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(req: NextRequest) {
   if (req.method !== 'GET') {
-    return res.status(405).json({ message: 'Method not allowed.' });
+    // return res.status(405).json({ message: 'Method not allowed.' });
+    return NextResponse.json({ message: 'Method not allowed.' }, { status: 405 });
   }
 
-  let { locationId, accessPointId, apiKey, userId, cardNumbers, universeId } = req.query as {
+  // edge runtime doesn't support req.query, so we have to parse the query string ourselves
+  const search = req.nextUrl.search;
+  const params = Object.fromEntries(new URLSearchParams(search));
+
+  let { locationId, accessPointId, apiKey, userId, cardNumbers, universeId } = params as {
     locationId: string;
     accessPointId: string;
     apiKey: string;
@@ -29,68 +84,99 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     universeId: string;
   };
 
-  if (locationId === 'UPTIME') return res.status(200).json({ success: true });
+  if (locationId === 'UPTIME') return NextResponse.json({ success: true }, { status: 200 });
 
-  const mongoClient = await clientPromise;
-
-  const db = mongoClient.db(process.env.MONGODB_DB as string);
-  const dbAccessPoints = db.collection('accessPoints');
-  const dbLocations = db.collection('locations');
-  const dbOrganizations = db.collection('organizations');
-  const dbUsers = db.collection('users');
-  const dbStatistics = db.collection('statistics');
   const timestamp = new Date();
 
   // check if API key is empty
   if (!apiKey) {
-    return res.status(401).json({ success: false, message: 'No API key provided.' });
+    // return res.status(401).json({ success: false, message: 'No API key provided.' });
+    return NextResponse.json({ success: false, message: 'No API key provided.' }, { status: 401 });
   }
 
   // get location
-  const location = await dbLocations.findOne({ id: locationId });
+  // const location = await dbLocations.findOne({ id: locationId });
+  const location = (await findOne(
+    'locations',
+    { id: locationId },
+    { name: 1, id: 1, organizationId: 1 }
+  )) as Location | null;
   if (!location) {
-    return res.status(404).json({ success: false, message: 'Location not found.' });
+    // return res.status(404).json({ success: false, message: 'Location not found.' });
+    return NextResponse.json({ success: false, message: 'Location not found.' }, { status: 404 });
   }
 
+  console.log('location', location);
+
   // get organization
-  const organization = (await dbOrganizations.findOne({
-    id: location.organizationId
-  })) as unknown as Organization;
+  // const organization = (await dbOrganizations.findOne(
+  //   {
+  //     id: location.organizationId
+  //   },
+  //   { projection: { id: 1, name: 1, members: 1, accessGroups: 1 } }
+  // )) as unknown as Organization;
+  const organization = (await findOne(
+    'organizations',
+    { id: location.organizationId },
+    { id: 1, name: 1, members: 1, accessGroups: 1, apiKeys: 1 }
+  )) as Organization | null;
   if (!organization) {
-    return res.status(404).json({ success: false, message: 'Organization not found.' });
+    // return res.status(404).json({ success: false, message: 'Organization not found.' });
+    return NextResponse.json({ success: false, message: 'Organization not found.' }, { status: 404 });
   }
 
   // check API key
   if (!((apiKey as string) in organization.apiKeys)) {
-    return res.status(401).json({ success: false, message: 'Invalid API key.' });
+    // return res.status(401).json({ success: false, message: 'Invalid API key.' });
+    return NextResponse.json({ success: false, message: 'Invalid API key.' }, { status: 401 });
   }
 
   // get access point
-  const accessPoint = await dbAccessPoints.findOne({ id: accessPointId }, { projection: { _id: 0 } });
+  // const accessPoint = await dbAccessPoints.findOne({ id: accessPointId }, { projection: { _id: 0 } });
+  const accessPoint = (await findOne('accessPoints', { id: accessPointId }, {})) as AccessPoint | null;
   if (!accessPoint) {
-    return res.status(404).json({ success: false, message: 'Access point not found.' });
+    // return res.status(404).json({ success: false, message: 'Access point not found.' });
+    return NextResponse.json({ success: false, message: 'Access point not found.' }, { status: 404 });
   }
 
   // TODO: finish this
 
   // check if access point is active, if not, deny access
   if (!accessPoint.config.active) {
-    return res.status(200).json({
-      success: true,
-      grant_type: 'access_point_inactive',
-      response_code: 'access_denied',
-      scan_data: accessPoint.config?.scanData?.denied || {}
-    });
+    // return res.status(200).json({
+    //   success: true,
+    //   grant_type: 'access_point_inactive',
+    //   response_code: 'access_denied',
+    //   scan_data: accessPoint.config?.scanData?.denied || {}
+    // });
+    return NextResponse.json(
+      {
+        success: true,
+        grant_type: 'access_point_inactive',
+        response_code: 'access_denied',
+        scan_data: accessPoint.config?.scanData?.denied || {}
+      },
+      { status: 200 }
+    );
   }
 
   // check if access point is armed, if not, grant access
   if (!accessPoint.config.armed) {
-    return res.status(200).json({
-      success: true,
-      grant_type: 'access_point_unarmed',
-      response_code: 'access_granted',
-      scan_data: accessPoint.config?.scanData?.granted || {}
-    });
+    // return res.status(200).json({
+    //   success: true,
+    //   grant_type: 'access_point_unarmed',
+    //   response_code: 'access_granted',
+    //   scan_data: accessPoint.config?.scanData?.granted || {}
+    // });
+    return NextResponse.json(
+      {
+        success: true,
+        grant_type: 'access_point_unarmed',
+        response_code: 'access_granted',
+        scan_data: accessPoint.config?.scanData?.granted || {}
+      },
+      { status: 200 }
+    );
   }
 
   const allowedGroups = accessPoint.config.alwaysAllowed.groups;
@@ -128,7 +214,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (member.type === 'roblox') {
       allowedRobloxIds[member.id] = memberId;
     } else {
-      const user = await dbUsers.findOne({ id: memberId }).then((user) => user);
+      // const user = await dbUsers.findOne({ id: memberId }).then((user) => user);
+      const user = await findOne('users', { id: memberId }, { id: 1, roblox: 1 });
       if (user && user.roblox?.verified) {
         allowedRobloxIds[user.roblox.id] = memberId;
       }
@@ -221,26 +308,36 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   // check if card number is allowed
 
-  // update global statistics
-  await dbStatistics.updateOne(
+  // update global statistics, increment total scans and either granted or denied scans
+  // await dbStatistics.updateOne(
+  //   { id: 'global' },
+  //   {
+  //     $inc: {
+  //       [`scans.total`]: 1,
+  //       [`scans.${isAllowed ? 'granted' : 'denied'}`]: 1
+  //     }
+  //   }
+  // );
+  await updateOne(
+    'statistics',
     { id: 'global' },
-    {
-      $inc: {
-        [`scans.total`]: 1,
-        [`scans.${isAllowed ? 'granted' : 'denied'}`]: 1
-      }
-    }
+    { $inc: { [`scans.total`]: 1, [`scans.${isAllowed ? 'granted' : 'denied'}`]: 1 } }
   );
 
   // update organization statistics
-  await db.collection('organizations').updateOne(
+  // await db.collection('organizations').updateOne(
+  //   { id: organization.id },
+  //   {
+  //     $inc: {
+  //       [`statistics.scans.total`]: 1,
+  //       [`statistics.scans.${isAllowed ? 'granted' : 'denied'}`]: 1
+  //     }
+  //   }
+  // );
+  await updateOne(
+    'organizations',
     { id: organization.id },
-    {
-      $inc: {
-        [`statistics.scans.total`]: 1,
-        [`statistics.scans.${isAllowed ? 'granted' : 'denied'}`]: 1
-      }
-    }
+    { $inc: { [`statistics.scans.total`]: 1, [`statistics.scans.${isAllowed ? 'granted' : 'denied'}`]: 1 } }
   );
 
   // webhook event
@@ -251,20 +348,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         !(!isAllowed && !accessPoint?.config?.webhook?.eventDenied)
       ) {
         const webhook = accessPoint?.config?.webhook;
-        const user = await dbUsers
-          .findOne(
-            { 'roblox.id': userId },
-            {
-              projection: {
-                id: 1,
-                displayName: 1,
-                username: 1,
-                roblox: 1,
-                avatar: 1
-              }
-            }
-          )
-          .then((user) => user);
+        // const user = await dbUsers
+        //   .findOne(
+        //     { 'roblox.id': userId },
+        //     {
+        //       projection: {
+        //         id: 1,
+        //         displayName: 1,
+        //         username: 1,
+        //         roblox: 1,
+        //         avatar: 1
+        //       }
+        //     }
+        //   )
+        //   .then((user: User) => user);
+        const user = await findOne(
+          'users',
+          { 'roblox.id': userId },
+          { id: 1, displayName: 1, username: 1, roblox: 1, avatar: 1 }
+        );
         let member = organization.members[user?.id] || {
           type: 'roblox',
           id: userId
@@ -370,18 +472,36 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       scanData
     );
 
-    res.status(200).json({
-      success: true,
-      grant_type: 'user_scan',
-      response_code: 'access_granted',
-      scan_data: scanData || {}
-    });
+    // res.status(200).json({
+    //   success: true,
+    //   grant_type: 'user_scan',
+    //   response_code: 'access_granted',
+    //   scan_data: scanData || {}
+    // });
+    return NextResponse.json(
+      {
+        success: true,
+        grant_type: 'user_scan',
+        response_code: 'access_granted',
+        scan_data: scanData || {}
+      },
+      { status: 200 }
+    );
   } else {
-    res.status(200).json({
-      success: true,
-      grant_type: 'user_scan',
-      response_code: 'access_denied',
-      scan_data: accessPoint.config?.scanData?.denied || {}
-    });
+    // res.status(200).json({
+    //   success: true,
+    //   grant_type: 'user_scan',
+    //   response_code: 'access_denied',
+    //   scan_data: accessPoint.config?.scanData?.denied || {}
+    // });
+    return NextResponse.json(
+      {
+        success: true,
+        grant_type: 'user_scan',
+        response_code: 'access_denied',
+        scan_data: accessPoint.config?.scanData?.denied || {}
+      },
+      { status: 200 }
+    );
   }
 }
