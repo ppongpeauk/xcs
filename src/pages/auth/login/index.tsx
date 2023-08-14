@@ -1,18 +1,12 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 // Next
-import { useContext } from 'react';
 
 import {
   Box,
   Button,
-  Checkbox,
-  Container,
   Flex,
   FormControl,
-  FormErrorMessage,
-  FormHelperText,
   FormLabel,
-  Image,
   Input,
   InputGroup,
   InputLeftElement,
@@ -24,7 +18,6 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Spacer,
   Text,
   useColorModeValue,
   useDisclosure,
@@ -32,8 +25,7 @@ import {
 } from '@chakra-ui/react';
 
 // Icons
-import { FaUser } from 'react-icons/fa';
-import { MdEmail, MdPin } from 'react-icons/md';
+import { MdEmail } from 'react-icons/md';
 import { RiLockPasswordFill } from 'react-icons/ri';
 
 // Authentication
@@ -47,10 +39,8 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 
 // Components
 import CheckActivationCodeModal from '@/components/CheckActivationCodeModal';
-import Footer from '@/components/Footer';
-import Nav from '@/components/Nav';
 import Section from '@/components/section';
-import Marquee from 'react-fast-marquee';
+import Layout from '@/layouts/PublicLayout';
 
 export default function Login() {
   const router = useRouter();
@@ -119,7 +109,6 @@ export default function Login() {
             content="en_US"
           />
         </Head>
-        <Nav type={"login"} />
         <CheckActivationCodeModal isOpen={isActivationCodeOpen} onClose={onActivationCodeClose} />
         <Modal
           onClose={onClose}
@@ -332,8 +321,9 @@ export default function Login() {
             </Flex>
           </Box>
         </Section>
-        <Footer />
       </>
     )
   );
 }
+
+Login.getLayout = (page: any) => <Layout>{page}</Layout>;

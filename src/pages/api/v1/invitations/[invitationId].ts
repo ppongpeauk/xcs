@@ -1,8 +1,7 @@
-import { tokenToID } from '@/pages/api/firebase';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import clientPromise from '@/lib/mongodb';
-import { Invitation, User } from '@/types';
+import { Invitation, Organization } from '@/types';
 
 const defaultMessage = 'The invitation you are looking for is either invalid or no longer exists.';
 
@@ -39,8 +38,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         {
           id: invitation.organizationId
         },
-        { projection: { id: 1, name: 1 } }
-      )) as any;
+        { projection: { id: 1, name: 1, avatar: 1 } }
+      )) as unknown as Organization;
       if (!organization) {
         return res.status(404).json({ valid: false, message: defaultMessage });
       }
@@ -50,7 +49,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         // await invitations.deleteOne({ inviteCode: invitationId });
         return res.status(404).json({
           valid: false,
-          message: 'This invitation has reached its maximum uses. Please contact the creator of this invitation to receive a new one.'
+          message:
+            'This invitation has reached its maximum uses. Please contact the creator of this invitation to receive a new one.'
         });
       }
 

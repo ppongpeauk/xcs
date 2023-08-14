@@ -7,14 +7,9 @@ import {
   Button,
   Container,
   Flex,
-  Heading,
+  Icon,
   Image,
-  Input,
-  InputGroup,
-  InputLeftElement,
   Skeleton,
-  SkeletonCircle,
-  SkeletonText,
   Text,
   useColorModeValue,
   useToast
@@ -23,11 +18,12 @@ import {
 import { Link } from '@chakra-ui/next-js';
 
 import { useAuthContext } from '@/contexts/AuthContext';
+import { Invitation } from '@/types';
 import Head from 'next/head';
-import NextLink from 'next/link';
 import { useRouter } from 'next/router';
+import { FiArrowRight } from 'react-icons/fi';
 
-export default function Invitation({ invite, errorMessage }: { invite: any, errorMessage: string | null }) {
+export default function Invitation({ invite, errorMessage }: { invite: Invitation, errorMessage: string | null }) {
   const { query, push } = useRouter();
   const toast = useToast();
   const [isAcceptLoading, setIsAcceptLoading] = useState<boolean>(false);
@@ -99,8 +95,9 @@ export default function Invitation({ invite, errorMessage }: { invite: any, erro
           </Link>
 
           <Flex
-            w={['100%', '480px']}
-            aspectRatio={invite ? 1 / 1.25 : 'unset'}
+            maxW={['100%', 'md']}
+            // aspectRatio={invite ? 1 / 1.25 : 'unset'}
+            h={invite ? 'lg' : 'unset'}
             rounded={'xl'}
             border={['none', '1px solid']}
             borderColor={['none', useColorModeValue('gray.300', 'gray.600')]}
@@ -113,7 +110,7 @@ export default function Invitation({ invite, errorMessage }: { invite: any, erro
               <Skeleton isLoaded={!loading}>
                 <Text
                   as={'h2'}
-                  fontSize={'3xl'}
+                  fontSize={{ base: '2xl', sm: '3xl' }}
                   fontWeight={'900'}
                   letterSpacing={'tight'}
                   w={'full'}
@@ -133,7 +130,7 @@ export default function Invitation({ invite, errorMessage }: { invite: any, erro
                 >
                   {invite ? (
                     <>
-                      {invite?.creator?.displayName || invite?.creator?.name.first} has invited you to{' '}
+                      {invite?.creator?.displayName || invite?.creator?.name?.first} has invited you to{' '}
                       {inviteTypeSwitch(invite?.type)}
                       {invite?.type === 'organization' ? (
                         <Text
@@ -141,7 +138,7 @@ export default function Invitation({ invite, errorMessage }: { invite: any, erro
                           fontWeight={'bold'}
                         >
                           {', '}
-                          {invite.organization.name}
+                          {invite.organization?.name}
                         </Text>
                       ) : null}
                     </>
@@ -154,11 +151,12 @@ export default function Invitation({ invite, errorMessage }: { invite: any, erro
             {invite ? (
               <>
                 <Flex
+                  flexDir={'row'}
                   align={'center'}
                   justify={'center'}
                   flexGrow={1}
                   w={'full'}
-                  p={[4, 8]}
+                  p={4}
                 >
                   <Skeleton
                     display={'flex'}
@@ -168,7 +166,7 @@ export default function Invitation({ invite, errorMessage }: { invite: any, erro
                     rounded={'full'}
                   >
                     <Avatar
-                      src={invite?.creator?.avatar}
+                      src={invite?.creator?.avatar || '/images/default-avatar.png'}
                       size={'full'}
                       maxW={'240px'}
                       aspectRatio={1 / 1}
@@ -176,6 +174,30 @@ export default function Invitation({ invite, errorMessage }: { invite: any, erro
                       outlineColor={useColorModeValue('gray.300', 'gray.600')}
                     />
                   </Skeleton>
+                  {
+                    invite.type === 'organization' && (
+                      <>
+                        <Icon as={FiArrowRight} fontSize={'3xl'} mx={4} />
+                        <Skeleton
+                          display={'flex'}
+                          isLoaded={!loading}
+                          objectFit={'contain'}
+                          justifyContent={'center'}
+                          rounded={'full'}
+                        >
+                          <Avatar
+                            src={invite?.organization?.avatar || '/images/default-avatar.png'}
+                            size={'full'}
+                            maxW={'240px'}
+                            aspectRatio={1 / 1}
+                            outline={'1px solid'}
+                            outlineColor={useColorModeValue('gray.300', 'gray.600')}
+                            borderRadius={'lg'}
+                          />
+                        </Skeleton>
+                      </>
+                    )
+                  }
                 </Flex>
                 <Box w={'full'}>
                   <Skeleton isLoaded={!loading}>

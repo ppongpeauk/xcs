@@ -1,9 +1,10 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { Divider, Flex, Icon, Link, Text, useColorModeValue } from '@chakra-ui/react';
 
 import NextLink from 'next/link';
 import { BiGitBranch } from 'react-icons/bi';
 
-export default function Footer() {
+export default function Footer({ type = 'platform' }: { type?: 'public' | 'platform' }) {
   return (
     <>
       <Flex
@@ -16,6 +17,7 @@ export default function Footer() {
         border={'1px solid'}
         borderLeft={{ base: '1px solid', md: 'unset' }}
         borderColor={useColorModeValue('gray.300', 'gray.700')}
+        // borderColor={type === 'public' ? useColorModeValue('blackAlpha.900', 'whiteAlpha.900') : useColorModeValue('gray.300', 'gray.700')}
         p={4}
         align={'center'}
         justify={'center'}

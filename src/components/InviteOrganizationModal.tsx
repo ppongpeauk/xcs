@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 
 import {
   Button,
@@ -9,7 +9,6 @@ import {
   FormLabel,
   HStack,
   Input,
-  Link,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -17,20 +16,15 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Stack,
-  Text,
-  Textarea,
   VStack,
   useClipboard,
   useColorModeValue,
   useToast
 } from '@chakra-ui/react';
 
-import { AsyncSelect, CreatableSelect, Select } from 'chakra-react-select';
+import { Select } from 'chakra-react-select';
 import { Field, Form, Formik } from 'formik';
-import NextLink from 'next/link';
 
-import { textToRole } from '@/lib/utils';
 
 import { useAuthContext } from '@/contexts/AuthContext';
 
@@ -74,7 +68,7 @@ export default function InviteOrganizationModal({
         initialValues={{ role: { label: 'Member', value: 1 }, singleUse: true }}
         onSubmit={(values, actions) => {
           user.getIdToken().then((token: any) => {
-            fetch(`/api/v1/organizations/${organizationId}/create-invite-link`, {
+            fetch(`/api/v1/organizations/${organizationId}/invitations/links`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',

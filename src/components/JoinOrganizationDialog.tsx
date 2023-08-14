@@ -14,9 +14,6 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Text,
-  Textarea,
-  VStack,
   useColorModeValue,
   useToast
 } from '@chakra-ui/react';
@@ -50,15 +47,12 @@ export default function JoinOrganizationDialog({
           values.inviteCode = values.inviteCode.replace(`${process.env.NEXT_PUBLIC_ROOT_URL}/invitation/`, '');
 
           user.getIdToken().then((token: any) => {
-            fetch('/api/v1/organizations/join', {
+            fetch(`/api/v1/organizations/${values.inviteCode}/join`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`
-              },
-              body: JSON.stringify({
-                inviteCode: values.inviteCode
-              })
+              }
             })
               .then((res) => {
                 if (res.status === 200) {

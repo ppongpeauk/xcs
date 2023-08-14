@@ -2,10 +2,8 @@
 // Next
 import { useEffect, useState } from 'react';
 
-import { Alert, AlertDescription, AlertIcon, AlertTitle, Box, Flex, Stack, useToast } from '@chakra-ui/react';
+import { Box, Flex, Stack, useToast } from '@chakra-ui/react';
 
-import firebase from 'firebase/app';
-import { sendEmailVerification } from 'firebase/auth';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { useAuthState } from 'react-firebase-hooks/auth';

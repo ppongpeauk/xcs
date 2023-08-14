@@ -1,17 +1,15 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import {
   Avatar,
   Badge,
   Box,
   Button,
-  ButtonGroup,
   Flex,
   FormControl,
   FormHelperText,
   FormLabel,
-  HStack,
   Icon,
   IconButton,
   Input,
@@ -29,7 +27,8 @@ import {
   SkeletonText,
   Spacer,
   Stack,
-  Table, TableCaption, TableContainer, Tbody, Td, Text, Tfoot, Th, Thead, Tr,
+  Table, TableCaption, TableContainer, Tbody, Td, Text,
+  Th, Thead, Tr,
   VStack,
   chakra,
   useColorModeValue,
@@ -37,8 +36,7 @@ import {
   useToast
 } from '@chakra-ui/react';
 
-import { AiFillEdit, AiFillIdcard } from 'react-icons/ai';
-import { FaIdBadge } from 'react-icons/fa';
+import { AiFillIdcard } from 'react-icons/ai';
 import { IoIosRemoveCircle } from 'react-icons/io';
 import { IoSave } from 'react-icons/io5';
 import { MdEditSquare, MdPersonAdd } from 'react-icons/md';
@@ -47,12 +45,11 @@ import { SiRoblox, SiRobloxstudio } from 'react-icons/si';
 
 import { AccessGroup, Organization, OrganizationMember } from '@/types';
 import Editor from '@monaco-editor/react';
-import { AsyncSelect, CreatableSelect, Select } from 'chakra-react-select';
+import { CreatableSelect, Select } from 'chakra-react-select';
 import { Field, Form, Formik } from 'formik';
 import moment from 'moment';
-import NextLink from 'next/link';
 
-import { agIds, agKV, agNames, roleToText, textToRole } from '@/lib/utils';
+import { roleToText } from '@/lib/utils';
 
 import { useAuthContext } from '@/contexts/AuthContext';
 
@@ -60,7 +57,6 @@ import DeleteDialog from '@/components/DeleteDialog';
 import InviteOrganizationModal from '@/components/InviteOrganizationModal';
 import InviteOrganizationRobloxGroupModal from '@/components/InviteOrganizationRobloxGroupModal';
 import InviteOrganizationRobloxModal from '@/components/InviteOrganizationRobloxModal';
-import { AddIcon } from '@chakra-ui/icons';
 import { Link } from '@chakra-ui/next-js';
 import InviteOrganizationFlowModal from './InviteOrganizationFlowModal';
 import OrganizationInvitationsModal from './OrganizationInvitationsModal';
@@ -259,6 +255,7 @@ export default function MemberEditModal({
         isOpen={isOpen}
         onClose={onClose}
         isCentered
+        closeOnOverlayClick={false}
         blockScrollOnMount={false}
         scrollBehavior="inside"
       >

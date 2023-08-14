@@ -1,22 +1,14 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 // React
-import { Suspense, forwardRef, useCallback, useEffect, useMemo, useState } from 'react';
+import { forwardRef, useMemo } from 'react';
 
 import {
-  AbsoluteCenter,
   Avatar,
   Box,
   Button,
-  ButtonGroup,
-  Code,
-  Container,
-  Divider,
   Flex,
   HStack,
-  Heading,
-  Icon,
   IconButton,
-  Image,
   Link,
   Menu,
   MenuButton,
@@ -24,13 +16,8 @@ import {
   MenuItem,
   MenuList,
   Popover,
-  PopoverAnchor,
-  PopoverArrow,
   PopoverBody,
-  PopoverCloseButton,
   PopoverContent,
-  PopoverFooter,
-  PopoverHeader,
   PopoverTrigger,
   Skeleton,
   SkeletonCircle,
@@ -43,14 +30,12 @@ import {
   useDisclosure
 } from '@chakra-ui/react';
 
-import { ChevronRightIcon, HamburgerIcon, SettingsIcon } from '@chakra-ui/icons';
+import { HamburgerIcon } from '@chakra-ui/icons';
 
-import { AiFillBell, AiFillCrown, AiFillHome, AiFillInfoCircle, AiFillSetting } from 'react-icons/ai';
-import { BiNotification, BiSolidExit, BiSolidTime } from 'react-icons/bi';
-import { BsPersonBadgeFill } from 'react-icons/bs';
-import { FaBell, FaBuilding, FaIdBadge, FaUserAlt } from 'react-icons/fa';
+import { AiFillHome, AiFillInfoCircle, AiFillSetting } from 'react-icons/ai';
+import { BiSolidExit, BiSolidTime } from 'react-icons/bi';
+import { FaBuilding, FaIdBadge } from 'react-icons/fa';
 import { ImTree } from 'react-icons/im';
-import { MdSensors } from 'react-icons/md';
 import { RiAdminFill } from 'react-icons/ri';
 
 import NextImage from 'next/image';
@@ -63,7 +48,6 @@ import { useAuthContext } from '@/contexts/AuthContext';
 
 // Components
 import DeleteDialog from '@/components/DeleteDialog';
-import Footer from '@/components/Footer';
 import ThemeButton from '@/components/ThemeButton';
 
 function AvatarPopover({ currentUser, onLogoutOpen }: { currentUser?: any; onLogoutOpen?: any }) {

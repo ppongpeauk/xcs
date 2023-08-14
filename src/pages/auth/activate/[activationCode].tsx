@@ -27,9 +27,8 @@ import Head from 'next/head';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 
-import Footer from '@/components/Footer';
-import Nav from '@/components/Nav';
 import Section from '@/components/section';
+import Layout from '@/layouts/PublicLayout';
 import http from 'http';
 
 export const getServerSideProps = async ({ query, res }: { query: { activationCode?: string }, res: http.ServerResponse }) => {
@@ -101,7 +100,6 @@ export default function Activate({ valid }: { valid: boolean }) {
           content="en_US"
         />
       </Head>
-      <Nav type={"login"} />
       <Flex
         position={'relative'}
         minH={'calc(100vh - 6rem)'}
@@ -381,7 +379,8 @@ export default function Activate({ valid }: { valid: boolean }) {
           </Section>
         </Flex>
       </Flex>
-      <Footer />
     </>
   );
 }
+
+Activate.getLayout = (page: any) => <Layout>{page}</Layout>;

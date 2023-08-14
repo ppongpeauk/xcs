@@ -1,8 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import {
-  Avatar,
   Badge,
   Box,
   Button,
@@ -10,8 +9,6 @@ import {
   FormControl,
   FormHelperText,
   FormLabel,
-  HStack,
-  Icon,
   IconButton,
   Input,
   InputGroup,
@@ -29,15 +26,12 @@ import {
   NumberInputStepper,
   Portal,
   Skeleton,
-  SkeletonCircle,
   SkeletonText,
   Spacer,
   Stack,
   Switch,
   Table, TableCaption, TableContainer, Tbody, Td, Text,
-  Textarea,
-  Tfoot, Th, Thead,
-  Tooltip,
+  Th, Thead,
   Tr,
   VStack,
   chakra,
@@ -46,27 +40,19 @@ import {
   useToast
 } from '@chakra-ui/react';
 
-import { InfoIcon } from '@chakra-ui/icons';
 
-import { AiFillEdit } from 'react-icons/ai';
 import { IoIosCreate, IoIosRemoveCircle } from 'react-icons/io';
 import { IoSave } from 'react-icons/io5';
 import { MdEditSquare } from 'react-icons/md';
-import { RiMailAddFill } from 'react-icons/ri';
-import { SiRoblox } from 'react-icons/si';
 
 import Editor from '@monaco-editor/react';
-import { AsyncSelect, CreatableSelect, Select } from 'chakra-react-select';
 import { Field, Form, Formik } from 'formik';
-import moment from 'moment';
 
-import { roleToText, textToRole } from '@/lib/utils';
 
 import { useAuthContext } from '@/contexts/AuthContext';
 
 import DeleteDialog from '@/components/DeleteDialog';
 
-import { AccessGroup } from '@/types';
 import CreateAccessGroupDialog from './CreateAccessGroupDialog';
 
 const ChakraEditor = chakra(Editor);
@@ -147,6 +133,7 @@ export default function AccessGroupEditModal({
         isOpen={isOpen}
         onClose={onClose}
         isCentered
+        closeOnOverlayClick={false}
         scrollBehavior="inside"
       >
         <ModalOverlay />

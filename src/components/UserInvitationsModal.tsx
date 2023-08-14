@@ -1,17 +1,13 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
   Avatar,
   Button,
   ButtonGroup,
   Flex,
-  FormControl,
-  FormHelperText,
-  FormLabel,
   Icon,
   IconButton,
-  Input,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -22,18 +18,14 @@ import {
   Skeleton,
   Stack,
   Table,
-  TableCaption,
   TableContainer,
   Tbody,
   Td,
   Text,
-  Textarea,
-  Tfoot,
   Th,
   Thead,
   Tooltip,
   Tr,
-  VStack,
   useColorModeValue,
   useToast
 } from '@chakra-ui/react';
@@ -41,7 +33,6 @@ import {
 import { Link } from '@chakra-ui/next-js';
 
 import { useAuthContext } from '@/contexts/AuthContext';
-import { getRandomOrganizationName } from '@/lib/utils';
 import { OrganizationInvitation } from '@/types';
 import { useRouter } from 'next/router';
 import { BiRefresh } from 'react-icons/bi';
@@ -263,7 +254,7 @@ export default function UserInvitationsModal({
             {
               !invitationsLoading && invitations.length === 0 && (
                 <Text py={8} w={'full'} textAlign={'center'} color={'gray.500'}>
-                  You have no invitations.
+                  You have no incoming invitations.
                 </Text>
               )
             }

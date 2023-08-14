@@ -2,32 +2,27 @@
 import { Suspense, forwardRef } from 'react';
 
 import {
-  Avatar,
   Box,
   Button,
-  Code,
-  Container,
   Flex,
   HStack,
+  Heading,
+  Icon,
   IconButton,
-  Image,
-  Link,
   Menu,
   MenuButton,
-  MenuDivider,
   MenuItem,
   MenuList,
-  Skeleton,
   Spacer,
-  Text,
   useColorModeValue
 } from '@chakra-ui/react';
+
+import { Link } from '@chakra-ui/next-js';
 
 import { HamburgerIcon } from '@chakra-ui/icons';
 
 import { AiFillHome } from 'react-icons/ai';
 import { BiSolidLogIn } from 'react-icons/bi';
-import { IoCube } from 'react-icons/io5';
 
 import NextImage from 'next/image';
 import NextLink from 'next/link';
@@ -35,8 +30,9 @@ import { usePathname } from 'next/navigation';
 
 // Authentication
 import { useAuthContext } from '@/contexts/AuthContext';
+import { BsArrowUpRight } from 'react-icons/bs';
+import ThemeButtonPublic from './ThemeButtonPublic';
 
-import ThemeButton from '@/components/ThemeButton';
 
 // eslint-disable-next-line react/display-name
 const MenuLink = forwardRef((props: any, ref: any) => (
@@ -63,8 +59,23 @@ function NavLink({
     <Button
       as={NextLink}
       // variant={pathname === href ? 'solid' : variant}
-      variant={variant}
+      variant={'unstyled'}
+      border={'1px solid'}
+      borderColor={useColorModeValue('blackAlpha.900', 'white')}
+      borderRadius={'none'}
+      py={2}
+      px={4}
       href={href}
+      transition={'all 0.2s ease'}
+      _hover={{
+        bg: useColorModeValue('blackAlpha.900', 'white'),
+        color: useColorModeValue('white', 'black')
+      }}
+      _active={{
+        bg: useColorModeValue('blackAlpha.700', 'whiteAlpha.700'),
+        color: useColorModeValue('white', 'black')
+      }}
+      lineHeight={1.25}
     >
       {children}
     </Button>
@@ -77,6 +88,14 @@ export default function Nav({ type }: { type?: string }) {
 
   return (
     <Suspense>
+      <Flex px={{ base: 4, md: 16 }} py={{ base: 8, md: 4 }} w={'full'} minH={'4rem'} bg={useColorModeValue('blackAlpha.900', 'white')} color={useColorModeValue('white', 'black')} align={'center'} justify={'flex-start'}>
+        <Heading size={'sm'} fontWeight={'normal'}>
+          We&apos;ve begun rolling out early access to those part of the beta program.
+          If you&apos;re interested in joining, please contact us at <Link textDecor={'underline'} textUnderlineOffset={4} textDecorationThickness={'1px'} href={'mailto:xcs@restrafes.co'}>xcs@restrafes.co</Link>.
+        </Heading>
+        {/* <Spacer />
+        <CloseButton onClick={() => { setAlertOpen(false) }} /> */}
+      </Flex>
       <Flex
         as="nav"
         position={'sticky'}
@@ -85,7 +104,7 @@ export default function Nav({ type }: { type?: string }) {
         h={'6rem'}
         align={'center'}
         bg={useColorModeValue('white', 'gray.800')}
-        border={'1px solid'}
+        // border={'1px solid'}
         borderColor={useColorModeValue('gray.300', 'gray.700')}
         zIndex={50}
       >
@@ -141,16 +160,16 @@ export default function Nav({ type }: { type?: string }) {
           spacing={2}
         >
           {/* {type !== "login" && */}
-            <Box display={{ base: 'none', md: 'flex' }}>
-              <Skeleton isLoaded={isAuthLoaded}>
-                <NavLink
-                  href={'/auth/login'}
-                  pathname={pathname}
-                >
-                  Access Platform
-                </NavLink>
-              </Skeleton>
-            </Box>
+          <Box display={{ base: 'none', md: 'flex' }} gap={4}>
+            <NavLink
+              href={'/auth/login'}
+              pathname={pathname}
+            >
+              Access Platform
+              <Icon as={BsArrowUpRight} ml={1} h={3} />
+            </NavLink>
+            <ThemeButtonPublic />
+          </Box>
           {/* } */}
 
           {/* Theme Button */}

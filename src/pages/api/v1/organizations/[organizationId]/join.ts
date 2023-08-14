@@ -1,4 +1,3 @@
-import { tokenToID } from '@/pages/api/firebase';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import { authToken } from '@/lib/auth';
@@ -6,7 +5,6 @@ import clientPromise from '@/lib/mongodb';
 import { Invitation, Organization, User } from '@/types';
 
 // @ts-ignore
-import mergician from 'mergician';
 const mergicianOptions = { appendArrays: true, dedupArrays: true };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -22,8 +20,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   // Joining an organization with an invite code
   if (req.method === 'POST') {
-    let { inviteCode } = req.body as {
-      inviteCode: string;
+    let { code: inviteCode } = req.query as {
+      code: string;
     };
 
     if (inviteCode !== undefined) {

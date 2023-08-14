@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 
 import {
   Box,
@@ -23,9 +22,8 @@ import Head from 'next/head';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 
-import Footer from '@/components/Footer';
-import Nav from '@/components/Nav';
 import Section from '@/components/section';
+import Layout from '@/layouts/PublicLayout';
 
 export default function Recover() {
   const auth = getAuth();
@@ -78,7 +76,6 @@ export default function Recover() {
           content="en_US"
         />
       </Head>
-      <Nav type={"login"} />
       <Box
         position={'relative'}
         h={'calc(100vh - 6rem)'}
@@ -201,7 +198,8 @@ export default function Recover() {
           </Section>
         </Flex>
       </Box>
-      <Footer />
     </>
   );
 }
+
+Recover.getLayout = (page: any) => <Layout>{page}</Layout>;

@@ -1,8 +1,8 @@
 import { modalAnatomy as parts } from '@chakra-ui/anatomy';
-import { AlertDialog, Modal, defineStyle, defineStyleConfig, extendTheme, useColorMode, type ThemeConfig } from '@chakra-ui/react';
+import { Modal, defineStyle, defineStyleConfig, extendTheme, type ThemeConfig } from '@chakra-ui/react';
 import { createMultiStyleConfigHelpers } from '@chakra-ui/styled-system';
 
-const { defineMultiStyleConfig } = createMultiStyleConfigHelpers(parts.keys)
+const { defineMultiStyleConfig } = createMultiStyleConfigHelpers(parts.keys);
 
 // styles
 
@@ -21,7 +21,7 @@ const unselected = defineStyle({
     },
     _active: {
       background: 'whiteAlpha.400'
-    },
+    }
   }
 });
 
@@ -38,7 +38,7 @@ const config: ThemeConfig = {
 };
 
 Modal.defaultProps = {
-  motionPreset: 'slideInBottom',
+  motionPreset: 'slideInBottom'
 };
 
 export const buttonTheme = defineStyleConfig({
@@ -49,14 +49,25 @@ export const buttonTheme = defineStyleConfig({
 });
 
 export const textTheme = defineStyleConfig({
-  variants: { subtext }
+  variants: { subtext },
+  sizes: {
+    '5xl': {
+      fontSize: '2xl',
+      lineHeight: '3xl'
+    }
+  }
 });
 
 const theme = {
+  sizes: {
+    container: {
+      '2xl': '1400px'
+    }
+  },
   components: {
     Badge: {
       baseStyle: {
-        textTransform: 'unset',
+        textTransform: 'unset'
       }
     },
     Card: {
@@ -81,6 +92,17 @@ const theme = {
     Text: textTheme,
     Button: buttonTheme,
     IconButton: buttonTheme,
+    Link: {
+      baseStyle: {
+        textUnderlineOffset: 4,
+        _hover: {
+          opacity: 0.75
+        },
+        _active: {
+          opacity: 0.5
+        }
+      }
+    }
   },
   fonts: {
     heading: 'var(--font-familjen)',

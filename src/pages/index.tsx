@@ -1,10 +1,9 @@
 import Head from 'next/head';
 
-import Footer from '@/components/Footer';
 import Home from '@/components/Home';
-import Nav from '@/components/Nav';
+import Layout from '@/layouts/PublicLayout';
 
-export default function HomePage() {
+export default function Homepage() {
   return (
     <>
       <Head>
@@ -34,9 +33,9 @@ export default function HomePage() {
           content="/images/logo-square.jpeg"
         />
       </Head>
-      <Nav />
       <Home />
-      <Footer />
     </>
   );
 }
+
+Homepage.getLayout = (page: any) => <Layout>{page}</Layout>;

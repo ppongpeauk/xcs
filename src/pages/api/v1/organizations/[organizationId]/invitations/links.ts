@@ -1,4 +1,3 @@
-import { tokenToID } from '@/pages/api/firebase';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { generate as generateString } from 'randomstring';
 
@@ -38,14 +37,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'POST') {
     const timestamp = new Date();
 
-    const inviteCode = generateString({
-      length: 8,
-      charset: 'alphanumeric'
-    });
+    // keep generating until we get a unique code
+    let code;
+    do {
+      code = generateString({
+        length: 8,
+        charset: 'alphanumeric'
+      });
+    } while (await invitations.findOne({ code: code }));
 
     await invitations.insertOne({
       type: 'organization',
-      code: inviteCode,
+      code: code,
 
       organizationId: organizationId,
       role: role,
@@ -71,9 +74,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     );
 
-    return res
-      .status(200)
-      .json({ message: 'Successfully created an invitation!', success: true, inviteCode: inviteCode });
+    return res.status(200).json({ message: 'Successfully created an invitation!', success: true, inviteCode: code });
   }
 
   return res.status(500).json({ message: 'An unknown errror occurred.' });

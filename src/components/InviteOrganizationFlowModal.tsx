@@ -8,7 +8,6 @@ import {
   FormControl,
   FormHelperText,
   FormLabel,
-  Heading,
   Icon,
   Input,
   Modal,
@@ -18,22 +17,16 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Radio,
   RadioGroup,
   Spacer,
   Stack,
   Step,
-  StepDescription,
   StepIcon,
   StepIndicator,
-  StepNumber,
   StepSeparator,
   StepStatus,
-  StepTitle,
   Stepper,
   Text,
-  Textarea,
-  VStack,
   chakra,
   useColorModeValue,
   useRadio,
@@ -42,7 +35,6 @@ import {
   useToast
 } from '@chakra-ui/react';
 
-import { AccessGroup, Organization } from '@/types';
 import { AsyncSelect, CreatableSelect, Select } from 'chakra-react-select';
 import { Field, Form, Formik } from 'formik';
 
@@ -405,6 +397,7 @@ export default function InviteOrganizationFlowModal({
             onClose={onClose}
             isCentered
             allowPinchZoom
+            closeOnOverlayClick={false}
             onCloseComplete={() => {
               props.resetForm();
               setActiveStep(0);
@@ -845,16 +838,14 @@ export default function InviteOrganizationFlowModal({
                 <ModalFooter gap={4}>
                   <Button
                     onClick={() => { setActiveStep(activeStep - 1) }}
-                    colorScheme={'blue'}
                     isDisabled={activeStep === 0}
                   >
                     Previous
                   </Button>
+                  <Spacer />
                   <Button
                     onClick={() => { setActiveStep(activeStep + 1) }}
-                    colorScheme={'blue'}
                     isDisabled={activeStep === steps.length - 1}
-                    mr={'auto'}
                   >
                     Next
                   </Button>
@@ -864,7 +855,7 @@ export default function InviteOrganizationFlowModal({
                     colorScheme={'blue'}
                     isDisabled={activeStep !== steps.length - 1}
                   >
-                    {props.values.type === 'user' ? 'Invite User' : 'Add User'}
+                    Add Member
                   </Button>
                   <Button onClick={onClose}>Cancel</Button>
                 </ModalFooter>
