@@ -499,7 +499,7 @@ export default function PlatformOrganization() {
                           (!member.type.startsWith('roblox') ? (
                             <TooltipAvatar
                               name={member?.displayName}
-                              as={NextLink}
+                              as={Link}
                               key={member?.id}
                               href={`/@${member?.username}`}
                               src={member?.avatar}
@@ -508,7 +508,7 @@ export default function PlatformOrganization() {
                           ) : member.type === 'roblox' ? (
                             <TooltipAvatar
                               name={`${member?.displayName} (${member?.username})`}
-                              as={NextLink}
+                              as={Link}
                               key={member?.id}
                               href={`https://www.roblox.com/users/${member?.id}/profile`}
                               src={member?.avatar}
@@ -519,7 +519,7 @@ export default function PlatformOrganization() {
                             <>
                               <TooltipAvatar
                                 name={member?.displayName}
-                                as={NextLink}
+                                as={Link}
                                 key={member?.id}
                                 href={`https://www.roblox.com/groups/${member?.id}/group`}
                                 src={member?.avatar}

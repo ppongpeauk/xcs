@@ -48,7 +48,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         });
       }
     }, 500);
-  }, [loading]);
+  }, [loading, firebaseUser, push, toast]);
 
   // get platform alerts
   useEffect(() => {
