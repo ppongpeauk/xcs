@@ -486,7 +486,7 @@ export default function PlatformOrganization() {
                   >
                     <TooltipAvatar
                       name={organization?.owner?.displayName}
-                      as={NextLink}
+                      as={Link}
                       key={organization?.owner?.id}
                       href={`/@${organization?.owner?.username}`}
                       src={organization?.owner?.avatar}
