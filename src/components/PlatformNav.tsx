@@ -54,6 +54,7 @@ function AvatarPopover({ currentUser, onLogoutOpen }: { currentUser?: any; onLog
   const { push } = useRouter();
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { user, isAuthLoaded } = useAuthContext();
 
   return (
     <>
@@ -70,14 +71,14 @@ function AvatarPopover({ currentUser, onLogoutOpen }: { currentUser?: any; onLog
             transition={'opacity 0.2s ease-out'} _hover={{ opacity: 0.75 }} _active={{ opacity: 0.5 }}
           >
             <Skeleton
-              isLoaded={!!currentUser}
+              isLoaded={(currentUser && isAuthLoaded) || (!user)}
               w={'auto'}
               h={'auto'}
               borderRadius={'full'}
               overflow={'hidden'}
             >
               <Avatar
-                src={currentUser?.avatar}
+                src={currentUser?.avatar || ''}
                 size={'md'}
                 borderRadius={0}
               />
@@ -97,65 +98,70 @@ function AvatarPopover({ currentUser, onLogoutOpen }: { currentUser?: any; onLog
         >
           <PopoverBody>
             <Stack>
-              <Flex
-                as={Button}
-                onClick={() => {
-                  push(`/@${currentUser?.username}`);
-                  onClose();
-                }}
-                variant={'ghost'}
-                w={'100%'}
-                h={'auto'}
-                align={'center'}
-                rounded={'lg'}
-                p={4}
-                m={0}
-              >
-                <Flex
-                  flexDir={'column'}
-                  align={'flex-start'}
-                  w={'min-content'}
-                >
-                  <Text
-                    fontSize={'xl'}
-                    fontWeight={'900'}
-                    textOverflow={'ellipsis'}
+              {
+                user && <>
+                  <Flex
+                    as={Button}
+                    onClick={() => {
+                      push(`/@${currentUser?.username}`);
+                      onClose();
+                    }}
+                    variant={'ghost'}
+                    w={'100%'}
+                    h={'auto'}
+                    align={'center'}
+                    rounded={'lg'}
+                    p={4}
+                    m={0}
                   >
-                    {currentUser?.displayName}
-                  </Text>
-                  <Text
-                    fontSize={'md'}
-                    fontWeight={'400'}
-                    color={'gray.500'}
+                    <Flex
+                      flexDir={'column'}
+                      align={'flex-start'}
+                      w={'min-content'}
+                    >
+                      <Text
+                        fontSize={'xl'}
+                        fontWeight={'900'}
+                        textOverflow={'ellipsis'}
+                      >
+                        {currentUser?.displayName}
+                      </Text>
+                      <Text
+                        fontSize={'md'}
+                        fontWeight={'400'}
+                        color={'gray.500'}
+                      >
+                        @{currentUser?.username}
+                      </Text>
+                    </Flex>
+                    <Spacer />
+                    <SkeletonCircle
+                      isLoaded={!!currentUser}
+                      w={'auto'}
+                      h={'auto'}
+                      pl={4}
+                    >
+                      <Avatar
+                        src={currentUser?.avatar}
+                        size={'lg'}
+                      />
+                    </SkeletonCircle>
+                  </Flex>
+
+                  <Button
+                    as={NextLink}
+                    href={'/settings'}
+                    variant={'outline'}
+                    size={'md'}
+                    leftIcon={<AiFillSetting />}
+                    onClick={() => {
+                      onClose();
+                    }}
                   >
-                    @{currentUser?.username}
-                  </Text>
-                </Flex>
-                <Spacer />
-                <SkeletonCircle
-                  isLoaded={!!currentUser}
-                  w={'auto'}
-                  h={'auto'}
-                  pl={4}
-                >
-                  <Avatar
-                    src={currentUser?.avatar}
-                    size={'lg'}
-                  />
-                </SkeletonCircle>
-              </Flex>
-              <Button
-                as={NextLink}
-                href={'/settings'}
-                variant={'outline'}
-                size={'md'}
-                leftIcon={<AiFillSetting />}
-                onClick={() => {
-                  onClose();
-                }}
-              >
-                Settings
-              </Button>
+                    Settings
+                  </Button>
+                </>
+              }
               {currentUser?.platform.staff && (
                 <Button
                   as={NextLink}
@@ -170,16 +176,31 @@ function AvatarPopover({ currentUser, onLogoutOpen }: { currentUser?: any; onLog
                   Staff Settings
                 </Button>
               )}
-              <Button
-                variant={'outline'}
-                size={'md'}
-                leftIcon={<BiSolidExit />}
-                onClick={() => {
-                  onLogoutOpen();
-                }}
-              >
-                Log Out
-              </Button>
+              {
+                user ? <>
+                  <Button
+                    variant={'outline'}
+                    size={'md'}
+                    leftIcon={<BiSolidExit />}
+                    onClick={() => {
+                      onLogoutOpen();
+                    }}
+                  >
+                    Log Out
+                  </Button>
+                </> : <>
+                  <Button
+                    variant={'outline'}
+                    size={'md'}
+                    leftIcon={<BiSolidExit />}
+                    onClick={() => {
+                      push('/auth/login');
+                    }}
+                  >
+                    Log In
+                  </Button>
+                </>
+              }
             </Stack>
           </PopoverBody>
         </PopoverContent>
@@ -285,7 +306,7 @@ function NavLink({
 
 export default function PlatformNav({ type, title }: { type?: string; title?: string | null | undefined }) {
   const pathname = usePathname();
-  const { currentUser, isAuthLoaded } = useAuthContext();
+  const { currentUser, isAuthLoaded, user } = useAuthContext();
   const { isOpen: isLogoutOpen, onOpen: onLogoutOpen, onClose: onLogoutClose } = useDisclosure();
   const { push } = useRouter();
 
@@ -329,7 +350,7 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
             as={NextLink}
             width={'full'}
             h={'full'}
-            href={'/home'}
+            href={user ? '/home' : '/'}
             align={'center'}
             justify={'center'}
             transition={'filter 0.2s ease'}
@@ -369,41 +390,53 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
             py={8}
             spacing={1}
           >
-            <NavLink
-              href={'/home'}
-              pathname={pathname}
-              leftIcon={<AiFillHome />}
-            >
-              Home
-            </NavLink>
-            <NavLink
-              href={'/event-logs'}
-              pathname={pathname}
-              leftIcon={<BiSolidTime />}
-            >
-              Event Logs
-            </NavLink>
-            <NavLink
-              href={`/@${currentUser?.username}`}
-              pathname={pathname}
-              leftIcon={<FaIdBadge />}
-            >
-              Profile
-            </NavLink>
-            <NavLink
-              href={'/organizations'}
-              pathname={pathname}
-              leftIcon={<FaBuilding />}
-            >
-              Organizations
-            </NavLink>
-            <NavLink
-              href={'/locations'}
-              pathname={pathname}
-              leftIcon={<ImTree />}
-            >
-              Locations
-            </NavLink>
+            {
+              user ? <>
+                <NavLink
+                  href={'/home'}
+                  pathname={pathname}
+                  leftIcon={<AiFillHome />}
+                >
+                  Home
+                </NavLink>
+                <NavLink
+                  href={'/event-logs'}
+                  pathname={pathname}
+                  leftIcon={<BiSolidTime />}
+                >
+                  Event Logs
+                </NavLink>
+                <NavLink
+                  href={`/@${currentUser?.username}`}
+                  pathname={pathname}
+                  leftIcon={<FaIdBadge />}
+                >
+                  Profile
+                </NavLink>
+                <NavLink
+                  href={'/organizations'}
+                  pathname={pathname}
+                  leftIcon={<FaBuilding />}
+                >
+                  Organizations
+                </NavLink>
+                <NavLink
+                  href={'/locations'}
+                  pathname={pathname}
+                  leftIcon={<ImTree />}
+                >
+                  Locations
+                </NavLink>
+              </> : <>
+                <NavLink
+                  href={'/auth/login'}
+                  pathname={pathname}
+                  leftIcon={<BiSolidExit />}
+                >
+                  Log In
+                </NavLink>
+              </>
+            }
           </VStack>
         </Box>
         <VStack
@@ -416,22 +449,26 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
           spacing={1}
           mt={'auto'}
         >
-          <NavLink
-            href={'/settings'}
-            pathname={pathname}
-            leftIcon={<AiFillSetting />}
-          >
-            Settings
-          </NavLink>
-          <NavLink
-            href={'https://xcs-docs.restrafes.co/'}
-            target={'_blank'}
-            pathname={pathname}
-            leftIcon={<AiFillInfoCircle />}
-          >
-            Help & Information
-          </NavLink>
-          {currentUser ? (
+          {user && (
+            <>
+              <NavLink
+                href={'/settings'}
+                pathname={pathname}
+                leftIcon={<AiFillSetting />}
+              >
+                Settings
+              </NavLink>
+              <NavLink
+                href={'https://xcs-docs.restrafes.co/'}
+                target={'_blank'}
+                pathname={pathname}
+                leftIcon={<AiFillInfoCircle />}
+              >
+                Help & Information
+              </NavLink>
+            </>
+          )}
+          {user ? (
             <NavLink
               // href={"/auth/logout"}
               onClick={onLogoutOpen}
@@ -441,13 +478,7 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
               Log Out
             </NavLink>
           ) : (
-            <NavLink
-              href={'/auth/login'}
-              pathname={pathname}
-              leftIcon={<BiSolidExit />}
-            >
-              Log In
-            </NavLink>
+            <></>
           )}
         </VStack>
       </Flex>
@@ -558,46 +589,50 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
                   <MenuItem
                     as={MenuLink}
                     icon={<AiFillHome />}
-                    href="/home"
+                    href={user ? "/home" : "/"}
                   >
                     Home
                   </MenuItem>
-                  <MenuItem
-                    as={MenuLink}
-                    icon={<BiSolidTime />}
-                    href="/event-logs"
-                  >
-                    Event Logs
-                  </MenuItem>
-                  <MenuItem
-                    as={MenuLink}
-                    icon={<FaIdBadge />}
-                    href={`/@${currentUser?.username}`}
-                  >
-                    Profile
-                  </MenuItem>
-                  <MenuItem
-                    as={MenuLink}
-                    icon={<FaBuilding />}
-                    href="/organizations"
-                  >
-                    Organizations
-                  </MenuItem>
-                  <MenuItem
-                    as={MenuLink}
-                    icon={<ImTree />}
-                    href="/locations"
-                  >
-                    Locations
-                  </MenuItem>
-                  <MenuDivider />
-                  <MenuItem
-                    as={MenuLink}
-                    icon={<AiFillSetting />}
-                    href="/settings"
-                  >
-                    Settings
-                  </MenuItem>
+                  {
+                    user && <>
+                      <MenuItem
+                        as={MenuLink}
+                        icon={<BiSolidTime />}
+                        href="/event-logs"
+                      >
+                        Event Logs
+                      </MenuItem>
+                      <MenuItem
+                        as={MenuLink}
+                        icon={<FaIdBadge />}
+                        href={`/@${currentUser?.username}`}
+                      >
+                        Profile
+                      </MenuItem>
+                      <MenuItem
+                        as={MenuLink}
+                        icon={<FaBuilding />}
+                        href="/organizations"
+                      >
+                        Organizations
+                      </MenuItem>
+                      <MenuItem
+                        as={MenuLink}
+                        icon={<ImTree />}
+                        href="/locations"
+                      >
+                        Locations
+                      </MenuItem>
+                      <MenuDivider />
+                      <MenuItem
+                        as={MenuLink}
+                        icon={<AiFillSetting />}
+                        href="/settings"
+                      >
+                        Settings
+                      </MenuItem>
+                    </>
+                  }
                   {currentUser?.platform.staff && (
                     <MenuItem
                       as={MenuLink}
@@ -607,22 +642,34 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
                       Staff Settings
                     </MenuItem>
                   )}
-                  <MenuItem
-                    as={MenuLink}
-                    icon={<AiFillInfoCircle />}
-                    href="https://xcs-docs.restrafes.co/"
-                  >
-                    Help & Information
-                  </MenuItem>
+                  {user && <>
+                    <MenuItem
+                      as={MenuLink}
+                      icon={<AiFillInfoCircle />}
+                      href="https://xcs-docs.restrafes.co/"
+                    >
+                      Help & Information
+                    </MenuItem>
+                  </>}
                   <ThemeButton menu={true} />
                   <MenuDivider />
-                  <MenuItem
-                    as={MenuLink}
-                    icon={<BiSolidExit />}
-                    href="/auth/logout"
-                  >
-                    Log Out
-                  </MenuItem>
+                  {currentUser ? (
+                    <MenuItem
+                      as={MenuLink}
+                      icon={<BiSolidExit />}
+                      href="/auth/logout"
+                    >
+                      Log Out
+                    </MenuItem>
+                  ) : (
+                    <MenuItem
+                      as={MenuLink}
+                      icon={<BiSolidExit />}
+                      href="/auth/login"
+                    >
+                      Log In
+                    </MenuItem>
+                  )}
                 </MenuList>
               </Menu>
             </Box>
