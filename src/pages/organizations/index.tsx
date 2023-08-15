@@ -278,7 +278,7 @@ export default function PlatformOrganizations() {
         <title>Restrafes XCS – Organizations</title>
         <meta
           property="og:title"
-          content="Restrafes XCS - Manage Organizations"
+          content="Restrafes XCS – Manage Organizations"
         />
         <meta
           property="og:site_name"

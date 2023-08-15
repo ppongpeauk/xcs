@@ -41,7 +41,7 @@ export default function Recover() {
         <title>Restrafes XCS – Recover Account</title>
         <meta
           name="description"
-          content="Restrafes XCS - Recover Account"
+          content="Restrafes XCS – Recover Account"
         />
         <link
           rel="icon"
@@ -53,7 +53,7 @@ export default function Recover() {
         />
         <meta
           name="og:title"
-          content="Restrafes XCS - Recover Account"
+          content="Restrafes XCS – Recover Account"
         />
         <meta
           name="og:description"

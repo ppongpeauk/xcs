@@ -59,7 +59,7 @@ export default function PlatformHome() {
         <title>Restrafes XCS – Home</title>
         <meta
           property="og:title"
-          content="Restrafes XCS - Platform Home"
+          content="Restrafes XCS – Platform Home"
         />
         <meta
           property="og:site_name"

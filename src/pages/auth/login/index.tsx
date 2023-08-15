@@ -76,7 +76,7 @@ export default function Login() {
         <title>Restrafes XCS – Login</title>
         <meta
           name="description"
-          content="Restrafes XCS - Login"
+          content="Restrafes XCS – Login"
         />
         <link
           rel="icon"
@@ -88,7 +88,7 @@ export default function Login() {
         />
         <meta
           name="og:title"
-          content="Restrafes XCS - Login"
+          content="Restrafes XCS – Login"
         />
         <meta
           name="og:description"

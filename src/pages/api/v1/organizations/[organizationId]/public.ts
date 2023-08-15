@@ -21,9 +21,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const { organizationId } = req.query as { organizationId: string };
 
   const uid = await authToken(req);
-  if (!uid) {
-    return res.status(401).json({ message: 'Unauthorized.' });
-  }
+  // if (!uid) {
+  //   return res.status(401).json({ message: 'Unauthorized.' });
+  // }
 
   const mongoClient = await clientPromise;
   const db = mongoClient.db(process.env.MONGODB_DB as string);
@@ -54,12 +54,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(404).json({ message: 'Organization not found' });
   }
 
-  if (organization.members[uid] && organization.members[uid].role > 0) {
+  if (uid && organization.members[uid] && organization.members[uid].role > 0) {
     canEdit = true;
   }
 
   if (req.method === 'GET') {
-    organization.self = organization.members[uid];
+    organization.self = uid ? organization.members[uid] : undefined;
 
     let ownerMember = Object.values(organization.members).find(
       (member: any) => member.id === organization.ownerId

@@ -66,7 +66,7 @@ export default function Invite({ invite, errorMessage }: { invite: any; errorMes
             />
             <meta
               name="og:title"
-              content={'Restrafes XCS - Invitation'}
+              content={'Restrafes XCS – Invitation'}
             />
             <meta
               name="og:url"

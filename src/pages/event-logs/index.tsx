@@ -11,7 +11,7 @@ export default function PlatformEventLogs() {
         <title>Restrafes XCS – Event Logs</title>
         <meta
           property="og:title"
-          content="Restrafes XCS - Event Logs"
+          content="Restrafes XCS – Event Logs"
         />
         <meta
           property="og:site_name"

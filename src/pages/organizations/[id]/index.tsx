@@ -26,75 +26,75 @@ import { VscVerifiedFilled } from 'react-icons/vsc';
 
 const memberTypeOrder = ['user', 'roblox', 'roblox-group', 'card'];
 
-// export async function getServerSideProps({ params, req, res }: any) {
-//   const id = params.id;
-//   if (!id) return { notFound: true };
+export async function getServerSideProps({ params, req, res }: any) {
+  const id = params.id;
+  if (!id) return { notFound: true };
 
-//   // fetch organization data
-//   const data = await fetch(`${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/organizations/${id}/public`);
-//   if (data.status === 404) return { notFound: true };
-//   if (data.status !== 200) {
-//     res.statusCode = data.status;
-//     return { props: {} };
-//   }
-//   const organization: Organization = await data.json();
-//   return { props: organization };
-// }
-export default function OrganizationPublic() {
+  // fetch organization data
+  const data = await fetch(`${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/organizations/${id}/public`);
+  if (data.status === 404) return { notFound: true };
+  if (data.status !== 200) {
+    res.statusCode = data.status;
+    return { props: {} };
+  }
+  const organization: Organization = await data.json();
+  return { props: organization };
+}
+export default function OrganizationPublic({ organization: serverOrganization }: { organization: Organization | null }) {
   const { query, push } = useRouter();
   const toast = useToast();
   const { user } = useAuthContext();
   const [organization, setOrganization] = useState<Organization>();
 
   let refreshData = useCallback(async () => {
-    await user.getIdToken().then((token: string) => {
-      fetch(`/api/v1/organizations/${query.id}/public`, {
-        method: 'GET',
-        headers: { Authorization: `Bearer ${token}` }
+    console.log('refreshing data');
+    fetch(`/api/v1/organizations/${query.id}/public`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+      .then((res) => {
+        if (res.status === 200) return res.json();
+        switch (res.status) {
+          case 404:
+            throw new Error('Organization not found.');
+          case 403:
+            throw new Error('You do not have permission to view this organization.');
+          case 401:
+            throw new Error('You do not have permission to view this organization.');
+          case 500:
+            throw new Error('An internal server error occurred.');
+          default:
+            throw new Error('An unknown error occurred.');
+        }
       })
-        .then((res) => {
-          if (res.status === 200) return res.json();
-          switch (res.status) {
-            case 404:
-              throw new Error('Organization not found.');
-            case 403:
-              throw new Error('You do not have permission to view this organization.');
-            case 401:
-              throw new Error('You do not have permission to view this organization.');
-            case 500:
-              throw new Error('An internal server error occurred.');
-            default:
-              throw new Error('An unknown error occurred.');
-          }
-        })
-        .then((data) => {
-          setOrganization(data.organization);
-        })
-        .catch((err) => {
-          toast({
-            title: 'There was an error fetching the organization.',
-            description: err.message,
-            status: 'error',
-            duration: 5000,
-            isClosable: true
-          });
+      .then((data) => {
+        setOrganization(data.organization);
+      })
+      .catch((err) => {
+        toast({
+          title: 'There was an error fetching the organization.',
+          description: err.message,
+          status: 'error',
+          duration: 5000,
+          isClosable: true
         });
-    });
-  }, [user, query, toast]);
+      });
+  }, [query, toast]);
 
   useEffect(() => {
     if (!query.id) return;
-    if (!user) return;
     refreshData();
-  }, [query, user, refreshData]);
+  }, [query, refreshData]);
 
   return (
     <>
       <Head>
-        <title>Restrafes XCS – {organization?.name}</title>
+        <title>Restrafes XCS – {serverOrganization?.name}</title>
         <meta
           property="og:title"
-          content={`Restrafes XCS - ${organization?.name}`}
+          content={`Restrafes XCS – ${serverOrganization?.name}`}
         />
         <meta
           property="og:site_name"
@@ -105,12 +105,16 @@ export default function OrganizationPublic() {
           content="https://xcs.restrafes.co"
         />
         <meta
+          property="og:description"
+          content={`${serverOrganization?.name} is one of many organizations that use Restrafes XCS to manage their access points.`}
+        />
+        <meta
           property="og:type"
           content="website"
         />
         <meta
           property="og:image"
-          content="/images/logo-square.jpeg"
+          content={organization?.avatar || '/images/default-avatar.png'}
         />
       </Head>
       <Container maxW="full" p={8}>

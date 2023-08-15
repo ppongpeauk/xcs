@@ -10,7 +10,7 @@ export default function Homepage() {
         <title>Restrafes XCS – Home</title>
         <meta
           property="og:title"
-          content="Restrafes XCS - Home"
+          content="Restrafes XCS – Home"
         />
         <meta
           property="og:site_name"
