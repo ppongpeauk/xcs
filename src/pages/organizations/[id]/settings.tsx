@@ -545,7 +545,7 @@ export default function PlatformOrganization() {
                 }}
               >
                 <Icon as={RiProfileFill} m={2} w={8} h={8} />
-                <Text fontWeight={'bold'} fontSize={'sm'}>View Profile</Text>
+                <Text fontWeight={'bold'} fontSize={'sm'}>Public Page</Text>
               </ActionButton>
               <ActionButton
                 onClick={memberModalOnOpen}

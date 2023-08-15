@@ -22,7 +22,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
 import { AiFillSetting } from 'react-icons/ai';
-import { MdJoinRight } from 'react-icons/md';
+import { VscVerifiedFilled } from 'react-icons/vsc';
 
 const memberTypeOrder = ['user', 'roblox', 'roblox-group', 'card'];
 
@@ -126,15 +126,25 @@ export default function OrganizationPublic() {
             </Avatar>
           </Skeleton>
           <Flex flexDir={'column'}>
-            <Skeleton isLoaded={!!organization}>
+            <Skeleton as={Flex} isLoaded={!!organization} flexDir={'row'} align={'center'}>
               <Text
-                as={'h1'}
+                as={Flex}
                 fontSize={{ base: '2xl', md: '4xl' }}
                 fontWeight={'900'}
                 lineHeight={0.9}
               >
                 {organization?.name || 'Organization Name'}
               </Text>
+              {
+                organization?.verified &&
+
+                <Icon
+                  as={VscVerifiedFilled}
+                  color={'gold'}
+                  boxSize={'1.5em'}
+                  ml={2}
+                />
+              }
             </Skeleton>
             <Skeleton
               isLoaded={!!organization}
@@ -216,13 +226,13 @@ export default function OrganizationPublic() {
         </Text> */}
         <Flex align={'center'} py={2} w={'fit-content'}>
           <Skeleton as={Flex} isLoaded={!!organization} gap={4} flexDir={{ base: 'column', md: 'row' }}>
-            <Button
+            {/* <Button
               colorScheme={'blue'}
               leftIcon={<Icon as={MdJoinRight} />}
               isDisabled={true}
             >
               Request to Join
-            </Button>
+            </Button> */}
             {
               organization?.canEdit &&
               <>
@@ -250,11 +260,11 @@ export default function OrganizationPublic() {
                     {line}
                   </Text>
                 ))
-              ) : 'No description available.'}
+              ) : 'This organization has not set a bio yet.'}
             </Text>
           </Flex>
         </Skeleton>
-      </Container>
+      </Container >
     </>
   )
 }

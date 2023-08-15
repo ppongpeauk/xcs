@@ -1,4 +1,4 @@
-import { Container, Heading, Text } from '@chakra-ui/react';
+import { Container, Text } from '@chakra-ui/react';
 
 import Head from 'next/head';
 
@@ -42,8 +42,9 @@ export default function PlatformEventLogs() {
         </Text>
         <Text
           fontSize={'xl'}
+          color={'gray.500'}
         >
-          This feature is coming soon! Please check back later.
+          This feature is coming soon, please check back later.
         </Text>
       </Container>
     </>

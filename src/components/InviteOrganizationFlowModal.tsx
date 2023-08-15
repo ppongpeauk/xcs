@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import {
   Box,
@@ -46,7 +46,7 @@ import { SiRoblox, SiRobloxstudio } from 'react-icons/si';
 const steps = [
   { description: 'Choose a Member Type' },
   { description: 'Enter Member Details' },
-  // { description: 'Overview' },
+  { description: 'Completed' },
 ]
 
 interface SelectOption {
@@ -145,6 +145,15 @@ export default function InviteOrganizationFlowModal({
       description: 'A set of card numbers.'
     }
   ]
+
+  useEffect(() => {
+    if (activeStep === 0) {
+      // reset form
+      const preserveType = formRef.current.values.type;
+      formRef.current.resetForm();
+      formRef.current.setFieldValue('type', preserveType);
+    }
+  }, [activeStep])
 
   const { setValue: setRadioMemberType, getRadioProps: getRadioPropsMemberType } = useRadioGroup({
     name: 'memberType',
@@ -403,7 +412,7 @@ export default function InviteOrganizationFlowModal({
               setActiveStep(0);
               setRadioMemberType('user');
             }}
-          // size={'lg'}
+            size={'md'}
           >
             <ModalOverlay />
             <Form>
@@ -451,7 +460,7 @@ export default function InviteOrganizationFlowModal({
                         <Field name="type">
                           {({ field, form }: any) => (
                             <Flex flexDir={'row'} gap={4} w={'full'}>
-                              <RadioGroup {...field} defaultValue="user" dir='column' value={field.value} w={'full'}>
+                              <RadioGroup {...field} defaultValue="user" dir='column' value={field.value}>
                                 <Stack spacing={2}>
                                   {memberTypeOptions.map((value: any) => {
                                     const radio = getRadioPropsMemberType({ value: value.value })
@@ -712,7 +721,7 @@ export default function InviteOrganizationFlowModal({
                                         selectedOptionStyle={'check'}
                                       />
                                       <FormHelperText>
-                                        Select the access groups you want to give to the member type.
+                                        Select the access groups you want to give to this member type.
                                       </FormHelperText>
                                     </FormControl>
                                   )}
@@ -843,20 +852,29 @@ export default function InviteOrganizationFlowModal({
                     Previous
                   </Button>
                   <Spacer />
-                  <Button
-                    onClick={() => { setActiveStep(activeStep + 1) }}
-                    isDisabled={activeStep === steps.length - 1}
-                  >
-                    Next
-                  </Button>
-                  <Button
-                    type="submit"
-                    isLoading={props.isSubmitting}
-                    colorScheme={'blue'}
-                    isDisabled={activeStep !== steps.length - 1}
-                  >
-                    Add Member
-                  </Button>
+                  {activeStep === 0 ? (
+                    <Button
+                      onClick={() => { setActiveStep(activeStep + 1) }}
+                      isDisabled={activeStep === steps.length - 1}
+                      colorScheme='blue'
+                    >
+                      Next
+                    </Button>
+                  ) : (
+                    <Button
+                      type="submit"
+                      isLoading={props.isSubmitting}
+                      colorScheme={'blue'}
+                      isDisabled={
+                        (props.values.type === 'user' && (!props.values.id || !props.values.role)) ||
+                        (props.values.type === 'roblox' && !props.values.username) ||
+                        (props.values.type === 'roblox-group' && (!props.values.name || !props.values.robloxGroupId || !props.values.robloxGroupRoles)) ||
+                        (props.values.type === 'card' && (!props.values.name || !props.values.cardNumbers))
+                      }
+                    >
+                      Add Member
+                    </Button>
+                  )}
                   <Button onClick={onClose}>Cancel</Button>
                 </ModalFooter>
               </ModalContent>

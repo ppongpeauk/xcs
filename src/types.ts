@@ -64,6 +64,8 @@ export interface Organization {
   avatar?: string;
   accessGroups: Record<string, AccessGroup>;
 
+  verified?: boolean;
+
   // not stored in mongoDB, but added to organization data on some endpoints
   self?: OrganizationMember;
   canEdit?: boolean;
