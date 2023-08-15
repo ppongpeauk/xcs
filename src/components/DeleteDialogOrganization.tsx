@@ -7,6 +7,7 @@ import {
   AlertDialogOverlay,
   Button,
   FormControl,
+  FormHelperText,
   FormLabel,
   Image,
   Input,
@@ -67,6 +68,9 @@ export default function DeleteDialogOrganization({
                     setDisabled(e.target.value !== organization?.name);
                   }}
                 />
+                <FormHelperText>
+                  Type &quot;${organization?.name}&quot; to confirm
+                </FormHelperText>
               </FormControl>
 
             </AlertDialogBody>
