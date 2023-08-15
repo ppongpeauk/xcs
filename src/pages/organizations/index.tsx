@@ -43,7 +43,7 @@ import Layout from '@/layouts/PlatformLayout';
 import CreateOrganizationDialog from '@/components/CreateOrganizationDialog';
 import JoinOrganizationDialog from '@/components/JoinOrganizationDialog';
 import UserInvitationsModal from '@/components/UserInvitationsModal';
-import { Organization } from '@/types';
+import { Organization, OrganizationMember } from '@/types';
 import moment from 'moment';
 import { BiGrid, BiRefresh } from 'react-icons/bi';
 import { BsListUl } from 'react-icons/bs';
@@ -89,7 +89,7 @@ function TableEntry({ key, organization, skeleton }: { key: number | string, org
       <Td isNumeric>
         <Skeleton isLoaded={!skeleton}>
           <Text>
-            {!skeleton ? organization?.statistics?.numMembers : 0}
+            {!skeleton ? Object.values(organization?.members || {}).filter((member: OrganizationMember) => ['user'].includes(member.type)).length : 0}
           </Text>
         </Skeleton>
       </Td>

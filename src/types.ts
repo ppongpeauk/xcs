@@ -71,6 +71,7 @@ export interface Organization {
   statistics: {
     numLocations?: number;
     numMembers?: number;
+    numAccessGroups?: number;
     scans: {
       total: number;
       granted: number;

@@ -60,7 +60,7 @@ function ActionButton({ children, ...props }: any) {
   return (
     <Flex
       {...props}
-      w={'128px'} h={'auto'} aspectRatio={1} border='1px solid' borderColor={useColorModeValue('gray.200', 'gray.700')} borderRadius='lg'
+      w={'calc(50% - 1rem)'} h={'auto'} py={4} border='1px solid' borderColor={useColorModeValue('gray.200', 'gray.700')} borderRadius='lg'
       transition={'background 0.2s ease-out'}
       _hover={{
         bg: useColorModeValue('gray.50', 'gray.700')
@@ -455,7 +455,7 @@ export default function PlatformOrganization() {
                   <Text
                     as={'h1'}
                     fontSize={{ base: '2xl', md: '4xl' }}
-                    fontWeight={'900'}
+                    fontWeight={'bold'}
                     lineHeight={0.9}
                   >
                     {organization?.name || 'Organization Name'}
@@ -495,7 +495,7 @@ export default function PlatformOrganization() {
                       src={organization?.owner?.avatar || defaultImage}
                     />
                     {Object.values(organization?.members || {})
-                      .filter((member: OrganizationMember) => ['user', 'roblox'].includes(member.type))
+                      .filter((member: OrganizationMember) => ['user'].includes(member.type))
                       .sort((a: OrganizationMember, b: OrganizationMember) => ((memberTypeOrder.indexOf(a.type) - a.role) - (memberTypeOrder.indexOf(b.type) - b.role)))
                       .map(
                         (member: OrganizationMember) =>
@@ -538,26 +538,29 @@ export default function PlatformOrganization() {
               </Flex>
             </Stack>
             <Divider my={4} />
-            <Flex flexWrap={'wrap'} w={'full'} h={'auto'} py={2} gap={2} justify={'space-evenly'}>
+            <Heading as="h1" size="lg" my={2}>
+              Quick Actions
+            </Heading>
+            <Flex flexWrap={'wrap'} w={'full'} h={'auto'} py={2} gap={4} justify={'space-evenly'}>
+              <ActionButton
+                onClick={memberModalOnOpen}
+              >
+                <Icon as={HiUserGroup} m={2} w={8} h={8} />
+                <Text fontWeight={'bold'} fontSize={'md'}>Members</Text>
+              </ActionButton>
+              <ActionButton
+                onClick={roleModalOnOpen}
+              >
+                <Icon as={HiGlobeAlt} m={2} w={8} h={8} />
+                <Text fontWeight={'bold'} fontSize={'md'}>Access Groups</Text>
+              </ActionButton>
               <ActionButton
                 onClick={() => {
                   push(`/organizations/${query.id}`);
                 }}
               >
                 <Icon as={RiProfileFill} m={2} w={8} h={8} />
-                <Text fontWeight={'bold'} fontSize={'sm'}>Public Page</Text>
-              </ActionButton>
-              <ActionButton
-                onClick={memberModalOnOpen}
-              >
-                <Icon as={HiUserGroup} m={2} w={8} h={8} />
-                <Text fontWeight={'bold'} fontSize={'sm'}>Members</Text>
-              </ActionButton>
-              <ActionButton
-                onClick={roleModalOnOpen}
-              >
-                <Icon as={HiGlobeAlt} m={2} w={8} h={8} />
-                <Text fontWeight={'bold'} fontSize={'sm'}>Access Groups</Text>
+                <Text fontWeight={'bold'} fontSize={'md'}>View Public Page</Text>
               </ActionButton>
               <ActionButton
                 onClick={() => {
@@ -565,7 +568,7 @@ export default function PlatformOrganization() {
                 }}
               >
                 <Icon as={ImTree} m={2} w={8} h={8} />
-                <Text fontWeight={'bold'} fontSize={'sm'}>View Locations</Text>
+                <Text fontWeight={'bold'} fontSize={'md'}>View Locations</Text>
               </ActionButton>
             </Flex>
             <Divider my={4} />

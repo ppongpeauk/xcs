@@ -130,7 +130,7 @@ export default function OrganizationPublic() {
               <Text
                 as={Flex}
                 fontSize={{ base: '2xl', md: '4xl' }}
-                fontWeight={'900'}
+                fontWeight={'bold'}
                 lineHeight={0.9}
               >
                 {organization?.name || 'Organization Name'}
@@ -179,7 +179,7 @@ export default function OrganizationPublic() {
                   src={organization?.owner?.avatar || '/images/default-avatar.png'}
                 />
                 {Object.values(organization?.members || {})
-                  .filter((member: OrganizationMember) => ['user', 'roblox'].includes(member.type))
+                  .filter((member: OrganizationMember) => ['user'].includes(member.type))
                   .sort((a: OrganizationMember, b: OrganizationMember) => ((memberTypeOrder.indexOf(a.type) - a.role) - (memberTypeOrder.indexOf(b.type) - b.role)))
                   .map(
                     (member: OrganizationMember) =>
@@ -221,14 +221,11 @@ export default function OrganizationPublic() {
             </Skeleton>
           </Flex>
         </Flex>
-        {/* <Text as={'h2'} fontSize={'md'}>
-          Actions
-        </Text> */}
         {
           organization?.canEdit &&
           <>
-            <Flex align={'center'} py={2} w={'fit-content'}>
-              <Skeleton as={Flex} isLoaded={!!organization} gap={4} flexDir={{ base: 'column', md: 'row' }}>
+            <Flex align={'center'} w={'fit-content'}>
+              <Skeleton as={Flex} isLoaded={!!organization} py={1} gap={4} flexDir={{ base: 'column', md: 'row' }}>
                 <Button
                   leftIcon={<Icon as={AiFillSetting} />}
                   onClick={() => push(`/organizations/${query.id}/settings`)}
@@ -239,12 +236,19 @@ export default function OrganizationPublic() {
             </Flex>
           </>
         }
-        <Skeleton isLoaded={!!organization} maxW={'container.md'} my={4}>
-          <Flex flexDir={'column'} p={8} border={'1px solid'} borderColor={useColorModeValue('gray.200', 'gray.700')} borderRadius={'lg'}>
-            <Heading as={'h2'} fontSize={'2xl'} fontWeight={'900'} mb={2}>
+        <Skeleton isLoaded={!!organization} maxW={'container.sm'} my={4}>
+          <Flex flexDir={'column'} p={8} border={'1px solid'} borderColor={useColorModeValue('gray.200', 'gray.700')} borderRadius={'lg'} gap={1}>
+            <Heading as={'h2'} fontSize={'2xl'} fontWeight={'900'}>
               About {organization?.name}
             </Heading>
-            <Text variant={'subtext'}>
+            <Text color={'gray.500'}>
+              Created on {new Date(organization?.createdAt || 0).toLocaleDateString()}
+              {' • '}
+              {Object.values(organization?.members || {}).filter((member: OrganizationMember) => member.type === 'user').length} member{Object.values(organization?.members || {}).filter((member: OrganizationMember) => member.type === 'user').length !== 1 && 's'}
+              {' • '}
+              {organization?.statistics?.numLocations} location{organization?.statistics?.numLocations !== 1 && 's'}
+            </Text>
+            <Text variant={!organization?.description ? 'subtext' : 'unset'}>
               {organization?.description ? (
                 organization?.description.split('\n').map((line: string, i: number) => (
                   <Text

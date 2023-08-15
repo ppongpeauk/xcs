@@ -257,7 +257,7 @@ export default function Profile({ username, user: serverUser }: { username: stri
               {!user?.bio ? (
                 <Text
                   size={'md'}
-                  color={'gray.500'}
+                  variant={!user?.bio ? 'subtext' : 'unset'}
                 >
                   This user has not set a bio yet.
                 </Text>

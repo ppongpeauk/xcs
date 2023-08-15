@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { authToken } from '@/lib/auth';
 import clientPromise from '@/lib/mongodb';
 import { getRobloxGroups, getRobloxUsers } from '@/lib/utils';
-import { OrganizationMember } from '@/types';
+import { Organization, OrganizationMember, User } from '@/types';
 
 const sharp = require('sharp');
 
@@ -48,7 +48,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         isPersonal: 1
       }
     }
-  )) as any;
+  )) as unknown as Organization;
 
   if (!organization) {
     return res.status(404).json({ message: 'Organization not found' });
@@ -59,7 +59,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   if (req.method === 'GET') {
-    organization.user = organization.members[uid];
+    organization.self = organization.members[uid];
 
     let ownerMember = Object.values(organization.members).find(
       (member: any) => member.id === organization.ownerId
@@ -88,7 +88,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     );
 
-    organization.owner = ownerUser;
+    organization.owner = ownerUser as unknown as User;
 
     // get all members
     let members: Record<string, OrganizationMember> = {};
@@ -180,6 +180,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     organization.canEdit = canEdit;
+
+    const countLocations = await db.collection('locations').countDocuments({ organizationId: organizationId });
+    const countAccessGroups = await db.collection('accessGroups').countDocuments({ organizationId: organizationId });
+
+    organization.statistics = organization.statistics || {};
+    organization.statistics.numLocations = countLocations;
+    organization.statistics.numAccessGroups = countAccessGroups;
+    organization.statistics.numMembers = Object.keys(organization.members).length;
 
     return res.status(200).json({
       organization: { ...organization, members }

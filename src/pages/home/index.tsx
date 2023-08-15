@@ -154,7 +154,7 @@ export default function PlatformHome() {
             </Flex>
           </Box>
           {/* Platform Announcements */}
-          <Box>
+          <Box maxW={'container.lg'}>
             <Skeleton isLoaded w={'fit-content'}>
               <Heading
                 fontSize={'3xl'}
