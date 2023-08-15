@@ -69,7 +69,7 @@ export default function DeleteDialogOrganization({
                   }}
                 />
                 <FormHelperText>
-                  Type &quot;${organization?.name}&quot; to confirm
+                  Type &quot;{organization?.name}&quot; to confirm
                 </FormHelperText>
               </FormControl>
 

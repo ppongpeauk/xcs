@@ -44,7 +44,7 @@ export default function PlatformEventLogs() {
           fontSize={'xl'}
           color={'gray.500'}
         >
-          This feature is coming soon, please check back later.
+          This feature is coming soon. Please check back later.
         </Text>
       </Container>
     </>
