@@ -280,7 +280,7 @@ export default function Profile({ username, user }: { username: string | null; u
           </Box>
           {/* Achievements */}
           {
-            user?.achievements!?.length > 0 && (
+            Object.keys(user?.achievements || {})!?.length > 0 && (
               <Box
                 w={{ base: 'full', md: '320px' }}
                 mr={{ base: 0, md: 16 }}
@@ -302,12 +302,12 @@ export default function Profile({ username, user }: { username: string | null; u
                   flexGrow={1}
                 >
                   <Skeleton isLoaded={!!user}>
-                    {user?.achievements?.length ? (
+                    {Object.keys(user?.achievements || {})?.length ? (
                       <Wrap spacing={2} py={2}>
-                        {(user?.achievements || [])?.map((a: Achievement) => (
+                        {(Object.values(user?.achievements || {}) || [])?.map((a: Achievement) => (
                           <Tooltip key={a.id} label={
                             <Flex p={2} gap={4} align={'center'}>
-                              <Image src={a.icon} alt={a.name} width={"64px"} height={"64px"} objectFit={'contain'} />
+                              <Image src={a.icon} alt={a.name} width={"64px"} height={"64px"} objectFit={'cover'} />
                               <Flex flexDir={'column'} mr={4}>
                                 <Text fontWeight={'bold'} fontSize={'lg'}>{a.name}</Text>
                                 <Text fontWeight={'normal'}>{a.description}</Text>
@@ -317,7 +317,7 @@ export default function Profile({ username, user }: { username: string | null; u
                               </Flex>
                             </Flex>
                           }>
-                            <Image src={a.icon} alt={a.name} width={"64px"} height={"64px"} objectFit={'contain'} />
+                            <Image src={a.icon} alt={a.name} width={"64px"} height={"64px"} objectFit={'cover'} />
                           </Tooltip>
                         ))}
                       </Wrap>

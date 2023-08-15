@@ -220,7 +220,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           referrals: 0,
           scans: 0
         },
-        achievements: [],
+        achievements: {},
 
         sponsorId: invitation.isSponsor ? invitation.createdBy : null,
         createdAt: new Date(),

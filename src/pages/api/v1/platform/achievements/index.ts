@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 
 import { authToken } from '@/lib/auth';
 import clientPromise from '@/lib/mongodb';
-import { User } from '@/types';
+import { Achievement, User } from '@/types';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   let { achievementId, id, revoke } = req.body;
@@ -18,10 +18,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   // if (!user.platform.staff) return res.status(403).json({ message: 'Forbidden.' });
 
   if (req.method === 'GET') {
-    const result = await db
+    const result = (await db
       .collection('achievements')
       .find({}, { projection: { _id: 0 } })
-      .toArray();
+      .toArray()) as unknown as Achievement[];
     return res.status(200).json(result);
   } else if (req.method === 'POST') {
     const self = (await db
@@ -33,16 +33,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (!recipient) return res.status(404).json({ message: 'User not found.' });
 
     if (revoke) {
-      if (!recipient.achievements?.find((a) => a.id === achievementId)) {
+      if (!Object.values(recipient.achievements || {})?.find((a) => a.id === achievementId)) {
         return res.status(409).json({ message: 'User already does not have the award specified.' });
       }
 
       await db.collection('users').updateOne(
         { id: id || uid },
         {
-          $pull: {
+          $unset: {
             achievements: {
-              id: achievementId
+              [achievementId]: ''
             }
           }
         }
@@ -52,17 +52,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const achievement = await db.collection('achievements').findOne({ id: achievementId });
       if (!achievement) return res.status(404).json({ message: 'Achievement not found.' });
 
-      if (recipient.achievements?.find((a) => a.id === achievementId)) {
+      if (Object.values(recipient.achievements || {})?.find((a) => a.id === achievementId)) {
         return res.status(409).json({ message: 'Achievement already awarded.' });
       }
 
       await db.collection('users').updateOne(
         { id: id || uid },
         {
-          $push: {
+          $set: {
             achievements: {
-              id: achievementId,
-              earnedAt: new Date()
+              [achievementId]: {
+                id: achievementId,
+                earnedAt: new Date()
+              }
             }
           }
         }

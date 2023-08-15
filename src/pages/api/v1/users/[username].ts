@@ -30,16 +30,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     user.organizations = userOrgs as unknown as Organization[];
 
     // get user achievements
-    let achievements = [];
-    for (let achievement of (user.achievements as { id: string; earnedAt: Date }[]) || []) {
+    let achievements: Record<string, Achievement> = {};
+    for (let achievement of (Object.values(user.achievements || {}) as { id: string; earnedAt: Date }[]) || []) {
       let achievementData = (await db.collection('achievements').findOne({ id: achievement.id })) as Achievement | null;
       if (achievementData) {
         achievementData.description = achievementData.description.replace('{{displayName}}', user.displayName);
         achievement = { ...achievement, ...achievementData };
-        achievements.push(achievement);
+        achievements[achievement.id] = achievement as unknown as Achievement;
       }
     }
-    console.log(achievements);
 
     return res.status(200).json({
       user: {

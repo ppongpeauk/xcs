@@ -48,7 +48,7 @@ export interface User {
     scans: number;
     organizationInvitations?: number;
   };
-  achievements?: Achievement[];
+  achievements?: Record<string, Achievement>;
   organizations?: Organization[];
 }
 
