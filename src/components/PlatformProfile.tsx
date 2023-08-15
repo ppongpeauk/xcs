@@ -9,6 +9,7 @@ import {
   Container,
   Flex,
   Icon,
+  Image,
   Skeleton,
   StackDivider,
   Text,
@@ -19,7 +20,6 @@ import {
   useColorModeValue,
   useToast
 } from '@chakra-ui/react';
-import Image from 'next/image';
 import NextLink from 'next/link';
 
 import { BsDiscord } from 'react-icons/bs';
@@ -307,9 +307,7 @@ export default function Profile({ username, user }: { username: string | null; u
                         {(user?.achievements || [])?.map((a: Achievement) => (
                           <Tooltip key={a.id} label={
                             <Flex p={2} gap={4} align={'center'}>
-                              <Image src={a.icon} alt={a.name} width={64} height={64} style={{
-                                objectFit: 'contain',
-                              }} />
+                              <Image src={a.icon} alt={a.name} width={"64px"} height={"64px"} objectFit={'contain'} />
                               <Flex flexDir={'column'} mr={4}>
                                 <Text fontWeight={'bold'} fontSize={'lg'}>{a.name}</Text>
                                 <Text fontWeight={'normal'}>{a.description}</Text>
@@ -319,7 +317,7 @@ export default function Profile({ username, user }: { username: string | null; u
                               </Flex>
                             </Flex>
                           }>
-                            <Image src={a.icon || `/images/achievements/${a.id}.png`} alt={a.name} width={64} height={64} />
+                            <Image src={a.icon} alt={a.name} width={"64px"} height={"64px"} objectFit={'contain'} />
                           </Tooltip>
                         ))}
                       </Wrap>
