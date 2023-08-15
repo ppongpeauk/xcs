@@ -35,7 +35,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   // Wait for the router to be ready before checking if the user is logged in
   useEffect(() => {
     if (loading) return;
-    if (pathname.startsWith("/@")) return;
+    if (pathname.startsWith("/@") || (pathname.startsWith("/organizations/") && !pathname.endsWith("settings"))) return;
     setTimeout(() => {
       if (!firebaseUser) {
         push('/auth/login?redirect=' + window.location.pathname);
