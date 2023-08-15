@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useCallback, useEffect, useState } from 'react';
 
 import { Link } from '@chakra-ui/next-js';
 import {
@@ -11,21 +10,25 @@ import {
   Flex,
   Icon,
   Skeleton,
+  StackDivider,
   Text,
   Tooltip,
+  VStack,
   Wrap,
   WrapItem,
   useColorModeValue,
   useToast
 } from '@chakra-ui/react';
+import Image from 'next/image';
+import NextLink from 'next/link';
 
 import { BsDiscord } from 'react-icons/bs';
-import { IoSparkles } from 'react-icons/io5';
+import { IoSettings, IoSparkles } from 'react-icons/io5';
 import { SiRoblox } from 'react-icons/si';
 import { VscVerifiedFilled } from 'react-icons/vsc';
 
 // Types
-import { Organization, User } from '@/types';
+import { Achievement, Organization, User } from '@/types';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
@@ -62,48 +65,48 @@ function OrganizationItem({ organization }: { organization: any }) {
   );
 }
 
-export default function Profile({ username, user: serverUser }: { username: string | null; user?: User }) {
+export default function Profile({ username, user }: { username: string | null; user: User }) {
   const router = useRouter();
   const { currentUser, user: authUser } = useAuthContext();
-  const [user, setUser] = useState<any | undefined>(undefined);
+  // const [user, setUser] = useState<any | undefined>(undefined);
   const toast = useToast();
 
-  const fetchUser = useCallback(async (token?: string) => {
-    fetch(`/api/v1/users/${username}`, {
-      method: 'GET',
-      headers: {
-        Authorization: token ? `Bearer ${token}` : ''
-      }
-    })
-      .then((res) => {
-        return res.json();
-      })
-      .then((res) => {
-        setUser(res.user);
-      })
-      .catch((err) => {
-        toast({
-          title: 'User not found',
-          description: 'Could not find user',
-          status: 'error',
-          duration: 5000,
-          isClosable: true
-        });
-      });
-  }, [username, toast]);
+  // const fetchUser = useCallback(async (token?: string) => {
+  //   fetch(`/api/v1/users/${username}`, {
+  //     method: 'GET',
+  //     headers: {
+  //       Authorization: token ? `Bearer ${token}` : ''
+  //     }
+  //   })
+  //     .then((res) => {
+  //       return res.json();
+  //     })
+  //     .then((res) => {
+  //       setUser(res.user);
+  //     })
+  //     .catch((err) => {
+  //       toast({
+  //         title: 'User not found',
+  //         description: 'Could not find user',
+  //         status: 'error',
+  //         duration: 5000,
+  //         isClosable: true
+  //       });
+  //     });
+  // }, [username, toast]);
 
-  useEffect(() => {
-    // if (!currentUser) return;
-    if (!username) return;
-    setUser(undefined);
-    if (authUser) {
-      authUser.getIdToken().then((token: any) => {
-        fetchUser(token);
-      });
-    } else {
-      fetchUser();
-    }
-  }, [username, currentUser, router, toast, authUser, fetchUser]);
+  // useEffect(() => {
+  //   // if (!currentUser) return;
+  //   if (!username) return;
+  //   setUser(undefined);
+  //   if (authUser) {
+  //     authUser.getIdToken().then((token: any) => {
+  //       fetchUser(token);
+  //     });
+  //   } else {
+  //     fetchUser();
+  //   }
+  // }, [username, currentUser, router, toast, authUser, fetchUser]);
 
   return (
     <>
@@ -184,7 +187,7 @@ export default function Profile({ username, user: serverUser }: { username: stri
                 <Text
                   as={'h1'}
                   fontSize={user?.displayName?.length > 16 ? '2xl' : '3xl'}
-                  fontWeight={'900'}
+                  fontWeight={'bold'}
                   textAlign={'center'}
                 >
                   {user?.displayName}
@@ -211,7 +214,7 @@ export default function Profile({ username, user: serverUser }: { username: stri
                         mr={1}
                       />
                       <Text
-                        fontWeight={'900'}
+                        fontWeight={'bold'}
                         textAlign={'center'}
                         zIndex={1}
                       >
@@ -224,32 +227,33 @@ export default function Profile({ username, user: serverUser }: { username: stri
             </Box>
           </Flex>
         </Box>
-        {/* {
+        {
           currentUser?.id === user?.id && (
-            <Button w={{ base: '300px', md: '300px' }} mb={4}>
+            <Button as={NextLink} href={'/settings/1'} w={{ base: '300px', md: '300px' }} mb={4}>
               <Icon
-                as={FaAddressBook}
+                as={IoSettings}
                 mr={2}
               />
               <Text
                 size={'md'}
-                fontWeight={'900'}
+                fontWeight={'bold'}
               >
                 Edit Profile
               </Text>
             </Button>
           )
-        } */}
-        {/* User Bio */}
-        <Box py={2}>
+        }
+        <VStack maxW={'sm'} align={'flex-start'} my={2} mb={8} spacing={4} divider={<StackDivider borderColor={useColorModeValue("gray.200", "gray.700")} />}>
+          {/* User Bio */}
           <Box
             w={{ base: 'full', md: '384px' }}
             rounded={'lg'}
+            mb={2}
           >
             <Text
               as={'h1'}
-              fontSize={'2xl'}
-              fontWeight={'900'}
+              fontSize={'xl'}
+              fontWeight={'bold'}
             >
               About Me
             </Text>
@@ -257,7 +261,7 @@ export default function Profile({ username, user: serverUser }: { username: stri
               {!user?.bio ? (
                 <Text
                   size={'md'}
-                  variant={!user?.bio ? 'subtext' : 'unset'}
+                  variant={'subtext'}
                 >
                   This user has not set a bio yet.
                 </Text>
@@ -274,87 +278,64 @@ export default function Profile({ username, user: serverUser }: { username: stri
               )}
             </Skeleton>
           </Box>
-        </Box>
-        {/* User Linked Accounts */}
-        <Box py={2}>
-          <Box
-            rounded={'lg'}
-            w={{ base: 'full', md: '384px' }}
-          >
-            <Text
-              as={'h1'}
-              fontSize={'2xl'}
-              fontWeight={'900'}
-            >
-              Linked Accounts
-            </Text>
-            <Skeleton isLoaded={!!user}>
-              <Wrap
-                flexDir={'row'}
-                w={'fit-content'}
+          {/* Achievements */}
+          {
+            user?.achievements!?.length > 0 && (
+              <Box
+                w={{ base: 'full', md: '320px' }}
+                mr={{ base: 0, md: 16 }}
+                pb={2}
               >
-                {!user?.discord.verified && !user?.roblox.verified && (
-                  <Text
-                    size={'md'}
-                    color={'gray.500'}
-                  >
-                    This user has not linked any accounts.
-                  </Text>
-                )}
-                {user?.discord.verified && (
-                  <WrapItem>
-                    <Button
-                      as={Link}
-                      href={`https://discord.com/users/${user?.discord.id}`}
-                      target="_blank"
-                      size={'sm'}
-                      variant={'ghost'}
-                      style={{ textDecoration: 'none' }}
-                    >
-                      <Icon
-                        as={BsDiscord}
-                        size={'xl'}
-                        mr={2}
-                      />
+                <Text
+                  as={'h1'}
+                  fontSize={'xl'}
+                  fontWeight={'bold'}
+                >
+                  Achievements
+                </Text>
+                <Flex
+                  w={'full'}
+                  h={'fit-content'}
+                  flexDir={'column'}
+                  align={'flex-start'}
+                  justify={'flex-start'}
+                  flexGrow={1}
+                >
+                  <Skeleton isLoaded={!!user}>
+                    {user?.achievements?.length ? (
+                      <Wrap spacing={2} py={2}>
+                        {(user?.achievements || [])?.map((a: Achievement) => (
+                          <Tooltip key={a.id} label={
+                            <Flex p={2} gap={4} align={'center'}>
+                              <Image src={a.icon} alt={a.name} width={64} height={64} style={{
+                                objectFit: 'contain',
+                              }} />
+                              <Flex flexDir={'column'} mr={4}>
+                                <Text fontWeight={'bold'} fontSize={'lg'}>{a.name}</Text>
+                                <Text fontWeight={'normal'}>{a.description}</Text>
+                                <Text>
+                                  Unlocked on {new Date(a.earnedAt || 0).toLocaleDateString('en-US', {})}
+                                </Text>
+                              </Flex>
+                            </Flex>
+                          }>
+                            <Image src={a.icon || `/images/achievements/${a.id}.png`} alt={a.name} width={64} height={64} />
+                          </Tooltip>
+                        ))}
+                      </Wrap>
+                    ) : (
                       <Text
                         size={'md'}
-                        fontWeight={'900'}
+                        variant={'subtext'}
                       >
-                        @{user?.discord.username}
-                        {user?.discord.discriminator && `#${user?.discord.discriminator}`}
+                        This user has no achievements.
                       </Text>
-                    </Button>
-                  </WrapItem>
-                )}
-                {user?.roblox.verified && (
-                  <WrapItem>
-                    <Button
-                      as={Link}
-                      href={`https://roblox.com/users/${user?.roblox.id}/profile`}
-                      target="_blank"
-                      size={'sm'}
-                      variant={'ghost'}
-                      style={{ textDecoration: 'none' }}
-                    >
-                      <Icon
-                        as={SiRoblox}
-                        size={'xl'}
-                        mr={2}
-                      />
-                      <Text
-                        size={'md'}
-                        fontWeight={'900'}
-                      >
-                        {user?.roblox.username}
-                      </Text>
-                    </Button>
-                  </WrapItem>
-                )}
-              </Wrap>
-            </Skeleton>
-          </Box>
-        </Box>
-        <Flex py={2}>
+                    )}
+                  </Skeleton>
+                </Flex>
+              </Box>
+            )
+          }
           {/* Organizations */}
           <Box
             w={{ base: 'full', md: '320px' }}
@@ -362,8 +343,8 @@ export default function Profile({ username, user: serverUser }: { username: stri
           >
             <Text
               as={'h1'}
-              fontSize={'2xl'}
-              fontWeight={'900'}
+              fontSize={'xl'}
+              fontWeight={'bold'}
             >
               Organizations
             </Text>
@@ -391,7 +372,7 @@ export default function Profile({ username, user: serverUser }: { username: stri
                 ) : (
                   <Text
                     size={'md'}
-                    color={'gray.500'}
+                    variant={'subtext'}
                   >
                     This user is not in any organizations.
                   </Text>
@@ -399,7 +380,86 @@ export default function Profile({ username, user: serverUser }: { username: stri
               </Skeleton>
             </Flex>
           </Box>
-        </Flex>
+          {/* User Linked Accounts */}
+          <Box>
+            <Box
+              rounded={'lg'}
+              w={{ base: 'full', md: '384px' }}
+            >
+              <Text
+                as={'h1'}
+                fontSize={'xl'}
+                fontWeight={'bold'}
+              >
+                Linked Accounts
+              </Text>
+              <Skeleton isLoaded={!!user}>
+                <Wrap
+                  flexDir={'row'}
+                  w={'fit-content'}
+                >
+                  {!user?.discord.verified && !user?.roblox.verified && (
+                    <Text
+                      size={'md'}
+                      color={'gray.500'}
+                    >
+                      This user has not linked any accounts.
+                    </Text>
+                  )}
+                  {user?.discord.verified && (
+                    <WrapItem>
+                      <Button
+                        as={Link}
+                        href={`https://discord.com/users/${user?.discord.id}`}
+                        target="_blank"
+                        size={'sm'}
+                        variant={'ghost'}
+                        style={{ textDecoration: 'none' }}
+                      >
+                        <Icon
+                          as={BsDiscord}
+                          size={'xl'}
+                          mr={2}
+                        />
+                        <Text
+                          size={'md'}
+                          fontWeight={'bold'}
+                        >
+                          @{user?.discord.username}
+                          {user?.discord.discriminator && `#${user?.discord.discriminator}`}
+                        </Text>
+                      </Button>
+                    </WrapItem>
+                  )}
+                  {user?.roblox.verified && (
+                    <WrapItem>
+                      <Button
+                        as={Link}
+                        href={`https://roblox.com/users/${user?.roblox.id}/profile`}
+                        target="_blank"
+                        size={'sm'}
+                        variant={'ghost'}
+                        style={{ textDecoration: 'none' }}
+                      >
+                        <Icon
+                          as={SiRoblox}
+                          size={'xl'}
+                          mr={2}
+                        />
+                        <Text
+                          size={'md'}
+                          fontWeight={'bold'}
+                        >
+                          {user?.roblox.username}
+                        </Text>
+                      </Button>
+                    </WrapItem>
+                  )}
+                </Wrap>
+              </Skeleton>
+            </Box>
+          </Box>
+        </VStack>
       </Container>
     </>
   );

@@ -102,6 +102,18 @@ const theme = {
           opacity: 0.5
         }
       }
+    },
+    Tooltip: {
+      baseStyle: {
+        backgroundColor: 'black',
+        color: 'white',
+        borderRadius: 'md',
+        _dark: {
+          backgroundColor: 'white',
+          color: 'black'
+        },
+        boxShadow: 'none'
+      }
     }
   },
   fonts: {

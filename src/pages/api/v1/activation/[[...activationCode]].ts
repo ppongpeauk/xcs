@@ -1,8 +1,6 @@
-import { admin, app, tokenToID } from '@/pages/api/firebase';
+import { admin, app } from '@/pages/api/firebase';
 import { Invitation, User } from '@/types';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { generate as generateString } from 'randomstring';
 
 import clientPromise from '@/lib/mongodb';
 const sgMail = require('@sendgrid/mail');
@@ -149,27 +147,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           return res.status(400).json({
             message: 'An account with this email address already exists.'
           });
-          break;
         case 'auth/invalid-email':
           return res.status(400).json({
             message: 'Invalid email address.'
           });
-          break;
         case 'auth/operation-not-allowed':
           return res.status(400).json({
             message: 'Email/password accounts are not enabled.'
           });
-          break;
         case 'auth/weak-password':
           return res.status(400).json({
             message: 'Password is too weak.'
           });
-          break;
         default:
           return res.status(500).json({
             message: 'An unknown error has occurred while creating your account.'
           });
-          break;
       }
     }
 
@@ -204,6 +197,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         ],
         platform: {
           staff: false,
+          staffTitle: null,
           membership: 0,
           invites: invitation.startingReferrals || 0
         },
@@ -226,6 +220,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           referrals: 0,
           scans: 0
         },
+        achievements: [],
 
         sponsorId: invitation.isSponsor ? invitation.createdBy : null,
         createdAt: new Date(),

@@ -1,12 +1,11 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import {
   Button,
   FormControl,
   FormHelperText,
   FormLabel,
-  Input,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -14,6 +13,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Switch,
   VStack,
   useColorModeValue,
   useToast
@@ -22,7 +22,8 @@ import {
 import { Field, Form, Formik } from 'formik';
 
 import { useAuthContext } from '@/contexts/AuthContext';
-import { AsyncSelect } from 'chakra-react-select';
+import { Achievement } from '@/types';
+import { AsyncSelect, Select } from 'chakra-react-select';
 import { useCallback } from 'react';
 
 interface Option {
@@ -30,7 +31,7 @@ interface Option {
   value?: string;
 }
 
-export default function LocationResetUniverseIdModal({
+export default function AwardAchievementModal({
   isOpen,
   onClose,
 }: {
@@ -38,9 +39,12 @@ export default function LocationResetUniverseIdModal({
   onClose: () => void;
 }) {
   const toast = useToast();
-  const initialRef = useRef(null);
+  const formRef = useRef(null);
   const finalRef = useRef(null);
   const { user } = useAuthContext();
+
+  const [achievements, setAchievements] = useState<Achievement[]>([]);
+
 
   const getUserSearchResults = useCallback(async (inputValue: string, callback: any) => {
     if (!inputValue) {
@@ -84,20 +88,54 @@ export default function LocationResetUniverseIdModal({
     });
   }, [user]);
 
+  const getAchievements = useCallback(async () => {
+    user.getIdToken().then((token: any) => {
+      fetch(`/api/v1/platform/achievements`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      })
+        .then((res) => {
+          if (res.status === 200) {
+            return res.json();
+          } else {
+            return res.json().then((json) => {
+              throw new Error(json.message);
+            });
+          }
+        })
+        .then((data) => {
+          setAchievements(data);
+        })
+        .catch((error) => {
+        });
+    });
+  }, [user]);
+
+  useEffect(() => {
+    if (!user) return;
+    getAchievements();
+  }, [user, getAchievements]);
+
   return (
     <>
       <Formik
-        initialValues={{ id: '', memberId: null as Option | null }}
+        innerRef={formRef}
+        initialValues={{ id: null as Option | null, achievementId: null as Option | null, revoke: false }}
         onSubmit={(values, actions) => {
           user.getIdToken().then((token: string) => {
-            fetch(`/api/v1/locations/${values?.id}/resetUniverse`, {
-              method: 'PATCH',
+            fetch(`/api/v1/platform/achievements`, {
+              method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`
               },
               body: JSON.stringify({
-                memberId: values?.memberId?.value as string
+                id: values.id?.value || user.uid,
+                achievementId: values.achievementId?.value,
+                revoke: values.revoke || false
               })
             })
               .then((res) => {
@@ -120,7 +158,7 @@ export default function LocationResetUniverseIdModal({
               })
               .catch((error) => {
                 toast({
-                  title: 'There was an error resetting the location\'s universe ID.',
+                  title: 'There was an error awarding the achievement.',
                   description: error.message,
                   status: 'error',
                   duration: 5000,
@@ -145,32 +183,19 @@ export default function LocationResetUniverseIdModal({
             <ModalOverlay />
             <Form>
               <ModalContent bg={useColorModeValue('white', 'gray.800')}>
-                <ModalHeader pb={2}>Reset Location Universe</ModalHeader>
+                <ModalHeader pb={2}>Award Achievement</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody pb={4}>
                   <VStack spacing={2}>
                     <Field name="id">
                       {({ field, form }: any) => (
                         <FormControl>
-                          <FormLabel>Location ID</FormLabel>
-                          <Input
-                            {...field}
-                            type='text'
-                            variant={'outline'}
-                            placeholder={'Location ID'}
-                          />
-                        </FormControl>
-                      )}
-                    </Field>
-                    <Field name="memberId">
-                      {({ field, form }: any) => (
-                        <FormControl>
-                          <FormLabel>Customer</FormLabel>
+                          <FormLabel>Recipient</FormLabel>
                           <AsyncSelect
                             {...field}
-                            name="memberId"
+                            name="id"
                             options={[]}
-                            placeholder="Search for a user..."
+                            placeholder="Search for a user... (optional)"
                             isMulti={false}
                             closeMenuOnSelect={true}
                             isClearable={true}
@@ -180,11 +205,55 @@ export default function LocationResetUniverseIdModal({
                               getUserSearchResults(inputValue, callback);
                             }}
                             onChange={(value) => {
-                              form.setFieldValue('memberId', value);
+                              form.setFieldValue('id', value);
                             }}
                             value={field.value || []}
                           />
-                          <FormHelperText>This is the customer that you&apos;re serving.</FormHelperText>
+                          <FormHelperText>If left blank, you will be the recipient.</FormHelperText>
+                        </FormControl>
+                      )}
+                    </Field>
+                    <Field name="achievementId">
+                      {({ field, form }: any) => (
+                        <FormControl>
+                          <FormLabel>Achievement</FormLabel>
+                          <Select
+                            {...field}
+                            name="achievement"
+                            options={achievements.map((achievement: Achievement) => {
+                              return {
+                                label: achievement.name,
+                                value: achievement.id
+                              } as Option;
+                            })}
+                            placeholder="Search for an achievement..."
+                            isMulti={false}
+                            closeMenuOnSelect={true}
+                            isClearable={true}
+                            size="md"
+                            noOptionsMessage={() => 'No search results found.'}
+                            onChange={(value) => {
+                              form.setFieldValue('achievementId', value);
+                            }}
+                            value={field.value || []}
+                          />
+                        </FormControl>
+                      )}
+                    </Field>
+                    <Field name="revoke">
+                      {({ field, form }: any) => (
+                        <FormControl>
+                          <FormLabel>Revoke</FormLabel>
+                          <Switch
+                            {...field}
+                            variant={'outline'}
+                            width={'fit-content'}
+                            isChecked={form.values?.revoke}
+                            onChange={(e: any) => {
+                              form.setFieldValue('revoke', e.target.checked);
+                            }}
+                          />
+                          <FormHelperText>Whether or not to revoke the achievement.</FormHelperText>
                         </FormControl>
                       )}
                     </Field>

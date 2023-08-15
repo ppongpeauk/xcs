@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import clientPromise from '@/lib/mongodb';
+import { Achievement, Organization, User } from '@/types';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { username } = req.query as { username: string };
@@ -12,7 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   let user = (await users.findOne(
     { username: username },
     { projection: { email: 0, notifications: 0, alerts: 0, payment: 0 } }
-  )) as any;
+  )) as unknown as User | null;
 
   if (!user) {
     return res.status(404).json({ message: 'User not found.' });
@@ -26,10 +27,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       )
       .toArray();
 
-    user.organizations = userOrgs;
+    user.organizations = userOrgs as unknown as Organization[];
+
+    // get user achievements
+    let achievements = [];
+    for (let achievement of (user.achievements as { id: string; earnedAt: Date }[]) || []) {
+      let achievementData = (await db.collection('achievements').findOne({ id: achievement.id })) as Achievement | null;
+      if (achievementData) {
+        achievementData.description = achievementData.description.replace('{{displayName}}', user.displayName);
+        achievement = { ...achievement, ...achievementData };
+        achievements.push(achievement);
+      }
+    }
+    console.log(achievements);
 
     return res.status(200).json({
-      user: user
+      user: {
+        ...user,
+        achievements
+      }
     });
   }
 

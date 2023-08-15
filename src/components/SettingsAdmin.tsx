@@ -1,41 +1,25 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect } from 'react';
 
 import {
-  Avatar,
   Box,
   Button,
-  Flex,
   FormControl,
-  FormHelperText,
-  FormLabel,
-  HStack,
   Heading,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  Portal,
-  Skeleton,
-  SkeletonCircle,
   Stack,
-  Switch,
-  Text,
-  Textarea,
-  VStack,
   useDisclosure,
   useToast
 } from '@chakra-ui/react';
 
-import { AiOutlineUser } from 'react-icons/ai';
+import { AiFillTrophy, AiOutlineUser } from 'react-icons/ai';
 import { BiReset } from 'react-icons/bi';
-import { IoSave } from 'react-icons/io5';
 
-import { Field, Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
 
 import { useAuthContext } from '@/contexts/AuthContext';
 
 import InvitePlatformModal from '@/components/InvitePlatformModal';
 import LocationResetUniverseIdModal from '@/components/LocationResetUniverseIdModal';
+import AwardAchievementModal from './AwardAchievementModal';
 import ReferralCreditsModal from './ReferralCreditsModal';
 
 export default function SettingsProfile() {
@@ -77,6 +61,12 @@ export default function SettingsProfile() {
     onClose: referralCreditModalOnClose
   } = useDisclosure();
 
+  const {
+    isOpen: achievementModalOpen,
+    onOpen: achievementModalOnOpen,
+    onClose: achievementModalOnClose
+  } = useDisclosure();
+
   return (
     <>
       <InvitePlatformModal
@@ -93,6 +83,10 @@ export default function SettingsProfile() {
         isOpen={referralCreditModalOpen}
         onOpen={referralCreditModalOnOpen}
         onClose={referralCreditModalOnClose}
+      />
+      <AwardAchievementModal
+        isOpen={achievementModalOpen}
+        onClose={achievementModalOnClose}
       />
       {isAuthLoaded && currentUser && (
         <Box w={'fit-content'}>
@@ -136,6 +130,15 @@ export default function SettingsProfile() {
                 onClick={locationUniverseIdResetModalOnOpen}
               >
                 Reset Location Universe
+              </Button>
+            </FormControl>
+            <FormControl>
+              <Button
+                mb={2}
+                leftIcon={<AiFillTrophy />}
+                onClick={achievementModalOnOpen}
+              >
+                Award Achievement
               </Button>
             </FormControl>
           </Stack>

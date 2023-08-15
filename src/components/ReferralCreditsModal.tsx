@@ -1,16 +1,13 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 
 import {
   Button,
-  Checkbox,
   FormControl,
   FormHelperText,
   FormLabel,
   HStack,
-  Input,
   InputGroup,
-  Link,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -23,20 +20,15 @@ import {
   NumberInput,
   NumberInputField,
   NumberInputStepper,
-  Stack,
-  Text,
-  Textarea,
   VStack,
   useClipboard,
   useColorModeValue,
   useToast
 } from '@chakra-ui/react';
 
-import { AsyncSelect, CreatableSelect, Select } from 'chakra-react-select';
+import { AsyncSelect } from 'chakra-react-select';
 import { Field, Form, Formik } from 'formik';
-import NextLink from 'next/link';
 
-import { textToRole } from '@/lib/utils';
 
 import { useAuthContext } from '@/contexts/AuthContext';
 
@@ -165,6 +157,9 @@ export default function ReferralCreditsModal({
             isOpen={isOpen}
             onClose={onModalClose}
             isCentered
+            onCloseComplete={() => {
+              props.resetForm();
+            }}
           >
             <ModalOverlay />
             <Form>

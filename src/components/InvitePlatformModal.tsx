@@ -3,14 +3,12 @@ import { useRef, useState } from 'react';
 
 import {
   Button,
-  Checkbox,
   FormControl,
   FormHelperText,
   FormLabel,
   HStack,
   Input,
   InputGroup,
-  Link,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -23,20 +21,15 @@ import {
   NumberInput,
   NumberInputField,
   NumberInputStepper,
-  Stack,
-  Text,
-  Textarea,
   VStack,
   useClipboard,
   useColorModeValue,
   useToast
 } from '@chakra-ui/react';
 
-import { AsyncSelect, CreatableSelect, Select } from 'chakra-react-select';
+import { AsyncSelect } from 'chakra-react-select';
 import { Field, Form, Formik } from 'formik';
-import NextLink from 'next/link';
 
-import { textToRole } from '@/lib/utils';
 
 import { useAuthContext } from '@/contexts/AuthContext';
 
@@ -188,6 +181,10 @@ export default function InvitePlatformModal({
             isOpen={isOpen}
             onClose={onModalClose}
             isCentered
+            onCloseComplete={() => {
+              props.setFieldValue('code', '');
+              props.setFieldValue('senderId', null);
+            }}
           >
             <ModalOverlay />
             <Form>

@@ -15,10 +15,10 @@ export interface User {
     last?: string;
     privacyLevel: number;
   }; // deprecated
-  displayName?: string;
+  displayName: string;
   username: string;
   bio?: string | null;
-  avatar: string | null;
+  avatar: string;
   sponsorId?: string;
   email: {
     address: string;
@@ -30,8 +30,16 @@ export interface User {
     username?: string | null;
     verified: boolean;
   };
+  discord: {
+    id?: string | number | null;
+    username?: string | null;
+    discriminator?: string | null;
+    verified: boolean;
+    verifiedAt?: Date | string | null;
+  };
   platform: {
     staff: number | boolean;
+    staffTitle?: string | null;
     membership: number;
     invites: number;
   };
@@ -40,6 +48,8 @@ export interface User {
     scans: number;
     organizationInvitations?: number;
   };
+  achievements?: Achievement[];
+  organizations?: Organization[];
 }
 
 export interface Organization {
@@ -310,4 +320,12 @@ export interface RobloxAPIResponsePlace {
   favoritedCount: number;
 
   thumbnail?: string;
+}
+
+export interface Achievement {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  earnedAt: Date;
 }
