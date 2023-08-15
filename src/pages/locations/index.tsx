@@ -6,28 +6,21 @@ import {
   Box,
   Button,
   ButtonGroup,
-  Code,
   Container,
   Flex,
   FormControl,
-  FormLabel,
-  HStack,
   Heading,
   Icon,
   IconButton,
-  Image,
   Input,
-  InputGroup,
   Skeleton,
   Spacer,
   Stack,
   Table,
-  TableCaption,
   TableContainer,
   Tbody,
   Td,
   Text,
-  Tfoot,
   Th,
   Thead,
   Tooltip,
@@ -37,13 +30,11 @@ import {
 } from '@chakra-ui/react';
 
 import { Link } from '@chakra-ui/next-js';
-import { FaBuilding, FaUserAlt } from 'react-icons/fa';
 import { MdOutlineAddCircle } from 'react-icons/md';
 
-import { AsyncSelect, CreatableSelect, Select } from 'chakra-react-select';
+import { Select } from 'chakra-react-select';
 import moment from 'moment';
 import Head from 'next/head';
-import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 
 import { useAuthContext } from '@/contexts/AuthContext';
@@ -57,7 +48,7 @@ import { BsListUl } from 'react-icons/bs';
 
 
 function TableEntry({ key, location, skeleton }: { key: number | string, location?: Location, skeleton?: boolean }) {
-  const toRelativeTime = useMemo(() => (date: string) => {
+  const toRelativeTime = useMemo(() => (date: string | Date) => {
     return moment(new Date(date)).fromNow();
   }, []);
 

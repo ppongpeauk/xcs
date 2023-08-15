@@ -1,9 +1,9 @@
-import { tokenToID } from '@/pages/api/firebase';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { generate as generateString } from 'randomstring';
 
 import { authToken } from '@/lib/auth';
 import clientPromise from '@/lib/mongodb';
+import { Organization } from '@/types';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
@@ -105,6 +105,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       description: '',
       ownerId: uid,
       avatar: 'https://xcs.restrafes.co/images/default-avatar.png',
+
+      accessGroups: {},
       members: {
         [uid]: {
           type: 'user',
@@ -114,14 +116,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           joinedAt: timestamp
         }
       },
-      accessGroups: {},
-      invitations: [],
       logs: [],
       apiKeys: {},
+
       createdAt: timestamp,
       createdBy: uid,
-      updatedAt: timestamp
-    });
+      updatedAt: timestamp,
+
+      verified: false,
+      statistics: {
+        scans: {
+          total: 0,
+          denied: 0,
+          granted: 0
+        }
+      }
+    } as Organization);
 
     await organizations.updateOne(
       { id: id },

@@ -52,12 +52,11 @@ export interface Organization {
   isPersonal: boolean;
 
   members: Record<string, OrganizationMember>;
-  invitations: [];
-  logs: {};
-  apiKeys: {};
+  logs: any[];
+  apiKeys: Record<string, any>;
 
-  createdAt: string;
-  updatedAt: string;
+  createdAt: any;
+  updatedAt: any;
   updatedById?: string;
   updatedBy?: User;
 
