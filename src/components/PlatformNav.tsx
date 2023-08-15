@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 // React
-import { forwardRef, useMemo } from 'react';
+import { Suspense, forwardRef, useMemo } from 'react';
 
 import {
   Avatar,
@@ -71,7 +71,7 @@ function AvatarPopover({ currentUser, onLogoutOpen }: { currentUser?: any; onLog
             transition={'opacity 0.2s ease-out'} _hover={{ opacity: 0.75 }} _active={{ opacity: 0.5 }}
           >
             <Skeleton
-              isLoaded={(currentUser && isAuthLoaded) || (!user)}
+              isLoaded={(currentUser) || (!user)}
               w={'auto'}
               h={'auto'}
               borderRadius={'full'}
@@ -99,7 +99,7 @@ function AvatarPopover({ currentUser, onLogoutOpen }: { currentUser?: any; onLog
           <PopoverBody>
             <Stack>
               {
-                user && <>
+                (!isAuthLoaded || currentUser) && <>
                   <Flex
                     as={Button}
                     onClick={() => {
@@ -177,7 +177,7 @@ function AvatarPopover({ currentUser, onLogoutOpen }: { currentUser?: any; onLog
                 </Button>
               )}
               {
-                user ? <>
+                (!isAuthLoaded || currentUser) ? <>
                   <Button
                     variant={'outline'}
                     size={'md'}
@@ -311,7 +311,7 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
   const { push } = useRouter();
 
   return (
-    <>
+    <Suspense fallback={<></>}>
       <DeleteDialog
         isOpen={isLogoutOpen}
         onClose={onLogoutClose}
@@ -350,7 +350,7 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
             as={NextLink}
             width={'full'}
             h={'full'}
-            href={user ? '/home' : '/'}
+            href={(!isAuthLoaded || currentUser) ? '/home' : '/'}
             align={'center'}
             justify={'center'}
             transition={'filter 0.2s ease'}
@@ -391,7 +391,7 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
             spacing={1}
           >
             {
-              user ? <>
+              (!isAuthLoaded || currentUser) ? <>
                 <NavLink
                   href={'/home'}
                   pathname={pathname}
@@ -449,7 +449,7 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
           spacing={1}
           mt={'auto'}
         >
-          {user && (
+          {(!isAuthLoaded || currentUser) && (
             <>
               <NavLink
                 href={'/settings'}
@@ -468,7 +468,7 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
               </NavLink>
             </>
           )}
-          {user ? (
+          {(!isAuthLoaded || currentUser) ? (
             <NavLink
               // href={"/auth/logout"}
               onClick={onLogoutOpen}
@@ -589,12 +589,12 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
                   <MenuItem
                     as={MenuLink}
                     icon={<AiFillHome />}
-                    href={user ? "/home" : "/"}
+                    href={(!isAuthLoaded || currentUser) ? "/home" : "/"}
                   >
                     Home
                   </MenuItem>
                   {
-                    user && <>
+                    (!isAuthLoaded || currentUser) && <>
                       <MenuItem
                         as={MenuLink}
                         icon={<BiSolidTime />}
@@ -642,7 +642,7 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
                       Staff Settings
                     </MenuItem>
                   )}
-                  {user && <>
+                  {(!isAuthLoaded || currentUser) && <>
                     <MenuItem
                       as={MenuLink}
                       icon={<AiFillInfoCircle />}
@@ -653,7 +653,7 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
                   </>}
                   <ThemeButton menu={true} />
                   <MenuDivider />
-                  {currentUser ? (
+                  {(!isAuthLoaded || currentUser) ? (
                     <MenuItem
                       as={MenuLink}
                       icon={<BiSolidExit />}
@@ -676,6 +676,6 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
           </HStack>
         </Flex>
       </Flex>
-    </>
+    </Suspense>
   );
 }

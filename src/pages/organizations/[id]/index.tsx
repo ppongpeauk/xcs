@@ -40,18 +40,19 @@ export async function getServerSideProps({ params, req, res }: any) {
   const organization: Organization = await data.json();
   return { props: organization };
 }
-export default function OrganizationPublic({ organization: serverOrganization }: { organization: Organization | null }) {
+export default function OrganizationPublic({ organization }: { organization: Organization | null }) {
   const { query, push } = useRouter();
   const toast = useToast();
   const { user } = useAuthContext();
-  const [organization, setOrganization] = useState<Organization>();
+  const [permissions, setPermissions] = useState<any>({});
 
-  let refreshData = useCallback(async () => {
-    console.log('refreshing data');
-    fetch(`/api/v1/organizations/${query.id}/public`, {
+  let refreshPermissions = useCallback(async () => {
+    const token = await user?.getIdToken().then((token: string) => token);
+    await fetch(`/api/v1/organizations/${query.id}/access`, {
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
       }
     })
       .then((res) => {
@@ -70,7 +71,7 @@ export default function OrganizationPublic({ organization: serverOrganization }:
         }
       })
       .then((data) => {
-        setOrganization(data.organization);
+        setPermissions(data);
       })
       .catch((err) => {
         toast({
@@ -81,20 +82,21 @@ export default function OrganizationPublic({ organization: serverOrganization }:
           isClosable: true
         });
       });
-  }, [query, toast]);
+  }, [query, toast, user]);
 
   useEffect(() => {
     if (!query.id) return;
-    refreshData();
-  }, [query, refreshData]);
+    if (!user) return;
+    refreshPermissions();
+  }, [query, refreshPermissions, user]);
 
   return (
     <>
       <Head>
-        <title>Restrafes XCS – {serverOrganization?.name}</title>
+        <title>Restrafes XCS – {organization?.name}</title>
         <meta
           property="og:title"
-          content={`Restrafes XCS – ${serverOrganization?.name}`}
+          content={`Restrafes XCS – ${organization?.name}`}
         />
         <meta
           property="og:site_name"
@@ -106,7 +108,7 @@ export default function OrganizationPublic({ organization: serverOrganization }:
         />
         <meta
           property="og:description"
-          content={`${serverOrganization?.name} is one of many organizations that use Restrafes XCS to manage their access points.`}
+          content={`${organization?.name} is one of many organizations that use Restrafes XCS to manage their access points.`}
         />
         <meta
           property="og:type"
@@ -226,7 +228,7 @@ export default function OrganizationPublic({ organization: serverOrganization }:
           </Flex>
         </Flex>
         {
-          organization?.canEdit &&
+          permissions?.edit &&
           <>
             <Flex align={'center'} w={'fit-content'}>
               <Skeleton as={Flex} isLoaded={!!organization} py={1} gap={4} flexDir={{ base: 'column', md: 'row' }}>
@@ -265,7 +267,7 @@ export default function OrganizationPublic({ organization: serverOrganization }:
             </Text>
           </Flex>
         </Skeleton>
-      </Container >
+      </Container>
     </>
   )
 }
