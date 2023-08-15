@@ -1,12 +1,14 @@
 import Footer from '@/components/Footer';
 import Nav from '@/components/Nav';
-import { Box, Container, Flex, Heading, Link, Text, useColorModeValue } from '@chakra-ui/react';
-
-import { forwardRef } from 'react';
+import { Box, Container, Heading, Link, Text } from '@chakra-ui/react';
+import Head from 'next/head';
 
 export default function Terms() {
   return (
     <>
+      <Head>
+        <title>Restrafes XCS – Privacy Policy</title>
+      </Head>
       <Nav />
       <Container
         maxW={'container.md'}
@@ -21,7 +23,7 @@ export default function Terms() {
         </Heading>
         <Box>
           <Text>
-            Restrafes XCS (&quot;we&quot; or &quot;us&quot;) respects the privacy of its users (&quot;you&quot;). This
+            RESTRAFES & CO (&quot;we&quot; or &quot;us&quot;) respects the privacy of its users (&quot;you&quot;). This
             Privacy Policy outlines how we collect, use, disclose, and protect your personal information.
           </Text>
 
@@ -119,7 +121,7 @@ export default function Terms() {
 
           <Text>
             At any time, you have the right to request access to the personal information we collect or delete your
-            account by emailing <Link href="mailto:xcs@restrafes.co">xcs@restrafes.co</Link>. Event logs are retained for up to 6 months before deletion.
+            account by emailing <Link href="mailto:xcs@restrafes.co">xcs@restrafes.co</Link> with the subject line, &quot;Account Deletion Request.&quot;. Event logs are retained for up to 6 months before deletion.
           </Text>
 
           <Heading

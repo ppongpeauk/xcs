@@ -1,12 +1,14 @@
 import Footer from '@/components/Footer';
 import Nav from '@/components/Nav';
-import { Box, Container, Flex, Heading, Link, ListItem, OrderedList, Text, useColorModeValue } from '@chakra-ui/react';
-
-import { forwardRef } from 'react';
+import { Box, Container, Heading, Link, ListItem, OrderedList, Text } from '@chakra-ui/react';
+import Head from 'next/head';
 
 export default function Terms() {
   return (
     <>
+      <Head>
+        <title>Restrafes XCS – Terms of Use</title>
+      </Head>
       <Nav />
       <Container
         maxW={'container.md'}
