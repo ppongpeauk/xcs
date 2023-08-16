@@ -41,9 +41,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         { id: id || uid },
         {
           $unset: {
-            achievements: {
-              [achievementId]: ''
-            }
+            [`achievements.${achievementId}`]: ''
           }
         }
       );
@@ -60,11 +58,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         { id: id || uid },
         {
           $set: {
-            achievements: {
-              [achievementId]: {
-                id: achievementId,
-                earnedAt: new Date()
-              }
+            [`achievements.${achievementId}`]: {
+              id: achievementId,
+              earnedAt: new Date()
             }
           }
         }
