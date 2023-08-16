@@ -236,6 +236,7 @@ export default function AwardAchievementModal({
                               form.setFieldValue('achievementId', value);
                             }}
                             value={field.value || []}
+                            selectedOptionStyle='check'
                           />
                         </FormControl>
                       )}
