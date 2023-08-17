@@ -94,8 +94,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   const allowedGroups = accessPoint.config.alwaysAllowed.groups;
-  const allowedUsers = accessPoint.config.alwaysAllowed.users;
-  let allowedCards = accessPoint.config.alwaysAllowed.cards || [];
+  const allowedMembers = accessPoint.config.alwaysAllowed.members || [];
 
   // get all access groups that are open to everyone
   const openAccessGroups = sortByPriority(organization, Object.keys(organization.accessGroups)).filter(
@@ -118,6 +117,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           openAccessGroups
         });
       }
+    }
+  }
+
+  // get all organization members that are allowed
+  for (const memberId of allowedMembers) {
+    if (!((memberId as string) in allowedOrganizationMembers)) {
+      const member = organization.members[memberId];
+      allowedOrganizationMembers[memberId] = member.accessGroups;
+
+      // add open access groups to the user's allowed groups
+      allowedOrganizationMembers[memberId] = mergician(mergicianOptions)(allowedOrganizationMembers[memberId], {
+        openAccessGroups
+      });
     }
   }
 
@@ -148,7 +160,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   );
   for (const member of robloxMemberGroups as any) {
     for (const accessGroup of sortByPriority(organization, member.accessGroups)) {
-      if (allowedGroups.includes(accessGroup)) {
+      if (allowedGroups.includes(accessGroup) || allowedMembers.includes(member.id)) {
         for (const roleset of member.groupRoles) {
           allowedGroupRoles[roleset] = member;
         }

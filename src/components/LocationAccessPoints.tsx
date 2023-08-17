@@ -5,20 +5,11 @@ import {
   Badge,
   Box,
   Button,
-  Code,
-  Container,
   Flex,
   FormControl,
-  FormLabel,
-  Grid,
-  GridItem,
   HStack,
-  Heading,
   Input,
-  SimpleGrid,
   Skeleton,
-  SkeletonText,
-  Spacer,
   Stack,
   Text,
   useColorModeValue,
@@ -26,12 +17,9 @@ import {
   useToast
 } from '@chakra-ui/react';
 
-import { AiFillWarning } from 'react-icons/ai';
-import { BiSolidLock, BiSolidLockOpen } from 'react-icons/bi';
 import { MdOutlineAddCircle } from 'react-icons/md';
 
-import { CreatableSelect, Select } from 'chakra-react-select';
-import moment from 'moment';
+import { Select } from 'chakra-react-select';
 import NextLink from 'next/link';
 
 import CreateAccessPointDialog from '@/components/CreateAccessPointDialog';
@@ -107,6 +95,7 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
         onClose={onCreateAccessPointModalClose}
         location={location}
         onCreate={refreshData}
+        accessPoints={accessPoints?.accessPoints || []}
       />
       <Text
         as={'h1'}

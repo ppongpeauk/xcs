@@ -62,6 +62,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }) as string;
     }
 
+    console.log(apiKey);
+
     // Modify file content before sending
     buffer = Buffer.from(
       buffer

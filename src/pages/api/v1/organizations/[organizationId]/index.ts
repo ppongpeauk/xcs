@@ -119,6 +119,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         members[key] = {
           type: 'user',
           id: key,
+          formattedId: key,
           displayName: member?.displayName,
           username: member?.username,
           avatar: member?.avatar,

@@ -64,6 +64,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             [`members.${uid}`]: {
               type: 'user',
               id: uid,
+              formattedId: uid,
               role: invitation.role || 1,
               accessGroups: mergician(mergicianOptions)(robloxMember.accessGroups || [], invitation.accessGroups || []),
               scanData: robloxMember.scanData || [],
@@ -86,6 +87,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             [`members.${uid}`]: {
               type: 'user',
               id: uid,
+              formattedId: uid,
               role: invitation.role || 1,
               accessGroups: invitation.accessGroups || [],
               scanData: {},

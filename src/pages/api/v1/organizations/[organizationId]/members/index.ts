@@ -1,4 +1,3 @@
-import { tokenToID } from '@/pages/api/firebase';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { generate as generateString } from 'randomstring';
 
@@ -219,10 +218,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         { id: organizationId },
         {
           $set: {
-            [`members.RG-${memberId}`]: {
+            [`members.${memberId}`]: {
               type: 'roblox-group',
-              id: robloxGroupId,
-              formattedId: `RG-${memberId}`,
+              id: robloxGroupId.toString(),
+              formattedId: `${memberId}`,
               name: name?.trim() || robloxGroup.name,
               role: 0,
               scanData: {},
@@ -265,7 +264,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             [`members.${memberId}`]: {
               type: 'card',
               avatar: `${process.env.NEXT_PUBLIC_ROOT_URL}/images/default-avatar-card.png`,
-              id: robloxGroupId,
+              id: memberId,
               formattedId: `${memberId}`,
               name: name?.trim(),
               role: 0,
@@ -285,7 +284,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         message: `Successfully added ${name} to the organization.`
       });
     }
+  } else if (req.method === 'GET') {
+    let members = Object.values(organization.members);
+    return res.status(200).json(members);
   }
 
-  return res.status(500).json({ message: 'An unknown errror occurred.' });
+  return res.status(400).json({ message: 'Method not allowed.' });
 }

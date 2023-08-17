@@ -1,4 +1,3 @@
-import { tokenToID } from '@/pages/api/firebase';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import clientPromise from '@/lib/mongodb';
@@ -42,7 +41,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(401).json({ success: false, message: 'An invalid API key was provided.' });
   }
 
-  if (!universeId) return res.status(400).json({ success: false, message: 'Server received an empty universe ID.' });
+  if (!universeId) return res.status(400).json({ success: false, message: 'Universe ID mismatch.' });
 
   const locationUniverseId = location.roblox.universe?.id?.toString();
   if (!locationUniverseId && universeId) {

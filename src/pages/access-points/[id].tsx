@@ -43,14 +43,13 @@ import { ChevronRightIcon } from '@chakra-ui/icons';
 import { IoIosRemoveCircle } from 'react-icons/io';
 import { IoClipboard, IoSave } from 'react-icons/io5';
 
-import { AccessGroup, Organization } from '@/types';
+import { AccessGroup, Organization, OrganizationMember } from '@/types';
 import Editor from '@monaco-editor/react';
 import { CreatableSelect, Select } from 'chakra-react-select';
 import { Field, Form, Formik } from 'formik';
 import Head from 'next/head';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
-
 
 import { useAuthContext } from '@/contexts/AuthContext';
 
@@ -65,6 +64,8 @@ export default function PlatformAccessPoint() {
   const [accessPoint, setAccessPoint] = useState<any>(null);
   const themeBorderColor = useColorModeValue('gray.200', 'gray.700');
   const [accessGroupOptions, setAccessGroupOptions] = useState<any>([]);
+  const [organization, setOrganization] = useState<Organization | null>(null);
+  const [memberChoices, setMemberChoices] = useState<any[]>([]);
   const [tagsOptions, setTagsOptions] = useState<any>([]); // [{ value: 'tag', label: 'tag' }
   const toast = useToast();
   const {
@@ -76,9 +77,9 @@ export default function PlatformAccessPoint() {
 
   const { isOpen: isDeleteDialogOpen, onOpen: onDeleteDialogOpen, onClose: onDeleteDialogClose } = useDisclosure();
 
-  const onDelete = () => {
-    user.getIdToken().then((idToken: any) => {
-      fetch(`/api/v1/access-points/${query.id}`, {
+  const onDelete = useCallback(async () => {
+    await user.getIdToken().then(async (idToken: any) => {
+      await fetch(`/api/v1/access-points/${query.id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${idToken}` }
       })
@@ -113,12 +114,83 @@ export default function PlatformAccessPoint() {
           onDeleteDialogClose();
         });
     });
-  };
+  }, [accessPoint?.location?.id, onDeleteDialogClose, push, query.id, toast, user]);
 
-  let refreshData = () => {
+  useEffect(() => {
+    if (!accessPoint) return;
+    user.getIdToken().then(async (idToken: any) => {
+      await fetch(`/api/v1/organizations/${accessPoint.organizationId}`, {
+        method: 'GET',
+        headers: { Authorization: `Bearer ${idToken}` }
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setOrganization(data.organization);
+
+          let options = [
+            {
+              label: 'Users',
+              options: [],
+              type: 'user'
+            },
+            {
+              label: 'Roblox Users',
+              options: [],
+              type: 'roblox'
+            },
+            {
+              label: 'Roblox Groups',
+              options: [],
+              type: 'roblox-group'
+            },
+            {
+              label: 'Card Numbers',
+              options: [],
+              type: 'card'
+            }
+          ];
+          let optionsMap = {
+            user: options[0],
+            roblox: options[1],
+            'roblox-group': options[2],
+            card: options[3]
+          } as any;
+
+          Object.values(data.organization.members || {}).map((member: any) => {
+            let label;
+            switch (member.type) {
+              case 'user':
+                label = `${member.displayName} (${member.username})`;
+                break;
+              case 'roblox':
+                label = `${member.displayName} (${member.username})`;
+                break;
+              case 'roblox-group':
+                label = member.groupName || member.displayName || member.name;
+                break;
+              case 'card':
+                label = member.name;
+                break;
+              default:
+                label = member.id;
+                break;
+            };
+            optionsMap[(member.type as string) || 'user'].options.push({
+              label,
+              value: member.formattedId || member.id
+            });
+          });
+
+          setMemberChoices(options);
+          console.log(data.organization);
+        });
+    });
+  }, [accessPoint, user]);
+
+  let refreshData = useCallback(async () => {
     setAccessPoint(null);
-    user.getIdToken().then((idToken: any) => {
-      fetch(`/api/v1/access-points/${query.id}`, {
+    await user.getIdToken().then(async (idToken: any) => {
+      await fetch(`/api/v1/access-points/${query.id}`, {
         method: 'GET',
         headers: { Authorization: `Bearer ${idToken}` }
       })
@@ -154,14 +226,14 @@ export default function PlatformAccessPoint() {
           });
         });
     });
-  };
+  }, [clipboardSetValue, clipboardValue, push, query.id, toast, user]);
 
   // Fetch location data
   useEffect(() => {
     if (!user) return;
     if (!query.id) return;
     refreshData();
-  }, [query.id, user]);
+  }, [query.id, user, refreshData]);
 
   const getAccessGroupType = useCallback((ag: AccessGroup) => {
     if (ag.type === 'organization') {
@@ -209,7 +281,6 @@ export default function PlatformAccessPoint() {
             ]
           });
         }
-
       });
 
       // sort the groups so organizations are at the bottom
@@ -222,7 +293,7 @@ export default function PlatformAccessPoint() {
       setAccessGroupOptions(groups);
       return groups;
     },
-    [accessPoint?.organization]
+    [accessPoint?.locationId, getAccessGroupType]
   );
 
   useEffect(() => {
@@ -233,6 +304,7 @@ export default function PlatformAccessPoint() {
 
   useEffect(() => {
     if (!accessPoint) return;
+    if (!user) return;
 
     user.getIdToken().then(async (idToken: any) => {
       await fetch(`/api/v1/locations/${accessPoint.locationId}/access-points`, {
@@ -271,7 +343,7 @@ export default function PlatformAccessPoint() {
           });
         });
     });
-  }, [accessPoint]);
+  }, [accessPoint, toast, user]);
 
   return (
     <>
@@ -309,7 +381,7 @@ export default function PlatformAccessPoint() {
         maxW={'container.md'}
         p={8}
       >
-        <Skeleton isLoaded={accessPoint}>
+        <Skeleton isLoaded={accessPoint && organization}>
           <Breadcrumb
             // display={{ base: 'none', md: 'flex' }}
             spacing="8px"
@@ -354,7 +426,7 @@ export default function PlatformAccessPoint() {
             </BreadcrumbItem>
           </Breadcrumb>
         </Skeleton>
-        <Skeleton isLoaded={accessPoint}>
+        <Skeleton isLoaded={accessPoint && organization}>
           <Text
             as={'h1'}
             fontSize={'4xl'}
@@ -365,7 +437,7 @@ export default function PlatformAccessPoint() {
             {accessPoint?.name || 'Loading...'}
           </Text>
         </Skeleton>
-        <Skeleton isLoaded={accessPoint}>
+        <Skeleton isLoaded={accessPoint && organization}>
           <Text
             fontSize={'lg'}
             color={'gray.500'}
@@ -393,7 +465,40 @@ export default function PlatformAccessPoint() {
                   (oag: any) => oag.id === ag
                 )?.name,
                 value: ag
-              })),
+              })) as {
+                label: string;
+                value: any;
+              }[],
+              members: (accessPoint?.config?.alwaysAllowed?.members || []).map((memberId: any) => {
+                let label;
+                let member = Object.values(organization?.members || {}).find(
+                  (m: any) => m.formattedId === memberId
+                ) as OrganizationMember;
+                switch (member?.type) {
+                  case 'user':
+                    label = `${member.displayName} (${member.username})`;
+                    break;
+                  case 'roblox':
+                    label = `${member.displayName} (${member.username})`;
+                    break;
+                  case 'roblox-group':
+                    label = member.groupName || member.displayName || member.name;
+                    break;
+                  case 'card':
+                    label = member.name;
+                    break;
+                  default:
+                    label = memberId;
+                    break;
+                };
+                return {
+                  label,
+                  value: memberId
+                };
+              }) as {
+                label: string;
+                value: any;
+              }[],
               alwaysAllowedUsers: JSON.stringify(accessPoint?.config?.alwaysAllowed?.users),
               scanDataDisarmed: JSON.stringify(accessPoint?.config?.scanData?.disarmed || {}, null, 3),
               scanDataReady: JSON.stringify(accessPoint?.config?.scanData?.ready || {}, null, 3),
@@ -421,6 +526,7 @@ export default function PlatformAccessPoint() {
 
                       alwaysAllowed: {
                         // users: JSON.parse(values.alwaysAllowedUsers),
+                        members: values.members.map((m: any) => m.value),
                         groups: values?.accessGroups?.map((ag: any) => ag?.value)
                       },
 
@@ -481,14 +587,17 @@ export default function PlatformAccessPoint() {
                 >
                   General
                 </Heading>
-                <Flex direction={'column'} gap={2}>
+                <Flex
+                  direction={'column'}
+                  gap={2}
+                >
                   <Field
                     name="name"
                     w={'min-content'}
                   >
                     {({ field, form }: any) => (
                       <FormControl w={'fit-content'}>
-                        <Skeleton isLoaded={accessPoint}>
+                        <Skeleton isLoaded={accessPoint && organization}>
                           <FormLabel>Name</FormLabel>
                           <Input
                             {...field}
@@ -503,7 +612,7 @@ export default function PlatformAccessPoint() {
                   <Field name="description">
                     {({ field, form }: any) => (
                       <FormControl w={{ base: 'full', md: '320px' }}>
-                        <Skeleton isLoaded={accessPoint}>
+                        <Skeleton isLoaded={accessPoint && organization}>
                           <FormLabel>Description</FormLabel>
                           <Textarea
                             {...field}
@@ -519,7 +628,7 @@ export default function PlatformAccessPoint() {
                   <Field name="tags">
                     {({ field, form }: any) => (
                       <FormControl w={{ base: 'full', md: '320px' }}>
-                        <Skeleton isLoaded={accessPoint}>
+                        <Skeleton isLoaded={accessPoint && organization}>
                           <FormLabel>Tags</FormLabel>
                           <CreatableSelect
                             options={tagsOptions}
@@ -542,8 +651,8 @@ export default function PlatformAccessPoint() {
                             selectedOptionStyle={'check'}
                           />
                           <FormHelperText>
-                            Tags are used to organize access points, and can be used to filter
-                            access points in the access point list.
+                            Tags are used to organize access points, and can be used to filter access points in the
+                            access point list.
                           </FormHelperText>
                         </Skeleton>
                       </FormControl>
@@ -570,7 +679,10 @@ export default function PlatformAccessPoint() {
                   </TabList>
                   <TabPanels>
                     <TabPanel>
-                      <Flex direction={'column'} gap={2}>
+                      <Flex
+                        direction={'column'}
+                        gap={2}
+                      >
                         <Stack
                           direction={'row'}
                           spacing={2}
@@ -579,7 +691,7 @@ export default function PlatformAccessPoint() {
                           <Field name="active">
                             {({ field, form }: any) => (
                               <FormControl>
-                                <Skeleton isLoaded={accessPoint}>
+                                <Skeleton isLoaded={accessPoint && organization}>
                                   <FormLabel>Active</FormLabel>
                                   <InputGroup>
                                     <Switch
@@ -598,7 +710,7 @@ export default function PlatformAccessPoint() {
                           <Field name="armed">
                             {({ field, form }: any) => (
                               <FormControl>
-                                <Skeleton isLoaded={accessPoint}>
+                                <Skeleton isLoaded={accessPoint && organization}>
                                   <FormLabel>Armed</FormLabel>
                                   <InputGroup>
                                     <Switch
@@ -618,7 +730,7 @@ export default function PlatformAccessPoint() {
                         <Field name="unlockTime">
                           {({ field, form }: any) => (
                             <FormControl w={'fit-content'}>
-                              <Skeleton isLoaded={accessPoint}>
+                              <Skeleton isLoaded={accessPoint && organization}>
                                 <FormLabel>Unlock Time</FormLabel>
                                 <InputGroup mb={2}>
                                   <NumberInput
@@ -650,16 +762,45 @@ export default function PlatformAccessPoint() {
                     </TabPanel>
                     <TabPanel>
                       <Stack
-                        direction={{ base: 'column', md: 'row' }}
+                        direction={{ base: 'column', md: 'column' }}
                         spacing={2}
                       >
+                        <Field name="members">
+                          {({ field, form }: any) => (
+                            <FormControl
+                              w={{ base: 'full', md: '320px' }}
+                              maxW={'75%'}
+                            >
+                              <Skeleton isLoaded={accessPoint && organization}>
+                                <FormLabel>Members</FormLabel>
+                                <Select
+                                  {...field}
+                                  name="members"
+                                  placeholder="Select a member..."
+                                  options={memberChoices}
+                                  onChange={(value) => {
+                                    form.setFieldValue('members', value);
+                                  }}
+                                  value={field?.value}
+                                  isMulti
+                                  closeMenuOnSelect={false}
+                                  hideSelectedOptions={false}
+                                  selectedOptionStyle={'check'}
+                                />
+                                <FormHelperText>
+                                  Choose which members will be allowed to access this access point.
+                                </FormHelperText>
+                              </Skeleton>
+                            </FormControl>
+                          )}
+                        </Field>
                         <Field name="accessGroups">
                           {({ field, form }: any) => (
                             <FormControl
                               w={{ base: 'full', md: '320px' }}
                               maxW={'75%'}
                             >
-                              <Skeleton isLoaded={accessPoint}>
+                              <Skeleton isLoaded={accessPoint && organization}>
                                 <FormLabel>Access Groups</FormLabel>
                                 <Select
                                   {...field}
@@ -692,7 +833,7 @@ export default function PlatformAccessPoint() {
                         <Field name="scanDataDisarmed">
                           {({ field, form }: any) => (
                             <FormControl>
-                              <Skeleton isLoaded={accessPoint}>
+                              <Skeleton isLoaded={accessPoint && organization}>
                                 <FormLabel>Disarmed</FormLabel>
                                 <Box
                                   border={'1px solid'}
@@ -729,7 +870,7 @@ export default function PlatformAccessPoint() {
                         <Field name="scanDataReady">
                           {({ field, form }: any) => (
                             <FormControl>
-                              <Skeleton isLoaded={accessPoint}>
+                              <Skeleton isLoaded={accessPoint && organization}>
                                 <FormLabel>Ready</FormLabel>
                                 <Box
                                   border={'1px solid'}
@@ -772,7 +913,7 @@ export default function PlatformAccessPoint() {
                       >
                         {({ field, form }: any) => (
                           <FormControl w={'full'}>
-                            <Skeleton isLoaded={accessPoint}>
+                            <Skeleton isLoaded={accessPoint && organization}>
                               <FormLabel>Webhook URL</FormLabel>
                               <InputGroup mb={2}>
                                 <Input
@@ -804,7 +945,7 @@ export default function PlatformAccessPoint() {
                         <Field name="webhookEventGranted">
                           {({ field, form }: any) => (
                             <FormControl>
-                              <Skeleton isLoaded={accessPoint}>
+                              <Skeleton isLoaded={accessPoint && organization}>
                                 <FormLabel>Granted</FormLabel>
                                 <InputGroup>
                                   <Switch
@@ -821,7 +962,7 @@ export default function PlatformAccessPoint() {
                         <Field name="webhookEventDenied">
                           {({ field, form }: any) => (
                             <FormControl>
-                              <Skeleton isLoaded={accessPoint}>
+                              <Skeleton isLoaded={accessPoint && organization}>
                                 <FormLabel>Denied</FormLabel>
                                 <InputGroup>
                                   <Switch
@@ -884,7 +1025,7 @@ export default function PlatformAccessPoint() {
             )}
           </Formik>
         </Box>
-      </Box>
+      </Box >
     </>
   );
 }

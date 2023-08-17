@@ -1,7 +1,10 @@
-import { Location, OrganizationMember } from '@/types';
+import { AccessPoint, Location, Organization, OrganizationMember, User } from '@/types';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import clientPromise from '@/lib/mongodb';
+
+// @ts-ignore
+const mergicianOptions = { appendArrays: true, dedupArrays: true };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   // reject non-GET requests
@@ -14,7 +17,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const { data } = req.query;
 
   if (!data) {
-    return res.status(400).json({ error: 'Missing data' });
+    return res.status(400).json({ error: 'Missing data.' });
   }
 
   console.log(`[AXESYS] /api/v1/axesys/syncdoorspremium/: ${data}`);
@@ -37,18 +40,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     { projection: { id: 1, organizationId: 1 } }
   )) as Location | null;
 
-  console.log(location);
   if (!location) {
-    return res.status(404).json({ error: 'Location not found' });
+    return res.status(404).json({ error: 'Location not found.' });
   }
 
   // check if the API key is valid
-  let organization = await organizations.findOne(
+  let organization = (await organizations.findOne(
     { id: location.organizationId, [`apiKeys.${apiKey}`]: { $exists: true } },
-    { projection: { id: 1 } }
-  );
+    { projection: { id: 1, members: 1 } }
+  )) as unknown as Organization;
   if (!organization) {
-    return res.status(401).json({ error: 'Invalid API key' });
+    return res.status(401).json({ error: 'Invalid API key.' });
   }
 
   // create legacy response
@@ -56,8 +58,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   // get all access points
   let accessPointsData = await accessPoints.find({ locationId: location.id }).toArray();
 
+  // global legacy response data
   let legacyResponse = {} as any;
-  for (let accessPoint of accessPointsData) {
+
+  interface GroupData {
+    groupId: number;
+    roles: {
+      id: number;
+      name: string;
+      rank: number;
+      memberCount: number;
+    }[];
+    errors?: string[];
+  }
+  let cachedGroups = {} as Record<string, GroupData>;
+  for (const accessPoint of accessPointsData as unknown as AccessPoint[]) {
+    console.log(`[AXESYS] Fetching access point ${accessPoint.id}...`);
     legacyResponse[accessPoint.id] = {
       DoorSettings: {
         DoorName: accessPoint.name,
@@ -65,16 +81,58 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         Locked: accessPoint.config.armed ? '1' : '0',
         Timer: accessPoint.config.unlockTime || 8
       },
-      AuthorizedUsers: {},
-      AuthorizedGroups: {}
+      AuthorizedUsers: {} as Record<string, string>,
+      AuthorizedGroups: [] as Record<string, string>[]
     };
-    for (let user of accessPoint.config.alwaysAllowed.users || []) {
-      legacyResponse[accessPoint.id].AuthorizedUsers[user.robloxId] = user.robloxUsername;
-    }
-    // TODO: add group support
-  }
 
-  console.log(legacyResponse);
+    // get all allowed members from access groups
+    await Promise.all(
+      Object.values(organization.members).map(async (member: OrganizationMember) => {
+        var intersections = await member.accessGroups.filter(
+          (e) => accessPoint.config.alwaysAllowed.groups.indexOf(e) !== -1
+        );
+        // member is allowed if intersections is not empty
+        if (intersections.length > 0) {
+          // if member-type is roblox
+          if (member.type === 'roblox') {
+            legacyResponse[accessPoint.id].AuthorizedUsers[member.id] = member.id;
+          } else if (member.type === 'roblox-group') {
+            const groupId = member.id;
+
+            if (!cachedGroups[groupId]) {
+              const data = (await fetch(
+                `${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/roblox/groups/v1/groups/${groupId}/roles`
+              ).then((res) => res.json())) as GroupData;
+              if (!data.errors) {
+                cachedGroups[groupId] = data;
+              }
+            }
+
+            const memberRoles = member.groupRoles || [];
+            const roleData = cachedGroups[groupId];
+            for (const roleId of memberRoles as number[]) {
+              // get rank id from role id
+              const role = roleData.roles.find((role: any) => role.id === parseInt(roleId.toString()));
+              if (role) {
+                await legacyResponse[accessPoint.id].AuthorizedGroups.push({
+                  [groupId.toString()]: `1-${role.id.toString()}`
+                });
+              }
+            }
+          } else {
+            // get user
+            const user = (await db
+              .collection('users')
+              .findOne({ id: member.id }, { projection: { id: 1, roblox: 1 } })) as unknown as User;
+            if (user && user.roblox.verified && user.roblox.id) {
+              console.log(`[AXESYS] Adding user ${user.roblox.id}...`);
+              legacyResponse[accessPoint.id].AuthorizedUsers[user.roblox.id] = user.roblox.id;
+            }
+          }
+        }
+      })
+    );
+  }
 
   return res.status(200).json({
     response: 'ok',

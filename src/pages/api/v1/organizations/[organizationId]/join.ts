@@ -97,7 +97,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               ...robloxMember,
               type: 'user',
               id: uid,
-              formattedId: undefined,
+              formattedId: uid,
               role: inviteCodeData.role || 1,
               joinedAt: timestamp,
               updatedAt: timestamp
@@ -117,6 +117,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             [`members.${uid}`]: {
               type: 'user',
               id: uid,
+              formattedId: uid,
               role: inviteCodeData.role || 1,
               accessGroups: [],
               joinedAt: timestamp,

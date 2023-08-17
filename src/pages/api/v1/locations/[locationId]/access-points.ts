@@ -3,6 +3,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { generate as generateString } from 'randomstring';
 
 import clientPromise from '@/lib/mongodb';
+import { AccessPoint } from '@/types';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   // Location ID
@@ -73,9 +74,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
     } while (await accessPoints.findOne({ id: id }));
 
-    let { name, description } = req.body as {
+    let { name, description, templateId } = req.body as {
       name: string;
       description: string;
+      templateId: AccessPoint;
     };
 
     // Character limits
@@ -95,6 +97,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     }
 
+    const template = templateId ? await db.collection('accessPoints').findOne({ id: templateId }) : null;
+
     const accessPoint = {
       id: id,
       name: name,
@@ -107,39 +111,41 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       updatedAt: timestamp,
       createdBy: uid,
 
-      config: {
-        active: true,
-        armed: true,
-        unlockTime: 8,
+      config:
+        template?.config ||
+        ({
+          active: true,
+          armed: true,
+          unlockTime: 8,
 
-        schedules: [],
-        temporaryAccess: [],
+          schedules: [],
+          temporaryAccess: [],
 
-        alwaysAllowed: {
-          groups: [],
-          users: []
-        },
+          alwaysAllowed: {
+            groups: [],
+            members: []
+          },
 
-        webhook: {
-          enabled: true,
-          url: '',
-          eventDenied: false,
-          eventGranted: false
-        },
+          webhook: {
+            enabled: true,
+            url: '',
+            eventDenied: false,
+            eventGranted: false
+          },
 
-        scanData: {
-          disarmed: {},
-          ready: {}
-        },
+          scanData: {
+            disarmed: {},
+            ready: {}
+          },
 
-        colors: {
-          idle: '#ff0000',
-          scanning: '#00ff00',
+          colors: {
+            idle: '#ff0000',
+            scanning: '#00ff00',
 
-          granted: '#0000ff',
-          denied: '#ffff00'
-        }
-      }
+            granted: '#0000ff',
+            denied: '#ffff00'
+          }
+        } as unknown as AccessPoint)
 
       // configuration: {
       //   active: true,

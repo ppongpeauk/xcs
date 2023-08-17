@@ -196,7 +196,8 @@ export interface AccessPoint {
     armed: boolean;
     unlockTime: number;
     alwaysAllowed: {
-      users?: string[];
+      users?: string[]; // deprecated for members
+      members: string[];
       groups: string[];
       cards: string[];
     };

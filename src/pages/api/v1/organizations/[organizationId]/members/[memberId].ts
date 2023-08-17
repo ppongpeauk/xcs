@@ -1,9 +1,8 @@
-import { tokenToID } from '@/pages/api/firebase';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import { authToken } from '@/lib/auth';
 import clientPromise from '@/lib/mongodb';
-import { AccessGroup, Organization, OrganizationMember } from '@/types';
+import { Organization, OrganizationMember } from '@/types';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   // params
@@ -174,6 +173,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           type = 'cardset';
           break;
       }
+
+      // remove member from every access point
+      await db.collection('accessPoints').updateMany(
+        { organizationId },
+        {
+          $pull: {
+            [`config.alwaysAllowed.members`]: {
+              $in: [memberId]
+            }
+          } as any
+        }
+      );
 
       return res.status(200).json({
         message: `Successfully removed ${type} from the organization.`,

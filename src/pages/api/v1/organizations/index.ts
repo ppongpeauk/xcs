@@ -111,6 +111,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         [uid]: {
           type: 'user',
           id: uid,
+          formattedId: uid,
           role: 3,
           accessGroups: [],
           joinedAt: timestamp

@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useCallback, useRef } from 'react';
+import { useRef } from 'react';
 
 import {
   Button,
@@ -26,17 +26,21 @@ import { Field, Form, Formik } from 'formik';
 import { getRandomAccessPointName } from '@/lib/utils';
 
 import { useAuthContext } from '@/contexts/AuthContext';
+import { AccessPoint, Location } from '@/types';
+import { Select } from 'chakra-react-select';
 
 export default function CreateAccessPointDialog({
   isOpen,
   onClose,
   location,
-  onCreate
+  onCreate,
+  accessPoints
 }: {
   isOpen: boolean;
   onClose: () => void;
-  location: any;
+  location: Location;
   onCreate: (location: any) => void;
+  accessPoints: AccessPoint[];
 }) {
   const toast = useToast();
   const initialRef = useRef(null);
@@ -48,7 +52,7 @@ export default function CreateAccessPointDialog({
   return (
     <>
       <Formik
-        initialValues={{ name: '', description: '' }}
+        initialValues={{ name: '', description: '', template: null as null | { label: string, value: any } }}
         onSubmit={(values, actions) => {
           user.getIdToken().then((token: any) => {
             fetch(`/api/v1/locations/${location.id}/access-points`, {
@@ -60,7 +64,8 @@ export default function CreateAccessPointDialog({
               body: JSON.stringify({
                 name: values.name,
                 description: values.description,
-                locationId: location.id
+                locationId: location.id,
+                templateId: values.template?.value || null
               })
             })
               .then((res) => {
@@ -122,6 +127,32 @@ export default function CreateAccessPointDialog({
                             placeholder={namePlaceholder || 'Access Point Name'}
                             autoComplete='off'
                           />
+                        </FormControl>
+                      )}
+                    </Field>
+                    <Field name="template">
+                      {({ field, form }: any) => (
+                        <FormControl>
+                          <FormLabel>Template</FormLabel>
+                          <Select
+                            {...field}
+                            options={(accessPoints || []).map((ap: AccessPoint) => ({
+                              value: ap.id,
+                              label: ap.name
+                            })) || []}
+                            placeholder={'Select Access Point... (optional)'}
+                            onChange={(value) => {
+                              form.setFieldValue('template', value);
+                            }}
+                            value={field.value}
+                            single={true}
+                            hideSelectedOptions={false}
+                            selectedOptionStyle={'check'}
+                            isClearable={true}
+                          />
+                          <FormHelperText>
+                            Use an existing access point&apos;s configuration.
+                          </FormHelperText>
                         </FormControl>
                       )}
                     </Field>
