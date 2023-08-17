@@ -84,18 +84,6 @@ export default function Terms() {
 
             <ListItem>
               <Text as="span">
-                WE WILL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, CONSEQUENTIAL, SPECIAL OR EXEMPLARY DAMAGES ARISING
-                OUT OF OR IN CONNECTION WITH THE USE OF THE SERVICES. OUR TOTAL CUMULATIVE LIABILITY ARISING FROM YOUR
-                USE OF THE SERVICES WILL NOT EXCEED $100. THIS LIMITATION OF LIABILITY APPLIES TO ALL DAMAGES OF ANY
-                KIND, INCLUDING COMPENSATORY, DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES, LOSS OF DATA, INCOME OR PROFIT,
-                LOSS OF OR DAMAGE TO PROPERTY AND CLAIMS OF THIRD PARTIES. SOME JURISDICTIONS DO NOT ALLOW THE EXCLUSION
-                OR LIMITATION OF INCIDENTAL OR CONSEQUENTIAL DAMAGES, SO THE ABOVE LIMITATION OR EXCLUSION MAY NOT APPLY
-                TO YOU.
-              </Text>
-            </ListItem>
-
-            <ListItem>
-              <Text as="span">
                 We reserve the right to modify these terms from time to time. Your continued use of the Services
                 constitutes acceptance of any modifications. You should review these terms periodically for updates.
               </Text>

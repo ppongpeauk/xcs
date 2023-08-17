@@ -259,6 +259,7 @@ export default function InvitePlatformModal({
                                   form.setFieldValue('senderId', value);
                                 }}
                                 value={field.value || []}
+                                selectedOptionStyle='check'
                               />
                               <FormHelperText>If left blank, you will be the sender.</FormHelperText>
                             </FormControl>

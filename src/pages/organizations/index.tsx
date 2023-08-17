@@ -206,23 +206,12 @@ export default function PlatformOrganizations() {
     refreshData();
   }, [user, refreshData]);
 
-  const joinOrganizationPrompt = (inviteCode: string) => {
+  const joinOrganizationPrompt = useCallback(async (inviteCode: string) => {
     setQueryLoading(true);
     setInitialInviteCodeValue(inviteCode);
     setQueryLoading(false);
     onJoinOrganizationModalOpen();
-  };
-
-  const onCreateOrganization = () => {
-    onCreateOrganizationModalClose();
-    toast({
-      title: 'Success',
-      description: 'Organization created successfully',
-      status: 'success',
-      duration: 5000,
-      isClosable: true
-    });
-  };
+  }, [onJoinOrganizationModalOpen]);
 
   useEffect(() => {
     if (!query) return;
@@ -233,7 +222,7 @@ export default function PlatformOrganizations() {
         setQueryLoading(false);
       }, 100);
     }
-  }, [query.invitation]);
+  }, [query.invitation, joinOrganizationPrompt, query]);
 
   const filterOrganizations = useCallback((query: string) => {
     if (!query) {
@@ -294,7 +283,7 @@ export default function PlatformOrganizations() {
         />
         <meta
           property="og:image"
-          content="/images/logo-square.jpeg"
+          content="/images/logo-square.jpg"
         />
       </Head>
       <CreateOrganizationDialog
@@ -505,9 +494,12 @@ export default function PlatformOrganizations() {
                                   {organization.name}
                                 </Link>
                               </Heading>
-                              <Link color={"gray.500"} href={`/@${organization.owner?.username}`}>
-                                by {organization.owner?.displayName}
-                              </Link>
+                              <Text color={"gray.500"}>
+                                by{' '}
+                                <Link href={`/@${organization.owner?.username}`}>
+                                  {organization.owner?.displayName}
+                                </Link>
+                              </Text>
                               <Flex align={'center'} color={'gray.500'} gap={1} fontSize={'md'}>
                                 <Icon as={BiRefresh} />
                                 <Text color={'gray.500'}>

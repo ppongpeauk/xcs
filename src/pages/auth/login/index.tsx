@@ -104,7 +104,7 @@ export default function Login() {
         />
         <meta
           property="og:image"
-          content="/images/logo-square.jpeg"
+          content="/images/logo-square.jpg"
         />
         <meta
           name="og:locale"

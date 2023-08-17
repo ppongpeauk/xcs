@@ -27,7 +27,7 @@ export default function PlatformEventLogs() {
         />
         <meta
           property="og:image"
-          content="/images/logo-square.jpeg"
+          content="/images/logo-square.jpg"
         />
       </Head>
       <Container

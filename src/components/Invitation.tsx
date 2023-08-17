@@ -11,6 +11,7 @@ import {
   Image,
   Skeleton,
   Text,
+  chakra,
   useColorModeValue,
   useToast
 } from '@chakra-ui/react';
@@ -51,7 +52,7 @@ export default function Invitation({ invite, errorMessage }: { invite: Invitatio
       case 'organization':
         return 'join their organization';
       case 'xcs':
-        return <>create an account.</>;
+        return 'create an account.';
       default:
         return null;
     }
@@ -95,10 +96,10 @@ export default function Invitation({ invite, errorMessage }: { invite: Invitatio
           </Link>
 
           <Flex
-            maxW={['100%', 'md']}
+            maxW={['100%', 'lg']}
             // aspectRatio={invite ? 1 / 1.25 : 'unset'}
-            h={invite ? 'lg' : 'unset'}
-            rounded={'xl'}
+            minH={invite ? 'xl' : 'unset'}
+            rounded={'lg'}
             border={['none', '1px solid']}
             borderColor={['none', useColorModeValue('gray.300', 'gray.600')]}
             direction={'column'}
@@ -233,42 +234,45 @@ export default function Invitation({ invite, errorMessage }: { invite: Invitatio
                     <Text
                       fontSize={'sm'}
                       my={2}
+                      textAlign={'center'}
                     >
                       By accepting this invitation, you agree to the{' '}
-                      <Text
-                        as={'span'}
-                        fontWeight={'bold'}
-                      >
-                        Restrafes XCS
-                      </Text>{' '}
-                      <Text
-                        as={'span'}
-                        fontWeight={'bold'}
-                        whiteSpace={'nowrap'}
-                      >
-                        <Link
-                          href={'/legal/terms'}
-                          textDecor={'underline'}
-                          textUnderlineOffset={4}
+                      <chakra.div as={'span'} whiteSpace={'nowrap'}>
+                        <Text
+                          as={'span'}
+                          fontWeight={'bold'}
                         >
-                          Terms of Use
-                        </Link>
-                      </Text>{' '}
-                      and{' '}
-                      <Text
-                        as={'span'}
-                        fontWeight={'bold'}
-                        whiteSpace={'nowrap'}
-                      >
-                        <Link
-                          href={'/legal/privacy'}
-                          textDecor={'underline'}
-                          textUnderlineOffset={4}
+                          Restrafes XCS
+                        </Text>{' '}
+                        <Text
+                          as={'span'}
+                          fontWeight={'bold'}
+                          whiteSpace={'nowrap'}
                         >
-                          Privacy Policy
-                        </Link>
-                        .
-                      </Text>
+                          <Link
+                            href={'/legal/terms'}
+                            textDecor={'underline'}
+                            textUnderlineOffset={4}
+                          >
+                            Terms of Use
+                          </Link>
+                        </Text>{' '}
+                        and{' '}
+                        <Text
+                          as={'span'}
+                          fontWeight={'bold'}
+                          whiteSpace={'nowrap'}
+                        >
+                          <Link
+                            href={'/legal/privacy'}
+                            textDecor={'underline'}
+                            textUnderlineOffset={4}
+                          >
+                            Privacy Policy
+                          </Link>
+                          .
+                        </Text>
+                      </chakra.div>
                     </Text>
                   </Skeleton>
                 </Box>

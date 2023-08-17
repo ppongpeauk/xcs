@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ::selection {
+  background: var(--chakra-colors-blackAlpha-500);
+} */
+
 /* @layer base {
   :root {
     --background: 0 0% 100%;

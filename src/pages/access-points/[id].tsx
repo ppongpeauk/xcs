@@ -2,19 +2,11 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import {
-  Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
   Box,
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
-  BreadcrumbSeparator,
   Button,
-  Code,
-  Container,
   Divider,
   Flex,
   FormControl,
@@ -23,15 +15,12 @@ import {
   Heading,
   Input,
   InputGroup,
-  InputLeftElement,
-  Link,
   NumberDecrementStepper,
   NumberIncrementStepper,
   NumberInput,
   NumberInputField,
   NumberInputStepper,
   Skeleton,
-  SkeletonText,
   Spacer,
   Stack,
   Switch,
@@ -52,17 +41,16 @@ import {
 import { ChevronRightIcon } from '@chakra-ui/icons';
 
 import { IoIosRemoveCircle } from 'react-icons/io';
-import { IoBusiness, IoClipboard, IoSave, IoTime } from 'react-icons/io5';
+import { IoClipboard, IoSave } from 'react-icons/io5';
 
 import { AccessGroup, Organization } from '@/types';
 import Editor from '@monaco-editor/react';
-import { AsyncSelect, CreatableSelect, Select } from 'chakra-react-select';
+import { CreatableSelect, Select } from 'chakra-react-select';
 import { Field, Form, Formik } from 'formik';
 import Head from 'next/head';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 
-import { agIds, agKV, agNames } from '@/lib/utils';
 
 import { useAuthContext } from '@/contexts/AuthContext';
 
@@ -307,7 +295,7 @@ export default function PlatformAccessPoint() {
         />
         <meta
           property="og:image"
-          content="/images/logo-square.jpeg"
+          content="/images/logo-square.jpg"
         />
       </Head>
       <DeleteDialog

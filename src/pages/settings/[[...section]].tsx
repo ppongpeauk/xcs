@@ -2,9 +2,7 @@
 import { useEffect, useState } from 'react';
 
 import {
-  Avatar,
   Box,
-  Button,
   Container,
   Divider,
   Heading,
@@ -21,14 +19,13 @@ import {
   Tabs,
   Text,
   useColorModeValue,
-  useDisclosure,
   useToast
 } from '@chakra-ui/react';
 
 import { HamburgerIcon } from '@chakra-ui/icons';
 
-import { BiSolidUserBadge, BiSolidUserDetail } from 'react-icons/bi';
-import { FaIdBadge, FaLink, FaPaintBrush } from 'react-icons/fa';
+import { BiSolidUserDetail } from 'react-icons/bi';
+import { FaPaintBrush } from 'react-icons/fa';
 import { FiExternalLink } from 'react-icons/fi';
 import { RiAdminFill, RiMailAddFill } from 'react-icons/ri';
 
@@ -96,7 +93,6 @@ export default function Settings() {
   }, [query]);
 
   useEffect(() => {
-    console.log(query);
     // discord linked
     if (query.discordLinked !== undefined) {
       if (query.discordLinked === 'true') {
@@ -133,7 +129,7 @@ export default function Settings() {
         });
       }
     }
-  }, [query]);
+  }, [query, toast]);
 
   return (
     <>

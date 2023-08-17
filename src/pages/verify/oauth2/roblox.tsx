@@ -1,6 +1,7 @@
 import { useAuthContext } from '@/contexts/AuthContext';
+import { Container, Flex, Spinner, Text } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 
 export default function RobloxOauth2() {
   const { query, push } = useRouter();
@@ -45,5 +46,12 @@ export default function RobloxOauth2() {
     }
   }, [user, code, push, query, refreshCurrentUser]);
 
-  return <></>;
+  return (
+    <Container as={Flex} centerContent h={'100dvh'} align={'center'} justify={'center'}>
+      <Spinner />
+      <Text pt={4}>
+        Verifying...
+      </Text>
+    </Container>
+  );
 }

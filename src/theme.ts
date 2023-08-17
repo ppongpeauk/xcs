@@ -33,8 +33,8 @@ const subtext = defineStyle({
 });
 
 const config: ThemeConfig = {
-  useSystemColorMode: true,
-  initialColorMode: 'dark'
+  initialColorMode: 'light',
+  useSystemColorMode: true
 };
 
 Modal.defaultProps = {

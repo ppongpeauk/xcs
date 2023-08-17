@@ -191,6 +191,7 @@ export default function ReferralCreditsModal({
                                 form.setFieldValue('recipient', value);
                               }}
                               value={field.value || []}
+                              selectedOptionStyle='check'
                             />
                             <FormHelperText>If left blank, you will be the recipient.</FormHelperText>
                           </FormControl>

@@ -183,6 +183,7 @@ export default function LocationResetUniverseIdModal({
                               form.setFieldValue('memberId', value);
                             }}
                             value={field.value || []}
+                            selectedOptionStyle='check'
                           />
                           <FormHelperText>This is the customer that you&apos;re serving.</FormHelperText>
                         </FormControl>

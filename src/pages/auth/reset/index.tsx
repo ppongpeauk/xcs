@@ -69,7 +69,7 @@ export default function Recover() {
         />
         <meta
           property="og:image"
-          content="/images/logo-square.jpeg"
+          content="/images/logo-square.jpg"
         />
         <meta
           name="og:locale"
@@ -107,9 +107,9 @@ export default function Recover() {
                   fontSize={'3xl'}
                   fontWeight={'bold'}
                 >
-                  Recover XCS Account
+                  Reset Password
                 </Text>
-                <Text color={"gray.500"} fontSize={'md'}>Enter your email address to reset your account credentials.</Text>
+                <Text color={"gray.500"} fontSize={'md'}>Enter your email address to reset your password.</Text>
               </Box>
               <br />
               <Box px={[0, 4]}>

@@ -139,7 +139,7 @@ export default function PlatformOrganization() {
     setImage(organization?.avatar);
   }, [organization]);
 
-  const onLeave = async () => {
+  const onLeave = useCallback(async () => {
     await user.getIdToken().then((token: string) => {
       fetch(`/api/v1/organizations/${query.id}/leave`, {
         method: 'DELETE',
@@ -176,9 +176,9 @@ export default function PlatformOrganization() {
           onLeaveDialogClose();
         });
     });
-  };
+  }, [onLeaveDialogClose, push, query.id, toast, user]);
 
-  const onDelete = async () => {
+  const onDelete = useCallback(async () => {
     await user.getIdToken().then((token: string) => {
       fetch(`/api/v1/organizations/${query.id}`, {
         method: 'DELETE',
@@ -215,7 +215,7 @@ export default function PlatformOrganization() {
           onDeleteDialogClose();
         });
     });
-  };
+  }, [onDeleteDialogClose, push, query.id, toast, user]);
 
   let refreshData = useCallback(async () => {
     await user.getIdToken().then((token: string) => {
@@ -254,7 +254,7 @@ export default function PlatformOrganization() {
     });
   }, [push, query.id, toast, user]);
 
-  const onMemberRemove = async (member: any) => {
+  const onMemberRemove = useCallback(async (member: any) => {
     await user.getIdToken().then((token: string) => {
       console.log(member);
       fetch(`/api/v1/organizations/${query.id}/members/${member.formattedId || member.id}`, {
@@ -289,9 +289,9 @@ export default function PlatformOrganization() {
           });
         });
     });
-  };
+  }, [query.id, refreshData, toast, user]);
 
-  const onGroupRemove = async (group: any) => {
+  const onGroupRemove = useCallback(async (group: any) => {
     await user.getIdToken().then((token: string) => {
       fetch(`/api/v1/organizations/${query.id}/access-groups/${group.id}`, {
         method: 'DELETE',
@@ -325,7 +325,7 @@ export default function PlatformOrganization() {
           });
         });
     });
-  };
+  }, [query.id, refreshData, toast, user]);
 
   // Fetch organization data
   useEffect(() => {
@@ -356,7 +356,7 @@ export default function PlatformOrganization() {
         />
         <meta
           property="og:image"
-          content="/images/logo-square.jpeg"
+          content="/images/logo-square.jpg"
         />
       </Head>
       <DeleteDialogOrganization

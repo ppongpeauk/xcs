@@ -559,7 +559,7 @@ export default function MemberEditModal({
                                 isDisabled={
                                   clientMember?.id === member?.id ||
                                   member?.role >= 3 ||
-                                  member?.role >= clientMember!.role
+                                  member?.role >= clientMember!?.role
                                 }
                               />
                             </Td>
