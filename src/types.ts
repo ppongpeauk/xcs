@@ -330,3 +330,23 @@ export interface Achievement {
   icon: string;
   earnedAt: Date;
 }
+
+export interface ScanEvent {
+  id: string;
+
+  accessPointId: string;
+  locationId: string;
+  organizationId: string;
+
+  accessPoint?: AccessPoint;
+  location?: Location;
+  organization?: Organization;
+
+  robloxId: string;
+  user?: User;
+
+  status: 'disarmed' | 'ready' | 'granted' | 'denied';
+  scanData?: any;
+
+  createdAt: string;
+}

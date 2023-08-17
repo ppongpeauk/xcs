@@ -160,10 +160,10 @@ export default function PlatformAccessPoint() {
             let label;
             switch (member.type) {
               case 'user':
-                label = `${member.displayName} (${member.username})`;
+                label = `${member.displayName} (@${member.username})`;
                 break;
               case 'roblox':
-                label = `${member.displayName} (${member.username})`;
+                label = `${member.displayName} (@${member.username})`;
                 break;
               case 'roblox-group':
                 label = member.groupName || member.displayName || member.name;
@@ -476,10 +476,10 @@ export default function PlatformAccessPoint() {
                 ) as OrganizationMember;
                 switch (member?.type) {
                   case 'user':
-                    label = `${member.displayName} (${member.username})`;
+                    label = `${member.displayName} (@${member.username})`;
                     break;
                   case 'roblox':
-                    label = `${member.displayName} (${member.username})`;
+                    label = `${member.displayName} (@${member.username})`;
                     break;
                   case 'roblox-group':
                     label = member.groupName || member.displayName || member.name;
