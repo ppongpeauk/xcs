@@ -129,7 +129,7 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
         <FormControl w={{ base: 'full', md: 'fit-content' }} h={'min-content'}>
           <Select
             options={tagsOptions}
-            placeholder="Filter by tags"
+            placeholder="Filter by Tags"
             onChange={(value) => {
               setSelectedTags(value);
             }}
