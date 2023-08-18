@@ -156,6 +156,7 @@ export default function AccessGroupEditModal({
                 base: 'auto',
                 xl: 'hidden'
               }}
+              overscrollBehavior={'contain'}
             >
               <Stack
                 w="100%"
@@ -194,11 +195,13 @@ export default function AccessGroupEditModal({
                 flexDir={{ base: 'column', xl: 'row' }}
                 h="full"
                 overflow="auto"
+                overscrollBehavior={'contain'}
               >
                 <TableContainer
                   py={2}
                   minH={{ base: '320px', xl: '100%' }}
                   overflowY={'auto'}
+                  overscrollBehavior={'contain'}
                   flexGrow={1}
                   px={4}
                 >
@@ -318,6 +321,7 @@ export default function AccessGroupEditModal({
                     borderColor={themeBorderColor}
                     h={'full'}
                     overflowY={'auto'}
+                    overscrollBehavior={'contain'}
                   >
                     {!focusedGroup || !organization ? (
                       <Text

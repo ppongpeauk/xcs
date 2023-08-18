@@ -370,11 +370,13 @@ export default function MemberEditModal({
                 justify={'space-between'}
                 flexDir={{ base: 'column', xl: 'row' }}
                 overflow="auto"
+                overscrollBehavior={'contain'}
               >
                 <TableContainer
                   py={2}
                   minH={{ base: '320px', xl: '100%' }}
                   overflowY={'auto'}
+                  overscrollBehavior={'contain'}
                   flexGrow={1}
                   px={4}
                 >
@@ -627,6 +629,7 @@ export default function MemberEditModal({
                     //maxH={{ base: "unset", xl: "512px" }}
                     h={'full'}
                     overflowY={'auto'}
+                    overscrollBehavior={'contain'}
                   >
                     {!focusedMember || !organization ? (
                       <Text
