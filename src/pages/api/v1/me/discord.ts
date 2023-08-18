@@ -1,4 +1,3 @@
-import { tokenToID } from '@/pages/api/firebase';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import { authToken } from '@/lib/auth';
@@ -107,6 +106,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
       }
     );
+
+    // attempt to update user's role in discord
+    const roleId = '1127011693868896346';
+    const guildId = '1127003608366460978';
+
+    try {
+      const ret = await fetch(
+        `https://discord.com/api/guilds/${guildId}/members/${userResponse.user.id}/roles/${roleId}`,
+        {
+          method: 'PUT',
+          headers: {
+            Authorization: `Bot ${process.env.DISCORD_TOKEN}`,
+            'X-Audit-Log-Reason': 'XCS role granted via account linking on the website'
+          }
+        }
+      ).then((ret) => ret);
+    } catch {}
 
     return res.status(200).json({
       success: true,
