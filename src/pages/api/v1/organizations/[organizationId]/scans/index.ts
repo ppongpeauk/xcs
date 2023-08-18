@@ -69,6 +69,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const robloxUser = robloxUsers[scanEvent.roblox.id];
 
       scanEvent.roblox = {
+        id: robloxUser?.id || 'Unknown',
         displayName: robloxUser?.displayName || 'Unknown',
         username: robloxUser?.name || 'Unknown',
         avatar: robloxUser?.avatar || 'Unknown'
