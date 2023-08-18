@@ -157,7 +157,7 @@ export default function OrganizationInvitationsModal({
 
   const actOnInvitation = useCallback(async (invitation: OrganizationInvitation, action: 'withdraw') => {
     setInvitationsLoading(true);
-    user.getIdToken().then(async (token: string) => {
+    await user.getIdToken().then(async (token: string) => {
       await fetch(`/api/v1/organizations/${organization?.id}/invitations/${invitation.id}`, {
         method: 'DELETE',
         headers: {

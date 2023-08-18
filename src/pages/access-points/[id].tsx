@@ -182,7 +182,6 @@ export default function PlatformAccessPoint() {
           });
 
           setMemberChoices(options);
-          console.log(data.organization);
         });
     });
   }, [accessPoint, user]);

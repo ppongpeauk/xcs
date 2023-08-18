@@ -180,7 +180,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const regex = /^(\d+)-(\d+)$/;
       for (const cardNumber of organization.members[memberId]?.cardNumbers || []) {
         const range = cardNumber.match(regex);
-        console.log(range);
         if (range) {
           for (let i = parseInt(range[1]); i <= parseInt(range[2]); i++) {
             allowedCardNumbers.push(i.toString());
