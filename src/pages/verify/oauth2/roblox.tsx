@@ -34,7 +34,7 @@ export default function RobloxOauth2() {
                 refreshCurrentUser();
                 push('/settings/3?robloxLinked=true');
               } else {
-                push('/settings/3?robloxLinked=false');
+                push('/settings/3');
               }
             });
         })

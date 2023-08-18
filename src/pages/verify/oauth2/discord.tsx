@@ -37,7 +37,7 @@ export default function Discord() {
                 refreshCurrentUser();
                 push('/settings/3?discordLinked=true');
               } else {
-                push('/settings/3?discordLinked=false');
+                push('/settings/3');
               }
             });
         })
@@ -47,7 +47,7 @@ export default function Discord() {
         .finally(() => { });
     }
     if (query.error) {
-      push('/settings/3?discordLinked=false');
+      push('/settings/3');
     }
   }, [user, code, push, query, refreshCurrentUser]);
 
