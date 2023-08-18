@@ -1,5 +1,5 @@
 // special OAuth2 flow for Discord
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import { useRouter } from 'next/router';
 
@@ -10,10 +10,13 @@ export default function Discord() {
   const { query, push } = useRouter();
   const { currentUser, user, refreshCurrentUser } = useAuthContext();
 
+  const code = useMemo(() => {
+    return query.code;
+  }, [query.code]);
+
   useEffect(() => {
     if (!user || !query) return;
 
-    let code = query.code;
     if (code) {
       user
         .getIdToken()
@@ -42,13 +45,11 @@ export default function Discord() {
           console.error(err);
         })
         .finally(() => { });
-    } else {
-      push('/settings/3?discordLinked=false');
     }
     if (query.error) {
       push('/settings/3?discordLinked=false');
     }
-  }, [user, query, push, refreshCurrentUser]);
+  }, [user, code, push, query, refreshCurrentUser]);
 
   return (
     <Container as={Flex} centerContent h={'100dvh'} align={'center'} justify={'center'}>

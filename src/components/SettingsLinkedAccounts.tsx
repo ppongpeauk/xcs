@@ -219,6 +219,7 @@ export default function SettingsLinkedAccounts() {
                   Unlink
                 </Button>
                 <Button
+                  colorScheme={'blue'}
                   onClick={() => {
                     push(
                       `https://discord.com/api/oauth2/authorize?client_id=1127492928995078215&redirect_uri=${process.env.NEXT_PUBLIC_ROOT_URL}/verify/oauth2/discord&response_type=code&scope=identify`
