@@ -688,36 +688,38 @@ export default function PlatformOrganization() {
                           id={'avatar-picker'}
                           direction={'column'}
                         >
-                          <Avatar
-                            name={organization?.name}
-                            src={image || defaultImage}
-                            boxSize={{ base: '6rem', md: '10rem' }}
-                            borderRadius={'lg'}
-                            onClick={() => {
-                              avatarChooser.current?.click();
-                            }}
-                            cursor={'pointer'}
-                            overflow={'hidden'}
-                          >
-                            <Flex
-                              position={'absolute'}
-                              w={'full'}
-                              h={'full'}
-                              align={'center'}
-                              justify={'center'}
-                              opacity={0}
-                              transition={'background 0.2s ease-out, opacity 0.2s ease-out'}
-                              background={'rgba(0,0,0,0.25)'}
-                              color={'white'}
-                              _hover={{ opacity: 1 }}
-                              _active={{
-                                opacity: 1,
-                                background: 'rgba(0,0,0,0.5)'
+                          <Tooltip label={'Click to change avatar.'}>
+                            <Avatar
+                              name={organization?.name}
+                              src={image || defaultImage}
+                              boxSize={{ base: '6rem', md: '10rem' }}
+                              borderRadius={'lg'}
+                              onClick={() => {
+                                avatarChooser.current?.click();
                               }}
+                              cursor={'pointer'}
+                              overflow={'hidden'}
                             >
-                              <Icon as={BsFillPencilFill} w={8} h={8} />
-                            </Flex>
-                          </Avatar>
+                              <Flex
+                                position={'absolute'}
+                                w={'full'}
+                                h={'full'}
+                                align={'center'}
+                                justify={'center'}
+                                opacity={0}
+                                transition={'background 0.2s ease-out, opacity 0.2s ease-out'}
+                                background={'rgba(0,0,0,0.25)'}
+                                color={'white'}
+                                _hover={{ opacity: 1 }}
+                                _active={{
+                                  opacity: 1,
+                                  background: 'rgba(0,0,0,0.5)'
+                                }}
+                              >
+                                <Icon as={BsFillPencilFill} w={8} h={8} />
+                              </Flex>
+                            </Avatar>
+                          </Tooltip>
                           <HStack
                             w={'full'}
                             align={'center'}

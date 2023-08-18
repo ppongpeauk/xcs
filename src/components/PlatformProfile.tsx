@@ -405,53 +405,58 @@ export default function Profile({ username, user }: { username: string | null; u
                     </Text>
                   )}
                   {user?.discord.verified && (
-                    <WrapItem>
-                      <Button
-                        as={Link}
-                        href={`https://discord.com/users/${user?.discord.id}`}
-                        target="_blank"
-                        size={'sm'}
-                        variant={'ghost'}
-                        style={{ textDecoration: 'none' }}
-                      >
-                        <Icon
-                          as={BsDiscord}
-                          size={'xl'}
-                          mr={2}
-                        />
-                        <Text
-                          size={'md'}
-                          fontWeight={'bold'}
+                    <Tooltip label={`${user?.discord.username}${user?.discord.discriminator ? `#${user?.discord.discriminator}` : ''
+                      }`}>
+                      <WrapItem>
+                        <Button
+                          as={Link}
+                          href={`https://discord.com/users/${user?.discord.id}`}
+                          target="_blank"
+                          size={'sm'}
+                          variant={'ghost'}
+                          style={{ textDecoration: 'none' }}
                         >
-                          @{user?.discord.username}
-                          {user?.discord.discriminator && `#${user?.discord.discriminator}`}
-                        </Text>
-                      </Button>
-                    </WrapItem>
+                          <Icon
+                            as={BsDiscord}
+                            size={'xl'}
+                            mr={2}
+                          />
+                          <Text
+                            size={'md'}
+                            fontWeight={'bold'}
+                          >
+                            {user?.discord.username}
+                            {user?.discord.discriminator ? `#${user?.discord.discriminator}` : ''}
+                          </Text>
+                        </Button>
+                      </WrapItem>
+                    </Tooltip>
                   )}
                   {user?.roblox.verified && (
-                    <WrapItem>
-                      <Button
-                        as={Link}
-                        href={`https://roblox.com/users/${user?.roblox.id}/profile`}
-                        target="_blank"
-                        size={'sm'}
-                        variant={'ghost'}
-                        style={{ textDecoration: 'none' }}
-                      >
-                        <Icon
-                          as={SiRoblox}
-                          size={'xl'}
-                          mr={2}
-                        />
-                        <Text
-                          size={'md'}
-                          fontWeight={'bold'}
+                    <Tooltip label={user?.roblox.username}>
+                      <WrapItem>
+                        <Button
+                          as={Link}
+                          href={`https://roblox.com/users/${user?.roblox.id}/profile`}
+                          target="_blank"
+                          size={'sm'}
+                          variant={'ghost'}
+                          style={{ textDecoration: 'none' }}
                         >
-                          {user?.roblox.username}
-                        </Text>
-                      </Button>
-                    </WrapItem>
+                          <Icon
+                            as={SiRoblox}
+                            size={'xl'}
+                            mr={2}
+                          />
+                          <Text
+                            size={'md'}
+                            fontWeight={'bold'}
+                          >
+                            {user?.roblox.username}
+                          </Text>
+                        </Button>
+                      </WrapItem>
+                    </Tooltip>
                   )}
                 </Wrap>
               </Skeleton>

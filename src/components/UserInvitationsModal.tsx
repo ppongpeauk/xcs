@@ -225,7 +225,9 @@ export default function UserInvitationsModal({
           <ModalCloseButton />
           <ModalBody pb={4} minH={'xl'}>
             <Flex pb={4}>
-              <IconButton ml={'auto'} onClick={fetchInvitations} aria-label={'Refresh'} icon={<Icon as={BiRefresh} />} />
+              <Tooltip label={'Refresh'} placement={'top'}>
+                <IconButton ml={'auto'} onClick={fetchInvitations} aria-label={'Refresh'} icon={<Icon as={BiRefresh} />} />
+              </Tooltip>
             </Flex>
             <TableContainer overflow={'auto'} maxH={'md'}>
               <Table>
