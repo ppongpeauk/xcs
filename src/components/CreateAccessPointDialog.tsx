@@ -140,7 +140,7 @@ export default function CreateAccessPointDialog({
                               value: ap.id,
                               label: ap.name
                             })) || []}
-                            placeholder={'Select Access Point... (optional)'}
+                            placeholder={'Select access point... (optional)'}
                             onChange={(value) => {
                               form.setFieldValue('template', value);
                             }}
