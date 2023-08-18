@@ -12,7 +12,7 @@ export default function RobloxOauth2() {
   }, [query.code]);
 
   useEffect(() => {
-    if (!user || !query) return;
+    if (!user || !query?.code) return;
 
     if (code) {
       user

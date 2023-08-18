@@ -15,7 +15,7 @@ export default function Discord() {
   }, [query.code]);
 
   useEffect(() => {
-    if (!user || !query) return;
+    if (!user || !query?.code) return;
 
     if (code) {
       user
