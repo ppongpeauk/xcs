@@ -5,7 +5,8 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import clientPromise from '@/lib/mongodb';
 // @ts-ignore
 import { getRobloxUsers } from '@/lib/utils';
-import { Organization, OrganizationMember } from '@/types';
+import { Organization, OrganizationMember, ScanEvent } from '@/types';
+import { generate as generateString } from 'randomstring';
 
 const mergicianOptions = { appendArrays: true, dedupArrays: true };
 
@@ -266,6 +267,51 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   );
 
+  const user = await dbUsers
+    .findOne(
+      { 'roblox.id': userId },
+      {
+        projection: {
+          id: 1,
+          displayName: 1,
+          username: 1,
+          roblox: 1,
+          avatar: 1
+        }
+      }
+    )
+    .then((user) => user);
+
+  // log scan
+  let scanId;
+
+  // generate a random scan id
+  do {
+    scanId = generateString({
+      length: 16,
+      charset: 'alphanumeric'
+    });
+  } while (await db.collection('scanEvents').findOne({ id: scanId }));
+
+  await db.collection('scanEvents').insertOne({
+    id: scanId,
+    organizationId: organization.id,
+    locationId: location.id,
+    accessPointId: accessPoint.id,
+
+    roblox: {
+      id: userId,
+      displayName: user?.displayName,
+      username: user?.roblox?.username
+    },
+    userId: user?.id,
+
+    status: isAllowed ? 'granted' : 'denied',
+
+    createdAt: new Date(),
+    expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 14) // 7 days
+  } as ScanEvent);
+
   // webhook event
   try {
     if (accessPoint?.config?.webhook?.url) {
@@ -274,20 +320,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         !(!isAllowed && !accessPoint?.config?.webhook?.eventDenied)
       ) {
         const webhook = accessPoint?.config?.webhook;
-        const user = await dbUsers
-          .findOne(
-            { 'roblox.id': userId },
-            {
-              projection: {
-                id: 1,
-                displayName: 1,
-                username: 1,
-                roblox: 1,
-                avatar: 1
-              }
-            }
-          )
-          .then((user) => user);
         let member = organization.members[user?.id] || {
           type: 'roblox',
           id: userId

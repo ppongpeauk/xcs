@@ -307,6 +307,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Delete Access Point
     await accessPoints.deleteOne({ id: accessPointId });
 
+    // Delete Scan Events
+    await db.collection('scanEvents').deleteMany({ accessPointId: accessPoint.id });
+
     // Log Deletion
     await organizations.updateOne(
       { id: organization.id },

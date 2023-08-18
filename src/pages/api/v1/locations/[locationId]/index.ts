@@ -226,6 +226,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     }
 
+    // Delete Scan Events
+    await db.collection('scanEvents').deleteMany({ locationId: location.id });
+
     // Log Deletion
     await organizations.updateOne(
       { id: organization.id },

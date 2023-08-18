@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { Link } from '@chakra-ui/next-js';
 import {
@@ -21,8 +21,17 @@ import {
   Portal,
   Skeleton,
   Stack,
+  Table,
+  TableCaption,
+  TableContainer,
+  Tbody,
+  Td,
   Text,
   Textarea,
+  Th,
+  Thead,
+  Tooltip,
+  Tr,
   useColorModeValue,
   useDisclosure,
   useToast
@@ -52,7 +61,10 @@ import DeleteDialogOrganization from '@/components/DeleteDialogOrganization';
 import MemberEditModal from '@/components/MemberEditModal';
 import StatBox from '@/components/StatBox';
 import { TooltipAvatar } from '@/components/TooltipAvatar';
-import { Organization, OrganizationMember } from '@/types';
+import { Organization, OrganizationMember, ScanEvent } from '@/types';
+import moment from 'moment';
+import { FaBan, FaCheck } from 'react-icons/fa';
+import { SiRoblox } from 'react-icons/si';
 
 const memberTypeOrder = ['user', 'roblox', 'roblox-group', 'card'];
 
@@ -80,7 +92,10 @@ function ActionButton({ children, ...props }: any) {
 export default function PlatformOrganization() {
   const { query, push } = useRouter();
   const { user, currentUser } = useAuthContext();
+
   const [organization, setOrganization] = useState<Organization | null>(null);
+  const [scanEvents, setScanEvents] = useState<ScanEvent[] | null>(null);
+
   const toast = useToast();
 
   const { isOpen: isDeleteDialogOpen, onOpen: onDeleteDialogOpen, onClose: onDeleteDialogClose } = useDisclosure();
@@ -97,6 +112,10 @@ export default function PlatformOrganization() {
 
   const avatarChooser = useRef<HTMLInputElement>(null);
   const avatarRef = useRef<HTMLDivElement>(null);
+
+  const toRelativeTime = useMemo(() => (date: Date) => {
+    return moment(new Date(date)).fromNow();
+  }, []);
 
   const handleChange = useCallback(async (e: any) => {
     console.log(e.target.files[0]);
@@ -119,7 +138,7 @@ export default function PlatformOrganization() {
     reader.onloadend = () => {
       setImage(reader.result as string);
     };
-  }, []);
+  }, [toast]);
 
   const removeAvatar = useCallback(() => {
     // download default avatar and set it as the image
@@ -132,7 +151,7 @@ export default function PlatformOrganization() {
           setImage(reader.result as string);
         };
       });
-  }, []);
+  }, [defaultImage]);
 
   useEffect(() => {
     if (!organization) return;
@@ -179,8 +198,8 @@ export default function PlatformOrganization() {
   }, [onLeaveDialogClose, push, query.id, toast, user]);
 
   const onDelete = useCallback(async () => {
-    await user.getIdToken().then((token: string) => {
-      fetch(`/api/v1/organizations/${query.id}`, {
+    await user.getIdToken().then(async (token: string) => {
+      await fetch(`/api/v1/organizations/${query.id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       })
@@ -218,46 +237,57 @@ export default function PlatformOrganization() {
   }, [onDeleteDialogClose, push, query.id, toast, user]);
 
   let refreshData = useCallback(async () => {
-    await user.getIdToken().then((token: string) => {
-      fetch(`/api/v1/organizations/${query.id}`, {
-        method: 'GET',
-        headers: { Authorization: `Bearer ${token}` }
+    const token = await user.getIdToken();
+    await fetch(`/api/v1/organizations/${query.id}`, {
+      method: 'GET',
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then((res) => {
+        if (res.status === 200) return res.json();
+        push('/organizations');
+        switch (res.status) {
+          case 404:
+            throw new Error('Organization not found.');
+          case 403:
+            throw new Error('You do not have permission to view this organization.');
+          case 401:
+            throw new Error('You do not have permission to view this organization.');
+          case 500:
+            throw new Error('An internal server error occurred.');
+          default:
+            throw new Error('An unknown error occurred.');
+        }
       })
-        .then((res) => {
-          if (res.status === 200) return res.json();
-          push('/organizations');
-          switch (res.status) {
-            case 404:
-              throw new Error('Organization not found.');
-            case 403:
-              throw new Error('You do not have permission to view this organization.');
-            case 401:
-              throw new Error('You do not have permission to view this organization.');
-            case 500:
-              throw new Error('An internal server error occurred.');
-            default:
-              throw new Error('An unknown error occurred.');
-          }
+      .then((data) => {
+        setOrganization(data.organization);
+      }).then(async () => {
+        await fetch(`/api/v1/organizations/${query.id}/scans`, {
+          method: 'GET',
+          headers: { Authorization: `Bearer ${token}` }
         })
-        .then((data) => {
-          setOrganization(data.organization);
-        })
-        .catch((err) => {
-          toast({
-            title: 'There was an error fetching the organization.',
-            description: err.message,
-            status: 'error',
-            duration: 5000,
-            isClosable: true
-          });
+          .then((res) => {
+            if (res.status === 200) return res.json();
+            toast({ title: 'There was a problem fetching the organization\'s scan events.', status: 'error', duration: 5000, isClosable: true });
+          })
+          .then((data) => {
+            setScanEvents(data);
+          })
+          .catch((err) => { });
+      })
+      .catch((err) => {
+        toast({
+          title: 'There was an error fetching the organization.',
+          description: err.message,
+          status: 'error',
+          duration: 5000,
+          isClosable: true
         });
-    });
+      });
   }, [push, query.id, toast, user]);
 
   const onMemberRemove = useCallback(async (member: any) => {
-    await user.getIdToken().then((token: string) => {
-      console.log(member);
-      fetch(`/api/v1/organizations/${query.id}/members/${member.formattedId || member.id}`, {
+    await user.getIdToken().then(async (token: string) => {
+      await fetch(`/api/v1/organizations/${query.id}/members/${member.formattedId || member.id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       })
@@ -438,7 +468,7 @@ export default function PlatformOrganization() {
             <Stack
               direction={'row'}
               align={'center'}
-              spacing={4}
+              spacing={8}
               py={4}
             >
               <Skeleton
@@ -779,6 +809,93 @@ export default function PlatformOrganization() {
             </Box>
           </Flex>
           <Flex display={{ base: 'none', lg: 'flex' }} flexDir={'column'} flex={1} gap={4}>
+            {/* Scan Events */}
+            <Skeleton isLoaded={!!scanEvents}>
+              <Heading as="h1" size="lg">
+                Scan Events
+              </Heading>
+              <Text fontSize={'md'} color={'gray.500'}>Showing the last 25 scan events.</Text>
+            </Skeleton>
+            <Skeleton isLoaded={!!scanEvents} overflow={'scroll'} overscrollBehavior={'none'} maxH={'sm'}>
+              <Flex flexDir={'column'}>
+                <TableContainer h={'auto'}>
+                  <Table variant='simple' size={'sm'}>
+                    <TableCaption pt={0} my={4}>
+                      {
+                        scanEvents?.length === 0 ? (
+                          'No recent scan events found.'
+                        ) : (
+                          'You\'ve reached the end of the list.'
+                        )
+                      }
+                    </TableCaption>
+                    <Thead>
+                      <Tr>
+                        <Th textAlign={'center'}>Status</Th>
+                        <Th>User</Th>
+                        <Th>Access Point</Th>
+                        <Th isNumeric>Date</Th>
+                        <Th isNumeric>Actions</Th>
+                      </Tr>
+                    </Thead>
+                    <Tbody>
+                      {
+                        scanEvents?.map((scanEvent: ScanEvent) => (
+                          <Tr key={scanEvent.id}>
+                            <Td>
+                              <Tooltip label={`Access ${scanEvent.status === 'granted' ? 'Granted' : 'Denied'}`}>
+                                <span>
+                                  {scanEvent.status === 'granted' ? <Icon as={FaCheck} color={'#4ad66d'} w={'full'} /> : <Icon as={FaBan} color={'#db1616'} w={'full'} />}
+                                </span>
+                              </Tooltip>
+                            </Td>
+                            <Td>
+                              {
+                                scanEvent.user ? (
+                                  <Flex flexDir={'row'} align={'center'} gap={4}>
+                                    <TooltipAvatar as={Link} href={`/@${scanEvent.user.username}`} target='_blank' name={scanEvent.user.displayName} src={scanEvent.user.avatar} />
+                                    <Flex flexDir={'column'}>
+                                      <Text fontWeight={'bold'}>{scanEvent.user.displayName}</Text>
+                                      <Text fontSize={'sm'} color={'gray.500'}>@{scanEvent.user.username}</Text>
+                                    </Flex>
+                                  </Flex>
+                                ) : (
+                                  <Flex flexDir={'row'} align={'center'} gap={4}>
+                                    <TooltipAvatar as={Link} href={`https://roblox.com/users/${scanEvent.roblox.id}/profile`} target='_blank' name={scanEvent.roblox.displayName} src={scanEvent.roblox.avatar} />
+                                    <Flex flexDir={'column'}>
+                                      <Flex flexDir={'row'} gap={1} align={'center'}>
+                                        <Icon as={SiRoblox} />
+                                        <Text fontWeight={'bold'}>{scanEvent.roblox.displayName}</Text>
+                                      </Flex>
+                                      <Text fontSize={'sm'} color={'gray.500'}>@{scanEvent.roblox.username}</Text>
+                                    </Flex>
+                                  </Flex>
+                                )
+                              }
+                            </Td>
+                            <Td>
+                              <Flex flexDir={'column'}>
+                                <Link href={`/access-points/${scanEvent.accessPoint?.id}`} target='_blank' fontWeight={'bold'}>{scanEvent.accessPoint?.name}</Link>
+                                <Link href={`/locations/${scanEvent.accessPoint?.location?.id}`} target='_blank' fontSize={'sm'} color={'gray.500'}>{scanEvent.accessPoint?.location?.name}</Link>
+                              </Flex>
+                            </Td>
+                            <Td isNumeric>{toRelativeTime(scanEvent.createdAt)}</Td>
+                            <Td isNumeric>
+                              <Button
+                                size={'sm'}
+                                isDisabled
+                              >
+                                View Details
+                              </Button>
+                            </Td>
+                          </Tr>
+                        ))
+                      }
+                    </Tbody>
+                  </Table>
+                </TableContainer>
+              </Flex>
+            </Skeleton>
             {/* Global Stats */}
             <Box>
               <Skeleton isLoaded={!!organization} w={'fit-content'}>
@@ -815,17 +932,9 @@ export default function PlatformOrganization() {
                 </Skeleton>
               </Flex>
             </Box>
-            <Heading as="h1" size="lg">
-              Event Logs
-            </Heading>
-            <Flex flexDir={'column'} border={'1px solid'} borderRadius={'lg'} borderColor={useColorModeValue('gray.200', 'gray.700')} p={8}>
-              <Text fontSize="lg" variant={'subtext'}>
-                Coming soon.
-              </Text>
-            </Flex>
           </Flex>
         </Flex>
-      </Container >
+      </Container>
     </>
   );
 }

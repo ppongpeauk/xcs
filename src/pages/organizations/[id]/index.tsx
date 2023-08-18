@@ -15,6 +15,7 @@ import {
   Icon,
   Skeleton,
   Text,
+  Tooltip,
   useColorModeValue,
   useToast
 } from '@chakra-ui/react';
@@ -143,13 +144,16 @@ export default function OrganizationPublic({ organization }: { organization: Org
               </Text>
               {
                 organization?.verified &&
-
-                <Icon
-                  as={VscVerifiedFilled}
-                  color={'gold'}
-                  boxSize={'1.5em'}
-                  ml={2}
-                />
+                <Tooltip label='Verified'>
+                  <span>
+                    <Icon
+                      as={VscVerifiedFilled}
+                      color={'gold'}
+                      boxSize={'1.5em'}
+                      ml={2}
+                    />
+                  </span>
+                </Tooltip>
               }
             </Skeleton>
             <Skeleton

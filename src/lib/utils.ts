@@ -61,6 +61,14 @@ export const getRobloxUsersByUsernames = async (usernames: string[]) => {
   return robloxResponse as RobloxUserByUsernamesResponseValue[];
 };
 
+export interface RobloxUserResponseValue {
+  id: number;
+  name: string; // username
+  displayName?: string;
+  avatar?: string;
+  hasVerifiedBadge: boolean;
+}
+
 export const getRobloxUsers = async (userIds: string[]) => {
   if (!userIds.length) return {};
   let robloxResponse = await fetch(`${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/roblox/users/v1/users`, {

@@ -342,11 +342,18 @@ export interface ScanEvent {
   location?: Location;
   organization?: Organization;
 
-  robloxId: string;
+  roblox: {
+    id: string;
+    displayName: string;
+    username: string;
+    avatar: string;
+  };
+  userId?: string | null;
   user?: User;
 
   status: 'disarmed' | 'ready' | 'granted' | 'denied';
   scanData?: any;
 
-  createdAt: string;
+  createdAt: Date;
+  expiresAt: Date;
 }
