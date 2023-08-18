@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 
 import { Box, Button, ButtonGroup, Heading, Text, useDisclosure, useToast } from '@chakra-ui/react';
 
@@ -8,6 +7,7 @@ import { useRouter } from 'next/router';
 import { useAuthContext } from '@/contexts/AuthContext';
 
 import DeleteDialog from '@/components/DeleteDialog';
+import { Link } from '@chakra-ui/next-js';
 
 export default function SettingsLinkedAccounts() {
   const { currentUser, refreshCurrentUser, user } = useAuthContext();
@@ -124,7 +124,7 @@ export default function SettingsLinkedAccounts() {
           onUnlinkDiscordClose();
         }}
       />
-      <Box>
+      <Box maxW={'container.sm'}>
         <Box
           id={'roblox'}
           mb={4}
@@ -137,12 +137,12 @@ export default function SettingsLinkedAccounts() {
           </Heading>
           {currentUser?.roblox?.verified ? (
             <>
-              <Text>
+              <Text py={1}>
                 You&apos;ve linked your Roblox account on{' '}
                 {moment(currentUser?.roblox.verifiedAt).format('MMMM Do YYYY.')}
               </Text>
               <Text>
-                Your Roblox username:{' '}
+                Roblox username:{' '}
                 <Text
                   as={'span'}
                   fontWeight={'900'}
@@ -163,7 +163,7 @@ export default function SettingsLinkedAccounts() {
             </>
           ) : (
             <>
-              <Text>You have not linked your Roblox account. Please link one to use Restrafes XCS.</Text>
+              <Text py={1}>You have not linked your Roblox account. Please link one to use Restrafes XCS.</Text>
               <ButtonGroup mt={4}>
                 <Button
                   colorScheme={'blue'}
@@ -190,6 +190,12 @@ export default function SettingsLinkedAccounts() {
           >
             Discord
           </Heading>
+          <Text py={1}>
+            Link your Discord account to Restrafes XCS to receive the <Text as={'strong'}>XCS</Text> role on the{' '}
+            <Link href={'https://discord.gg/BWVa3yE9M3'} target='_blank' textDecor={'underline'}>
+              R&C Community
+            </Link>.
+          </Text>
           {currentUser?.discord.verified ? (
             <>
               <Text>
@@ -213,7 +219,6 @@ export default function SettingsLinkedAccounts() {
                   Unlink
                 </Button>
                 <Button
-                  colorScheme={'blue'}
                   onClick={() => {
                     push(
                       `https://discord.com/api/oauth2/authorize?client_id=1127492928995078215&redirect_uri=${process.env.NEXT_PUBLIC_ROOT_URL}/verify/oauth2/discord&response_type=code&scope=identify`
