@@ -852,7 +852,7 @@ export default function PlatformOrganization() {
                             <Td>
                               {
                                 scanEvent.user ? (
-                                  <Flex flexDir={'row'} align={'center'} gap={4}>
+                                  <Flex flexDir={'row'} align={'center'} gap={3}>
                                     <TooltipAvatar as={Link} href={`/@${scanEvent.user.username}`} target='_blank' name={scanEvent.user.displayName} src={scanEvent.user.avatar} />
                                     <Flex flexDir={'column'}>
                                       <Text fontWeight={'bold'}>{scanEvent.user.displayName}</Text>
