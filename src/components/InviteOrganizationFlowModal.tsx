@@ -460,7 +460,7 @@ export default function InviteOrganizationFlowModal({
                         <Field name="type">
                           {({ field, form }: any) => (
                             <Flex flexDir={'row'} gap={4} w={'full'}>
-                              <RadioGroup {...field} defaultValue="user" dir='column' value={field.value}>
+                              <RadioGroup {...field} defaultValue="user" dir='column' value={field.value} w={'full'}>
                                 <Stack spacing={2}>
                                   {memberTypeOptions.map((value: any) => {
                                     const radio = getRadioPropsMemberType({ value: value.value })
@@ -468,7 +468,7 @@ export default function InviteOrganizationFlowModal({
                                       <RadioCard key={value.value} {...radio}>
                                         <Flex flexDir={'row'} align={'center'} justify={'flex-start'}>
                                           <Icon as={value.icon} w={5} h={5} />
-                                          <Flex flexDir={'column'} ml={3}>
+                                          <Flex flexDir={'column'} ml={4}>
                                             <Text fontWeight={'bold'}>
                                               {value.label}
                                             </Text>
@@ -658,7 +658,7 @@ export default function InviteOrganizationFlowModal({
                                               selectedOptionStyle="check"
                                             />
                                             <FormHelperText>
-                                              Enter the card numbers you want to add to your organization.
+                                              Enter the card numbers you want to add to your organization. <Text as={'strong'}>Ranges are supported (e.g. 1-24).</Text>
                                             </FormHelperText>
                                           </FormControl>
                                         )}

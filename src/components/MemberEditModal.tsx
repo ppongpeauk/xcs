@@ -984,7 +984,7 @@ export default function MemberEditModal({
                                         </InputGroup>
                                         <FormHelperText>
                                           This is the data that will be returned when this member scans their card.
-                                          (User scan data takes priority over access group scan data when it is merged.)
+                                          (User scan data takes priority over access group scan data when it is merged).
                                         </FormHelperText>
                                       </FormControl>
                                     )}

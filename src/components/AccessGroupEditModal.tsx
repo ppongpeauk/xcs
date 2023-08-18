@@ -579,7 +579,7 @@ export default function AccessGroupEditModal({
                                         <FormHelperText>
                                           This is the data that will be returned when a user under this access group
                                           scans their card. (User scan data takes priority over access group scan data
-                                          when it is merged.)
+                                          when it is merged).
                                         </FormHelperText>
                                       </FormControl>
                                     )}
