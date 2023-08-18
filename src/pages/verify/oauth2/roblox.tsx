@@ -14,9 +14,7 @@ export default function RobloxOauth2() {
   useEffect(() => {
     if (!user || !query) return;
 
-    if (!code) {
-      push('/settings/3?robloxLinked=false');
-    } else {
+    if (code) {
       user
         .getIdToken()
         .then((token: string) => {

@@ -1,4 +1,3 @@
-import { tokenToID } from '@/pages/api/firebase';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import { authToken } from '@/lib/auth';
@@ -34,12 +33,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         'Content-Type': 'application/x-www-form-urlencoded',
         Authorization:
           'Basic ' +
-          Buffer.from(process.env.NEXT_PUBLIC_ROBLOX_CLIENT_ID + ':' + process.env.ROBLOX_CLIENT_SECRET).toString('base64')
+          Buffer.from(process.env.NEXT_PUBLIC_ROBLOX_CLIENT_ID + ':' + process.env.ROBLOX_CLIENT_SECRET).toString(
+            'base64'
+          )
       },
       method: 'POST',
       body: new URLSearchParams({
         grant_type: 'authorization_code',
-        code: code,
+        code: code
       })
     });
 
