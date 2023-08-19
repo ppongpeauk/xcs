@@ -204,7 +204,7 @@ export default function SettingsLinkedAccounts() {
                   as={'span'}
                   fontWeight={'900'}
                 >
-                  @{currentUser?.discord.username}
+                  {currentUser?.discord.username}
                   {currentUser?.discord.discriminator && `#${currentUser?.discord.discriminator}`}
                 </Text>{' '}
                 on {moment(currentUser?.discord.verifiedAt).format('MMMM Do YYYY.')}

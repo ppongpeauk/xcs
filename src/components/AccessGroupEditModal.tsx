@@ -543,7 +543,7 @@ export default function AccessGroupEditModal({
                                             />
                                           </InputGroup>
                                           <FormHelperText>
-                                            Whether or not this access group is open to everyone.
+                                            Whether or not this access group is open to everyone whose access is granted.
                                           </FormHelperText>
                                         </FormControl>
                                       )}
