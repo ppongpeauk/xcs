@@ -596,16 +596,6 @@ export default function AccessGroupEditModal({
                                   spacing={4}
                                 >
                                   <Button
-                                    colorScheme="red"
-                                    leftIcon={<IoIosRemoveCircle />}
-                                    onClick={() => {
-                                      setFocusedGroup(focusedGroup);
-                                      deleteGroupDialogOnOpen();
-                                    }}
-                                  >
-                                    Delete
-                                  </Button>
-                                  <Button
                                     isLoading={props.isSubmitting}
                                     leftIcon={<IoSave />}
                                     type={'submit'}
@@ -617,6 +607,16 @@ export default function AccessGroupEditModal({
                                     }}
                                   >
                                     Save Changes
+                                  </Button>
+                                  <Button
+                                    colorScheme="red"
+                                    leftIcon={<IoIosRemoveCircle />}
+                                    onClick={() => {
+                                      setFocusedGroup(focusedGroup);
+                                      deleteGroupDialogOnOpen();
+                                    }}
+                                  >
+                                    Delete
                                   </Button>
                                 </Stack>
                               </Portal>
