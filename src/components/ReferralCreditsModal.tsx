@@ -105,9 +105,9 @@ export default function ReferralCreditsModal({
             | any,
           referrals: 1,
         }}
-        onSubmit={(values, actions) => {
-          user.getIdToken().then((token: any) => {
-            fetch(`/api/v1/admin/referral-credits`, {
+        onSubmit={async (values, actions) => {
+          await user.getIdToken().then(async (token: string) => {
+            await fetch(`/api/v1/admin/referral-credits`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -115,7 +115,7 @@ export default function ReferralCreditsModal({
               },
               body: JSON.stringify({
                 recipientId: values.recipientId?.value,
-                referrals: values.referrals || 1,
+                referrals: parseInt(values.referrals.toString()) || 1,
               })
             })
               .then((res) => {
