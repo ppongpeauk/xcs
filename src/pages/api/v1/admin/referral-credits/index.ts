@@ -1,12 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { generate } from 'randomstring';
 
 import { authToken } from '@/lib/auth';
 import clientPromise from '@/lib/mongodb';
-import { Invitation } from '@/types';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  let { senderId, referrals } = req.body;
+  let { recipientId, referrals } = req.body;
 
   const uid = await authToken(req);
   if (!uid) {
@@ -22,16 +20,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (!user) return res.status(404).json({ message: 'User not found.' });
   if (!user.platform.staff) return res.status(403).json({ message: 'Forbidden.' });
 
-  const recipient = await users.findOne({ id: senderId || user.id });
+  const recipient = await users.findOne({ id: recipientId || user.id });
 
   if (!recipient) return res.status(404).json({ message: 'Recipient not found.' });
 
   if (req.method === 'POST') {
-    const result = await users.updateOne({ id: recipient.id || user.id }, {
-      $inc: {
-        'platform.invites': referrals || 1
-      }
-    }).then(() => true).catch(() => false);
+    const result = await users
+      .updateOne(
+        { id: recipient.id || user.id },
+        {
+          $inc: {
+            'platform.invites': referrals || 1
+          }
+        }
+      )
+      .then(() => true)
+      .catch(() => false);
 
     if (!result) {
       return res.status(500).json({
@@ -41,7 +45,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     } else {
       return res.status(200).json({
         success: true,
-        message: `Successfully added ${referrals || 1} referral credit${referrals === 1 ? '' : 's'} to ${recipient.displayName || user.displayName}.`,
+        message: `Successfully added ${referrals || 1} referral credit${referrals === 1 ? '' : 's'} to ${
+          recipient.displayName || user.displayName
+        }.`
       });
     }
   }

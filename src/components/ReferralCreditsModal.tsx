@@ -97,7 +97,7 @@ export default function ReferralCreditsModal({
       <Formik
         enableReinitialize={true}
         initialValues={{
-          recipient: null as
+          recipientId: null as
             | {
               label: string;
               value: string;
@@ -114,7 +114,7 @@ export default function ReferralCreditsModal({
                 Authorization: `Bearer ${token}`
               },
               body: JSON.stringify({
-                recipient: values.recipient?.value,
+                recipientId: values.recipientId?.value,
                 referrals: values.referrals || 1,
               })
             })
@@ -169,7 +169,7 @@ export default function ReferralCreditsModal({
                 <ModalBody pb={4}>
                   <VStack spacing={2}>
                     <>
-                      <Field name="recipient">
+                      <Field name="recipientId">
                         {({ field, form }: any) => (
                           <FormControl>
                             <FormLabel>Recipient</FormLabel>
@@ -188,7 +188,7 @@ export default function ReferralCreditsModal({
                                 getUserSearchResults(inputValue, callback);
                               }}
                               onChange={(value) => {
-                                form.setFieldValue('recipient', value);
+                                form.setFieldValue('recipientId', value);
                               }}
                               value={field.value || []}
                               selectedOptionStyle='check'
