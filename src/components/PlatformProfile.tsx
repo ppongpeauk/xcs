@@ -338,6 +338,7 @@ export default function Profile({ username, user }: { username: string | null; u
           <Box
             w={{ base: 'full', md: '320px' }}
             mr={{ base: 0, md: 16 }}
+            pb={2}
           >
             <Text
               as={'h1'}
@@ -383,6 +384,7 @@ export default function Profile({ username, user }: { username: string | null; u
             <Box
               rounded={'lg'}
               w={{ base: 'full', md: '384px' }}
+              pb={2}
             >
               <Text
                 as={'h1'}
@@ -399,7 +401,7 @@ export default function Profile({ username, user }: { username: string | null; u
                   {!user?.discord.verified && !user?.roblox.verified && (
                     <Text
                       size={'md'}
-                      color={'gray.500'}
+                      variant={'subtext'}
                     >
                       This user has not linked any accounts.
                     </Text>
