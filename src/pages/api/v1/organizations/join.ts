@@ -29,6 +29,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const inviteCodeData = (await invitations.findOne({
+      type: 'organization',
       code: inviteCode
     })) as Invitation | null;
 

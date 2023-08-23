@@ -42,17 +42,20 @@ export default function JoinOrganizationDialog({
     <>
       <Formik
         initialValues={{ inviteCode: initialValue }}
-        onSubmit={(values, actions) => {
+        onSubmit={async (values, actions) => {
           // Handle Links
           values.inviteCode = values.inviteCode.replace(`${process.env.NEXT_PUBLIC_ROOT_URL}/invitation/`, '');
 
-          user.getIdToken().then((token: any) => {
-            fetch(`/api/v1/organizations/${values.inviteCode}/join`, {
+          await user.getIdToken().then(async (token: string) => {
+            await fetch(`/api/v1/organizations/join`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`
-              }
+              },
+              body: {
+                code: values.inviteCode as string
+              } as any
             })
               .then((res) => {
                 if (res.status === 200) {
