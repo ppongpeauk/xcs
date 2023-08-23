@@ -20,7 +20,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   // Joining an organization with an invite code
   if (req.method === 'POST') {
-    let { code: inviteCode } = req.query as {
+    let { code: inviteCode } = req.body as {
       code: string;
     };
 
