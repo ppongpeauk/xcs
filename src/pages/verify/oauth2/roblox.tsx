@@ -12,7 +12,7 @@ export default function RobloxOauth2() {
   }, [query.code]);
 
   useEffect(() => {
-    if (!user || !query?.code) return;
+    if (!user || (!query?.code && !query?.error)) return;
 
     if (code) {
       user
@@ -41,6 +41,9 @@ export default function RobloxOauth2() {
         .catch((err: any) => {
           console.log(err);
         });
+    }
+    if (query.error) {
+      push('/settings/3');
     }
   }, [user, code, push, query, refreshCurrentUser]);
 
