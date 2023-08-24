@@ -53,9 +53,9 @@ export default function JoinOrganizationDialog({
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`
               },
-              body: {
+              body: JSON.stringify({
                 code: values.inviteCode as string
-              } as any
+              })
             })
               .then((res) => {
                 if (res.status === 200) {
