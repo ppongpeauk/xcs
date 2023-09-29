@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 // Components
-import { Suspense, forwardRef } from 'react';
+import { Suspense, forwardRef, useCallback, useEffect, useState } from 'react';
 
 import {
   Box,
@@ -32,7 +33,7 @@ import { usePathname } from 'next/navigation';
 // Authentication
 import { useAuthContext } from '@/contexts/AuthContext';
 import { BsArrowUpRight } from 'react-icons/bs';
-import ThemeButtonPublic from './ThemeButtonPublic';
+import ThemeButtonPublic from '../ThemeButtonPublic';
 
 
 // eslint-disable-next-line react/display-name
@@ -87,32 +88,46 @@ export default function Nav({ type }: { type?: string }) {
   const { currentUser, isAuthLoaded } = useAuthContext();
   const pathname = usePathname();
 
+  const alertName = "homeAlertDismissed-0";
+  const [alertVisible, setAlertVisible] = useState(false);
+  const dismissAlert = useCallback(() => {
+    // get localstorage boolean
+    localStorage.setItem(alertName, "true");
+    setAlertVisible(false);
+  }, []);
+  useEffect(() => {
+    const dismissed = localStorage.getItem(alertName);
+    if (dismissed === null) {
+      setAlertVisible(true);
+    }
+  }, []);
+
   return (
     <Suspense>
-      {/* <Flex px={{ base: 4, md: 16 }} py={{ base: 8, md: 4 }} w={'full'} minH={'4rem'} bg={useColorModeValue('blackAlpha.900', 'white')} color={useColorModeValue('white', 'black')} align={'center'} justify={'flex-start'}>
-        <Heading size={'sm'} fontWeight={'normal'}>
-          We&apos;ve begun rolling out early access to those part of the beta program.
-          If you&apos;re interested in joining, please contact us at <Link textDecor={'underline'} textUnderlineOffset={4} textDecorationThickness={'1px'} href={'mailto:xcs@restrafes.co'}>xcs@restrafes.co</Link>.
-        </Heading>
-        <Spacer />
-        <CloseButton onClick={() => { }} />
-      </Flex> */}
+      {alertVisible &&
+        <Flex px={{ base: 4, md: 16 }} py={{ base: 8, md: 4 }} w={'full'} minH={'4rem'} bg={useColorModeValue('blackAlpha.900', 'white')} color={useColorModeValue('white', 'black')} align={'center'} justify={'flex-start'}>
+          <Heading size={'sm'} fontWeight={'normal'}>
+            We&apos;ve begun rolling out early access to those part of the beta program.
+            If you&apos;re interested in joining, please contact us at <Link textDecor={'underline'} textUnderlineOffset={4} textDecorationThickness={'1px'} href={'mailto:xcs@restrafes.co'}>xcs@restrafes.co</Link>.
+          </Heading>
+          <Spacer />
+          <CloseButton onClick={() => { dismissAlert(); }} />
+        </Flex>
+      }
       <Flex
         as="nav"
+        px={14}
         position={'sticky'}
         top={0}
-        // w={"100vw"}
         h={'6rem'}
         align={'center'}
         bg={useColorModeValue('white', 'gray.800')}
-        // border={'1px solid'}
         borderColor={useColorModeValue('gray.300', 'gray.700')}
         zIndex={50}
       >
         {/* Title */}
         <Flex
           align={'center'}
-          justify={'center'}
           w={'240px'}
           h={'full'}
         // borderRight={"1px solid"}
@@ -155,12 +170,8 @@ export default function Nav({ type }: { type?: string }) {
         <HStack
           align={'center'}
           h={'100%'}
-          px={[4, 12]}
-          // borderLeft={"1px solid"}
-          // borderColor={useColorModeValue("gray.200", "gray.700")}
-          spacing={2}
+          gap={2}
         >
-          {/* {type !== "login" && */}
           <Box display={{ base: 'none', md: 'flex' }} gap={4}>
             <NavLink
               href={'/auth/login'}
@@ -171,12 +182,6 @@ export default function Nav({ type }: { type?: string }) {
             </NavLink>
             <ThemeButtonPublic />
           </Box>
-          {/* } */}
-
-          {/* Theme Button */}
-          {/* <Box display={{ base: 'none', md: 'flex' }}>
-            <ThemeButton />
-          </Box> */}
 
           {/* Mobile Nav */}
           <Box display={{ base: 'flex', md: 'none' }}>

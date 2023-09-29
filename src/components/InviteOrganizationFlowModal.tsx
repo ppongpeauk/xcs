@@ -412,7 +412,7 @@ export default function InviteOrganizationFlowModal({
               setActiveStep(0);
               setRadioMemberType('user');
             }}
-            size={'md'}
+            size={'lg'}
           >
             <ModalOverlay />
             <Form>

@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import {
   Box,
@@ -70,7 +70,7 @@ export default function PlatformLocation() {
   const [tabIndex, setTabIndex] = useState(0);
   const toast = useToast();
 
-  let refreshData = () => {
+  let refreshData = useCallback(() => {
     setLocation(null);
     user.getIdToken().then((token: string) => {
       fetch(`/api/v1/locations/${query.id}`, {
@@ -96,14 +96,15 @@ export default function PlatformLocation() {
           setLocation(data.location);
         });
     });
-  };
+  }, [push, query.id, toast, user]);
 
   // Fetch location data
   useEffect(() => {
     if (!query.id) return;
     if (!user) return;
+    if (location) return;
     refreshData();
-  }, [query, user]);
+  }, [query, user, location, refreshData]);
 
   const indexSwitch = (index: number) => {
     let route = '';

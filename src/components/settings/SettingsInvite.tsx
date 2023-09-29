@@ -35,7 +35,7 @@ import { useRouter } from 'next/router';
 import { useAuthContext } from '@/contexts/AuthContext';
 
 import InvitePlatformUserModal from '@/components/InvitePlatformUserModal';
-import LocationResetUniverseIdModal from '@/components/LocationResetUniverseIdModal';
+import LocationResetUniverseIdModal from '@/components/settings/LocationResetUniverseIdModal';
 
 export default function SettingsInvite() {
   const { currentUser, isAuthLoaded, refreshCurrentUser } = useAuthContext();
