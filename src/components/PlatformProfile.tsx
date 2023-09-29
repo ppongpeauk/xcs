@@ -34,8 +34,8 @@ import { useRouter } from 'next/router';
 
 // Authentication
 import { useAuthContext } from '@/contexts/AuthContext';
-import { BsFillShieldFill } from '../../node_modules.old/react-icons/bs';
-import { IoHammerSharp } from '../../node_modules.old/react-icons/io5';
+import { BsFillShieldFill } from 'react-icons/bs';
+import { IoHammerSharp } from 'react-icons/io5';
 
 function OrganizationItem({ organization }: { organization: any }) {
   return (
