@@ -38,11 +38,11 @@ import { useAuthContext } from '@/contexts/AuthContext';
 // Layouts
 import Layout from '@/layouts/PlatformLayout';
 
-import SettingsAdmin from '@/components/SettingsAdmin';
-import SettingsAppearance from '@/components/SettingsAppearance';
-import SettingsInvite from '@/components/SettingsInvite';
-import SettingsLinkedAccounts from '@/components/SettingsLinkedAccounts';
-import SettingsProfile from '@/components/SettingsProfile';
+import SettingsAdmin from '@/components/settings/SettingsAdmin';
+import SettingsAppearance from '@/components/settings/SettingsAppearance';
+import SettingsInvite from '@/components/settings/SettingsInvite';
+import SettingsLinkedAccounts from '@/components/settings/SettingsLinkedAccounts';
+import SettingsProfile from '@/components/settings/SettingsProfile';
 
 function StyledTab({ children, index, icon }: { children: React.ReactNode; index: number; icon?: any }) {
   const { push } = useRouter();

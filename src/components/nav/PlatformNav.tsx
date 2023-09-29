@@ -528,7 +528,6 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
             align={'center'}
             justify={'flex-end'}
             spacing={4}
-            px={4}
           >
             {/* Notifications */}
             {/* <Popover>

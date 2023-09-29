@@ -1,5 +1,5 @@
 import Footer from '@/components/Footer';
-import Nav from '@/components/Nav';
+import Nav from '@/components/nav/Nav';
 import { Box, Container, Heading, Link, ListItem, OrderedList, Text } from '@chakra-ui/react';
 import Head from 'next/head';
 

@@ -5,8 +5,6 @@ import clientPromise from '@/lib/mongodb';
 import { getRobloxGroups, getRobloxUsers } from '@/lib/utils';
 import { Organization, OrganizationMember, User } from '@/types';
 
-const sharp = require('sharp');
-
 export const config = {
   api: {
     responseLimit: '16mb',

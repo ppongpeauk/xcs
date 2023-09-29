@@ -116,18 +116,20 @@ export default function Activate({ valid }: { valid: boolean }) {
           <Section>
             <Flex
               position={'relative'}
-              p={8}
+              px={8}
+              pt={8}
               pb={16}
               flexDir={'column'}
               align={'center'}
               outline={['0px solid', '1px solid']}
               outlineColor={['unset', useColorModeValue('gray.200', 'gray.700')]}
               rounded={'lg'}
-              maxW={{ base: '100%', md: 'md' }}
+              maxW={{ base: '100%', md: 'lg' }}
             >
               <Box
                 w={'full'}
                 px={[0, 8]}
+                pb={4}
               >
                 <Text
                   fontSize={'3xl'}
@@ -136,7 +138,6 @@ export default function Activate({ valid }: { valid: boolean }) {
                   Activate Account
                 </Text>
               </Box>
-              <br />
               <Box px={[0, 8]}>
                 <Formik
                   initialValues={{

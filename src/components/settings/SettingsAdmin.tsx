@@ -18,7 +18,7 @@ import { useRouter } from 'next/router';
 import { useAuthContext } from '@/contexts/AuthContext';
 
 import InvitePlatformModal from '@/components/InvitePlatformModal';
-import LocationResetUniverseIdModal from '@/components/LocationResetUniverseIdModal';
+import LocationResetUniverseIdModal from '@/components/settings/LocationResetUniverseIdModal';
 import AwardAchievementModal from './AwardAchievementModal';
 import ReferralCreditsModal from './ReferralCreditsModal';
 

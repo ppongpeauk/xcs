@@ -34,6 +34,8 @@ import { useRouter } from 'next/router';
 
 // Authentication
 import { useAuthContext } from '@/contexts/AuthContext';
+import { BsFillShieldFill } from 'react-icons/bs';
+import { IoHammerSharp } from 'react-icons/io5';
 
 function OrganizationItem({ organization }: { organization: any }) {
   return (
@@ -42,6 +44,7 @@ function OrganizationItem({ organization }: { organization: any }) {
       w={'auto'}
       h={'auto'}
       transition={'opacity 0.2s ease-out'} _hover={{ opacity: 0.75 }} _active={{ opacity: 0.5 }}
+      borderRadius={'md'}
     >
       <Avatar
         name={organization?.name}
@@ -132,7 +135,7 @@ export default function Profile({ username, user }: { username: string | null; u
         >
           {/* Badge */}
           <Flex
-            w={{ base: '300px', md: '300px' }}
+            w={'300px'}
             h={'auto'}
             aspectRatio={1 / 1.6}
             rounded={'xl'}
@@ -183,7 +186,7 @@ export default function Profile({ username, user }: { username: string | null; u
               mb={user?.platform.staff ? 4 : 8}
               w={'full'}
             >
-              <Skeleton isLoaded={!!user}>
+              <Skeleton isLoaded={!!user} lineHeight={1.25}>
                 <Text
                   as={'h1'}
                   fontSize={user?.displayName?.length > 16 ? '2xl' : '3xl'}
@@ -209,8 +212,7 @@ export default function Profile({ username, user }: { username: string | null; u
                   {user?.platform.staff && (
                     <Flex align={'center'}>
                       <Icon
-                        as={IoSparkles}
-                        size={'xl'}
+                        as={IoHammerSharp}
                         mr={1}
                       />
                       <Text
@@ -218,7 +220,7 @@ export default function Profile({ username, user }: { username: string | null; u
                         textAlign={'center'}
                         zIndex={1}
                       >
-                        {user?.platform.staffTitle || 'Staff Member'}
+                        {user?.platform.staffTitle || 'Employee'}
                       </Text>
                     </Flex>
                   )}
@@ -307,7 +309,7 @@ export default function Profile({ username, user }: { username: string | null; u
                         {(Object.values(user?.achievements || {}) || [])?.map((a: Achievement) => (
                           <Tooltip key={a.id} label={
                             <Flex p={2} gap={4} align={'center'}>
-                              <Image src={a.icon} alt={a.name} width={"64px"} height={"64px"} objectFit={'cover'} />
+                              <Image src={a.icon} alt={a.name} width={"64px"} height={"64px"} objectFit={'cover'} borderRadius={'lg'} />
                               <Flex flexDir={'column'} mr={4}>
                                 <Text fontWeight={'bold'} fontSize={'lg'}>{a.name}</Text>
                                 <Text fontWeight={'normal'}>{a.description}</Text>
@@ -317,7 +319,7 @@ export default function Profile({ username, user }: { username: string | null; u
                               </Flex>
                             </Flex>
                           }>
-                            <Image src={a.icon} alt={a.name} width={"64px"} height={"64px"} objectFit={'cover'} />
+                            <Image src={a.icon} alt={a.name} width={"64px"} height={"64px"} objectFit={'cover'} borderRadius={'lg'} cursor={'help'} border={'2px'} />
                           </Tooltip>
                         ))}
                       </Wrap>

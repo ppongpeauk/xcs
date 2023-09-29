@@ -12,6 +12,8 @@ import {
   useColorModeValue
 } from '@chakra-ui/react';
 
+import { Link } from '@chakra-ui/next-js';
+
 import Head from 'next/head';
 
 import { useAuthContext } from '@/contexts/AuthContext';
@@ -95,12 +97,14 @@ export default function PlatformHome() {
                   md: 'flex-start'
                 }}
               >
-                <Avatar
-                  size={'2xl'}
-                  src={currentUser?.avatar || ''}
-                />
+                <Link href={`/@${currentUser?.username}`}>
+                  <Avatar
+                    size={'2xl'}
+                    src={currentUser?.avatar || ''}
+                  />
+                </Link>
                 <Box textAlign={{ base: 'center', md: 'left' }}>
-                  <Heading fontSize={'4xl'}>
+                  <Heading fontSize={'3xl'}>
                     Good {new Date().getHours() < 12 ? 'morning' : 'afternoon'},{' '}
                     {currentUser?.displayName || currentUser?.username}.
                   </Heading>
@@ -118,7 +122,7 @@ export default function PlatformHome() {
           <Box>
             <Skeleton isLoaded={!!stats.total} w={'fit-content'}>
               <Heading
-                fontSize={'3xl'}
+                fontSize={'2xl'}
                 my={4}
               >
                 Statistics
@@ -126,7 +130,6 @@ export default function PlatformHome() {
             </Skeleton>
             <Flex flexDir={{ base: 'column', md: 'row' }} gap={4}>
               <Skeleton isLoaded={!!stats.total}>
-                {/* <Stat label={"Total"} value={`${stats.total} scans total`} /> */}
                 <StatBox
                   label={'Total Scans'}
                   value={`${stats.total} scans`}
@@ -154,10 +157,10 @@ export default function PlatformHome() {
             </Flex>
           </Box>
           {/* Platform Announcements */}
-          <Box maxW={'container.lg'}>
+          <Box>
             <Skeleton isLoaded w={'fit-content'}>
               <Heading
-                fontSize={'3xl'}
+                fontSize={'2xl'}
                 my={4}
               >
                 Announcements
@@ -170,7 +173,7 @@ export default function PlatformHome() {
               justify={'space-between'}
             >
               <Flex w={"full"} h={"128px"} borderRadius={'lg'} border={'1px solid'} borderColor={useColorModeValue('gray.200', 'gray.700')} p={4}>
-                <Text fontSize={'2xl'} m={'auto'}>Coming soon!</Text>
+                <Text variant={'subtext'} fontSize={'2xl'} m={'auto'}>Coming soon!</Text>
               </Flex>
             </Stack>
           </Box>

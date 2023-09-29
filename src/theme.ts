@@ -38,7 +38,7 @@ const config: ThemeConfig = {
 };
 
 Modal.defaultProps = {
-  motionPreset: 'slideInBottom'
+  // motionPreset: 'slideInBottom'
 };
 
 export const buttonTheme = defineStyleConfig({

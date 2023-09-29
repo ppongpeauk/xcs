@@ -525,7 +525,7 @@ export default function MemberEditModal({
                                         fontSize="sm"
                                         color="gray.500"
                                       >
-                                        Member since {toDate(member?.joinedAt)}
+                                        Joined {toDate(member?.joinedAt)}
                                       </Text>
                                     )
                                   }
@@ -698,7 +698,7 @@ export default function MemberEditModal({
                                   fontSize={'sm'}
                                   color={'gray.500'}
                                 >
-                                  Member since {toDate(focusedMember?.joinedAt)}
+                                  Joined {toDate(focusedMember?.joinedAt)}
                                 </Text>
                               )
                             }

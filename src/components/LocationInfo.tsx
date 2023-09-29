@@ -6,6 +6,7 @@ import {
   Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator,
   Button,
   Container,
+  Flex,
   FormControl,
   FormHelperText,
   FormLabel,
@@ -20,6 +21,7 @@ import {
   Switch,
   Text,
   Textarea,
+  Tooltip,
   useColorModeValue,
   useDisclosure,
   useToast
@@ -381,16 +383,24 @@ export default function LocationInfo({ location, query, idToken, refreshData }: 
                   >
                     Save Changes
                   </Button>
-                  <Button
-                    mb={2}
-                    onClick={downloadStarterPack}
-                    isLoading={packLoading}
-                    variant={'solid'}
-                    leftIcon={<BiSolidDownload />}
-                    isDisabled={location?.self.role < 2}
-                  >
-                    Download Template
-                  </Button>
+                  <Tooltip label={<Flex flexDir={'column'} p={2}>
+                    <Text fontSize={'lg'} fontWeight={'bold'}>Download Template</Text>
+                    <Text>
+                      Download everything you need to integrate XCS into your universe, including pre-configured server scripts and access point readers.
+                    </Text>
+
+                  </Flex>}>
+                    <Button
+                      mb={2}
+                      onClick={downloadStarterPack}
+                      isLoading={packLoading}
+                      variant={'solid'}
+                      leftIcon={<BiSolidDownload />}
+                      isDisabled={location?.self.role < 2}
+                    >
+                      Download Template
+                    </Button>
+                  </Tooltip>
                   <Button
                     colorScheme="red"
                     ml={'auto'}

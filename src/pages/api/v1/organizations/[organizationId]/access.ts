@@ -4,8 +4,6 @@ import { authToken } from '@/lib/auth';
 import clientPromise from '@/lib/mongodb';
 import { Organization } from '@/types';
 
-const sharp = require('sharp');
-
 export const config = {
   api: {
     responseLimit: '16mb',

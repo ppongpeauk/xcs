@@ -144,7 +144,7 @@ export default function OrganizationPublic({ organization }: { organization: Org
               </Text>
               {
                 organization?.verified &&
-                <Tooltip label='Verified'>
+                <Tooltip label='Verified Organization'>
                   <span>
                     <Icon
                       as={VscVerifiedFilled}
