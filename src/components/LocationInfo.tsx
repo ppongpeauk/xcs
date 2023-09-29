@@ -386,7 +386,7 @@ export default function LocationInfo({ location, query, idToken, refreshData }: 
                   <Tooltip label={<Flex flexDir={'column'} p={2}>
                     <Text fontSize={'lg'} fontWeight={'bold'}>Download Template</Text>
                     <Text>
-                      Download everything you need to integrate XCS into your universe, including pre-configured server scripts and access point readers.
+                      Download everything you need to integrate XCS into your experience, including pre-configured server scripts and access point readers.
                     </Text>
 
                   </Flex>}>

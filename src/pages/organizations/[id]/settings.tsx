@@ -688,7 +688,7 @@ export default function PlatformOrganization() {
                           id={'avatar-picker'}
                           direction={'column'}
                         >
-                          <Tooltip label={'Click to change avatar.'}>
+                          <Tooltip label={'Click to change icon.'}>
                             <Avatar
                               name={organization?.name}
                               src={image || defaultImage}

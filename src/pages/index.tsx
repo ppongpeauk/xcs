@@ -3,7 +3,18 @@ import Head from 'next/head';
 import Home from '@/components/Home';
 import Layout from '@/layouts/PublicLayout';
 
-export default function Homepage() {
+import { getSortedPostsData } from '@/lib/posts';
+
+export async function getStaticProps() {
+  const allPostsData = await getSortedPostsData();
+  return {
+    props: {
+      allPostsData,
+    },
+  };
+}
+
+export default function Homepage({ allPostsData }: { allPostsData: any }) {
   return (
     <>
       <Head>
@@ -33,7 +44,7 @@ export default function Homepage() {
           content="/images/logo-square.jpg"
         />
       </Head>
-      <Home />
+      <Home allPostsData={allPostsData} />
     </>
   );
 }
