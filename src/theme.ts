@@ -96,10 +96,10 @@ const theme = {
       baseStyle: {
         textUnderlineOffset: 4,
         _hover: {
-          opacity: 0.75
+          opacity: 0.87
         },
         _active: {
-          opacity: 0.5
+          opacity: 0.75
         }
       }
     },

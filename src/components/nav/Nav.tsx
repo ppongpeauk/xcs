@@ -173,6 +173,13 @@ export default function Nav({ type }: { type?: string }) {
           gap={2}
         >
           <Box display={{ base: 'none', md: 'flex' }} gap={4}>
+            {/* <NavLink
+              href={'/blog'}
+              pathname={pathname as string}
+            >
+              Blog
+              <Icon as={BsArrowUpRight} ml={1} h={3} />
+            </NavLink> */}
             <NavLink
               href={'/auth/login'}
               pathname={pathname as string}

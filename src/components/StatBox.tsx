@@ -8,8 +8,8 @@ export default function StatBox({ label, value, helper }: { label: string; value
       borderColor={useColorModeValue('gray.200', 'gray.700')}
       p={4}
       px={4}
-      minW={'256px'}
       h={'full'}
+      flexGrow={1}
     >
       <Stat>
         <Text>{label}</Text>
