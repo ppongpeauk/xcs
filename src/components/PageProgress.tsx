@@ -9,7 +9,7 @@ export default function PageProgress() {
     <NextNProgress
       color={useColorModeValue('#000', '#fff')}
       startPosition={0}
-      // stopDelayMs={250}
+      // stopDelayMs={500}
       height={2}
       options={{
         showSpinner: false

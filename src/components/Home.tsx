@@ -1,20 +1,10 @@
 import { Box, Button, Container, Flex, Heading, Icon, Image, Text, chakra, useColorModeValue } from '@chakra-ui/react';
 
-// import { Familjen_Grotesk, Manrope } from "next/font/google";
-// const font1 = Familjen_Grotesk({ subsets: ["latin"] });
 import NextImage from 'next/image';
 import Link from 'next/link';
 import Marquee from 'react-fast-marquee';
 import { BsArrowRight } from 'react-icons/bs';
 import Section from './section';
-
-
-// const Image = chakra(NextImage, {
-//   baseStyle: {
-//     maxH: '100%',
-//     maxW: '100%'
-//   }
-// });
 
 const ChakraImage = chakra(NextImage, {
   baseStyle: { maxH: 120, maxW: 120 },
@@ -52,7 +42,7 @@ export default function Home() {
           pb={24}
         >
           <Section>
-            <Heading as={'h1'} size={{ base: 'xl', md: '4xl' }} fontWeight={'normal'} pb={{ base: 8, md: 16 }} w={{ base: 'full', md: '50%' }}>
+            <Heading as={'h1'} size={{ base: 'xl', md: '4xl' }} fontWeight={'normal'} pb={{ base: 8, md: 16 }} w={{ base: 'full', md: '66%' }}>
               Powering the future of access control.
             </Heading>
           </Section>

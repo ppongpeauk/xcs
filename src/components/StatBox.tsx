@@ -7,7 +7,7 @@ export default function StatBox({ label, value, helper }: { label: string; value
       border={'1px solid'}
       borderColor={useColorModeValue('gray.200', 'gray.700')}
       p={4}
-      px={8}
+      px={4}
       minW={'256px'}
       h={'full'}
     >

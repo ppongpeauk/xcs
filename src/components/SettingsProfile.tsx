@@ -8,16 +8,20 @@ import {
   FormControl,
   FormLabel,
   HStack,
+  Icon,
   Input,
   InputGroup,
   SkeletonCircle,
   Stack,
+  Text,
   Textarea,
+  Tooltip,
   VStack,
+  chakra,
   useToast
 } from '@chakra-ui/react';
 
-import { IoSave } from 'react-icons/io5';
+import { IoInformation, IoInformationCircle, IoSave } from 'react-icons/io5';
 
 import { Field, Form, Formik } from 'formik';
 
@@ -225,7 +229,22 @@ export default function SettingsProfile() {
                   <Field name="username">
                     {({ field, form }: any) => (
                       <FormControl w={'fit-content'}>
-                        <FormLabel>Username</FormLabel>
+                        <FormLabel>
+                          <Flex align={'center'}>
+                            <Text>
+                              Username
+                            </Text>
+                            {/* <Tooltip label={'You cannot change your username.'}>
+                              <chakra.span>
+                                <Icon
+                                  as={IoInformationCircle}
+                                  ml={0.5}
+                                  size={'xl'}
+                                />
+                              </chakra.span>
+                            </Tooltip> */}
+                          </Flex>
+                        </FormLabel>
                         <InputGroup mb={2}>
                           <Input
                             {...field}
@@ -304,8 +323,9 @@ export default function SettingsProfile() {
               </Form>
             )}
           </Formik>
-        </Box>
-      )}
+        </Box >
+      )
+      }
     </>
   );
 }

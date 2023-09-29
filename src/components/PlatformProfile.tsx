@@ -34,6 +34,8 @@ import { useRouter } from 'next/router';
 
 // Authentication
 import { useAuthContext } from '@/contexts/AuthContext';
+import { BsFillShieldFill } from '../../node_modules.old/react-icons/bs';
+import { IoHammerSharp } from '../../node_modules.old/react-icons/io5';
 
 function OrganizationItem({ organization }: { organization: any }) {
   return (
@@ -183,7 +185,7 @@ export default function Profile({ username, user }: { username: string | null; u
               mb={user?.platform.staff ? 4 : 8}
               w={'full'}
             >
-              <Skeleton isLoaded={!!user}>
+              <Skeleton isLoaded={!!user} lineHeight={1.25}>
                 <Text
                   as={'h1'}
                   fontSize={user?.displayName?.length > 16 ? '2xl' : '3xl'}
@@ -209,8 +211,7 @@ export default function Profile({ username, user }: { username: string | null; u
                   {user?.platform.staff && (
                     <Flex align={'center'}>
                       <Icon
-                        as={IoSparkles}
-                        size={'xl'}
+                        as={IoHammerSharp}
                         mr={1}
                       />
                       <Text
@@ -218,7 +219,7 @@ export default function Profile({ username, user }: { username: string | null; u
                         textAlign={'center'}
                         zIndex={1}
                       >
-                        {user?.platform.staffTitle || 'Staff Member'}
+                        {user?.platform.staffTitle || 'Employee'}
                       </Text>
                     </Flex>
                   )}

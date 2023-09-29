@@ -1,4 +1,4 @@
-import { admin, tokenToID, uploadProfilePicture } from '@/pages/api/firebase';
+import { admin, uploadProfilePicture } from '@/pages/api/firebase';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import { authToken } from '@/lib/auth';

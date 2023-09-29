@@ -4,6 +4,7 @@ import { Suspense, forwardRef } from 'react';
 import {
   Box,
   Button,
+  CloseButton,
   Flex,
   HStack,
   Heading,
@@ -88,14 +89,14 @@ export default function Nav({ type }: { type?: string }) {
 
   return (
     <Suspense>
-      <Flex px={{ base: 4, md: 16 }} py={{ base: 8, md: 4 }} w={'full'} minH={'4rem'} bg={useColorModeValue('blackAlpha.900', 'white')} color={useColorModeValue('white', 'black')} align={'center'} justify={'flex-start'}>
+      {/* <Flex px={{ base: 4, md: 16 }} py={{ base: 8, md: 4 }} w={'full'} minH={'4rem'} bg={useColorModeValue('blackAlpha.900', 'white')} color={useColorModeValue('white', 'black')} align={'center'} justify={'flex-start'}>
         <Heading size={'sm'} fontWeight={'normal'}>
           We&apos;ve begun rolling out early access to those part of the beta program.
           If you&apos;re interested in joining, please contact us at <Link textDecor={'underline'} textUnderlineOffset={4} textDecorationThickness={'1px'} href={'mailto:xcs@restrafes.co'}>xcs@restrafes.co</Link>.
         </Heading>
-        {/* <Spacer />
-        <CloseButton onClick={() => { setAlertOpen(false) }} /> */}
-      </Flex>
+        <Spacer />
+        <CloseButton onClick={() => { }} />
+      </Flex> */}
       <Flex
         as="nav"
         position={'sticky'}
@@ -163,7 +164,7 @@ export default function Nav({ type }: { type?: string }) {
           <Box display={{ base: 'none', md: 'flex' }} gap={4}>
             <NavLink
               href={'/auth/login'}
-              pathname={pathname}
+              pathname={pathname as string}
             >
               Access Platform
               <Icon as={BsArrowUpRight} ml={1} h={3} />
