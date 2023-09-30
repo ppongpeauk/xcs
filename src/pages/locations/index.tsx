@@ -49,6 +49,9 @@ import { BsListUl } from 'react-icons/bs';
 const toRelativeTime = (date: string) => {
   return moment(new Date(date)).fromNow();
 }
+const toFullTime = (date: string) => {
+  return moment(new Date(date)).format('MMMM Do YYYY, h:mm:ss a');
+}
 
 function GridEntry({ key, location }: { key: Key, location?: Location }) {
   return <>
@@ -90,14 +93,16 @@ function GridEntry({ key, location }: { key: Key, location?: Location }) {
                 {location?.name || "Location"}
               </Link>
             </Heading>
-            <Flex align={'center'} color={'gray.500'} gap={1} fontSize={'md'}>
-              <Icon as={BiRefresh} />
-              <Text color={'gray.500'}>
-                {
-                  toRelativeTime(location?.updatedAt as string)
-                }
-              </Text>
-            </Flex>
+            <Tooltip label={toFullTime(location?.updatedAt as string)}>
+              <Flex align={'center'} color={'gray.500'} gap={1} fontSize={'md'}>
+                <Icon as={BiRefresh} />
+                <Text color={'gray.500'} cursor={'help'}>
+                  {
+                    toRelativeTime(location?.updatedAt as string)
+                  }
+                </Text>
+              </Flex>
+            </Tooltip>
           </Flex>
         </Skeleton>
       </Flex>
@@ -126,12 +131,14 @@ function TableEntry({ key, location, skeleton }: { key: number | string, locatio
                   {location?.roblox?.place?.name}
                 </Text>
               )}
-              <Flex align={'center'} color={'gray.500'} gap={1}>
-                <Icon as={BiRefresh} />
-                <Text size={'sm'}>
-                  {!skeleton ? toRelativeTime(location?.updatedAt as string) : "Last Updated"}
-                </Text>
-              </Flex>
+              <Tooltip label={toFullTime(location?.updatedAt as string)}>
+                <Flex align={'center'} color={'gray.500'} gap={1}>
+                  <Icon as={BiRefresh} />
+                  <Text size={'sm'} cursor={'help'}>
+                    {!skeleton ? toRelativeTime(location?.updatedAt as string) : "Last Updated"}
+                  </Text>
+                </Flex>
+              </Tooltip>
               <Text variant={'subtext'}>
                 {!skeleton ? location?.description || "No description available." : "Location Description"}
               </Text>

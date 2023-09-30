@@ -32,8 +32,8 @@ import { useAuthContext } from '@/contexts/AuthContext';
 
 import Layout from '@/layouts/PlatformLayout';
 
-import LocationAccessPoints from '@/components/LocationAccessPoints';
-import LocationInfo from '@/components/LocationInfo';
+import LocationAccessPoints from '@/components/location/LocationAccessPoints';
+import LocationInfo from '@/components/location/LocationInfo';
 
 function StyledTab({ children }: { children: React.ReactNode }) {
   return (

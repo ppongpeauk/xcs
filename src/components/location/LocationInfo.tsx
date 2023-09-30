@@ -10,6 +10,7 @@ import {
   FormControl,
   FormHelperText,
   FormLabel,
+  HStack,
   Heading,
   Input,
   InputGroup,
@@ -336,6 +337,20 @@ export default function LocationInfo({ location, query, idToken, refreshData }: 
                           // isDisabled={true}
                           isDisabled={location?.self.role < 2 || location?.roblox?.universe?.id !== null}
                         />
+                        <Button
+                          onClick={() => {
+                            if (location?.roblox?.universe?.id !== null) {
+                              window.open(`https://www.roblox.com/games/${location?.roblox?.place?.rootPlaceId}/game`, '_blank');
+                            }
+                          }}
+                          variant={'solid'}
+                          leftIcon={<SiRoblox />}
+                          isDisabled={location?.roblox?.universe?.id === null}
+                          px={16}
+                          ml={4}
+                        >
+                          Open Root Place
+                        </Button>
                       </InputGroup>
                       <FormHelperText>This cannot be changed once set.</FormHelperText>
                     </FormControl>

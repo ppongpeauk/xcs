@@ -51,6 +51,9 @@ import { BsListUl } from 'react-icons/bs';
 const toRelativeTime = (date: string) => {
   return moment(new Date(date)).fromNow();
 };
+const toFullTime = (date: string) => {
+  return moment(new Date(date)).format('MMMM Do YYYY, h:mm:ss a');
+}
 
 function GridEntry({ key, organization }: { key: Key, organization?: Organization }) {
   return <>
@@ -99,14 +102,16 @@ function GridEntry({ key, organization }: { key: Key, organization?: Organizatio
                 {organization?.owner?.displayName}
               </Link>
             </Text>
-            <Flex align={'center'} color={'gray.500'} gap={1} fontSize={'md'}>
-              <Icon as={BiRefresh} />
-              <Text color={'gray.500'}>
-                {
-                  toRelativeTime(organization?.updatedAt as string)
-                }
-              </Text>
-            </Flex>
+            <Tooltip label={toFullTime(organization?.updatedAt as string)} cursor={'help'}>
+              <Flex align={'center'} color={'gray.500'} gap={1} fontSize={'md'}>
+                <Icon as={BiRefresh} />
+                <Text color={'gray.500'}>
+                  {
+                    toRelativeTime(organization?.updatedAt as string)
+                  }
+                </Text>
+              </Flex>
+            </Tooltip>
           </Flex>
         </Skeleton>
       </Flex>
@@ -133,14 +138,16 @@ function TableEntry({ key, organization, skeleton }: { key: number | string, org
               <Text size={'sm'} variant={'subtext'} textUnderlineOffset={4}>
                 Owned by {!skeleton ? <Link href={`/@${organization?.owner?.username}`}>{organization?.owner?.displayName}</Link> : "Organization Owner"}
               </Text>
-              <Flex align={'center'} color={'gray.500'} gap={1}>
-                <Icon as={BiRefresh} />
-                <Text size={'sm'} textUnderlineOffset={4}>
-                  {!skeleton ? toRelativeTime(organization?.updatedAt) : "Last Updated"}
-                  {!skeleton && organization?.updatedBy && " by "}
-                  {!skeleton ? <Link href={`/@${organization?.updatedBy?.username}`}>{organization?.updatedBy?.displayName}</Link> : "Organization Owner"}
-                </Text>
-              </Flex>
+              <Tooltip label={toFullTime(organization?.updatedAt as string)}>
+                <Flex align={'center'} color={'gray.500'} gap={1}>
+                  <Icon as={BiRefresh} />
+                  <Text size={'sm'} textUnderlineOffset={4} cursor={'help'}>
+                    {!skeleton ? toRelativeTime(organization?.updatedAt) : "Last Updated"}
+                    {!skeleton && organization?.updatedBy && " by "}
+                    {!skeleton ? <Link href={`/@${organization?.updatedBy?.username}`}>{organization?.updatedBy?.displayName}</Link> : "Organization Owner"}
+                  </Text>
+                </Flex>
+              </Tooltip>
               <Text size={'sm'} variant={'subtext'} maxW={{ base: '500px', md: '384px', lg: '500px' }} overflow={'hidden'} textOverflow={'ellipsis'}>
                 {!skeleton ? organization?.description : "Organization Description"}
               </Text>

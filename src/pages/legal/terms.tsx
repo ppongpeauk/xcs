@@ -1,6 +1,6 @@
 import Footer from '@/components/Footer';
 import Nav from '@/components/nav/Nav';
-import { Box, Container, Heading, Link, ListItem, OrderedList, Text } from '@chakra-ui/react';
+import { Box, Container, Heading, Link, ListItem, OrderedList, Text, useColorMode, useColorModeValue } from '@chakra-ui/react';
 import Head from 'next/head';
 
 export default function Terms() {
@@ -10,13 +10,14 @@ export default function Terms() {
         <title>Restrafes XCS – Terms of Use</title>
       </Head>
       <Nav />
+      <Box bg={useColorModeValue('black', 'white')} w={'full'} h={'240px'} />
       <Container
         maxW={'container.md'}
         py={16}
       >
         <Heading
           as="h1"
-          size="2xl"
+          size="xl"
           mb={4}
         >
           Terms of Use
