@@ -13,6 +13,7 @@ import {
   Flex,
   FormControl,
   FormLabel,
+  Grid,
   HStack,
   Heading,
   Icon,
@@ -72,7 +73,7 @@ function ActionButton({ children, ...props }: any) {
   return (
     <Flex
       {...props}
-      w={'calc(50% - 1rem)'} h={'auto'} py={4} border='1px solid' borderColor={useColorModeValue('gray.200', 'gray.700')} borderRadius='lg'
+      h={'auto'} py={4} border='1px solid' borderColor={useColorModeValue('gray.200', 'gray.700')} borderRadius='lg'
       transition={'background 0.2s ease-out'}
       _hover={{
         bg: useColorModeValue('gray.50', 'gray.700')
@@ -462,13 +463,13 @@ export default function PlatformOrganization() {
             </BreadcrumbLink>
           </BreadcrumbItem>
         </Breadcrumb>
-
-        <Flex flexDir={{ base: 'column', '2xl': 'row' }} justify={'space-between'} align={'flex-start'} minH={'calc(100vh - 6rem)'} gap={{ base: 4, '2xl': 16 }}>
+        <Flex display={'grid'} gridTemplateColumns={{ base: '1fr', xl: '1fr 1fr' }} minH={'calc(100vh - 6rem)'} gap={{ base: 4, '2xl': 16 }}>
+          {/* <Flex flexDir={{ base: 'column', '2xl': 'row' }} justify={'space-between'} align={'flex-start'} minH={'calc(100vh - 6rem)'} gap={{ base: 4, '2xl': 16 }}> */}
           <Flex flexDir={'column'} flex={1} h={'100%'}>
             <Stack
               direction={'row'}
               align={'center'}
-              spacing={8}
+              gap={6}
               py={4}
             >
               <Skeleton
@@ -571,7 +572,7 @@ export default function PlatformOrganization() {
             <Heading as="h1" size="lg" my={2}>
               Quick Actions
             </Heading>
-            <Flex flexWrap={'wrap'} w={'full'} h={'auto'} py={2} gap={4} justify={'space-evenly'}>
+            <Flex display={'grid'} gridTemplateColumns={'1fr 1fr'} flexWrap={'wrap'} w={'full'} h={'auto'} py={2} gap={4} justify={'space-evenly'}>
               <ActionButton
                 onClick={memberModalOnOpen}
               >
@@ -737,7 +738,7 @@ export default function PlatformOrganization() {
                       </Portal>
                       <Field name="name">
                         {({ field, form }: any) => (
-                          <FormControl>
+                          <FormControl isRequired>
                             <FormLabel>Name</FormLabel>
                             <InputGroup mb={2}>
                               <Input
@@ -810,7 +811,42 @@ export default function PlatformOrganization() {
               </Skeleton>
             </Box>
           </Flex>
-          <Flex display={{ base: 'none', lg: 'flex' }} flexDir={'column'} flex={1} gap={4}>
+          <Flex display={{ base: 'none', md: 'flex' }} flexDir={'column'} flex={1} gap={4}>
+            {/* Global Stats */}
+            <Box>
+              <Skeleton isLoaded={!!organization} w={'fit-content'} my={4}>
+                <Heading
+                  fontSize={'3xl'}
+                  w={'fit-content'}
+                >
+                  Statistics
+                </Heading>
+                <Text variant={'subtext'}>
+                  Data from all of the access points in this organization.
+                </Text>
+              </Skeleton>
+              <Grid flexDir={{ base: 'column', md: 'row' }} templateColumns={'1fr 1fr 1fr'} gap={4}>
+                <Skeleton isLoaded={!!organization}>
+                  {/* <Stat label={"Total"} value={`${stats.total} scans total`} /> */}
+                  <StatBox
+                    label={'Total Scans'}
+                    value={`${organization?.statistics?.scans?.total || 0} scan${organization?.statistics?.scans?.total === 1 ? '' : 's'}`}
+                  />
+                </Skeleton>
+                <Skeleton isLoaded={!!organization}>
+                  <StatBox
+                    label={'Successful Scans'}
+                    value={`${organization?.statistics?.scans?.granted || 0} scan${organization?.statistics?.scans?.total === 1 ? '' : 's'}`}
+                  />
+                </Skeleton>
+                <Skeleton isLoaded={!!organization}>
+                  <StatBox
+                    label={'Failed Scans'}
+                    value={`${organization?.statistics?.scans?.denied || 0} scan${organization?.statistics?.scans?.total === 1 ? '' : 's'}`}
+                  />
+                </Skeleton>
+              </Grid>
+            </Box>
             {/* Scan Events */}
             <Skeleton isLoaded={!!scanEvents}>
               <Heading as="h1" size="lg">
@@ -898,45 +934,9 @@ export default function PlatformOrganization() {
                 </TableContainer>
               </Flex>
             </Skeleton>
-            {/* Global Stats */}
-            <Box>
-              <Skeleton isLoaded={!!organization} w={'fit-content'}>
-                <Heading
-                  fontSize={'3xl'}
-                  w={'fit-content'}
-                  my={4}
-                >
-                  Statistics
-                </Heading>
-              </Skeleton>
-              <Flex flexDir={{ base: 'column', md: 'row' }} gap={4}>
-                <Skeleton isLoaded={!!organization}>
-                  {/* <Stat label={"Total"} value={`${stats.total} scans total`} /> */}
-                  <StatBox
-                    label={'Total Scans'}
-                    value={`${organization?.statistics?.scans?.total || 0} scan${organization?.statistics?.scans?.total === 1 ? '' : 's'}`}
-                    helper={'Since the beginning of time.'}
-                  />
-                </Skeleton>
-                <Skeleton isLoaded={!!organization}>
-                  <StatBox
-                    label={'Successful Scans'}
-                    value={`${organization?.statistics?.scans?.granted || 0} scan${organization?.statistics?.scans?.total === 1 ? '' : 's'}`}
-                    helper={'Scans that were successful.'}
-                  />
-                </Skeleton>
-                <Skeleton isLoaded={!!organization}>
-                  <StatBox
-                    label={'Failed Scans'}
-                    value={`${organization?.statistics?.scans?.denied || 0} scan${organization?.statistics?.scans?.total === 1 ? '' : 's'}`}
-                    helper={'Scans that were denied.'}
-                  />
-                </Skeleton>
-              </Flex>
-            </Box>
           </Flex>
         </Flex>
-      </Container>
+      </Container >
     </>
   );
 }
