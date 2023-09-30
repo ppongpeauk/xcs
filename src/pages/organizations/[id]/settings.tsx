@@ -570,7 +570,7 @@ export default function PlatformOrganization() {
             </Stack>
             <Divider my={4} />
             <Heading as="h1" size="lg" my={2}>
-              Quick Actions
+              Manage
             </Heading>
             <Flex display={'grid'} gridTemplateColumns={'1fr 1fr'} flexWrap={'wrap'} w={'full'} h={'auto'} py={2} gap={4} justify={'space-evenly'}>
               <ActionButton
