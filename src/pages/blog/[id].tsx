@@ -26,6 +26,7 @@ export default function Post({ postData }: any) {
     return (
         <>
             <Head>
+                <title>{postData.title}</title>
                 <style>
                     {
                         `

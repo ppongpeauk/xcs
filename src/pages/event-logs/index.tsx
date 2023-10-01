@@ -8,10 +8,10 @@ export default function PlatformEventLogs() {
   return (
     <>
       <Head>
-        <title>Restrafes XCS – Event Logs</title>
+        <title>Event Logs - Restrafes XCS</title>
         <meta
           property="og:title"
-          content="Restrafes XCS – Event Logs"
+          content="Event Logs - Restrafes XCS"
         />
         <meta
           property="og:site_name"

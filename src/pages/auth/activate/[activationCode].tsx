@@ -62,10 +62,10 @@ export default function Activate({ valid }: { valid: boolean }) {
   return (
     <>
       <Head>
-        <title>Restrafes XCS – Activate Account</title>
+        <title>Activate Account - Restrafes XCS</title>
         <meta
           name="description"
-          content="Restrafes XCS – Activate Account"
+          content="Activate Account - Restrafes XCS"
         />
         <link
           rel="icon"
@@ -77,7 +77,7 @@ export default function Activate({ valid }: { valid: boolean }) {
         />
         <meta
           name="og:title"
-          content="Restrafes XCS – Activate Account"
+          content="Activate Account - Restrafes XCS"
         />
         <meta
           name="og:description"

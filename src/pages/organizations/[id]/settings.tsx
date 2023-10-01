@@ -368,10 +368,10 @@ export default function PlatformOrganization() {
   return (
     <>
       <Head>
-        <title>Restrafes XCS – {organization?.name}</title>
+        <title>{organization?.name} - Restrafes XCS</title>
         <meta
           property="og:title"
-          content="Restrafes XCS – Manage Organization"
+          content="Manage Organization - Restrafes XCS"
         />
         <meta
           property="og:site_name"
@@ -811,7 +811,7 @@ export default function PlatformOrganization() {
               </Skeleton>
             </Box>
           </Flex>
-          <Flex display={{ base: 'none', md: 'flex' }} flexDir={'column'} flex={1} gap={4}>
+          <Flex display={{ base: 'none', md: 'flex' }} flexDir={'column'} flexBasis={1} gap={4}>
             {/* Global Stats */}
             <Box>
               <Skeleton isLoaded={!!organization} w={'fit-content'} my={4}>
@@ -854,10 +854,10 @@ export default function PlatformOrganization() {
               </Heading>
               <Text fontSize={'md'} color={'gray.500'}>Showing the last 25 scan events.</Text>
             </Skeleton>
-            <Skeleton isLoaded={!!scanEvents} overflow={'scroll'} overscrollBehavior={'none'} maxH={'sm'}>
+            <Skeleton isLoaded={!!scanEvents} overflow={'scroll'} overscrollBehavior={'none'} maxH={'640px'}>
               <Flex flexDir={'column'}>
-                <TableContainer h={'auto'}>
-                  <Table variant='simple' size={'sm'}>
+                <TableContainer maxW={'container.sm'} h={'auto'}>
+                  <Table maxW={'100%'} overflowX={'auto'} variant='simple' size={'sm'}>
                     <TableCaption pt={0} my={4}>
                       {
                         scanEvents?.length === 0 ? (

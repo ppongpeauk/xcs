@@ -61,7 +61,7 @@ export default function Invitation({ invite, errorMessage }: { invite: Invitatio
   return (
     <>
       <Head>
-        <title>Restrafes XCS – Invitation</title>
+        <title>Invitation - Restrafes XCS</title>
       </Head>
       <Container
         maxW={'container.lg'}

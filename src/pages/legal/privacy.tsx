@@ -7,7 +7,7 @@ export default function Terms() {
   return (
     <>
       <Head>
-        <title>Restrafes XCS – Privacy Policy</title>
+        <title>Privacy Policy - Restrafes XCS</title>
       </Head>
       <Nav />
       <Box bg={useColorModeValue('black', 'white')} w={'full'} h={'240px'} />

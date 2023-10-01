@@ -315,10 +315,10 @@ export default function PlatformLocations() {
   return (
     <>
       <Head>
-        <title>Restrafes XCS – Locations</title>
+        <title>Locations - Restrafes XCS</title>
         <meta
           property="og:title"
-          content="Restrafes XCS – Manage Locations"
+          content="Manage Locations - Restrafes XCS"
         />
         <meta
           property="og:site_name"
