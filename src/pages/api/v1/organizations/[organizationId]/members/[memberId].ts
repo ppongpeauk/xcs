@@ -21,6 +21,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const organizations = db.collection('organizations');
   const users = db.collection('users');
+  const accessPoints = db.collection('accessPoints');
 
   // data gets mutated later on so we need to cast it to unknown first
   let organization = (await organizations.findOne({
@@ -136,6 +137,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           success: false
         });
       }
+
+      const user = await users.findOne({ id: member.id }, { projection: { roblox: 1 } });
+      const userAccessPoints = await accessPoints.updateMany(
+        {
+          organizationId: organizationId,
+          'config.alwaysAllowed.members': { $in: [member.id, user?.roblox?.id || 0] }
+        },
+        { $pull: { 'config.alwaysAllowed.members': { $in: [member.id, user?.roblox?.id || 0] } } } as any
+      );
 
       await organizations.updateOne(
         { id: organizationId },
