@@ -18,10 +18,10 @@ export default function Homepage({ allPostsData }: { allPostsData: any }) {
   return (
     <>
       <Head>
-        <title>Restrafes XCS – Home</title>
+        <title>Home - Restrafes XCS</title>
         <meta
           property="og:title"
-          content="Restrafes XCS – Home"
+          content="Home - Restrafes XCS"
         />
         <meta
           property="og:site_name"

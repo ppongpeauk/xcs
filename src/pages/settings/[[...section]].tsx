@@ -134,7 +134,7 @@ export default function Settings() {
   return (
     <>
       <Head>
-        <title>Restrafes XCS – Settings</title>
+        <title>Settings - Restrafes XCS</title>
         <meta
           property="og:site_name"
           content="Restrafes XCS"

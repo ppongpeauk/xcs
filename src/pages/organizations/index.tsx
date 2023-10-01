@@ -333,10 +333,10 @@ export default function PlatformOrganizations() {
   return (
     <>
       <Head>
-        <title>Restrafes XCS – Organizations</title>
+        <title>Organizations - Restrafes XCS</title>
         <meta
           property="og:title"
-          content="Restrafes XCS – Manage Organizations"
+          content="Manage Organizations - Restrafes XCS"
         />
         <meta
           property="og:site_name"

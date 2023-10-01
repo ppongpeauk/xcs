@@ -125,10 +125,10 @@ export default function PlatformHome({ posts }: any) {
   return (
     <>
       <Head>
-        <title>Restrafes XCS – Home</title>
+        <title>Home - Restrafes XCS</title>
         <meta
           property="og:title"
-          content="Restrafes XCS – Platform Home"
+          content="Platform Home - Restrafes XCS"
         />
         <meta
           property="og:site_name"

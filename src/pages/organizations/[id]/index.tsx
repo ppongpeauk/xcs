@@ -94,10 +94,10 @@ export default function OrganizationPublic({ organization }: { organization: Org
   return (
     <>
       <Head>
-        <title>Restrafes XCS – {organization?.name}</title>
+        <title>{organization?.name} - Restrafes XCS</title>
         <meta
           property="og:title"
-          content={`Restrafes XCS – ${organization?.name}`}
+          content={`${organization?.name} - Restrafes XCS`}
         />
         <meta
           property="og:site_name"

@@ -142,7 +142,7 @@ export default function Verify() {
   return (
     <>
       <Head>
-        <title>Restrafes XCS – Verification</title>
+        <title>Verification - Restrafes XCS</title>
       </Head>
       <Container
         maxW={'container.lg'}

@@ -35,7 +35,7 @@ export default function Error({ statusCode }: { statusCode: string }) {
   return (
     <>
       <Head>
-        <title>Restrafes XCS – {title}</title>
+        <title>{title} - Restrafes XCS</title>
       </Head>
       <Container
         maxW={'container.sm'}
