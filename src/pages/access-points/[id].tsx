@@ -695,7 +695,7 @@ export default function PlatformAccessPoint() {
                                   <InputGroup>
                                     <Switch
                                       {...field}
-                                      colorScheme="blue"
+                                      colorScheme="black"
                                       placeholder="Active"
                                       variant={'outline'}
                                       width={'fit-content'}

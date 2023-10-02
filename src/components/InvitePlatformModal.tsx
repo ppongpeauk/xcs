@@ -335,7 +335,7 @@ export default function InvitePlatformModal({
                   {!inviteCode ? (
                     <HStack>
                       <Button
-                        colorScheme={'blue'}
+                        colorScheme={'black'}
                         isLoading={props.isSubmitting}
                         type={'submit'}
                       >
@@ -346,7 +346,7 @@ export default function InvitePlatformModal({
                   ) : (
                     <HStack>
                       <Button
-                        colorScheme={'blue'}
+                        colorScheme={'black'}
                         onClick={copyInviteLink}
                       >
                         {!clipboardHasCopied ? 'Copy Link' : 'Copied!'}

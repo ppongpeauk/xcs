@@ -1048,7 +1048,7 @@ export default function MemberEditModal({
             >
               <Box ref={editButtonsRef} />
               <Button
-                colorScheme="blue"
+                colorScheme={'black'}
                 onClick={onClose}
               >
                 Close

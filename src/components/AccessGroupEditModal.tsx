@@ -637,7 +637,7 @@ export default function AccessGroupEditModal({
             >
               <Box ref={editButtonsRef} />
               <Button
-                colorScheme="blue"
+                colorScheme="black"
                 onClick={onClose}
               >
                 Close

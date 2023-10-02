@@ -194,7 +194,7 @@ export default function LocationResetUniverseIdModal({
 
                 <ModalFooter>
                   <Button
-                    colorScheme={'blue'}
+                    colorScheme={'black'}
                     mr={3}
                     isLoading={props.isSubmitting}
                     type={'submit'}

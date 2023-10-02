@@ -335,7 +335,7 @@ export default function InviteOrganizationRobloxGroupModal({
 
                 <ModalFooter>
                   <Button
-                    colorScheme={'blue'}
+                    colorScheme={'black'}
                     mr={3}
                     isLoading={props.isSubmitting}
                     type={'submit'}

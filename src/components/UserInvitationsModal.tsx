@@ -110,7 +110,7 @@ function TableEntry({ key, invitation, skeleton, action }: { key: number | strin
               onClick={() => { action(invitation, 'accept') }}
               size={"sm"}
               variant={"solid"}
-              colorScheme='blue'
+              colorScheme='black'
               textDecor={"unset !important"}
             >
               Accept

@@ -20,7 +20,6 @@ import {
   useColorModeValue,
   useToast
 } from '@chakra-ui/react';
-import NextLink from 'next/link';
 
 import { BsDiscord } from 'react-icons/bs';
 import { IoSettings, IoSparkles } from 'react-icons/io5';
@@ -231,7 +230,7 @@ export default function Profile({ username, user }: { username: string | null; u
         </Box>
         {
           currentUser?.id === user?.id && (
-            <Button as={NextLink} href={'/settings/1'} w={{ base: '300px', md: '300px' }} mb={4}>
+            <Button as={Link} colorScheme={'black'} href={'/settings/1'} w={{ base: '300px', md: '300px' }} mb={4}>
               <Icon
                 as={IoSettings}
                 mr={2}

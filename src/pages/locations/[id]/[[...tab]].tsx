@@ -53,7 +53,7 @@ function StyledTab({ children }: { children: React.ReactNode }) {
         color: useColorModeValue('gray.900', 'white')
       }}
       _selected={{
-        bg: useColorModeValue('gray.100', 'white'),
+        bg: useColorModeValue('gray.100', '#E2E8F0'),
         color: useColorModeValue('black', 'gray.900')
       }}
     >

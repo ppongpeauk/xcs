@@ -856,7 +856,7 @@ export default function InviteOrganizationFlowModal({
                     <Button
                       onClick={() => { setActiveStep(activeStep + 1) }}
                       isDisabled={activeStep === steps.length - 1}
-                      colorScheme='blue'
+                      colorScheme='black'
                     >
                       Next
                     </Button>
@@ -864,7 +864,7 @@ export default function InviteOrganizationFlowModal({
                     <Button
                       type="submit"
                       isLoading={props.isSubmitting}
-                      colorScheme={'blue'}
+                      colorScheme={'black'}
                       isDisabled={
                         (props.values.type === 'user' && (!props.values.id || !props.values.role)) ||
                         (props.values.type === 'roblox' && !props.values.username) ||

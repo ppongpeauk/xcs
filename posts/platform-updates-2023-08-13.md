@@ -1,5 +1,5 @@
 ---
-title: 'Platform Updates - 2023-08-13'
+title: 'Platform Updates － 2023-08-13'
 date: '2023-08-13'
 
 thumbnail: '/images/blog/launch/1.png'
