@@ -18,6 +18,7 @@ import {
   Skeleton,
   Spacer,
   Stack,
+  Tag,
   Text,
   useColorModeValue
 } from '@chakra-ui/react';
@@ -198,7 +199,7 @@ export default function PlatformHome({ posts }: any) {
                   R&C XCS is still in development and we&apos;re looking for feedback from our current users so that we can improve our product.
                 </Text>
                 <Text>
-                  Please send any comments, questions, or concerns to <Link target='_blank' href={'https://tally.so/r/nrOB5L'} textDecor={'underline'}>our feedback form</Link>.
+                  Please take a moment to fill out our <Link target='_blank' href={'https://tally.so/r/nrOB5L'} textDecor={'underline'}>feedback form</Link>.
                 </Text>
               </Flex>
             </Box>
@@ -269,7 +270,6 @@ export default function PlatformHome({ posts }: any) {
                 direction={{ base: 'column', md: 'row' }}
                 spacing={4}
                 align={'center'}
-                justify={'space-between'}
               >
                 {/* max 3 blog posts */}
                 {
@@ -284,6 +284,9 @@ export default function PlatformHome({ posts }: any) {
                           <Text>
                             {moment(post.date).format('MMMM Do, YYYY')}
                           </Text>
+                          <Tag mt={2} w={'fit-content'}>
+                            {post.category}
+                          </Tag>
                         </Flex>
                       </Flex>
                     </Link>

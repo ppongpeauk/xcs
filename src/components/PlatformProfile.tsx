@@ -319,7 +319,7 @@ export default function Profile({ username, user }: { username: string | null; u
                               </Flex>
                             </Flex>
                           }>
-                            <Image src={a.icon} alt={a.name} width={"64px"} height={"64px"} objectFit={'cover'} borderRadius={'lg'} cursor={'help'} border={'2px'} />
+                            <Image src={a.icon} alt={a.name} width={"64px"} height={"64px"} objectFit={'cover'} borderRadius={'lg'} cursor={'help'} border={'1px'} />
                           </Tooltip>
                         ))}
                       </Wrap>

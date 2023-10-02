@@ -1,6 +1,6 @@
 import Layout from "@/layouts/PublicLayout";
 import { getAllPostIds, getPostData } from "@/lib/posts";
-import { Avatar, Container, Divider, Flex, Heading, Text, chakra } from "@chakra-ui/react";
+import { Avatar, Container, Divider, Flex, Heading, Tag, Text, chakra } from "@chakra-ui/react";
 import moment from "moment";
 import Head from "next/head";
 import Markdown from "react-markdown";
@@ -33,6 +33,22 @@ export default function Post({ postData }: any) {
                     .markdown > * {
                         all: revert;
                       }
+
+                    .markdown * {
+                        font-size: 1.15rem;
+                    }
+
+                    .markdown h1 {
+                        font-size: 2rem;
+                        font-weight: bold;
+                        margin: 1.5rem 0;
+                    }
+
+                    .markdown h2 {
+                        font-size: 2rem;
+                        font-weight: bold;
+                        margin: 1rem 0;
+                    }
                     
                     .markdown img {
                         margin: 1.5rem 0;
@@ -43,10 +59,13 @@ export default function Post({ postData }: any) {
                 </style>
             </Head>
             <Container maxW={'container.lg'} minH={'calc(100vh - 6rem)'} pt={16}>
-                <Flex>
+                <Flex flexDir={'column'}>
                     <Heading>
                         {postData.title}
                     </Heading>
+                    <Tag mt={2} w={'fit-content'}>
+                        {postData.category}
+                    </Tag>
                 </Flex>
                 <Flex align={'center'} py={6}>
                     <Avatar
