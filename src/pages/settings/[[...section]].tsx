@@ -157,16 +157,28 @@ export default function Settings() {
       <Head>
         <title>Settings - Restrafes XCS</title>
         <meta
+          property="og:title"
+          content="Settings - Restrafes XCS"
+        />
+        <meta
           property="og:site_name"
           content="Restrafes XCS"
+        />
+        <meta
+          property="og:url"
+          content="https://xcs.restrafes.co"
+        />
+        <meta
+          property="og:description"
+          content="Control your access points with ease."
         />
         <meta
           property="og:type"
           content="website"
         />
         <meta
-          property="og:title"
-          content="Settings"
+          property="og:image"
+          content="/images/logo-square.jpg"
         />
       </Head>
       <Container
