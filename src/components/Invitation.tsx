@@ -128,6 +128,7 @@ export default function Invitation({ invite, errorMessage }: { invite: Invitatio
                 <Text
                   fontSize={'lg'}
                   mb={2}
+                  textAlign={'center'}
                 >
                   {invite ? (
                     <>
