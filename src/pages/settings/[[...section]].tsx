@@ -68,7 +68,7 @@ function StyledTab({ children, index, icon }: { children: React.ReactNode; index
         color: useColorModeValue('black', 'gray.900')
       }}
       onClick={() => {
-        push(`/settings/${index + 1}`);
+        push(`/settings/${index === 0 ? 'profile' : index === 1 ? 'appearance' : index === 2 ? 'linked-accounts' : index === 3 ? 'referrals' : 'staff-settings'}`);
       }}
     >
       {icon ? (
@@ -89,7 +89,28 @@ export default function Settings() {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    query.section && setIndex(parseInt(query.section as string) - 1);
+    if (!query.section) return;
+    let section;
+    switch (query.section[0]) {
+      case 'profile':
+        section = 0;
+        break;
+      case 'appearance':
+        section = 1;
+        break;
+      case 'linked-accounts':
+        section = 2;
+        break;
+      case 'referrals':
+        section = 3;
+        break;
+      case 'staff-settings':
+        section = 4;
+        break;
+      default:
+        section = 0;
+    }
+    setIndex(section);
   }, [query]);
 
   useEffect(() => {
