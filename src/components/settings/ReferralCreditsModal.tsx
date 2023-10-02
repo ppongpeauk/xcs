@@ -234,7 +234,7 @@ export default function ReferralCreditsModal({
                 <ModalFooter>
                   <HStack>
                     <Button
-                      colorScheme={'blue'}
+                      colorScheme={'black'}
                       isLoading={props.isSubmitting}
                       type={'submit'}
                     >

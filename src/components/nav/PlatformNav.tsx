@@ -311,7 +311,7 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
   const { push } = useRouter();
 
   return (
-    <Suspense fallback={<></>}>
+    <>
       <DeleteDialog
         isOpen={isLogoutOpen}
         onClose={onLogoutClose}
@@ -675,6 +675,6 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
           </HStack>
         </Flex>
       </Flex>
-    </Suspense>
+    </>
   );
 }

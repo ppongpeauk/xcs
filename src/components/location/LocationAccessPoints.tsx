@@ -228,7 +228,7 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
                       <Badge colorScheme={'red'}>Inactive</Badge>
                     )}
                     {accessPoint?.config?.armed ? (
-                      <Badge colorScheme={'blue'}>Armed</Badge>
+                      <Badge colorScheme={'black'}>Armed</Badge>
                     ) : (
                       <Badge colorScheme={'red'}>Not Armed</Badge>
                     )}

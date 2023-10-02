@@ -43,6 +43,7 @@ import Layout from '@/layouts/PlatformLayout';
 
 import CreateLocationDialog from '@/components/CreateLocationDialog';
 import { Location, Organization } from '@/types';
+import { AiFillSetting } from 'react-icons/ai';
 import { BiGrid, BiRefresh } from 'react-icons/bi';
 import { BsListUl } from 'react-icons/bs';
 
@@ -111,6 +112,8 @@ function GridEntry({ key, location }: { key: Key, location?: Location }) {
 }
 
 function TableEntry({ key, location, skeleton }: { key: number | string, location?: Location, skeleton?: boolean }) {
+  const { push } = useRouter();
+
   return <>
     <Tr key={key}>
       <Td>
@@ -132,14 +135,14 @@ function TableEntry({ key, location, skeleton }: { key: number | string, locatio
                 </Text>
               )}
               <Tooltip label={toFullTime(location?.updatedAt as string)}>
-                <Flex align={'center'} color={'gray.500'} gap={1}>
+                <Flex align={'center'} color={'gray.500'} gap={1} w={'fit-content'}>
                   <Icon as={BiRefresh} />
                   <Text size={'sm'} cursor={'help'}>
                     {!skeleton ? toRelativeTime(location?.updatedAt as string) : "Last Updated"}
                   </Text>
                 </Flex>
               </Tooltip>
-              <Text variant={'subtext'}>
+              <Text variant={'subtext'} maxW={'lg'} whiteSpace={'pre-wrap'}>
                 {!skeleton ? location?.description || "No description available." : "Location Description"}
               </Text>
             </Skeleton>
@@ -152,9 +155,9 @@ function TableEntry({ key, location, skeleton }: { key: number | string, locatio
             {
               location?.roblox?.place && (
                 <Button
-                  as={Link}
-                  href={`https://www.roblox.com/games/${location?.roblox?.place?.rootPlaceId}/game`}
-                  target='_blank'
+                  onClick={() => {
+                    window.open(`https://www.roblox.com/games/${location?.roblox?.place?.rootPlaceId}/game`, '_blank');
+                  }}
                   size={"sm"}
                   variant={"solid"}
                   colorScheme='gray'
@@ -165,14 +168,16 @@ function TableEntry({ key, location, skeleton }: { key: number | string, locatio
               )
             }
             <Button
-              as={Link}
-              href={`/locations/${location?.id}/general`}
+              onClick={() => {
+                push(`/locations/${location?.id}/general`)
+              }}
               size={"sm"}
               variant={"solid"}
-              colorScheme='blue'
+              colorScheme='black'
               textDecor={"unset !important"}
+              leftIcon={<Icon as={AiFillSetting} />}
             >
-              View Details
+              Manage
             </Button>
           </ButtonGroup>
         </Skeleton>

@@ -59,6 +59,20 @@ export const textTheme = defineStyleConfig({
 });
 
 const theme = {
+  colors: {
+    black: {
+      50: '#F7FAFC',
+      100: '#EDF2F7',
+      200: '#E2E8F0',
+      300: '#CBD5E0',
+      400: '#A0AEC0',
+      500: '#000',
+      600: '#444',
+      700: '#666',
+      800: '#888',
+      900: '#aaa'
+    }
+  },
   sizes: {
     container: {
       '2xl': '1400px'

@@ -923,7 +923,7 @@ export default function PlatformOrganization() {
                                 size={'sm'}
                                 isDisabled
                               >
-                                View Details
+                                Inspect
                               </Button>
                             </Td>
                           </Tr>

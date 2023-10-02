@@ -45,6 +45,7 @@ import JoinOrganizationDialog from '@/components/JoinOrganizationDialog';
 import UserInvitationsModal from '@/components/UserInvitationsModal';
 import { Organization, OrganizationMember } from '@/types';
 import moment from 'moment';
+import { AiFillSetting } from 'react-icons/ai';
 import { BiGrid, BiRefresh } from 'react-icons/bi';
 import { BsListUl } from 'react-icons/bs';
 
@@ -120,6 +121,8 @@ function GridEntry({ key, organization }: { key: Key, organization?: Organizatio
 }
 
 function TableEntry({ key, organization, skeleton }: { key: number | string, organization?: Organization, skeleton?: boolean }) {
+  const { push } = useRouter();
+
   return <>
     <Tr key={key}>
       <Td>
@@ -139,7 +142,7 @@ function TableEntry({ key, organization, skeleton }: { key: number | string, org
                 Owned by {!skeleton ? <Link href={`/@${organization?.owner?.username}`}>{organization?.owner?.displayName}</Link> : "Organization Owner"}
               </Text>
               <Tooltip label={toFullTime(organization?.updatedAt as string)}>
-                <Flex align={'center'} color={'gray.500'} gap={1}>
+                <Flex align={'center'} color={'gray.500'} gap={1} w={'fit-content'}>
                   <Icon as={BiRefresh} />
                   <Text size={'sm'} textUnderlineOffset={4} cursor={'help'}>
                     {!skeleton ? toRelativeTime(organization?.updatedAt) : "Last Updated"}
@@ -155,26 +158,13 @@ function TableEntry({ key, organization, skeleton }: { key: number | string, org
           </Flex>
         </Stack>
       </Td>
-      {/* <Td isNumeric>
-        <Skeleton isLoaded={!skeleton}>
-          <Text>
-            {!skeleton ? Object.values(organization?.members || {}).filter((member: OrganizationMember) => ['user'].includes(member.type)).length : 0}
-          </Text>
-        </Skeleton>
-      </Td>
-      <Td isNumeric>
-        <Skeleton isLoaded={!skeleton}>
-          <Text>
-            {!skeleton ? organization?.statistics?.numLocations : 0}
-          </Text>
-        </Skeleton>
-      </Td> */}
       <Td isNumeric>
         <Skeleton isLoaded={!skeleton}>
           <ButtonGroup>
             <Button
-              as={Link}
-              href={`/organizations/${organization?.id}`}
+              onClick={() => {
+                push(`/organizations/${organization?.id}`);
+              }}
               size={"sm"}
               variant={"solid"}
               textDecor={"unset !important"}
@@ -182,14 +172,16 @@ function TableEntry({ key, organization, skeleton }: { key: number | string, org
               View Public Page
             </Button>
             <Button
-              as={Link}
-              href={`/organizations/${organization?.id}/settings`}
+              onClick={() => {
+                push(`/organizations/${organization?.id}/settings`);
+              }}
               size={"sm"}
               variant={"solid"}
-              colorScheme='blue'
+              colorScheme='black'
               textDecor={"unset !important"}
+              leftIcon={<Icon as={AiFillSetting} />}
             >
-              View Details
+              Manage
             </Button>
           </ButtonGroup>
         </Skeleton>
