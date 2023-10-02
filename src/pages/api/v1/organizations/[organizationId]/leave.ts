@@ -17,6 +17,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const db = mongoClient.db(process.env.MONGODB_DB as string);
   const organizations = db.collection('organizations');
   const locations = db.collection('locations');
+  const accessPoints = db.collection('accessPoints');
+  const users = db.collection('users');
   let organization = (await organizations.findOne({
     id: organizationId
   })) as any;
@@ -40,6 +42,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         success: false
       });
     }
+
+    // Remove user from all access points
+    const user = await users.findOne({ id: uid }, { projection: { roblox: 1 } });
+    const userAccessPoints = await accessPoints.updateMany(
+      {
+        organizationId: organizationId,
+        'config.alwaysAllowed.members': { $in: [uid, user?.roblox?.id || 0] }
+      },
+      { $pull: { 'config.alwaysAllowed.members': { $in: [uid, user?.roblox?.id || 0] } } } as any
+    );
 
     // Leave Organization
     await organizations.updateOne(

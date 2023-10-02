@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 
 import { authToken } from '@/lib/auth';
 import clientPromise from '@/lib/mongodb';
+import { AccessPoint, Organization } from '@/types';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const uid = await authToken(req);
@@ -13,6 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const db = mongoClient.db(process.env.MONGODB_DB as string);
   const users = db.collection('users');
   const organizations = db.collection('organizations');
+  const accessPoints = db.collection('accessPoints');
   const user = await users.findOne({ id: uid });
 
   if (!user) {
@@ -112,6 +114,45 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           $unset: {
             [`members.${userInfo.sub}`]: ''
           }
+        }
+      );
+    }
+
+    // convert all roblox-type members across all access points to user-type
+    console.log(robloxUserOrganizations.map((organization) => organization.id));
+    const robloxUserAccessPoints = (await accessPoints
+      .find(
+        {
+          organizationId: { $in: robloxUserOrganizations.map((organization) => organization.id) },
+          'config.alwaysAllowed.members': { $in: [userInfo.sub] }
+        },
+        { projection: { id: 1 } }
+      )
+      .toArray()) as any as AccessPoint[];
+
+    // mongodb doesn't support multiple operations on the same field, so we have to do this in two steps
+
+    for (const accessPoint of robloxUserAccessPoints) {
+      console.log(accessPoint);
+      await accessPoints.updateOne(
+        {
+          id: accessPoint.id
+        },
+        {
+          $pull: {
+            [`config.alwaysAllowed.members`]: userInfo.sub
+          } as any
+        }
+      );
+
+      await accessPoints.updateOne(
+        {
+          id: accessPoint.id
+        },
+        {
+          $push: {
+            [`config.alwaysAllowed.members`]: user.id
+          } as any
         }
       );
     }

@@ -177,7 +177,7 @@ export default function PlatformAccessPoint() {
             };
             optionsMap[(member.type as string) || 'user'].options.push({
               label,
-              value: member.formattedId || member.id
+              value: member.formattedId !== null ? member.formattedId : member.id
             });
           });
 
