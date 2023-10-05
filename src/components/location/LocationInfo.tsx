@@ -334,7 +334,7 @@ export default function LocationInfo({ location, query, idToken, refreshData }: 
                           autoComplete="off"
                           placeholder="Universe ID"
                           variant={'outline'}
-                          // isDisabled={true}
+                          isReadOnly={true}
                           isDisabled={location?.self.role < 2 || location?.roblox?.universe?.id !== null}
                         />
                         <Button
@@ -349,7 +349,7 @@ export default function LocationInfo({ location, query, idToken, refreshData }: 
                           px={16}
                           ml={4}
                         >
-                          Open Root Place
+                          View Experience
                         </Button>
                       </InputGroup>
                       <FormHelperText>This cannot be changed once set.</FormHelperText>

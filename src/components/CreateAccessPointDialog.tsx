@@ -84,6 +84,7 @@ export default function CreateAccessPointDialog({
                   duration: 5000,
                   isClosable: true
                 });
+                actions.resetForm();
                 onClose();
                 onCreate(data.accessPointId);
               })

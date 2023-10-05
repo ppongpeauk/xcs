@@ -11,6 +11,7 @@ import {
   Icon,
   Input,
   InputGroup,
+  InputRightElement,
   SkeletonCircle,
   Stack,
   Text,
@@ -34,7 +35,7 @@ export default function SettingsProfile() {
 
   const defaultImage = `${process.env.NEXT_PUBLIC_ROOT_URL}/images/default-avatar.png`;
   const [image, setImage] = useState<null | undefined | string>(undefined);
-  const [croppedImage, setCroppedImage] = useState<null | string>(null);
+  const [emailEditable, setEmailEditable] = useState<boolean>(false);
 
   const toast = useToast();
 
@@ -61,7 +62,7 @@ export default function SettingsProfile() {
     reader.onloadend = () => {
       setImage(reader.result as string);
     };
-  }, []);
+  }, [toast]);
 
   const removeAvatar = useCallback(() => {
     // download default avatar and set it as the image
@@ -74,7 +75,7 @@ export default function SettingsProfile() {
           setImage(reader.result as string);
         };
       });
-  }, []);
+  }, [defaultImage]);
 
   useEffect(() => {
     if (!currentUser) return;
@@ -88,6 +89,7 @@ export default function SettingsProfile() {
           <Formik
             enableReinitialize={true}
             initialValues={{
+              emailEditable: false,
               displayName: currentUser?.displayName as string,
               username: currentUser?.username as string,
               bio: currentUser?.bio as string,
@@ -117,17 +119,19 @@ export default function SettingsProfile() {
                       });
                     }
                   })
-                  .then((data) => {
+                  .then(async (data) => {
                     toast({
                       title: data.message,
                       status: 'success',
                       duration: 3000,
                       isClosable: true
                     });
+
                     refreshCurrentUser();
                     // refresh form values
                     actions.resetForm({
                       values: {
+                        emailEditable: false,
                         displayName: currentUser?.displayName as string,
                         username: currentUser?.username as string,
                         bio: currentUser?.bio as string,
@@ -138,7 +142,7 @@ export default function SettingsProfile() {
                     if (values.email !== currentUser?.email?.address) {
                       toast({
                         title: 'You\'ve been logged out.',
-                        description: 'Because you\'ve changed your email address, you have been logged out. Please log in again to continue using Restrafes XCS.',
+                        description: 'Because you\'ve changed your email address, you have been logged out. Please log in again with your new email address to continue using Restrafes XCS.',
                         status: 'info',
                         duration: 9000,
                         isClosable: true
@@ -270,7 +274,16 @@ export default function SettingsProfile() {
                           autoComplete="off"
                           placeholder="Email address"
                           variant={'outline'}
+                          isDisabled={!props.values.emailEditable}
                         />
+                        {
+                          !props.values.emailEditable &&
+                          <InputRightElement width='4.5rem'>
+                            <Button h='1.75rem' size='sm' onClick={() => { form.setValues({ 'emailEditable': true }) }}>
+                              Edit
+                            </Button>
+                          </InputRightElement>
+                        }
                       </InputGroup>
                     </FormControl>
                   )}

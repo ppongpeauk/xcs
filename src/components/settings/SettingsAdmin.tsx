@@ -36,7 +36,7 @@ export default function SettingsProfile() {
         duration: 3000,
         isClosable: true
       });
-      push('/settings/1');
+      push('/settings/profile');
       return;
     }
   }, [currentUser, push, toast]);

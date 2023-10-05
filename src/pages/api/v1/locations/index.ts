@@ -142,7 +142,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     );
 
     return res.status(200).json({
-      message: 'Successfully created a location!',
+      message: 'Successfully created a location.',
       success: true,
       locationId: id
     });

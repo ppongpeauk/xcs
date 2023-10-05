@@ -230,7 +230,7 @@ export default function Profile({ username, user }: { username: string | null; u
         </Box>
         {
           currentUser?.id === user?.id && (
-            <Button as={Link} colorScheme={'black'} href={'/settings/1'} w={{ base: '300px', md: '300px' }} mb={4}>
+            <Button as={Link} colorScheme={'black'} href={'/settings/profile'} w={{ base: '300px', md: '300px' }} mb={4}>
               <Icon
                 as={IoSettings}
                 mr={2}

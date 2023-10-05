@@ -203,18 +203,16 @@ export default function PlatformHome({ posts }: any) {
                 </Text>
               </Flex>
             </Box>
-            <Skeleton isLoaded={!!stats.total} w={'fit-content'}>
-              <Flex flexDir={'column'} my={4}>
-                <Heading
-                  fontSize={'2xl'}
-                >
-                  Statistics
-                </Heading>
-                <Text variant={'subtext'}>
-                  Data from across the platform.
-                </Text>
-              </Flex>
-            </Skeleton>
+            <Flex flexDir={'column'} my={4}>
+              <Heading
+                fontSize={'2xl'}
+              >
+                Statistics
+              </Heading>
+              <Text variant={'subtext'}>
+                Data from across the platform.
+              </Text>
+            </Flex>
             <Box display={'grid'} gridTemplateColumns={{ base: '1fr', md: '1fr 1fr 1fr' }} flexDir={{ base: 'column', md: 'row' }} gap={4}>
               <Skeleton isLoaded={!!stats.total}>
                 <StatBox

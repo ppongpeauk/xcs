@@ -50,7 +50,7 @@ import { BsListUl } from 'react-icons/bs';
 const toRelativeTime = (date: string) => {
   return moment(new Date(date)).fromNow();
 }
-const toFullTime = (date: string) => {
+const toActualTime = (date: string) => {
   return moment(new Date(date)).format('MMMM Do YYYY, h:mm:ss a');
 }
 
@@ -71,7 +71,7 @@ function GridEntry({ key, location }: { key: Key, location?: Location }) {
                 ignoreFallback={true}
                 borderRadius={'lg'}
                 size={'lg'}
-                src={location?.roblox?.place?.thumbnail || '/images/default-avatar.png'}
+                src={location?.roblox?.place?.thumbnail || '/images/default-avatar-location.png'}
                 cursor={'pointer'}
                 w={'full'}
                 h={'full'}
@@ -94,7 +94,7 @@ function GridEntry({ key, location }: { key: Key, location?: Location }) {
                 {location?.name || "Location"}
               </Link>
             </Heading>
-            <Tooltip label={toFullTime(location?.updatedAt as string)}>
+            <Tooltip label={toActualTime(location?.updatedAt as string)}>
               <Flex align={'center'} color={'gray.500'} gap={1} fontSize={'md'}>
                 <Icon as={BiRefresh} />
                 <Text color={'gray.500'} cursor={'help'}>
@@ -120,7 +120,7 @@ function TableEntry({ key, location, skeleton }: { key: number | string, locatio
         <Stack flexDir={'row'} align={'center'}>
           <Skeleton isLoaded={!skeleton}>
             <Tooltip label={location?.roblox?.place?.name || location?.name} placement={'top'}>
-              <Avatar as={Link} href={location?.roblox?.place ? `https://www.roblox.com/games/${location?.roblox?.place?.rootPlaceId}/game` : `/locations/${location?.id}/general`} target={location?.roblox?.place ? '_blank' : '_self'} transition={'opacity 0.2s ease-out'} _hover={{ opacity: 0.75 }} _active={{ opacity: 0.5 }} borderRadius={'lg'} size={'md'} src={location?.roblox?.place?.thumbnail || '/images/default-avatar.png'} />
+              <Avatar as={Link} href={location?.roblox?.place ? `https://www.roblox.com/games/${location?.roblox?.place?.rootPlaceId}/game` : `/locations/${location?.id}/general`} target={location?.roblox?.place ? '_blank' : '_self'} transition={'opacity 0.2s ease-out'} _hover={{ opacity: 0.75 }} _active={{ opacity: 0.5 }} borderRadius={'lg'} size={'md'} src={location?.roblox?.place?.thumbnail || '/images/default-avatar-location.png'} />
             </Tooltip>
           </Skeleton>
 
@@ -130,11 +130,11 @@ function TableEntry({ key, location, skeleton }: { key: number | string, locatio
                 {!skeleton ? location?.name : "Location Name"}
               </Text>
               {!skeleton && location?.roblox?.place && (
-                <Text variant={'subtext'}>
+                <Text variant={'subtext'} fontWeight={'bold'}>
                   {location?.roblox?.place?.name}
                 </Text>
               )}
-              <Tooltip label={toFullTime(location?.updatedAt as string)}>
+              <Tooltip label={toActualTime(location?.updatedAt as string)}>
                 <Flex align={'center'} color={'gray.500'} gap={1} w={'fit-content'}>
                   <Icon as={BiRefresh} />
                   <Text size={'sm'} cursor={'help'}>
