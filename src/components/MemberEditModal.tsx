@@ -634,7 +634,8 @@ export default function MemberEditModal({
                     {!focusedMember || !organization ? (
                       <Text
                         m={'auto'}
-                        color={'gray.500'}
+                        variant={'subtext'}
+                        fontWeight={'bold'}
                       >
                         Select a member to manage.
                       </Text>

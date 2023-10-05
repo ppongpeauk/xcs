@@ -50,7 +50,7 @@ function TableEntry({ key, invitation, skeleton, action }: { key: number | strin
         <Stack flexDir={'row'} align={'center'} spacing={4}>
           <Skeleton isLoaded={!skeleton}>
             <Tooltip label={invitation?.organization?.name} placement={'top'}>
-              <Avatar as={Link} href={`/organizations/${invitation?.organization?.id}`} target='_blank' transition={'opacity 0.2s ease-out'} _hover={{ opacity: 0.75 }} _active={{ opacity: 0.5 }} borderRadius={'lg'} size={'md'} src={invitation?.organization?.avatar || '/images/default-avatar.png'} />
+              <Avatar as={Link} href={`/organizations/${invitation?.organization?.id}`} target='_blank' transition={'opacity 0.2s ease-out'} _hover={{ opacity: 0.75 }} _active={{ opacity: 0.5 }} borderRadius={'lg'} size={'md'} src={invitation?.organization?.avatar || '/images/default-avatar-organization.png'} />
             </Tooltip>
           </Skeleton>
           <Flex flexDir={'column'} justify={'center'}>

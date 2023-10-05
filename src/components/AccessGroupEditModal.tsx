@@ -326,7 +326,8 @@ export default function AccessGroupEditModal({
                     {!focusedGroup || !organization ? (
                       <Text
                         m={'auto'}
-                        color={'gray.500'}
+                        variant={'subtext'}
+                        fontWeight={'bold'}
                       >
                         Select an access group to manage.
                       </Text>

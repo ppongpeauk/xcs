@@ -78,6 +78,7 @@ export default function CreateLocationDialog({
                   duration: 5000,
                   isClosable: true
                 });
+                actions.resetForm();
                 onClose();
                 onCreate(data.locationId);
               })

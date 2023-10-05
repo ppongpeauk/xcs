@@ -52,7 +52,7 @@ import { BsListUl } from 'react-icons/bs';
 const toRelativeTime = (date: string) => {
   return moment(new Date(date)).fromNow();
 };
-const toFullTime = (date: string) => {
+const toActualTime = (date: string) => {
   return moment(new Date(date)).format('MMMM Do YYYY, h:mm:ss a');
 }
 
@@ -75,7 +75,7 @@ function GridEntry({ key, organization }: { key: Key, organization?: Organizatio
               ignoreFallback={true}
               borderRadius={'none'}
               size={'lg'}
-              src={organization?.avatar || '/images/default-avatar.png'}
+              src={organization?.avatar || '/images/default-avatar-organization.png'}
               cursor={'pointer'}
               w={'full'}
               h={'full'}
@@ -103,7 +103,7 @@ function GridEntry({ key, organization }: { key: Key, organization?: Organizatio
                 {organization?.owner?.displayName}
               </Link>
             </Text>
-            <Tooltip label={toFullTime(organization?.updatedAt as string)} cursor={'help'}>
+            <Tooltip label={toActualTime(organization?.updatedAt as string)} cursor={'help'}>
               <Flex align={'center'} color={'gray.500'} gap={1} fontSize={'md'}>
                 <Icon as={BiRefresh} />
                 <Text color={'gray.500'}>
@@ -129,7 +129,7 @@ function TableEntry({ key, organization, skeleton }: { key: number | string, org
         <Stack flexDir={'row'} align={'center'}>
           <Skeleton isLoaded={!skeleton}>
             <Tooltip label={organization?.name} placement={'top'}>
-              <Avatar as={Link} href={`/organizations/${organization?.id}`} transition={'opacity 0.2s ease-out'} _hover={{ opacity: 0.75 }} _active={{ opacity: 0.5 }} borderRadius={'lg'} size={'md'} src={organization?.avatar || '/images/default-avatar.png'} />
+              <Avatar as={Link} href={`/organizations/${organization?.id}`} transition={'opacity 0.2s ease-out'} _hover={{ opacity: 0.75 }} _active={{ opacity: 0.5 }} borderRadius={'lg'} size={'md'} src={organization?.avatar || '/images/default-avatar-organization.png'} />
             </Tooltip>
           </Skeleton>
 
@@ -141,7 +141,7 @@ function TableEntry({ key, organization, skeleton }: { key: number | string, org
               <Text size={'sm'} variant={'subtext'} textUnderlineOffset={4}>
                 Owned by {!skeleton ? <Link href={`/@${organization?.owner?.username}`}>{organization?.owner?.displayName}</Link> : "Organization Owner"}
               </Text>
-              <Tooltip label={toFullTime(organization?.updatedAt as string)}>
+              <Tooltip label={toActualTime(organization?.updatedAt as string)}>
                 <Flex align={'center'} color={'gray.500'} gap={1} w={'fit-content'}>
                   <Icon as={BiRefresh} />
                   <Text size={'sm'} textUnderlineOffset={4} cursor={'help'}>

@@ -17,6 +17,7 @@ import {
   HStack,
   Heading,
   Icon,
+  IconButton,
   Input,
   InputGroup,
   Portal,
@@ -33,6 +34,7 @@ import {
   Thead,
   Tooltip,
   Tr,
+  chakra,
   useColorModeValue,
   useDisclosure,
   useToast
@@ -45,7 +47,7 @@ import { BsFillPencilFill } from 'react-icons/bs';
 import { HiGlobeAlt, HiUserGroup } from 'react-icons/hi';
 import { ImTree } from 'react-icons/im';
 import { IoIosRemoveCircle } from 'react-icons/io';
-import { IoSave } from 'react-icons/io5';
+import { IoEye, IoSave } from 'react-icons/io5';
 import { RiProfileFill } from 'react-icons/ri';
 
 import { Field, Form, Formik } from 'formik';
@@ -73,7 +75,7 @@ function ActionButton({ children, ...props }: any) {
   return (
     <Flex
       {...props}
-      h={'auto'} py={4} border='1px solid' borderColor={useColorModeValue('gray.200', 'gray.700')} borderRadius='lg'
+      h={'auto'} border='1px solid' p={0} borderColor={useColorModeValue('gray.200', 'gray.700')} borderRadius='lg'
       transition={'background 0.2s ease-out'}
       _hover={{
         bg: useColorModeValue('gray.50', 'gray.700')
@@ -82,7 +84,7 @@ function ActionButton({ children, ...props }: any) {
         bg: useColorModeValue('gray.100', 'gray.600')
       }}
     >
-      <Button variant={'unstyled'} w={'full'} h={'full'}>
+      <Button w={'full'} h={'full'} m={"0 !important"} py={4} >
         <Center as={Flex} flexDir={'column'}>
           {children}
         </Center>
@@ -107,7 +109,7 @@ export default function PlatformOrganization() {
 
   const { isOpen: memberModalOpen, onOpen: memberModalOnOpen, onClose: memberModalOnClose } = useDisclosure();
 
-  const defaultImage = `${process.env.NEXT_PUBLIC_ROOT_URL}/images/default-avatar.png`;
+  const defaultImage = `${process.env.NEXT_PUBLIC_ROOT_URL}/images/default-avatar-organization.png`;
   const [image, setImage] = useState<null | undefined | string>(undefined);
   const [croppedImage, setCroppedImage] = useState<null | string>(null);
 
@@ -116,6 +118,10 @@ export default function PlatformOrganization() {
 
   const toRelativeTime = useMemo(() => (date: Date) => {
     return moment(new Date(date)).fromNow();
+  }, []);
+
+  const toActualTime = useMemo(() => (date: Date) => {
+    return moment(new Date(date)).format('MMMM Do YYYY, h:mm:ss a');
   }, []);
 
   const handleChange = useCallback(async (e: any) => {
@@ -814,7 +820,7 @@ export default function PlatformOrganization() {
           <Flex display={{ base: 'none', md: 'flex' }} flexDir={'column'} flexBasis={1} gap={4}>
             {/* Global Stats */}
             <Box>
-              <Skeleton isLoaded={!!organization} w={'fit-content'} my={4}>
+              <Box w={'fit-content'} my={4}>
                 <Heading
                   fontSize={'3xl'}
                   w={'fit-content'}
@@ -824,7 +830,7 @@ export default function PlatformOrganization() {
                 <Text variant={'subtext'}>
                   Data from all of the access points in this organization.
                 </Text>
-              </Skeleton>
+              </Box>
               <Grid flexDir={{ base: 'column', md: 'row' }} templateColumns={'1fr 1fr 1fr'} gap={4}>
                 <Skeleton isLoaded={!!organization}>
                   {/* <Stat label={"Total"} value={`${stats.total} scans total`} /> */}
@@ -848,12 +854,12 @@ export default function PlatformOrganization() {
               </Grid>
             </Box>
             {/* Scan Events */}
-            <Skeleton isLoaded={!!scanEvents}>
+            <Box>
               <Heading as="h1" size="lg">
                 Scan Events
               </Heading>
               <Text fontSize={'md'} color={'gray.500'}>Showing the last 25 scan events.</Text>
-            </Skeleton>
+            </Box>
             <Skeleton isLoaded={!!scanEvents} overflow={'scroll'} overscrollBehavior={'none'} maxH={'640px'}>
               <Flex flexDir={'column'}>
                 <TableContainer maxW={'container.sm'} h={'auto'}>
@@ -917,14 +923,19 @@ export default function PlatformOrganization() {
                                 <Link href={`/locations/${scanEvent.accessPoint?.location?.id}`} target='_blank' fontSize={'sm'} color={'gray.500'}>{scanEvent.accessPoint?.location?.name}</Link>
                               </Flex>
                             </Td>
-                            <Td isNumeric>{toRelativeTime(scanEvent.createdAt)}</Td>
                             <Td isNumeric>
-                              <Button
+                              <chakra.div cursor={'help'}>
+                                <Tooltip label={toActualTime(scanEvent.createdAt)}>
+                                  {toRelativeTime(scanEvent.createdAt)}
+                                </Tooltip>
+                              </chakra.div>
+                            </Td>
+                            <Td isNumeric>
+                              <IconButton
                                 size={'sm'}
                                 isDisabled
-                              >
-                                Inspect
-                              </Button>
+                                icon={<IoEye />} aria-label={'Inspect'}                              >
+                              </IconButton>
                             </Td>
                           </Tr>
                         ))
