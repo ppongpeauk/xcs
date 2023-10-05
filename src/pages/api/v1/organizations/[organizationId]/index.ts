@@ -309,7 +309,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     );
 
-    return res.status(200).json({ message: 'Successfully updated organization!', success: true });
+    return res.status(200).json({ message: 'Successfully updated organization.', success: true });
   }
 
   // Deleting Organization Data

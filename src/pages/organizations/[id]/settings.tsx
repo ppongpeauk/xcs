@@ -469,7 +469,7 @@ export default function PlatformOrganization() {
             </BreadcrumbLink>
           </BreadcrumbItem>
         </Breadcrumb>
-        <Flex display={'grid'} gridTemplateColumns={{ base: '1fr', xl: '1fr 1fr' }} minH={'calc(100vh - 6rem)'} gap={{ base: 4, '2xl': 16 }}>
+        <Flex display={'grid'} gridTemplateColumns={{ base: '1fr', xl: '1fr 1fr' }} minH={'calc(100vh - 6rem)'} gap={{ base: 4, xl: 16 }}>
           {/* <Flex flexDir={{ base: 'column', '2xl': 'row' }} justify={'space-between'} align={'flex-start'} minH={'calc(100vh - 6rem)'} gap={{ base: 4, '2xl': 16 }}> */}
           <Flex flexDir={'column'} flex={1} h={'100%'}>
             <Stack

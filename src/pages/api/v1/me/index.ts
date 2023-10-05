@@ -122,7 +122,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }, {});
 
     await db.collection('users').updateOne({ id: uid }, { $set: sanitizedBody });
-    return res.status(200).json({ message: 'Successfully updated profile!', success: true });
+    return res.status(200).json({ message: 'Successfully updated profile.', success: true });
   }
 
   return res.status(500).json({ message: 'Something went really wrong. Please try again later.' });

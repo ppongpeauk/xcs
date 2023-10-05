@@ -155,7 +155,6 @@ export default function PlatformHome({ posts }: any) {
         <Flex flexDir={'column'} gap={4}>
           {/* Greeting */}
           <Box id={'greeting'}>
-
             <Stack
               direction={{ base: 'column', md: 'row' }}
               gap={8}
@@ -189,112 +188,114 @@ export default function PlatformHome({ posts }: any) {
               </Skeleton>
             </Stack>
           </Box>
-          <Divider mt={4} />
-          {/* Global Stats */}
-          <Box>
-            <Box rounded={'lg'} p={6} my={2} bg={'black'} color={'white'}>
-              <Flex flexDir={'column'}>
-                <Text fontSize={'lg'} fontWeight={'bold'}>We value your feedback</Text>
-                <Text>
-                  R&C XCS is still in development and we&apos;re looking for feedback from our current users so that we can improve our product.
-                </Text>
-                <Text>
-                  Please take a moment to fill out our <Link target='_blank' href={'https://tally.so/r/nrOB5L'} textDecor={'underline'}>feedback form</Link>.
-                </Text>
-              </Flex>
-            </Box>
-            <Flex flexDir={'column'} my={4}>
-              <Heading
-                fontSize={'2xl'}
-              >
-                Statistics
-              </Heading>
-              <Text variant={'subtext'}>
-                Data from across the platform.
+          <Box rounded={'lg'} px={6} py={4} my={4} bg={'black'} color={'white'}>
+            <Flex flexDir={'column'}>
+              <Text fontSize={'lg'} fontWeight={'bold'}>We value your feedback</Text>
+              <Text>
+                R&C XCS is still in development and we&apos;re looking for feedback from our current users so that we can improve our product.
+              </Text>
+              <Text>
+                Please take a moment to fill out our <Link target='_blank' href={'https://tally.so/r/nrOB5L'} textDecor={'underline'}>feedback form</Link>.
               </Text>
             </Flex>
-            <Box display={'grid'} gridTemplateColumns={{ base: '1fr', md: '1fr 1fr 1fr' }} flexDir={{ base: 'column', md: 'row' }} gap={4}>
-              <Skeleton isLoaded={!!stats.total}>
-                <StatBox
-                  label={'Total Scans'}
-                  value={`${stats.total} scans`}
-                  helper={'Since the beginning of time.'}
-                />
-              </Skeleton>
-              <Skeleton isLoaded={!!stats.granted}>
-                <StatBox
-                  label={'Successful Scans'}
-                  value={`${stats.granted} scan${stats.granted > 1 ? 's' : ''} (${Math.round(
-                    (stats.granted / stats.total) * 100
-                  )}%)`}
-                  helper={'Scans that were successful.'}
-                />
-              </Skeleton>
-              <Skeleton isLoaded={!!stats.denied}>
-                <StatBox
-                  label={'Failed Scans'}
-                  value={`${stats.denied} scan${stats.denied > 1 ? 's' : ''} (${Math.round(
-                    (stats.denied / stats.total) * 100
-                  )}%)`}
-                  helper={'Scans that were denied.'}
-                />
-              </Skeleton>
-            </Box>
           </Box>
-          {/* Platform Announcements */}
-          <Box>
-            <Flex flexDir={'row'} align={'center'}>
-              <Flex flexDir={'column'} my={4}>
+          <Divider />
+          {/* Global Stats */}
+          <Flex pt={2} gap={8} flexDir={'column'}>
+            <Box>
+              <Flex flexDir={'column'} mb={4}>
                 <Heading
                   fontSize={'2xl'}
                 >
-                  Announcements
+                  Statistics
                 </Heading>
                 <Text variant={'subtext'}>
-                  Stay up to date with the latest news.
+                  Data from across the platform.
                 </Text>
               </Flex>
-              <Spacer />
-              <NavLink
-                href={'/blog'}
-                pathname={'/blog'}
-              >
-                View All
-                <Icon as={BsArrowUpRight} ml={1} h={3} />
-              </NavLink>
-            </Flex>
-            <Skeleton isLoaded={!!currentUser}>
-              <Stack
-                direction={{ base: 'column', md: 'row' }}
-                spacing={4}
-                align={'center'}
-              >
-                {/* max 3 blog posts */}
-                {
-                  posts.slice(0, 3).map((post: any) => (
-                    <Link href={`/blog/${post.id}`} textDecor={'none !important'} key={post.id}>
-                      <Flex flexDir={'column'} gap={4} w={'340px'}>
-                        <Image src={post.thumbnail} alt={post.thumbnailAlt} objectFit={'cover'} aspectRatio={1.5 / 1} borderRadius={'lg'} />
-                        <Flex flexDir={'column'}>
-                          <Heading size={'md'}>
-                            {post.title}
-                          </Heading>
-                          <Text>
-                            {moment(post.date).format('MMMM Do, YYYY')}
-                          </Text>
-                          <Tag mt={2} w={'fit-content'}>
-                            {post.category}
-                          </Tag>
+              <Box display={'grid'} gridTemplateColumns={{ base: '1fr', md: '1fr 1fr 1fr' }} flexDir={{ base: 'column', md: 'row' }} gap={4}>
+                <Skeleton isLoaded={!!stats.total}>
+                  <StatBox
+                    label={'Total Scans'}
+                    value={`${stats.total} scans`}
+                    helper={'Since the beginning of time.'}
+                  />
+                </Skeleton>
+                <Skeleton isLoaded={!!stats.granted}>
+                  <StatBox
+                    label={'Successful Scans'}
+                    value={`${stats.granted} scan${stats.granted > 1 ? 's' : ''} (${Math.round(
+                      (stats.granted / stats.total) * 100
+                    )}%)`}
+                    helper={'Scans that were successful.'}
+                  />
+                </Skeleton>
+                <Skeleton isLoaded={!!stats.denied}>
+                  <StatBox
+                    label={'Failed Scans'}
+                    value={`${stats.denied} scan${stats.denied > 1 ? 's' : ''} (${Math.round(
+                      (stats.denied / stats.total) * 100
+                    )}%)`}
+                    helper={'Scans that were denied.'}
+                  />
+                </Skeleton>
+              </Box>
+            </Box>
+            {/* Platform Announcements */}
+            <Box>
+              <Flex flexDir={'row'} align={'center'} mb={4}>
+                <Flex flexDir={'column'}>
+                  <Heading
+                    fontSize={'2xl'}
+                  >
+                    Announcements
+                  </Heading>
+                  <Text variant={'subtext'}>
+                    Stay up to date with the latest news.
+                  </Text>
+                </Flex>
+                <Spacer />
+                <NavLink
+                  href={'/blog'}
+                  pathname={'/blog'}
+                >
+                  View All
+                  <Icon as={BsArrowUpRight} ml={1} h={3} />
+                </NavLink>
+              </Flex>
+              <Skeleton isLoaded={!!currentUser}>
+                <Stack
+                  direction={{ base: 'column', md: 'row' }}
+                  spacing={4}
+                  align={'center'}
+                >
+                  {/* max 3 blog posts */}
+                  {
+                    posts.slice(0, 3).map((post: any) => (
+                      <Link href={`/blog/${post.id}`} textDecor={'none !important'} key={post.id}>
+                        <Flex flexDir={'column'} gap={4} w={'340px'}>
+                          <Image src={post.thumbnail} alt={post.thumbnailAlt} objectFit={'cover'} aspectRatio={1.5 / 1} borderRadius={'lg'} />
+                          <Flex flexDir={'column'}>
+                            <Heading size={'md'}>
+                              {post.title}
+                            </Heading>
+                            <Text>
+                              {moment(post.date).format('MMMM Do, YYYY')}
+                            </Text>
+                            <Tag mt={2} w={'fit-content'}>
+                              {post.category}
+                            </Tag>
+                          </Flex>
                         </Flex>
-                      </Flex>
-                    </Link>
-                  ))
-                }
-              </Stack>
-            </Skeleton>
-          </Box>
-        </Flex >
-      </Box >
+                      </Link>
+                    ))
+                  }
+                </Stack>
+              </Skeleton>
+            </Box>
+          </Flex>
+        </Flex>
+      </Box>
     </>
   );
 }
