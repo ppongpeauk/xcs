@@ -6,7 +6,7 @@ import clientPromise from '@/lib/mongodb';
 import { getRobloxGroups, getRobloxUsers } from '@/lib/utils';
 import { OrganizationMember, User } from '@/types';
 
-const sharp = require('sharp');
+import sharp from 'sharp';
 
 export const config = {
   api: {
@@ -272,7 +272,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (imageFormat === 'gif') {
         image = await sharp(imageData, { animated: true })
           .resize(256, 256)
-          .gif({ quality: 80, pageHeight: 256 })
+          .gif({ quality: 80, pageHeight: 256 } as any)
           .toBuffer();
       } else {
         image = await sharp(imageData).resize(256, 256).jpeg({ quality: 80 }).toBuffer();
@@ -280,7 +280,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       // avatar = `data:image/jpeg;base64,${image.toString("base64")}`;
 
       // upload to firebase
-      const url = await uploadProfilePicture('organization', organizationId, image, imageFormat)
+      const url = await uploadProfilePicture('organization', organizationId, image as any, imageFormat)
         .then((url) => {
           req.body.avatar = url;
         })
