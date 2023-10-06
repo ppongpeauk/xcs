@@ -860,7 +860,7 @@ export default function PlatformOrganization() {
               </Heading>
               <Text fontSize={'md'} color={'gray.500'}>Showing the last 25 scan events.</Text>
             </Box>
-            <Skeleton isLoaded={!!scanEvents} overflow={'scroll'} overscrollBehavior={'none'} maxH={'640px'}>
+            <Skeleton isLoaded={!!scanEvents} overflow={'auto'} overscrollBehavior={'none'} maxH={'640px'}>
               <Flex flexDir={'column'}>
                 <TableContainer maxW={'container.sm'} h={'auto'}>
                   <Table maxW={'100%'} overflowX={'auto'} variant='simple' size={'sm'}>

@@ -17,7 +17,9 @@ import {
   MenuList,
   Popover,
   PopoverBody,
+  PopoverCloseButton,
   PopoverContent,
+  PopoverHeader,
   PopoverTrigger,
   Skeleton,
   SkeletonCircle,
@@ -33,8 +35,8 @@ import {
 import { HamburgerIcon } from '@chakra-ui/icons';
 
 import { AiFillHome, AiFillInfoCircle, AiFillSetting } from 'react-icons/ai';
-import { BiSolidExit, BiSolidTime } from 'react-icons/bi';
-import { FaBuilding, FaIdBadge } from 'react-icons/fa';
+import { BiSolidExit, BiSolidNotification, BiSolidTime } from 'react-icons/bi';
+import { FaBell, FaBuilding, FaIdBadge } from 'react-icons/fa';
 import { ImTree } from 'react-icons/im';
 import { IoHomeSharp } from 'react-icons/io5';
 import { PiCubeFill } from 'react-icons/pi';
@@ -331,7 +333,7 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
         display={{ base: 'none', md: 'flex' }}
         position={'fixed'}
         top={0}
-        h={'100vh'}
+        h={'100dvh'}
         w={'240px'}
         flexDir={'column'}
         align={'flex-start'}
@@ -532,15 +534,15 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
             spacing={4}
           >
             {/* Notifications */}
-            {/* <Popover>
+            <Popover>
               <PopoverTrigger>
                 <Button
                   variant={"unstyled"}
                   rounded={"full"}
-                  onClick={() => {}}
+                  onClick={() => { }}
                   aria-label="Notifications"
                 >
-                  {<FaBell size={24} />}
+                  {<BiSolidNotification size={24} />}
                 </Button>
               </PopoverTrigger>
               <PopoverContent
@@ -551,7 +553,7 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
                 minW={{ base: "100vw", md: "320px" }}
                 bg={useColorModeValue("white", "none")}
                 backdropFilter={"blur(2em)"}
-                rounded={"xl"}
+                rounded={"lg"}
               >
                 <PopoverCloseButton />
                 <PopoverHeader>
@@ -561,7 +563,7 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
                   <Text fontSize={"md"}>The service is unavailable.</Text>
                 </PopoverBody>
               </PopoverContent>
-            </Popover> */}
+            </Popover>
 
             {/* Avatar */}
             <AvatarPopover
