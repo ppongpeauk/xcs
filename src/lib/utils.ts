@@ -107,7 +107,9 @@ export const getRobloxUsers = async (userIds: string[]) => {
   }
 
   for (let i = 0; i < robloxResponse.length; i++) {
-    robloxResponse[i].avatar = robloxUserAvatar[i].imageUrl;
+    // find the avatar from targetId
+    const avatar = robloxUserAvatar.find((a: any) => a.targetId === robloxResponse[i].id);
+    robloxResponse[i].avatar = avatar?.imageUrl;
   }
 
   let response = Object();
@@ -157,7 +159,9 @@ export const getRobloxGroups = async (groupIds: string[]) => {
   }
 
   for (let i = 0; i < robloxResponse.length; i++) {
-    robloxResponse[i].avatar = robloxGroupThumbnail[i].imageUrl;
+    // find the avatar from targetId
+    const avatar = robloxGroupThumbnail.find((a: any) => a.targetId === robloxResponse[i].id);
+    robloxResponse[i].avatar = avatar?.imageUrl;
   }
 
   // get roles for each group

@@ -131,9 +131,6 @@ export default function MemberEditModal({
   useEffect(() => {
     if (!organization) return;
     setFilteredMembers(filterMembers(memberSearchRef?.current?.value));
-    // setFocusedMember(
-    //   Object.values(members || {}).find((member: any) => member.id === focusedMember.id)
-    // );
     getAccessGroupOptions(organization);
   }, [organization, filterMembers, focusedMember?.id]);
 
@@ -343,25 +340,6 @@ export default function MemberEditModal({
                 >
                   View Invitations
                 </Button>
-                {/* <Button
-                  alignSelf={{
-                    base: 'normal',
-                    md: 'flex-end'
-                  }}
-                  onClick={robloxModalOnOpen}
-                  leftIcon={<SiRoblox />}
-                  isDisabled={clientMember?.role < 2}
-                >
-                  Add Roblox User
-                </Button>
-                <Button
-                  alignSelf={{ base: 'normal', md: 'flex-end' }}
-                  onClick={robloxGroupModalOnOpen}
-                  leftIcon={<SiRoblox />}
-                  isDisabled={clientMember?.role < 2}
-                >
-                  Add Roblox Group
-                </Button> */}
               </Stack>
               <Flex
                 w={'full'}
