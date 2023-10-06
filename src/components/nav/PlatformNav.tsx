@@ -534,36 +534,38 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
             spacing={4}
           >
             {/* Notifications */}
-            <Popover>
-              <PopoverTrigger>
-                <Button
-                  variant={"unstyled"}
-                  rounded={"full"}
-                  onClick={() => { }}
-                  aria-label="Notifications"
+            {currentUser && (
+              <Popover>
+                <PopoverTrigger>
+                  <Button
+                    variant={"unstyled"}
+                    rounded={"full"}
+                    onClick={() => { }}
+                    aria-label="Notifications"
+                  >
+                    {<BiSolidNotification size={24} />}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent
+                  m={0}
+                  my={{ base: 5, md: 7 }}
+                  mx={{ base: 0, md: 2 }}
+                  zIndex={2}
+                  minW={{ base: "100vw", md: "320px" }}
+                  bg={useColorModeValue("white", "none")}
+                  backdropFilter={"blur(2em)"}
+                  rounded={"lg"}
                 >
-                  {<BiSolidNotification size={24} />}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent
-                m={0}
-                my={{ base: 5, md: 7 }}
-                mx={{ base: 0, md: 2 }}
-                zIndex={2}
-                minW={{ base: "100vw", md: "320px" }}
-                bg={useColorModeValue("white", "none")}
-                backdropFilter={"blur(2em)"}
-                rounded={"lg"}
-              >
-                <PopoverCloseButton />
-                <PopoverHeader>
-                  <Text fontWeight={"900"}>Notifications</Text>
-                </PopoverHeader>
-                <PopoverBody>
-                  <Text fontSize={"md"}>The service is unavailable.</Text>
-                </PopoverBody>
-              </PopoverContent>
-            </Popover>
+                  <PopoverCloseButton />
+                  <PopoverHeader>
+                    <Text fontWeight={"bold"}>Notifications</Text>
+                  </PopoverHeader>
+                  <PopoverBody>
+                    <Text fontSize={"md"} variant={'subtext'}>You have no notifications.</Text>
+                  </PopoverBody>
+                </PopoverContent>
+              </Popover>
+            )}
 
             {/* Avatar */}
             <AvatarPopover

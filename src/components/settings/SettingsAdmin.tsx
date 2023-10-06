@@ -88,62 +88,60 @@ export default function SettingsProfile() {
         isOpen={achievementModalOpen}
         onClose={achievementModalOnClose}
       />
-      {isAuthLoaded && currentUser && (
-        <Box w={'fit-content'}>
-          <Heading
-            as={'h2'}
-            size={'lg'}
-          >
-            Platform
-          </Heading>
-          <Stack py={4}>
-            <FormControl>
-              <Button
-                mb={2}
-                leftIcon={<AiOutlineUser />}
-                onClick={platformInviteModalOnOpen}
-              >
-                Create Registration Invite
-              </Button>
-            </FormControl>
-            <FormControl>
-              <Button
-                mb={2}
-                leftIcon={<BiReset />}
-                onClick={referralCreditModalOnOpen}
-              >
-                Add Referral Credits
-              </Button>
-            </FormControl>
-          </Stack>
-          <Heading
-            as={'h2'}
-            size={'lg'}
-          >
-            Customer Support
-          </Heading>
-          <Stack py={4}>
-            <FormControl>
-              <Button
-                mb={2}
-                leftIcon={<BiReset />}
-                onClick={locationUniverseIdResetModalOnOpen}
-              >
-                Reset Location Universe
-              </Button>
-            </FormControl>
-            <FormControl>
-              <Button
-                mb={2}
-                leftIcon={<AiFillTrophy />}
-                onClick={achievementModalOnOpen}
-              >
-                Award Achievement
-              </Button>
-            </FormControl>
-          </Stack>
-        </Box>
-      )}
+      <Box w={'fit-content'}>
+        <Heading
+          as={'h2'}
+          size={'lg'}
+        >
+          Platform
+        </Heading>
+        <Stack py={4}>
+          <FormControl>
+            <Button
+              mb={2}
+              leftIcon={<AiOutlineUser />}
+              onClick={platformInviteModalOnOpen}
+            >
+              Create Registration Invite
+            </Button>
+          </FormControl>
+          <FormControl>
+            <Button
+              mb={2}
+              leftIcon={<BiReset />}
+              onClick={referralCreditModalOnOpen}
+            >
+              Add Referral Credits
+            </Button>
+          </FormControl>
+        </Stack>
+        <Heading
+          as={'h2'}
+          size={'lg'}
+        >
+          Customer Support
+        </Heading>
+        <Stack py={4}>
+          <FormControl>
+            <Button
+              mb={2}
+              leftIcon={<BiReset />}
+              onClick={locationUniverseIdResetModalOnOpen}
+            >
+              Reset Location Universe
+            </Button>
+          </FormControl>
+          <FormControl>
+            <Button
+              mb={2}
+              leftIcon={<AiFillTrophy />}
+              onClick={achievementModalOnOpen}
+            >
+              Award Achievement
+            </Button>
+          </FormControl>
+        </Stack>
+      </Box>
     </>
   );
 }
