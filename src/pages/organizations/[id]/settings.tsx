@@ -469,7 +469,7 @@ export default function PlatformOrganization() {
             </BreadcrumbLink>
           </BreadcrumbItem>
         </Breadcrumb>
-        <Flex display={'grid'} gridTemplateColumns={{ base: '1fr', xl: '1fr 1fr' }} minH={'calc(100vh - 6rem)'} gap={{ base: 4, '2xl': 16 }}>
+        <Flex display={'grid'} gridTemplateColumns={{ base: '1fr', xl: '1fr 1fr' }} minH={'calc(100vh - 6rem)'} gap={{ base: 4, xl: 16 }}>
           {/* <Flex flexDir={{ base: 'column', '2xl': 'row' }} justify={'space-between'} align={'flex-start'} minH={'calc(100vh - 6rem)'} gap={{ base: 4, '2xl': 16 }}> */}
           <Flex flexDir={'column'} flex={1} h={'100%'}>
             <Stack
@@ -860,7 +860,7 @@ export default function PlatformOrganization() {
               </Heading>
               <Text fontSize={'md'} color={'gray.500'}>Showing the last 25 scan events.</Text>
             </Box>
-            <Skeleton isLoaded={!!scanEvents} overflow={'scroll'} overscrollBehavior={'none'} maxH={'640px'}>
+            <Skeleton isLoaded={!!scanEvents} overflow={'auto'} overscrollBehavior={'none'} maxH={'640px'}>
               <Flex flexDir={'column'}>
                 <TableContainer maxW={'container.sm'} h={'auto'}>
                   <Table maxW={'100%'} overflowX={'auto'} variant='simple' size={'sm'}>

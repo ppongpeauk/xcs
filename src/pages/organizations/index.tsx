@@ -58,7 +58,7 @@ const toActualTime = (date: string) => {
 
 function GridEntry({ key, organization }: { key: Key, organization?: Organization }) {
   return <>
-    <Tooltip placement={'top'} label={organization?.name} key={organization?.id}>
+    <Tooltip placement={'top'} label={organization?.name} key={key}>
       <Flex flexDir={'column'} w={{ base: '45%', md: '128px', lg: '224px' }}>
         {/* icon */}
         <Skeleton isLoaded={!!organization}>

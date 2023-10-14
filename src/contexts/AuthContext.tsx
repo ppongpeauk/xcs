@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 
 import { useToast } from '@chakra-ui/react';
 
@@ -34,11 +34,11 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
   const toast = useToast();
   const { push } = useRouter();
 
-  async function refreshCurrentUser() {
+  const refreshCurrentUser = useCallback(async () => {
     setIsAuthLoaded(false);
     if (user) {
-      user.getIdToken().then((token) => {
-        fetch('/api/v1/me', {
+      await user.getIdToken().then(async (token) => {
+        await fetch('/api/v1/me', {
           headers: { authorization: `Bearer ${token}` }
         })
           .then((res) => {
@@ -71,7 +71,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
       setCurrentUser(null);
       setIsAuthLoaded(true);
     }
-  }
+  }, [user, push, toast]);
 
   async function waitForAuthInit() {
     let unsubscribe = null;
@@ -94,7 +94,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
 
   useEffect(() => {
     refreshCurrentUser();
-  }, [user]);
+  }, [user, refreshCurrentUser]);
 
   function logOut() {
     signOut(auth);

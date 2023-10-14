@@ -17,7 +17,9 @@ import {
   MenuList,
   Popover,
   PopoverBody,
+  PopoverCloseButton,
   PopoverContent,
+  PopoverHeader,
   PopoverTrigger,
   Skeleton,
   SkeletonCircle,
@@ -33,8 +35,8 @@ import {
 import { HamburgerIcon } from '@chakra-ui/icons';
 
 import { AiFillHome, AiFillInfoCircle, AiFillSetting } from 'react-icons/ai';
-import { BiSolidExit, BiSolidTime } from 'react-icons/bi';
-import { FaBuilding, FaIdBadge } from 'react-icons/fa';
+import { BiSolidExit, BiSolidNotification, BiSolidTime } from 'react-icons/bi';
+import { FaBell, FaBuilding, FaIdBadge } from 'react-icons/fa';
 import { ImTree } from 'react-icons/im';
 import { IoHomeSharp } from 'react-icons/io5';
 import { PiCubeFill } from 'react-icons/pi';
@@ -331,7 +333,7 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
         display={{ base: 'none', md: 'flex' }}
         position={'fixed'}
         top={0}
-        h={'100vh'}
+        h={'100dvh'}
         w={'240px'}
         flexDir={'column'}
         align={'flex-start'}
@@ -532,36 +534,38 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
             spacing={4}
           >
             {/* Notifications */}
-            {/* <Popover>
-              <PopoverTrigger>
-                <Button
-                  variant={"unstyled"}
-                  rounded={"full"}
-                  onClick={() => {}}
-                  aria-label="Notifications"
+            {currentUser && (
+              <Popover>
+                <PopoverTrigger>
+                  <Button
+                    variant={"unstyled"}
+                    rounded={"full"}
+                    onClick={() => { }}
+                    aria-label="Notifications"
+                  >
+                    {<BiSolidNotification size={24} />}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent
+                  m={0}
+                  my={{ base: 5, md: 7 }}
+                  mx={{ base: 0, md: 2 }}
+                  zIndex={2}
+                  minW={{ base: "100vw", md: "320px" }}
+                  bg={useColorModeValue("white", "none")}
+                  backdropFilter={"blur(2em)"}
+                  rounded={"lg"}
                 >
-                  {<FaBell size={24} />}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent
-                m={0}
-                my={{ base: 5, md: 7 }}
-                mx={{ base: 0, md: 2 }}
-                zIndex={2}
-                minW={{ base: "100vw", md: "320px" }}
-                bg={useColorModeValue("white", "none")}
-                backdropFilter={"blur(2em)"}
-                rounded={"xl"}
-              >
-                <PopoverCloseButton />
-                <PopoverHeader>
-                  <Text fontWeight={"900"}>Notifications</Text>
-                </PopoverHeader>
-                <PopoverBody>
-                  <Text fontSize={"md"}>The service is unavailable.</Text>
-                </PopoverBody>
-              </PopoverContent>
-            </Popover> */}
+                  <PopoverCloseButton />
+                  <PopoverHeader>
+                    <Text fontWeight={"bold"}>Notifications</Text>
+                  </PopoverHeader>
+                  <PopoverBody>
+                    <Text fontSize={"md"} variant={'subtext'}>You have no notifications.</Text>
+                  </PopoverBody>
+                </PopoverContent>
+              </Popover>
+            )}
 
             {/* Avatar */}
             <AvatarPopover
