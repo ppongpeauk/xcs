@@ -38,6 +38,7 @@ export interface User {
     verifiedAt?: Date | string | null;
   };
   platform: {
+    demo?: boolean;
     staff: number | boolean;
     staffTitle?: string | null;
     membership: number;

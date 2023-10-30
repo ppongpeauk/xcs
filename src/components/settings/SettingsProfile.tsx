@@ -41,28 +41,31 @@ export default function SettingsProfile() {
 
   const avatarChooser = useRef<HTMLInputElement>(null);
 
-  const handleChange = useCallback(async (e: any) => {
-    console.log(e.target.files[0]);
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
+  const handleChange = useCallback(
+    async (e: any) => {
+      console.log(e.target.files[0]);
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
 
-    // check if file is an image
-    if (file.type.split('/')[0] !== 'image') {
-      toast({
-        title: 'File is not an image.',
-        status: 'error',
-        duration: 3000,
-        isClosable: true
-      });
-      return;
-    }
+      // check if file is an image
+      if (file.type.split('/')[0] !== 'image') {
+        toast({
+          title: 'File is not an image.',
+          status: 'error',
+          duration: 3000,
+          isClosable: true
+        });
+        return;
+      }
 
-    reader.onloadend = () => {
-      setImage(reader.result as string);
-    };
-  }, [toast]);
+      reader.onloadend = () => {
+        setImage(reader.result as string);
+      };
+    },
+    [toast]
+  );
 
   const removeAvatar = useCallback(() => {
     // download default avatar and set it as the image
@@ -141,8 +144,9 @@ export default function SettingsProfile() {
 
                     if (values.email !== currentUser?.email?.address) {
                       toast({
-                        title: 'You\'ve been logged out.',
-                        description: 'Because you\'ve changed your email address, you have been logged out. Please log in again with your new email address to continue using Restrafes XCS.',
+                        title: "You've been logged out.",
+                        description:
+                          "Because you've changed your email address, you have been logged out. Please log in again with your new email address to continue using Restrafes XCS.",
                         status: 'info',
                         duration: 9000,
                         isClosable: true
@@ -235,9 +239,7 @@ export default function SettingsProfile() {
                       <FormControl w={'fit-content'}>
                         <FormLabel>
                           <Flex align={'center'}>
-                            <Text>
-                              Username
-                            </Text>
+                            <Text>Username</Text>
                             {/* <Tooltip label={'You cannot change your username.'}>
                               <chakra.span>
                                 <Icon
@@ -276,14 +278,19 @@ export default function SettingsProfile() {
                           variant={'outline'}
                           isDisabled={!props.values.emailEditable}
                         />
-                        {
-                          !props.values.emailEditable &&
-                          <InputRightElement width='4.5rem'>
-                            <Button h='1.75rem' size='sm' onClick={() => { form.setValues({ 'emailEditable': true }) }}>
+                        {!props.values.emailEditable && (
+                          <InputRightElement width="4.5rem">
+                            <Button
+                              h="1.75rem"
+                              size="sm"
+                              onClick={() => {
+                                form.setValues({ emailEditable: true });
+                              }}
+                            >
                               Edit
                             </Button>
                           </InputRightElement>
-                        }
+                        )}
                       </InputGroup>
                     </FormControl>
                   )}
@@ -336,9 +343,8 @@ export default function SettingsProfile() {
               </Form>
             )}
           </Formik>
-        </Box >
-      )
-      }
+        </Box>
+      )}
     </>
   );
 }

@@ -44,8 +44,21 @@ import SettingsInvite from '@/components/settings/SettingsInvite';
 import SettingsLinkedAccounts from '@/components/settings/SettingsLinkedAccounts';
 import SettingsProfile from '@/components/settings/SettingsProfile';
 
-function StyledTab({ children, index, icon }: { children: React.ReactNode; index: number; icon?: any }) {
+function StyledTab({
+  children,
+  index,
+  icon,
+  demoAllowed = true
+}: {
+  children: React.ReactNode;
+  index: number;
+  icon?: any;
+  demoAllowed?: boolean;
+}) {
+  const { currentUser } = useAuthContext();
   const { push } = useRouter();
+
+  // if (!demoAllowed && currentUser?.platform?.demo) return null;
 
   return (
     <Tab
@@ -68,7 +81,19 @@ function StyledTab({ children, index, icon }: { children: React.ReactNode; index
         color: useColorModeValue('black', 'gray.900')
       }}
       onClick={() => {
-        push(`/settings/${index === 0 ? 'profile' : index === 1 ? 'appearance' : index === 2 ? 'linked-accounts' : index === 3 ? 'referrals' : 'staff-settings'}`);
+        push(
+          `/settings/${
+            index === 0
+              ? 'profile'
+              : index === 1
+              ? 'appearance'
+              : index === 2
+              ? 'linked-accounts'
+              : index === 3
+              ? 'referrals'
+              : 'staff-settings'
+          }`
+        );
       }}
     >
       {icon ? (
@@ -256,6 +281,7 @@ export default function Settings() {
           >
             <StyledTab
               index={0}
+              demoAllowed={false}
               icon={BiSolidUserDetail}
             >
               <Text>Profile</Text>

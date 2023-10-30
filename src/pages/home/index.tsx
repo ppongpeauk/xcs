@@ -42,7 +42,7 @@ const randomSubGreetings = [
   'Where security meets flexibility.',
   'Take control of your entry points.',
   'Intelligent access management.',
-  'Making security seamless.',
+  'Making security seamless.'
 ];
 
 function NavLink({
@@ -95,8 +95,8 @@ export async function getStaticProps() {
   const posts = await getSortedPostsData();
   return {
     props: {
-      posts,
-    },
+      posts
+    }
   };
 }
 export default function PlatformHome({ posts }: any) {
@@ -152,7 +152,10 @@ export default function PlatformHome({ posts }: any) {
         maxW={'container.xl'}
         p={8}
       >
-        <Flex flexDir={'column'} gap={4}>
+        <Flex
+          flexDir={'column'}
+          gap={4}
+        >
           {/* Greeting */}
           <Box id={'greeting'}>
             <Stack
@@ -164,7 +167,10 @@ export default function PlatformHome({ posts }: any) {
                 md: 'flex-start'
               }}
             >
-              <Skeleton isLoaded={!!currentUser} rounded={'full'}>
+              <Skeleton
+                isLoaded={!!currentUser}
+                rounded={'full'}
+              >
                 <Link href={`/@${currentUser?.username}`}>
                   <Avatar
                     size={'2xl'}
@@ -173,7 +179,10 @@ export default function PlatformHome({ posts }: any) {
                 </Link>
               </Skeleton>
               <Skeleton isLoaded={!!currentUser}>
-                <Flex flexDir={'column'} textAlign={{ base: 'center', md: 'left' }}>
+                <Flex
+                  flexDir={'column'}
+                  textAlign={{ base: 'center', md: 'left' }}
+                >
                   <Heading fontSize={'3xl'}>
                     Good {new Date().getHours() < 12 ? 'morning' : 'afternoon'},{' '}
                     {currentUser?.displayName || currentUser?.username || 'Username'}.
@@ -182,38 +191,90 @@ export default function PlatformHome({ posts }: any) {
                     fontSize={'xl'}
                     color={'gray.500'}
                   >
-                    {randomSubGreeting || "Subgreeting"}
+                    {randomSubGreeting || 'Subgreeting'}
                   </Text>
                 </Flex>
               </Skeleton>
             </Stack>
           </Box>
-          <Box rounded={'lg'} px={6} py={4} my={4} bg={'black'} color={'white'}>
-            <Flex flexDir={'column'}>
-              <Text fontSize={'lg'} fontWeight={'bold'}>We value your feedback</Text>
-              <Text>
-                R&C XCS is still in development and we&apos;re looking for feedback from our current users so that we can improve our product.
-              </Text>
-              <Text>
-                Please take a moment to fill out our <Link target='_blank' href={'https://tally.so/r/nrOB5L'} textDecor={'underline'}>feedback form</Link>.
-              </Text>
-            </Flex>
-          </Box>
+          <Flex
+            py={4}
+            gap={4}
+            flexDir={'column'}
+          >
+            {currentUser?.platform?.demo ? (
+              <Box
+                rounded={'lg'}
+                px={6}
+                py={4}
+                bg={'black'}
+                color={'white'}
+              >
+                <Flex flexDir={'column'}>
+                  <Text
+                    fontSize={'lg'}
+                    fontWeight={'bold'}
+                  >
+                    This is a demo account
+                  </Text>
+                  <Text>You are currently logged into a demo account. Do not use this account for personal use.</Text>
+                </Flex>
+              </Box>
+            ) : (
+              <Box
+                rounded={'lg'}
+                px={6}
+                py={4}
+                bg={'black'}
+                color={'white'}
+              >
+                <Flex flexDir={'column'}>
+                  <Text
+                    fontSize={'lg'}
+                    fontWeight={'bold'}
+                  >
+                    We value your feedback
+                  </Text>
+                  <Text>
+                    R&C XCS is still in development and we&apos;re looking for feedback from our current users so that
+                    we can improve our product.
+                  </Text>
+                  <Text>
+                    Please take a moment to fill out our{' '}
+                    <Link
+                      target="_blank"
+                      href={'https://tally.so/r/nrOB5L'}
+                      textDecor={'underline'}
+                    >
+                      feedback form
+                    </Link>
+                    .
+                  </Text>
+                </Flex>
+              </Box>
+            )}
+          </Flex>
           <Divider />
           {/* Global Stats */}
-          <Flex pt={2} gap={8} flexDir={'column'}>
+          <Flex
+            pt={2}
+            gap={8}
+            flexDir={'column'}
+          >
             <Box>
-              <Flex flexDir={'column'} mb={4}>
-                <Heading
-                  fontSize={'2xl'}
-                >
-                  Statistics
-                </Heading>
-                <Text variant={'subtext'}>
-                  Data from across the platform.
-                </Text>
+              <Flex
+                flexDir={'column'}
+                mb={4}
+              >
+                <Heading fontSize={'2xl'}>Statistics</Heading>
+                <Text variant={'subtext'}>Data from across the platform.</Text>
               </Flex>
-              <Box display={'grid'} gridTemplateColumns={{ base: '1fr', md: '1fr 1fr 1fr' }} flexDir={{ base: 'column', md: 'row' }} gap={4}>
+              <Box
+                display={'grid'}
+                gridTemplateColumns={{ base: '1fr', md: '1fr 1fr 1fr' }}
+                flexDir={{ base: 'column', md: 'row' }}
+                gap={4}
+              >
                 <Skeleton isLoaded={!!stats.total}>
                   <StatBox
                     label={'Total Scans'}
@@ -243,16 +304,14 @@ export default function PlatformHome({ posts }: any) {
             </Box>
             {/* Platform Announcements */}
             <Box>
-              <Flex flexDir={'row'} align={'center'} mb={4}>
+              <Flex
+                flexDir={'row'}
+                align={'center'}
+                mb={4}
+              >
                 <Flex flexDir={'column'}>
-                  <Heading
-                    fontSize={'2xl'}
-                  >
-                    Announcements
-                  </Heading>
-                  <Text variant={'subtext'}>
-                    Stay up to date with the latest news.
-                  </Text>
+                  <Heading fontSize={'2xl'}>Announcements</Heading>
+                  <Text variant={'subtext'}>Stay up to date with the latest news.</Text>
                 </Flex>
                 <Spacer />
                 <NavLink
@@ -260,7 +319,11 @@ export default function PlatformHome({ posts }: any) {
                   pathname={'/blog'}
                 >
                   View All
-                  <Icon as={BsArrowUpRight} ml={1} h={3} />
+                  <Icon
+                    as={BsArrowUpRight}
+                    ml={1}
+                    h={3}
+                  />
                 </NavLink>
               </Flex>
               <Skeleton isLoaded={!!currentUser}>
@@ -270,26 +333,37 @@ export default function PlatformHome({ posts }: any) {
                   align={'center'}
                 >
                   {/* max 3 blog posts */}
-                  {
-                    posts.slice(0, 3).map((post: any) => (
-                      <Link href={`/blog/${post.id}`} textDecor={'none !important'} key={post.id}>
-                        <Flex flexDir={'column'} gap={4} w={'340px'}>
-                          <Image src={post.thumbnail} alt={post.thumbnailAlt} objectFit={'cover'} aspectRatio={1.5 / 1} borderRadius={'lg'} />
-                          <Flex flexDir={'column'}>
-                            <Heading size={'md'}>
-                              {post.title}
-                            </Heading>
-                            <Text>
-                              {moment(post.date).format('MMMM Do, YYYY')}
-                            </Text>
-                            <Tag mt={2} w={'fit-content'}>
-                              {post.category}
-                            </Tag>
-                          </Flex>
+                  {posts.slice(0, 3).map((post: any) => (
+                    <Link
+                      href={`/blog/${post.id}`}
+                      textDecor={'none !important'}
+                      key={post.id}
+                    >
+                      <Flex
+                        flexDir={'column'}
+                        gap={4}
+                        w={'340px'}
+                      >
+                        <Image
+                          src={post.thumbnail}
+                          alt={post.thumbnailAlt}
+                          objectFit={'cover'}
+                          aspectRatio={1.5 / 1}
+                          borderRadius={'lg'}
+                        />
+                        <Flex flexDir={'column'}>
+                          <Heading size={'md'}>{post.title}</Heading>
+                          <Text>{moment(post.date).format('MMMM Do, YYYY')}</Text>
+                          <Tag
+                            mt={2}
+                            w={'fit-content'}
+                          >
+                            {post.category}
+                          </Tag>
                         </Flex>
-                      </Link>
-                    ))
-                  }
+                      </Flex>
+                    </Link>
+                  ))}
                 </Stack>
               </Skeleton>
             </Box>
