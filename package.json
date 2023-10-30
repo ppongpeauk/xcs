@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:dev": "NODE_ENV=development next build",
     "start": "next start",
+    "start:dev": "NODE_ENV=development next start",
     "lint": "next lint",
     "analyze": "cross-env ANALYZE=true next build",
     "analyze:server": "cross-env BUNDLE_ANALYZE=server next build",
@@ -34,6 +36,7 @@
     "chakra-react-select": "^4.7.0",
     "class-variance-authority": "^0.6.1",
     "clsx": "^1.2.1",
+    "cypress": "^13.3.3",
     "discord-api-types": "^0.37.50",
     "eslint": "8.44.0",
     "eslint-config-next": "13.4.7",

@@ -42,7 +42,9 @@ function OrganizationItem({ organization }: { organization: any }) {
       href={`/organizations/${organization.id}`}
       w={'auto'}
       h={'auto'}
-      transition={'opacity 0.2s ease-out'} _hover={{ opacity: 0.75 }} _active={{ opacity: 0.5 }}
+      transition={'opacity 0.2s ease-out'}
+      _hover={{ opacity: 0.75 }}
+      _active={{ opacity: 0.5 }}
       borderRadius={'md'}
     >
       <Avatar
@@ -185,7 +187,10 @@ export default function Profile({ username, user }: { username: string | null; u
               mb={user?.platform.staff ? 4 : 8}
               w={'full'}
             >
-              <Skeleton isLoaded={!!user} lineHeight={1.25}>
+              <Skeleton
+                isLoaded={!!user}
+                lineHeight={1.25}
+              >
                 <Text
                   as={'h1'}
                   fontSize={user?.displayName?.length > 16 ? '2xl' : '3xl'}
@@ -228,23 +233,34 @@ export default function Profile({ username, user }: { username: string | null; u
             </Box>
           </Flex>
         </Box>
-        {
-          currentUser?.id === user?.id && (
-            <Button as={Link} colorScheme={'black'} href={'/settings/profile'} w={{ base: '300px', md: '300px' }} mb={4}>
-              <Icon
-                as={IoSettings}
-                mr={2}
-              />
-              <Text
-                size={'md'}
-                fontWeight={'bold'}
-              >
-                Edit Profile
-              </Text>
-            </Button>
-          )
-        }
-        <VStack maxW={'sm'} align={'flex-start'} my={2} mb={8} spacing={4} divider={<StackDivider borderColor={useColorModeValue("gray.200", "gray.700")} />}>
+        {currentUser?.id === user?.id && (
+          <Button
+            as={Link}
+            colorScheme={'black'}
+            href={'/settings/profile'}
+            w={{ base: '300px', md: '300px' }}
+            mb={4}
+          >
+            <Icon
+              as={IoSettings}
+              mr={2}
+            />
+            <Text
+              size={'md'}
+              fontWeight={'bold'}
+            >
+              Edit Profile
+            </Text>
+          </Button>
+        )}
+        <VStack
+          maxW={'sm'}
+          align={'flex-start'}
+          my={2}
+          mb={8}
+          spacing={4}
+          divider={<StackDivider borderColor={useColorModeValue('gray.200', 'gray.700')} />}
+        >
           {/* User Bio */}
           <Box
             w={{ base: 'full', md: '384px' }}
@@ -280,61 +296,91 @@ export default function Profile({ username, user }: { username: string | null; u
             </Skeleton>
           </Box>
           {/* Achievements */}
-          {
-            Object.keys(user?.achievements || {})!?.length > 0 && (
-              <Box
-                w={{ base: 'full', md: '320px' }}
-                mr={{ base: 0, md: 16 }}
-                pb={2}
+          {Object.keys(user?.achievements || {})!?.length > 0 && (
+            <Box
+              w={{ base: 'full', md: '320px' }}
+              mr={{ base: 0, md: 16 }}
+              pb={2}
+            >
+              <Text
+                as={'h1'}
+                fontSize={'xl'}
+                fontWeight={'bold'}
               >
-                <Text
-                  as={'h1'}
-                  fontSize={'xl'}
-                  fontWeight={'bold'}
-                >
-                  Achievements
-                </Text>
-                <Flex
-                  w={'full'}
-                  h={'fit-content'}
-                  flexDir={'column'}
-                  align={'flex-start'}
-                  justify={'flex-start'}
-                  flexGrow={1}
-                >
-                  <Skeleton isLoaded={!!user}>
-                    {Object.keys(user?.achievements || {})?.length ? (
-                      <Wrap spacing={2} py={2}>
-                        {(Object.values(user?.achievements || {}) || [])?.map((a: Achievement) => (
-                          <Tooltip key={a.id} label={
-                            <Flex p={2} gap={4} align={'center'}>
-                              <Image src={a.icon} alt={a.name} width={"64px"} height={"64px"} objectFit={'cover'} borderRadius={'lg'} />
-                              <Flex flexDir={'column'} mr={4}>
-                                <Text fontWeight={'bold'} fontSize={'lg'}>{a.name}</Text>
-                                <Text fontWeight={'normal'}>{a.description}</Text>
-                                <Text>
-                                  Unlocked on {new Date(a.earnedAt || 0).toLocaleDateString('en-US', {})}
+                Achievements
+              </Text>
+              <Flex
+                w={'full'}
+                h={'fit-content'}
+                flexDir={'column'}
+                align={'flex-start'}
+                justify={'flex-start'}
+                flexGrow={1}
+              >
+                <Skeleton isLoaded={!!user}>
+                  {Object.keys(user?.achievements || {})?.length ? (
+                    <Wrap
+                      spacing={2}
+                      py={2}
+                    >
+                      {(Object.values(user?.achievements || {}) || [])?.map((a: Achievement) => (
+                        <Tooltip
+                          key={a.id}
+                          label={
+                            <Flex
+                              p={2}
+                              gap={4}
+                              align={'center'}
+                            >
+                              <Image
+                                src={a.icon}
+                                alt={a.name}
+                                width={'64px'}
+                                height={'64px'}
+                                objectFit={'cover'}
+                                borderRadius={'lg'}
+                              />
+                              <Flex
+                                flexDir={'column'}
+                                mr={4}
+                              >
+                                <Text
+                                  fontWeight={'bold'}
+                                  fontSize={'lg'}
+                                >
+                                  {a.name}
                                 </Text>
+                                <Text fontWeight={'normal'}>{a.description}</Text>
+                                <Text>Unlocked on {new Date(a.earnedAt || 0).toLocaleDateString('en-US', {})}</Text>
                               </Flex>
                             </Flex>
-                          }>
-                            <Image src={a.icon} alt={a.name} width={"64px"} height={"64px"} objectFit={'cover'} borderRadius={'lg'} cursor={'help'} border={'1px'} />
-                          </Tooltip>
-                        ))}
-                      </Wrap>
-                    ) : (
-                      <Text
-                        size={'md'}
-                        variant={'subtext'}
-                      >
-                        This user has no achievements.
-                      </Text>
-                    )}
-                  </Skeleton>
-                </Flex>
-              </Box>
-            )
-          }
+                          }
+                        >
+                          <Image
+                            src={a.icon}
+                            alt={a.name}
+                            width={'64px'}
+                            height={'64px'}
+                            objectFit={'cover'}
+                            borderRadius={'lg'}
+                            cursor={'help'}
+                            border={'1px'}
+                          />
+                        </Tooltip>
+                      ))}
+                    </Wrap>
+                  ) : (
+                    <Text
+                      size={'md'}
+                      variant={'subtext'}
+                    >
+                      This user has no achievements.
+                    </Text>
+                  )}
+                </Skeleton>
+              </Flex>
+            </Box>
+          )}
           {/* Organizations */}
           <Box
             w={{ base: 'full', md: '320px' }}
@@ -358,13 +404,17 @@ export default function Profile({ username, user }: { username: string | null; u
             >
               <Skeleton isLoaded={!!user}>
                 {user?.organizations?.length ? (
-                  <Wrap spacing={2} py={2}>
+                  <Wrap
+                    spacing={2}
+                    py={2}
+                  >
                     {user?.organizations?.map((org: Organization) => (
-                      <Tooltip key={org.id} label={org.name}>
+                      <Tooltip
+                        key={org.id}
+                        label={org.name}
+                      >
                         <WrapItem>
-                          <OrganizationItem
-                            organization={org}
-                          />
+                          <OrganizationItem organization={org} />
                         </WrapItem>
                       </Tooltip>
                     ))}
@@ -408,8 +458,11 @@ export default function Profile({ username, user }: { username: string | null; u
                     </Text>
                   )}
                   {user?.discord.verified && (
-                    <Tooltip label={`${user?.discord.username}${user?.discord.discriminator ? `#${user?.discord.discriminator}` : ''
-                      }`}>
+                    <Tooltip
+                      label={`${user?.discord.username}${
+                        user?.discord.discriminator ? `#${user?.discord.discriminator}` : ''
+                      }`}
+                    >
                       <WrapItem>
                         <Button
                           as={Link}
