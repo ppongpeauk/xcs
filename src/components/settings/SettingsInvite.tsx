@@ -21,6 +21,7 @@ import {
   Text,
   Textarea,
   VStack,
+  useColorModeValue,
   useDisclosure,
   useToast
 } from '@chakra-ui/react';
@@ -57,26 +58,37 @@ export default function SettingsInvite() {
         isOpen={platformInviteModalOpen}
         onOpen={platformInviteModalOnOpen}
         onClose={platformInviteModalOnClose}
-        onCreate={() => { }}
+        onCreate={() => {}}
       />
-      <Box w={'fit-content'}>
+      <Box
+        w={'fit-content'}
+        bg={'gray.100'}
+        rounded={'lg'}
+        px={8}
+        py={6}
+      >
         <Heading
           as={'h2'}
-          size={'lg'}
+          size={'md'}
+          color={'gray.800'}
         >
-          You have {currentUser?.platform?.invites || 0} referral credit{currentUser?.platform?.invites === 1 ? '' : 's'}.
+          You have {currentUser?.platform?.invites || 0} referral credit
+          {currentUser?.platform?.invites === 1 ? '' : 's'}.
         </Heading>
-        <Text fontSize={'md'} color={"gray.500"}>
-          Who&apos;s a great addition to XCS? Invite them to join!
-        </Text>
-        <Button
-          mt={4}
-          onClick={platformInviteModalOnOpen}
-          isDisabled={currentUser?.platform?.invites === 0}
+        <Text
+          fontSize={'md'}
+          color={'gray.500'}
         >
-          Invite a User
-        </Button>
+          You can use referral credits to invite users to the XCS platform.
+        </Text>
       </Box>
+      <Button
+        mt={4}
+        onClick={platformInviteModalOnOpen}
+        isDisabled={currentUser?.platform?.invites === 0}
+      >
+        Create Invitation Link
+      </Button>
     </>
   );
 }

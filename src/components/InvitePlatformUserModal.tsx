@@ -84,7 +84,7 @@ export default function InvitePlatformUserModal({
               headers: {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`
-              },
+              }
             })
               .then((res) => {
                 if (res.status === 200) {
@@ -132,15 +132,13 @@ export default function InvitePlatformUserModal({
             <ModalOverlay />
             <Form>
               <ModalContent bg={useColorModeValue('white', 'gray.800')}>
-                <ModalHeader pb={2}>Sponsor a User</ModalHeader>
+                <ModalHeader pb={2}>Invite a User</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody pb={4}>
                   <VStack spacing={2}>
                     {!inviteCode ? (
                       <>
-                        <Text>
-                          Create an invitation link to invite people to join the platform.
-                        </Text>
+                        <Text>Create an invitation link to invite people to join the platform.</Text>
                       </>
                     ) : (
                       <>

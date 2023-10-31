@@ -363,7 +363,7 @@ export default function Settings() {
                 fontSize={'md'}
                 color={'gray.500'}
               >
-                Sponsor users to the platform.
+                Invite users to register for the platform.
               </Text>
               <Divider
                 mt={4}

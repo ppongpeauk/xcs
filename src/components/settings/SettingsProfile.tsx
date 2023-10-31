@@ -8,12 +8,14 @@ import {
   FormControl,
   FormLabel,
   HStack,
+  Heading,
   Icon,
   Input,
   InputGroup,
   InputRightElement,
   SkeletonCircle,
   Stack,
+  Switch,
   Text,
   Textarea,
   Tooltip,
@@ -87,7 +89,7 @@ export default function SettingsProfile() {
 
   return (
     <>
-      {isAuthLoaded && currentUser && (
+      {
         <Box w={'fit-content'}>
           <Formik
             enableReinitialize={true}
@@ -217,6 +219,12 @@ export default function SettingsProfile() {
                     </Button>
                   </VStack>
                 </Flex>
+                <Heading
+                  mb={2}
+                  size={'lg'}
+                >
+                  Basic Info
+                </Heading>
                 <HStack>
                   <Field name="displayName">
                     {({ field, form }: any) => (
@@ -240,15 +248,6 @@ export default function SettingsProfile() {
                         <FormLabel>
                           <Flex align={'center'}>
                             <Text>Username</Text>
-                            {/* <Tooltip label={'You cannot change your username.'}>
-                              <chakra.span>
-                                <Icon
-                                  as={IoInformationCircle}
-                                  ml={0.5}
-                                  size={'xl'}
-                                />
-                              </chakra.span>
-                            </Tooltip> */}
                           </Flex>
                         </FormLabel>
                         <InputGroup mb={2}>
@@ -311,21 +310,28 @@ export default function SettingsProfile() {
                     </FormControl>
                   )}
                 </Field>
-                {/* <Field name="enabled">
+                <Heading
+                  mt={4}
+                  mb={2}
+                  size={'lg'}
+                >
+                  Privacy
+                </Heading>
+                <Field name="enabled">
                   {({ field, form }: any) => (
-                    <FormControl width={"fit-content"}>
-                      <FormLabel>Enabled</FormLabel>
+                    <FormControl width={'fit-content'}>
+                      <FormLabel>Connections public</FormLabel>
                       <InputGroup mb={2}>
                         <Switch
                           {...field}
                           placeholder="Enabled"
-                          variant={"outline"}
+                          variant={'outline'}
                           defaultChecked={currentUser?.enabled}
                         />
                       </InputGroup>
                     </FormControl>
                   )}
-                </Field> */}
+                </Field>
                 <Stack
                   direction={{ base: 'column', md: 'row' }}
                   spacing={{ base: 2, md: 4 }}
@@ -344,7 +350,7 @@ export default function SettingsProfile() {
             )}
           </Formik>
         </Box>
-      )}
+      }
     </>
   );
 }

@@ -18,6 +18,7 @@ import { useAuthContext } from '@/contexts/AuthContext';
 import Footer from '@/components/Footer';
 import PlatformAlert from '@/components/PlatformAlert';
 import PlatformNav from '@/components/nav/PlatformNav';
+import PlatformNavNew from '@/components/nav/PlatformNavNew';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { user, currentUser, isAuthLoaded } = useAuthContext();
@@ -36,7 +37,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (loading) return;
     if (!pathname) return;
-    if (pathname?.startsWith("/@") || (pathname?.startsWith("/organizations/") && !pathname?.endsWith("settings"))) return;
+    if (pathname?.startsWith('/@') || (pathname?.startsWith('/organizations/') && !pathname?.endsWith('settings')))
+      return;
     setTimeout(() => {
       if (!firebaseUser) {
         push('/auth/login?redirect=' + window.location.pathname);
@@ -62,7 +64,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   // Return nothing if the user is not logged in
   return (
     <>
-      <PlatformNav />
+      <PlatformNavNew />
       <Box
         as={'main'}
         pos={'relative'}
@@ -85,20 +87,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             zIndex={500}
           >
             {/* Platform Alerts */}
-            {
-              alerts.map((alert: AlertType) => {
-                return (
-                  <PlatformAlert
-                    key={alert.id}
-                    status={'info'}
-                    title={alert.title || 'Alert'}
-                    description={alert.description}
-                    isClosable={false}
-
-                  />
-                )
-              })
-            }
+            {alerts.map((alert: AlertType) => {
+              return (
+                <PlatformAlert
+                  key={alert.id}
+                  status={'info'}
+                  title={alert.title || 'Alert'}
+                  description={alert.description}
+                  isClosable={false}
+                />
+              );
+            })}
             {/* Email not verified */}
             {currentUser && (
               <>
@@ -118,7 +117,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                             method: 'POST',
                             headers: {
                               'Content-Type': 'application/json',
-                              'Authorization': `Bearer ${token}`
+                              Authorization: `Bearer ${token}`
                             }
                           })
                             .then((res) => {
@@ -130,8 +129,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                                 });
                               }
                             })
-                            .then(async (res) => { })
-                            .catch((err) => { })
+                            .then(async (res) => {})
+                            .catch((err) => {})
                             .finally(() => {
                               setSendVerificationEmailLoading(false);
                             });
@@ -149,12 +148,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     button={{
                       text: 'Verify Roblox account',
                       onClick: async () => {
-                        push(`https://apis.roblox.com/oauth/v1/authorize?client_id=${process.env.NEXT_PUBLIC_ROBLOX_CLIENT_ID}&redirect_uri=${process.env.NEXT_PUBLIC_ROOT_URL}/platform/verify/oauth2/roblox&scope=openid profile&response_type=code`);
+                        push(
+                          `https://apis.roblox.com/oauth/v1/authorize?client_id=${process.env.NEXT_PUBLIC_ROBLOX_CLIENT_ID}&redirect_uri=${process.env.NEXT_PUBLIC_ROOT_URL}/platform/verify/oauth2/roblox&scope=openid profile&response_type=code`
+                        );
                       }
                     }}
                   />
-                )
-                }
+                )}
               </>
             )}
           </Stack>

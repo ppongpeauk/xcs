@@ -4,11 +4,15 @@ import { Suspense, forwardRef, useMemo } from 'react';
 
 import {
   Avatar,
+  Badge,
   Box,
   Button,
+  Divider,
   Flex,
   HStack,
+  Icon,
   IconButton,
+  Image,
   Link,
   Menu,
   MenuButton,
@@ -38,7 +42,7 @@ import { AiFillHome, AiFillInfoCircle, AiFillSetting } from 'react-icons/ai';
 import { BiSolidExit, BiSolidNotification, BiSolidTime } from 'react-icons/bi';
 import { FaBell, FaBuilding, FaIdBadge } from 'react-icons/fa';
 import { ImTree } from 'react-icons/im';
-import { IoHomeSharp } from 'react-icons/io5';
+import { IoArrowDown, IoChevronDown, IoHomeSharp } from 'react-icons/io5';
 import { PiCubeFill } from 'react-icons/pi';
 import { RiAdminFill, RiHome6Fill } from 'react-icons/ri';
 
@@ -72,7 +76,7 @@ function AvatarPopover({ currentUser, onLogoutOpen }: { currentUser?: any; onLog
             variant={'unstyled'}
             h={'full'}
             onClick={() => {}}
-            transition={'opacity 0.2s ease-out'}
+            transition={'opacity 0s ease-out'}
             _hover={{ opacity: 0.75 }}
             _active={{ opacity: 0.5 }}
           >
@@ -83,17 +87,39 @@ function AvatarPopover({ currentUser, onLogoutOpen }: { currentUser?: any; onLog
               borderRadius={'full'}
               overflow={'hidden'}
             >
-              <Avatar
-                src={currentUser?.avatar || ''}
-                size={'md'}
-                borderRadius={0}
-              />
+              <Flex
+                align={'center'}
+                gap={3}
+                maxW={'md'}
+                ml={2}
+              >
+                <Avatar
+                  src={currentUser?.avatar || ''}
+                  size={'sm'}
+                  rounded={'full'}
+                />
+                <Flex
+                  flexDir={'column'}
+                  align={'flex-start'}
+                  justify={'center'}
+                >
+                  <Text
+                    display={{ base: 'none', md: 'block' }}
+                    textOverflow={'ellipsis'}
+                    overflow={'hidden'}
+                    fontSize={'sm'}
+                  >
+                    {currentUser?.displayName}
+                  </Text>
+                </Flex>
+                <Icon as={IoChevronDown} />
+              </Flex>
             </Skeleton>
           </Button>
         </PopoverTrigger>
         <PopoverContent
           m={0}
-          my={{ base: 4, md: 6 }}
+          my={{ base: 4, md: 4 }}
           mx={{ base: 0, md: 2 }}
           zIndex={2}
           minW={{ base: '100vw', md: '320px' }}
@@ -255,7 +281,7 @@ function NavLink({
     } else {
       return pathname.startsWith(href as any);
     }
-  }, [pathname, href, exact]);
+  }, [pathname, href, exact]) as any;
 
   return (
     <Button
@@ -268,8 +294,8 @@ function NavLink({
       leftIcon={
         leftIcon ? (
           <Box
-            mr={2}
-            fontSize={'2xl'}
+            mr={1}
+            fontSize={'xl'}
           >
             {leftIcon}
           </Box>
@@ -279,11 +305,9 @@ function NavLink({
       }
       w={'full'}
       justifyContent={'flex-start'}
-      m={0}
-      px={4}
-      py={6}
+      px={2}
+      py={2}
       rounded={'lg'}
-      // fontSize={'md'}
       fontWeight={'900'}
       color={isCurrent ? useColorModeValue('gray.100', 'gray.900') : useColorModeValue('gray.900', 'gray.100')}
       bg={isCurrent ? useColorModeValue('gray.900', 'gray.200') : 'none'}
@@ -312,7 +336,7 @@ function NavLink({
   );
 }
 
-export default function PlatformNav({ type, title }: { type?: string; title?: string | null | undefined }) {
+export default function PlatformNavNew({ type, title }: { type?: string; title?: string | null | undefined }) {
   const pathname = usePathname();
   const { currentUser, isAuthLoaded, user } = useAuthContext();
   const { isOpen: isLogoutOpen, onOpen: onLogoutOpen, onClose: onLogoutClose } = useDisclosure();
@@ -341,18 +365,18 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
         w={'240px'}
         flexDir={'column'}
         align={'flex-start'}
-        bg={useColorModeValue('white', 'gray.800')}
-        border={'1px solid'}
-        borderColor={useColorModeValue('gray.300', 'gray.700')}
+        background={useColorModeValue('white', 'gray.750')}
+        borderRight={'1px solid'}
+        borderColor={useColorModeValue('gray.300', 'gray.600')}
         zIndex={500}
       >
         {/* Title */}
         <Flex
-          transform={'translateY(-1px)'}
-          h={'6rem'}
+          h={'4rem'}
           width={'full'}
           borderBottom={'1px solid'}
-          borderColor={useColorModeValue('gray.300', 'gray.700')}
+          borderColor={useColorModeValue('gray.300', 'gray.600')}
+          background={useColorModeValue('white', 'gray.750')}
         >
           <Flex
             as={NextLink}
@@ -361,7 +385,7 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
             href={!isAuthLoaded || currentUser ? '/home' : '/'}
             align={'center'}
             justify={'center'}
-            transition={'filter 0.2s ease'}
+            transition={'filter 0s ease'}
             _hover={{
               filter: useColorModeValue('opacity(0.75)', 'brightness(0.75)')
             }}
@@ -371,14 +395,12 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
           >
             <Flex
               position={'relative'}
-              w={'128px'}
               h={'100%'}
+              zIndex={5000}
             >
-              <NextImage
+              <Image
+                w={'96px'}
                 src={useColorModeValue('/images/logo-black.png', '/images/logo-white.png')}
-                priority={true}
-                fill={true}
-                quality={64}
                 alt={'Restrafes XCS'}
                 style={{
                   objectFit: 'contain'
@@ -395,7 +417,7 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
             justify={'flex-start'}
             w={'100%'}
             px={4}
-            py={8}
+            py={6}
             spacing={1}
           >
             {!isAuthLoaded || currentUser ? (
@@ -504,14 +526,13 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
         <Flex
           as={'header'}
           w={'100vw'}
-          h={'6rem'}
+          h={'4rem'}
           align={'center'}
           justify={'space-between'}
           px={8}
-          bg={useColorModeValue('white', 'gray.800')}
-          borderY={'1px solid'}
-          borderX={'1px solid'}
-          borderColor={useColorModeValue('gray.300', 'gray.700')}
+          bg={useColorModeValue('white', 'gray.750')}
+          borderBottom={'1px solid'}
+          borderColor={useColorModeValue('gray.300', 'gray.600')}
         >
           <Flex
             as={NextLink}
@@ -534,13 +555,22 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
           </Flex>
           <Spacer />
 
+          <Divider
+            orientation={'vertical'}
+            h={'50%'}
+            w={'0.5px'}
+            background={useColorModeValue('gray.300', 'gray.500')}
+            border={'none'}
+            mx={4}
+          />
+
           <HStack
             align={'center'}
             justify={'flex-end'}
             spacing={4}
           >
             {/* Notifications */}
-            <Popover>
+            {/* <Popover>
               <PopoverTrigger>
                 <Button
                   variant={'unstyled'}
@@ -569,7 +599,7 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
                   <Text fontSize={'md'}>The service is unavailable.</Text>
                 </PopoverBody>
               </PopoverContent>
-            </Popover>
+            </Popover> */}
 
             {/* Avatar */}
             <AvatarPopover

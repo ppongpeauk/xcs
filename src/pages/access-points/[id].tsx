@@ -174,7 +174,7 @@ export default function PlatformAccessPoint() {
               default:
                 label = member.id;
                 break;
-            };
+            }
             optionsMap[(member.type as string) || 'user'].options.push({
               label,
               value: member.formattedId !== null ? member.formattedId : member.id
@@ -489,7 +489,7 @@ export default function PlatformAccessPoint() {
                   default:
                     label = memberId;
                     break;
-                };
+                }
                 return {
                   label,
                   value: memberId
@@ -695,7 +695,6 @@ export default function PlatformAccessPoint() {
                                   <InputGroup>
                                     <Switch
                                       {...field}
-                                      colorScheme="black"
                                       placeholder="Active"
                                       variant={'outline'}
                                       width={'fit-content'}
@@ -1024,7 +1023,7 @@ export default function PlatformAccessPoint() {
             )}
           </Formik>
         </Box>
-      </Box >
+      </Box>
     </>
   );
 }

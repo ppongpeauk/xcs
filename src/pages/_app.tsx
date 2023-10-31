@@ -4,7 +4,7 @@ import { ChakraProvider } from '@chakra-ui/react';
 
 import '@/styles/globals.css';
 import theme from '@/theme';
-import { Familjen_Grotesk } from 'next/font/google';
+import { Archivo, Commissioner, Familjen_Grotesk, Karla, Lexend, Overpass, Public_Sans, Sen } from 'next/font/google';
 
 import { AuthProvider } from '@/contexts/AuthContext';
 
@@ -25,7 +25,7 @@ export default function App({ Component, pageProps }: any) {
       >
         {`
           :root {
-            --font-familjen: ${font.style.fontFamily};
+            --font-main: ${font.style.fontFamily};
           }
         `}
       </style>
