@@ -3,7 +3,7 @@ import { Box, Stat, StatNumber, Text, useColorModeValue } from '@chakra-ui/react
 export default function StatBox({ label, value, helper }: { label: string; value: string; helper?: string }) {
   return (
     <Box
-      borderRadius={'lg'}
+      // borderRadius={'lg'}
       border={'1px solid'}
       borderColor={useColorModeValue('gray.200', 'gray.700')}
       p={4}

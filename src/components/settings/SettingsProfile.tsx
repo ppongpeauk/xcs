@@ -310,7 +310,7 @@ export default function SettingsProfile() {
                     </FormControl>
                   )}
                 </Field>
-                <Heading
+                {/* <Heading
                   mt={4}
                   mb={2}
                   size={'lg'}
@@ -331,7 +331,7 @@ export default function SettingsProfile() {
                       </InputGroup>
                     </FormControl>
                   )}
-                </Field>
+                </Field> */}
                 <Stack
                   direction={{ base: 'column', md: 'row' }}
                   spacing={{ base: 2, md: 4 }}

@@ -1,14 +1,6 @@
 import { useEffect } from 'react';
 
-import {
-  Box,
-  Button,
-  FormControl,
-  Heading,
-  Stack,
-  useDisclosure,
-  useToast
-} from '@chakra-ui/react';
+import { Box, Button, FormControl, Heading, Stack, useDisclosure, useToast } from '@chakra-ui/react';
 
 import { AiFillTrophy, AiOutlineUser } from 'react-icons/ai';
 import { BiReset } from 'react-icons/bi';
@@ -73,7 +65,7 @@ export default function SettingsProfile() {
         isOpen={platformInviteModalOpen}
         onOpen={platformInviteModalOnOpen}
         onClose={platformInviteModalOnClose}
-        onCreate={() => { }}
+        onCreate={() => {}}
       />
       <LocationResetUniverseIdModal
         isOpen={locationUniverseIdResetModalOpen}
@@ -88,7 +80,7 @@ export default function SettingsProfile() {
         isOpen={achievementModalOpen}
         onClose={achievementModalOnClose}
       />
-      {isAuthLoaded && currentUser && (
+      {
         <Box w={'fit-content'}>
           <Heading
             as={'h2'}
@@ -143,7 +135,7 @@ export default function SettingsProfile() {
             </FormControl>
           </Stack>
         </Box>
-      )}
+      }
     </>
   );
 }

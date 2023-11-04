@@ -1,15 +1,11 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { getSortedPostsData } from '@/lib/posts';
 import { useEffect, useState } from 'react';
 
 import {
-  Alert,
-  AlertDescription,
-  AlertIcon,
-  AlertTitle,
   Avatar,
   Box,
   Button,
-  Container,
   Divider,
   Flex,
   Heading,
@@ -20,6 +16,7 @@ import {
   Stack,
   Tag,
   Text,
+  chakra,
   useColorModeValue
 } from '@chakra-ui/react';
 
@@ -33,6 +30,14 @@ import StatBox from '@/components/StatBox';
 import Layout from '@/layouts/PlatformLayout';
 import moment from 'moment';
 import { BsArrowUpRight } from 'react-icons/bs';
+
+import RGL, { Responsive, WidthProvider } from 'react-grid-layout';
+
+import 'react-grid-layout/css/styles.css';
+import { MdOutlineDragHandle, MdOutlineDragIndicator } from 'react-icons/md';
+import 'react-resizable/css/styles.css';
+
+const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 const randomSubGreetings = [
   'Securing your facility starts here.',
@@ -105,6 +110,10 @@ export default function PlatformHome({ posts }: any) {
   const [randomSubGreeting, setRandomSubGreeting] = useState('');
 
   useEffect(() => {
+    setRandomSubGreeting(randomSubGreetings[Math.floor(Math.random() * randomSubGreetings.length)]);
+  }, []);
+
+  useEffect(() => {
     if (!user) return;
     user.getIdToken().then((token: string) => {
       fetch('/api/v1/statistics/total-scans', {
@@ -118,10 +127,6 @@ export default function PlatformHome({ posts }: any) {
         });
     });
   }, [user]);
-
-  useEffect(() => {
-    setRandomSubGreeting(randomSubGreetings[Math.floor(Math.random() * randomSubGreetings.length)]);
-  }, []);
 
   return (
     <>
@@ -225,7 +230,7 @@ export default function PlatformHome({ posts }: any) {
                 rounded={'lg'}
                 px={6}
                 py={4}
-                bg={'black'}
+                bg={useColorModeValue('blackAlpha.900', 'gray.700')}
                 color={'white'}
               >
                 <Flex flexDir={'column'}>
@@ -256,12 +261,173 @@ export default function PlatformHome({ posts }: any) {
           </Flex>
           <Divider />
           {/* Global Stats */}
+          <Box>
+            <ResponsiveReactGridLayout
+              isResizable={false}
+              breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
+              cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
+              autoSize={true}
+              rowHeight={100}
+              draggableHandle=".drag-handle"
+            >
+              <Box
+                key="1"
+                data-grid={{
+                  x: 0,
+                  y: 0,
+                  w: 12,
+                  h: 2,
+                  minW: 2,
+                  maxW: 12,
+                  minH: 1,
+                  maxH: Infinity,
+                  static: false
+                }}
+                minH={'fit-content'}
+                border={'1px solid'}
+                borderColor={useColorModeValue('blackAlpha.900', 'gray.600')}
+                bg={useColorModeValue('white', 'gray.800')}
+              >
+                {/* Heading */}
+                <Flex
+                  flexDir={'column'}
+                  p={4}
+                  bg={useColorModeValue('blackAlpha.900', 'gray.700')}
+                  flexDirection={'row'}
+                  align={'center'}
+                  color={'white'}
+                >
+                  <Heading fontSize={'xl'}>Statistics</Heading>
+                  <Spacer />
+                  <Icon
+                    as={MdOutlineDragIndicator}
+                    className="drag-handle"
+                    w={4}
+                    h={'full'}
+                    cursor={'grab'}
+                  />
+                </Flex>
+                {/* Content */}
+                <Box
+                  display={'grid'}
+                  gridTemplateColumns={{ base: '1fr', md: '1fr 1fr 1fr' }}
+                  flexDir={{ base: 'column', md: 'row' }}
+                  gap={4}
+                  p={4}
+                  flexGrow={1}
+                >
+                  <Skeleton isLoaded={!!stats.total}>
+                    <StatBox
+                      label={'Total Scans'}
+                      value={`${stats.total} scans`}
+                    />
+                  </Skeleton>
+                  <Skeleton isLoaded={!!stats.granted}>
+                    <StatBox
+                      label={'Successful Scans'}
+                      value={`${stats.granted} scan${stats.granted > 1 ? 's' : ''} (${Math.round(
+                        (stats.granted / stats.total) * 100
+                      )}%)`}
+                    />
+                  </Skeleton>
+                  <Skeleton isLoaded={!!stats.denied}>
+                    <StatBox
+                      label={'Failed Scans'}
+                      value={`${stats.denied} scan${stats.denied > 1 ? 's' : ''} (${Math.round(
+                        (stats.denied / stats.total) * 100
+                      )}%)`}
+                    />
+                  </Skeleton>
+                </Box>
+              </Box>
+              <Box
+                key="2"
+                data-grid={{
+                  x: 0,
+                  y: 2,
+                  w: 12,
+                  h: 4,
+                  minW: 2,
+                  minH: 1,
+                  static: false
+                }}
+                minH={'fit-content'}
+                border={'1px solid'}
+                borderColor={useColorModeValue('blackAlpha.900', 'gray.600')}
+                bg={useColorModeValue('white', 'gray.800')}
+              >
+                {/* Heading */}
+                <Flex
+                  flexDir={'column'}
+                  p={4}
+                  bg={useColorModeValue('blackAlpha.900', 'gray.700')}
+                  flexDirection={'row'}
+                  align={'center'}
+                  color={'white'}
+                >
+                  <Heading fontSize={'xl'}>Announcements</Heading>
+                  <Spacer />
+                  <Icon
+                    as={MdOutlineDragIndicator}
+                    className="drag-handle"
+                    w={4}
+                    h={'full'}
+                    cursor={'grab'}
+                  />
+                </Flex>
+                {/* Content */}
+                <Skeleton
+                  isLoaded={!!currentUser}
+                  p={4}
+                >
+                  <Stack
+                    direction={{ base: 'column', md: 'row' }}
+                    spacing={4}
+                    align={'center'}
+                  >
+                    {/* max 3 blog posts */}
+                    {posts.slice(0, 3).map((post: any) => (
+                      <Link
+                        href={`/blog/${post.id}`}
+                        textDecor={'none !important'}
+                        key={post.id}
+                      >
+                        <Flex
+                          flexDir={'column'}
+                          gap={4}
+                          w={'340px'}
+                        >
+                          <Image
+                            src={post.thumbnail}
+                            alt={post.thumbnailAlt}
+                            objectFit={'cover'}
+                            aspectRatio={1.5 / 1}
+                            borderRadius={'lg'}
+                          />
+                          <Flex flexDir={'column'}>
+                            <Heading size={'md'}>{post.title}</Heading>
+                            <Text>{moment(post.date).format('MMMM Do, YYYY')}</Text>
+                            <Tag
+                              mt={2}
+                              w={'fit-content'}
+                            >
+                              {post.category}
+                            </Tag>
+                          </Flex>
+                        </Flex>
+                      </Link>
+                    ))}
+                  </Stack>
+                </Skeleton>
+              </Box>
+            </ResponsiveReactGridLayout>
+          </Box>
           <Flex
             pt={2}
             gap={8}
             flexDir={'column'}
           >
-            <Box>
+            {/* <Box>
               <Flex
                 flexDir={'column'}
                 mb={4}
@@ -301,9 +467,9 @@ export default function PlatformHome({ posts }: any) {
                   />
                 </Skeleton>
               </Box>
-            </Box>
+            </Box> */}
             {/* Platform Announcements */}
-            <Box>
+            {/* <Box>
               <Flex
                 flexDir={'row'}
                 align={'center'}
@@ -332,7 +498,6 @@ export default function PlatformHome({ posts }: any) {
                   spacing={4}
                   align={'center'}
                 >
-                  {/* max 3 blog posts */}
                   {posts.slice(0, 3).map((post: any) => (
                     <Link
                       href={`/blog/${post.id}`}
@@ -366,7 +531,7 @@ export default function PlatformHome({ posts }: any) {
                   ))}
                 </Stack>
               </Skeleton>
-            </Box>
+            </Box> */}
           </Flex>
         </Flex>
       </Box>

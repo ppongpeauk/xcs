@@ -2,6 +2,7 @@
 // React
 import { Suspense, forwardRef, useMemo } from 'react';
 
+import { Link } from '@chakra-ui/next-js';
 import {
   Avatar,
   Badge,
@@ -13,7 +14,6 @@ import {
   Icon,
   IconButton,
   Image,
-  Link,
   Menu,
   MenuButton,
   MenuDivider,
@@ -44,7 +44,7 @@ import { FaBell, FaBuilding, FaIdBadge } from 'react-icons/fa';
 import { ImTree } from 'react-icons/im';
 import { IoArrowDown, IoChevronDown, IoHomeSharp } from 'react-icons/io5';
 import { PiCubeFill } from 'react-icons/pi';
-import { RiAdminFill, RiHome6Fill } from 'react-icons/ri';
+import { RiAdminFill, RiArrowDownSFill, RiArrowUpSFill, RiHome6Fill } from 'react-icons/ri';
 
 import NextImage from 'next/image';
 import NextLink from 'next/link';
@@ -57,12 +57,17 @@ import { useAuthContext } from '@/contexts/AuthContext';
 // Components
 import DeleteDialog from '@/components/DeleteDialog';
 import ThemeButton from '@/components/ThemeButton';
+import { User } from '@/types';
 
-function AvatarPopover({ currentUser, onLogoutOpen }: { currentUser?: any; onLogoutOpen?: any }) {
-  const { push } = useRouter();
-  const { colorMode, toggleColorMode } = useColorMode();
+const noAnim = {
+  exit: {},
+  enter: {}
+};
+
+function AvatarPopover({ currentUser, onLogoutOpen }: { currentUser?: User; onLogoutOpen?: any }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { user, isAuthLoaded } = useAuthContext();
+  const { push } = useRouter();
 
   return (
     <>
@@ -81,7 +86,7 @@ function AvatarPopover({ currentUser, onLogoutOpen }: { currentUser?: any; onLog
             _active={{ opacity: 0.5 }}
           >
             <Skeleton
-              isLoaded={currentUser || !user}
+              isLoaded={!!currentUser}
               w={'auto'}
               h={'auto'}
               borderRadius={'full'}
@@ -89,14 +94,15 @@ function AvatarPopover({ currentUser, onLogoutOpen }: { currentUser?: any; onLog
             >
               <Flex
                 align={'center'}
-                gap={3}
+                gap={2}
                 maxW={'md'}
                 ml={2}
               >
                 <Avatar
-                  src={currentUser?.avatar || ''}
+                  src={currentUser?.avatar}
                   size={'sm'}
                   rounded={'full'}
+                  mr={1}
                 />
                 <Flex
                   flexDir={'column'}
@@ -112,7 +118,7 @@ function AvatarPopover({ currentUser, onLogoutOpen }: { currentUser?: any; onLog
                     {currentUser?.displayName}
                   </Text>
                 </Flex>
-                <Icon as={IoChevronDown} />
+                <Icon as={!isOpen ? RiArrowDownSFill : RiArrowUpSFill} />
               </Flex>
             </Skeleton>
           </Button>
@@ -124,10 +130,66 @@ function AvatarPopover({ currentUser, onLogoutOpen }: { currentUser?: any; onLog
           zIndex={2}
           minW={{ base: '100vw', md: '320px' }}
           w={{ base: '100vw', md: 'auto' }}
-          bg={useColorModeValue('white', 'none')}
-          backdropFilter={'blur(2em)'}
-          rounded={'lg'}
+          bg={useColorModeValue('white', 'gray.750')}
+          rounded={'none'}
         >
+          {/* <PopoverBody p={0}>
+            <Stack
+              divider={
+                <Divider
+                  borderColor={useColorModeValue('gray.300', 'gray.600')}
+                  p={0}
+                />
+              }
+            >
+              <Flex
+                px={4}
+                pt={4}
+                pb={2}
+              >
+                <Text
+                  variant={'subtext'}
+                  fontSize={'sm'}
+                >
+                  Account ID: {currentUser?.username}
+                </Text>
+              </Flex>
+              <Flex
+                flexDir={'column'}
+                fontFamily={'Roboto'}
+                px={4}
+                pt={2}
+                pb={2}
+                gap={2}
+              >
+                <Link
+                  href={'/settings/profile'}
+                  w={'fit-content'}
+                >
+                  Account
+                </Link>
+                <Link
+                  href={'/settings/quota'}
+                  w={'fit-content'}
+                >
+                  Service Quotas
+                </Link>
+                <Link
+                  href={'/settings/api-keys'}
+                  w={'fit-content'}
+                >
+                  Security Credentials
+                </Link>
+              </Flex>
+              <Button
+                onClick={onLogoutOpen}
+                size={'sm'}
+                rounded={'none'}
+              >
+                Log out
+              </Button>
+            </Stack>
+          </PopoverBody> */}
           <PopoverBody>
             <Stack>
               {(!isAuthLoaded || currentUser) && (
