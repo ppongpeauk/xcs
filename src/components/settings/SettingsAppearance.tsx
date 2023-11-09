@@ -18,12 +18,14 @@ import moment from 'moment';
 import { useAuthContext } from '@/contexts/AuthContext';
 
 import DeleteDialog from '@/components/DeleteDialog';
+import { useMantineColorScheme } from '@mantine/core';
 
 export default function SettingsAppearance() {
   const { currentUser, refreshCurrentUser, user } = useAuthContext();
   const toast = useToast();
 
   const { colorMode, setColorMode } = useColorMode();
+  const { setColorScheme } = useMantineColorScheme();
 
   return (
     <>
@@ -38,6 +40,7 @@ export default function SettingsAppearance() {
             variant={'unstyled'}
             onClick={() => {
               setColorMode('light');
+              setColorScheme('light');
             }}
             h={'fit-content'}
           >
@@ -68,6 +71,7 @@ export default function SettingsAppearance() {
             variant={'unstyled'}
             onClick={() => {
               setColorMode('dark');
+              setColorScheme('dark');
             }}
             h={'fit-content'}
           >

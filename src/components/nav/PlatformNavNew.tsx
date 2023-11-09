@@ -39,10 +39,10 @@ import {
 import { HamburgerIcon } from '@chakra-ui/icons';
 
 import { AiFillHome, AiFillInfoCircle, AiFillSetting } from 'react-icons/ai';
-import { BiSolidExit, BiSolidNotification, BiSolidTime } from 'react-icons/bi';
+import { BiSolidBell, BiSolidBellRing, BiSolidExit, BiSolidNotification, BiSolidTime } from 'react-icons/bi';
 import { FaBell, FaBuilding, FaIdBadge } from 'react-icons/fa';
 import { ImTree } from 'react-icons/im';
-import { IoArrowDown, IoChevronDown, IoHomeSharp } from 'react-icons/io5';
+import { IoArrowDown, IoChevronDown, IoHomeSharp, IoSettings } from 'react-icons/io5';
 import { PiCubeFill } from 'react-icons/pi';
 import { RiAdminFill, RiArrowDownSFill, RiArrowUpSFill, RiHome6Fill } from 'react-icons/ri';
 
@@ -58,11 +58,6 @@ import { useAuthContext } from '@/contexts/AuthContext';
 import DeleteDialog from '@/components/DeleteDialog';
 import ThemeButton from '@/components/ThemeButton';
 import { User } from '@/types';
-
-const noAnim = {
-  exit: {},
-  enter: {}
-};
 
 function AvatarPopover({ currentUser, onLogoutOpen }: { currentUser?: User; onLogoutOpen?: any }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -104,20 +99,14 @@ function AvatarPopover({ currentUser, onLogoutOpen }: { currentUser?: User; onLo
                   rounded={'full'}
                   mr={1}
                 />
-                <Flex
-                  flexDir={'column'}
-                  align={'flex-start'}
-                  justify={'center'}
+                <Text
+                  display={{ base: 'none', md: 'block' }}
+                  textOverflow={'ellipsis'}
+                  overflow={'hidden'}
+                  fontSize={'sm'}
                 >
-                  <Text
-                    display={{ base: 'none', md: 'block' }}
-                    textOverflow={'ellipsis'}
-                    overflow={'hidden'}
-                    fontSize={'sm'}
-                  >
-                    {currentUser?.displayName}
-                  </Text>
-                </Flex>
+                  {currentUser?.displayName}
+                </Text>
                 <Icon as={!isOpen ? RiArrowDownSFill : RiArrowUpSFill} />
               </Flex>
             </Skeleton>
@@ -546,13 +535,6 @@ export default function PlatformNavNew({ type, title }: { type?: string; title?:
           {(!isAuthLoaded || currentUser) && (
             <>
               <NavLink
-                href={'/settings'}
-                pathname={pathname}
-                leftIcon={<AiFillSetting />}
-              >
-                Settings
-              </NavLink>
-              <NavLink
                 href={'https://xcs-docs.restrafes.co/'}
                 target={'_blank'}
                 pathname={pathname}
@@ -617,13 +599,59 @@ export default function PlatformNavNew({ type, title }: { type?: string; title?:
           </Flex>
           <Spacer />
 
+          {/* Notifications */}
+          <Popover>
+            <PopoverTrigger>
+              <IconButton
+                aria-label="Notifications"
+                icon={<BiSolidBell />}
+                onClick={() => {}}
+                variant={'ghost'}
+              ></IconButton>
+            </PopoverTrigger>
+            <PopoverContent
+              m={0}
+              my={{ base: 5, md: 3 }}
+              mx={{ base: 0, md: 2 }}
+              zIndex={2}
+              minW={{ base: '100vw', md: '320px' }}
+              bg={useColorModeValue('white', 'gray.750')}
+              rounded={'none'}
+            >
+              <PopoverCloseButton />
+              <PopoverHeader>
+                <Text fontWeight={'900'}>Notifications</Text>
+              </PopoverHeader>
+              <PopoverBody>
+                <Text fontSize={'md'}>You have no notifications.</Text>
+              </PopoverBody>
+            </PopoverContent>
+          </Popover>
+
           <Divider
             orientation={'vertical'}
             h={'50%'}
             w={'0.5px'}
             background={useColorModeValue('gray.300', 'gray.500')}
             border={'none'}
-            mx={4}
+            mx={2}
+          />
+
+          <IconButton
+            aria-label="Settings"
+            as={NextLink}
+            href={'/settings/profile'}
+            icon={<IoSettings />}
+            variant={'ghost'}
+          />
+
+          <Divider
+            orientation={'vertical'}
+            h={'50%'}
+            w={'0.5px'}
+            background={useColorModeValue('gray.300', 'gray.500')}
+            border={'none'}
+            mx={2}
           />
 
           <HStack
@@ -631,38 +659,6 @@ export default function PlatformNavNew({ type, title }: { type?: string; title?:
             justify={'flex-end'}
             spacing={4}
           >
-            {/* Notifications */}
-            {/* <Popover>
-              <PopoverTrigger>
-                <Button
-                  variant={'unstyled'}
-                  rounded={'full'}
-                  onClick={() => {}}
-                  aria-label="Notifications"
-                >
-                  {<BiSolidNotification size={24} />}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent
-                m={0}
-                my={{ base: 5, md: 7 }}
-                mx={{ base: 0, md: 2 }}
-                zIndex={2}
-                minW={{ base: '100vw', md: '320px' }}
-                bg={useColorModeValue('white', 'none')}
-                backdropFilter={'blur(2em)'}
-                rounded={'lg'}
-              >
-                <PopoverCloseButton />
-                <PopoverHeader>
-                  <Text fontWeight={'900'}>Notifications</Text>
-                </PopoverHeader>
-                <PopoverBody>
-                  <Text fontSize={'md'}>The service is unavailable.</Text>
-                </PopoverBody>
-              </PopoverContent>
-            </Popover> */}
-
             {/* Avatar */}
             <AvatarPopover
               currentUser={currentUser}

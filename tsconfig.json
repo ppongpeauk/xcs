@@ -18,6 +18,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/components/RoleEditModal.tsx.old", "src/pages/api/v1/axesys/syncdoors/[[...data]].ts.old"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/components/RoleEditModal.tsx.old", "src/pages/api/v1/axesys/syncdoors/[[...data]].ts.old", "src/gridstack.ts"],
   "exclude": ["node_modules"]
 }

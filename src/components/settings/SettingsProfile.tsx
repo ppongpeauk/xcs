@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import {
@@ -21,6 +22,7 @@ import {
   Tooltip,
   VStack,
   chakra,
+  useColorModeValue,
   useToast
 } from '@chakra-ui/react';
 
@@ -188,7 +190,7 @@ export default function SettingsProfile() {
                     />
                   </SkeletonCircle>
                   <VStack
-                    ml={4}
+                    ml={6}
                     align={'center'}
                     justify={'center'}
                   >
@@ -200,7 +202,7 @@ export default function SettingsProfile() {
                       accept="image/*"
                     />
                     <Button
-                      variant={'outline'}
+                      variant={'solid'}
                       size={'sm'}
                       onClick={() => {
                         avatarChooser.current?.click();
@@ -209,7 +211,8 @@ export default function SettingsProfile() {
                       Choose Icon
                     </Button>
                     <Button
-                      variant={'outline'}
+                      variant={'link'}
+                      color={useColorModeValue('black', 'white')}
                       size={'sm'}
                       onClick={() => {
                         removeAvatar();
