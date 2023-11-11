@@ -1,30 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import {
-  Avatar,
-  Box,
-  Button,
-  Flex,
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  HStack,
-  Heading,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  Portal,
-  Skeleton,
-  SkeletonCircle,
-  Stack,
-  Switch,
-  Text,
-  Textarea,
-  VStack,
-  useColorModeValue,
-  useDisclosure,
-  useToast
-} from '@chakra-ui/react';
+import { useColorModeValue, useDisclosure, useToast } from '@chakra-ui/react';
+import { Box, Flex, Button, Title, Text, rem } from '@mantine/core';
 
 import { AiOutlineUser } from 'react-icons/ai';
 import { BiReset } from 'react-icons/bi';
@@ -37,6 +14,7 @@ import { useAuthContext } from '@/contexts/AuthContext';
 
 import InvitePlatformUserModal from '@/components/InvitePlatformUserModal';
 import LocationResetUniverseIdModal from '@/components/settings/LocationResetUniverseIdModal';
+import { IconLink } from '@tabler/icons-react';
 
 export default function SettingsInvite() {
   const { currentUser, isAuthLoaded, refreshCurrentUser } = useAuthContext();
@@ -62,30 +40,26 @@ export default function SettingsInvite() {
       />
       <Box
         w={'fit-content'}
-        bg={'gray.100'}
-        rounded={'lg'}
-        px={8}
-        py={6}
+        px={rem(32)}
+        py={rem(24)}
+        style={{
+          borderRadius: rem(4),
+          border: '1px solid var(--mantine-color-dark-5)'
+        }}
       >
-        <Heading
-          as={'h2'}
-          size={'md'}
-          color={'gray.800'}
-        >
+        <Title size={'md'}>
           You have {currentUser?.platform?.invites || 0} referral credit
           {currentUser?.platform?.invites === 1 ? '' : 's'}.
-        </Heading>
-        <Text
-          fontSize={'md'}
-          color={'gray.500'}
-        >
-          You can use referral credits to invite users to the XCS platform.
-        </Text>
+        </Title>
+        <Text size={'md'}>You can use referral credits to invite users to the XCS platform.</Text>
       </Box>
       <Button
-        mt={4}
+        mt={8}
+        variant="filled"
+        color="dark.5"
         onClick={platformInviteModalOnOpen}
-        isDisabled={currentUser?.platform?.invites === 0}
+        disabled={currentUser?.platform?.invites === 0}
+        leftSection={<IconLink size={16} />}
       >
         Create Invitation Link
       </Button>

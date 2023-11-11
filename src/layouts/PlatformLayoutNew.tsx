@@ -66,16 +66,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   // Return nothing if the user is not logged in
   return (
     <>
-      {/* <PlatformNav />
-      <Box
-        pos={'relative'}
-        left={'240px'}
-        maw={'calc(100vw - 240px)'}
-        mih={'calc(100vh - 4rem)'}
-        bg={colorScheme === 'dark' ? 'dark.7' : 'unset'}
-      >
-        {children}
-      </Box> */}
       <PlatformNavNew main={children} />
       <Footer />
     </>

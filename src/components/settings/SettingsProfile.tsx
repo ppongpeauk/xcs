@@ -1,37 +1,14 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import {
-  Avatar,
-  Box,
-  Button,
-  Flex,
-  FormControl,
-  FormLabel,
-  HStack,
-  Heading,
-  Icon,
-  Input,
-  InputGroup,
-  InputRightElement,
-  SkeletonCircle,
-  Stack,
-  Switch,
-  Text,
-  Textarea,
-  Tooltip,
-  VStack,
-  chakra,
-  useColorModeValue,
-  useToast
-} from '@chakra-ui/react';
+import { useToast } from '@chakra-ui/react';
 
-import { IoInformation, IoInformationCircle, IoSave } from 'react-icons/io5';
-
+import { Flex, Button, Box, Avatar, Title, rem, TextInput, Group, Textarea, Input } from '@mantine/core';
 import { Field, Form, Formik } from 'formik';
 
 import { useAuthContext } from '@/contexts/AuthContext';
 import { useRouter } from 'next/router';
+import { IconDeviceFloppy, IconDeviceLaptop, IconIdBadge, IconMail, IconUpload, IconUser } from '@tabler/icons-react';
 
 export default function SettingsProfile() {
   const { currentUser, refreshCurrentUser, user, isAuthLoaded } = useAuthContext();
@@ -39,7 +16,6 @@ export default function SettingsProfile() {
 
   const defaultImage = `${process.env.NEXT_PUBLIC_ROOT_URL}/images/default-avatar.png`;
   const [image, setImage] = useState<null | undefined | string>(undefined);
-  const [emailEditable, setEmailEditable] = useState<boolean>(false);
 
   const toast = useToast();
 
@@ -177,23 +153,24 @@ export default function SettingsProfile() {
               <Form>
                 <Flex
                   id={'avatar-picker'}
-                  mb={4}
+                  mb={16}
+                  gap={16}
                 >
-                  <SkeletonCircle
-                    isLoaded={!!isAuthLoaded}
-                    w={'fit-content'}
-                    h={'fit-content'}
-                  >
-                    <Avatar
-                      size={'2xl'}
-                      src={image || ''}
-                    />
-                  </SkeletonCircle>
-                  <VStack
+                  <Avatar
+                    size={rem(128)}
+                    src={image || ''}
+                    style={{
+                      objectFit: 'cover'
+                    }}
+                  />
+                  <Flex
                     ml={6}
-                    align={'center'}
+                    direction={'column'}
+                    align={'flex-start'}
                     justify={'center'}
+                    gap={4}
                   >
+                    {/* invisible avatar upload button */}
                     <Input
                       ref={avatarChooser}
                       onChange={handleChange}
@@ -201,154 +178,100 @@ export default function SettingsProfile() {
                       type={'file'}
                       accept="image/*"
                     />
+                    {/* actual avatar upload button */}
                     <Button
-                      variant={'solid'}
-                      size={'sm'}
+                      variant={'filled'}
+                      color={'dark.5'}
+                      fullWidth
+                      size={'xs'}
                       onClick={() => {
                         avatarChooser.current?.click();
                       }}
+                      leftSection={<IconUpload size={16} />}
                     >
                       Choose Icon
                     </Button>
                     <Button
-                      variant={'link'}
-                      color={useColorModeValue('black', 'white')}
-                      size={'sm'}
+                      variant={'default'}
+                      color={'dark.5'}
+                      fullWidth
+                      size={'xs'}
                       onClick={() => {
                         removeAvatar();
                       }}
                     >
                       Remove Icon
                     </Button>
-                  </VStack>
+                  </Flex>
                 </Flex>
-                <Heading
-                  mb={2}
-                  size={'lg'}
+                <Flex
+                  direction={'column'}
+                  gap={4}
                 >
-                  Basic Info
-                </Heading>
-                <HStack>
-                  <Field name="displayName">
+                  <Flex gap={4}>
+                    <Field name="displayName">
+                      {({ field, form }: any) => (
+                        <TextInput
+                          label="Display Name"
+                          placeholder="Display Name"
+                          required
+                          error={form.errors.displayName}
+                          onChange={field.onChange}
+                          leftSection={<IconDeviceLaptop size={16} />}
+                          {...field}
+                        />
+                      )}
+                    </Field>
+                    <Field name="username">
+                      {({ field, form }: any) => (
+                        <TextInput
+                          label="Username"
+                          placeholder="Username"
+                          required
+                          error={form.errors.username}
+                          onChange={field.onChange}
+                          disabled
+                          leftSection={<IconUser size={16} />}
+                          {...field}
+                        />
+                      )}
+                    </Field>
+                  </Flex>
+                  <Field name="email">
                     {({ field, form }: any) => (
-                      <FormControl w={'fit-content'}>
-                        <FormLabel>Display Name</FormLabel>
-                        <InputGroup mb={2}>
-                          <Input
-                            {...field}
-                            type="text"
-                            autoComplete="off"
-                            placeholder={currentUser?.username}
-                            variant={'outline'}
-                          />
-                        </InputGroup>
-                      </FormControl>
+                      <TextInput
+                        label="Email"
+                        placeholder="Email"
+                        required
+                        error={form.errors.email}
+                        onChange={field.onChange}
+                        leftSection={<IconMail size={16} />}
+                        {...field}
+                      />
                     )}
                   </Field>
-                  <Field name="username">
+                  <Field name="bio">
                     {({ field, form }: any) => (
-                      <FormControl w={'fit-content'}>
-                        <FormLabel>
-                          <Flex align={'center'}>
-                            <Text>Username</Text>
-                          </Flex>
-                        </FormLabel>
-                        <InputGroup mb={2}>
-                          <Input
-                            {...field}
-                            isDisabled={true}
-                            type="text"
-                            autoComplete="off"
-                            placeholder="Username"
-                            variant={'outline'}
-                          />
-                        </InputGroup>
-                      </FormControl>
+                      <Textarea
+                        label="About Me"
+                        description="Tell us a little bit about yourself."
+                        placeholder="Hello, world!"
+                        error={form.errors.bio}
+                        onChange={field.onChange}
+                        {...field}
+                      />
                     )}
                   </Field>
-                </HStack>
-                <Field name="email">
-                  {({ field, form }: any) => (
-                    <FormControl>
-                      <FormLabel>Email</FormLabel>
-                      <InputGroup mb={2}>
-                        <Input
-                          {...field}
-                          type="email"
-                          autoComplete="off"
-                          placeholder="Email address"
-                          variant={'outline'}
-                          isDisabled={!props.values.emailEditable}
-                        />
-                        {!props.values.emailEditable && (
-                          <InputRightElement width="4.5rem">
-                            <Button
-                              h="1.75rem"
-                              size="sm"
-                              onClick={() => {
-                                form.setValues({ emailEditable: true });
-                              }}
-                            >
-                              Edit
-                            </Button>
-                          </InputRightElement>
-                        )}
-                      </InputGroup>
-                    </FormControl>
-                  )}
-                </Field>
-                <Field name="bio">
-                  {({ field, form }: any) => (
-                    <FormControl>
-                      <FormLabel>About Me</FormLabel>
-                      <InputGroup mb={2}>
-                        <Textarea
-                          {...field}
-                          type="text"
-                          autoComplete="off"
-                          placeholder="Hello, world!"
-                          variant={'outline'}
-                        />
-                      </InputGroup>
-                    </FormControl>
-                  )}
-                </Field>
-                {/* <Heading
-                  mt={4}
-                  mb={2}
-                  size={'lg'}
+                </Flex>
+                <Button
+                  mt={8}
+                  loading={props.isSubmitting}
+                  leftSection={<IconDeviceFloppy size={16} />}
+                  type={'submit'}
+                  color={'dark.5'}
                 >
-                  Privacy
-                </Heading>
-                <Field name="enabled">
-                  {({ field, form }: any) => (
-                    <FormControl width={'fit-content'}>
-                      <FormLabel>Connections public</FormLabel>
-                      <InputGroup mb={2}>
-                        <Switch
-                          {...field}
-                          placeholder="Enabled"
-                          variant={'outline'}
-                          defaultChecked={currentUser?.enabled}
-                        />
-                      </InputGroup>
-                    </FormControl>
-                  )}
-                </Field> */}
-                <Stack
-                  direction={{ base: 'column', md: 'row' }}
-                  spacing={{ base: 2, md: 4 }}
-                  pt={2}
-                >
-                  <Button
-                    mb={2}
-                    isLoading={props.isSubmitting}
-                    leftIcon={<IoSave />}
-                    type={'submit'}
-                  >
-                    Save Changes
-                  </Button>
-                </Stack>
+                  Save Changes
+                </Button>
               </Form>
             )}
           </Formik>

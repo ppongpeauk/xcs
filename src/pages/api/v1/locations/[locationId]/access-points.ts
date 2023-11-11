@@ -74,10 +74,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
     } while (await accessPoints.findOne({ id: id }));
 
-    let { name, description, templateId } = req.body as {
+    let { name, description, templateId, tags } = req.body as {
       name: string;
       description: string;
       templateId: AccessPoint;
+      tags: string[];
     };
 
     // Character limits
@@ -103,6 +104,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       id: id,
       name: name,
       description: description,
+      tags: tags || [],
 
       organizationId: location.organizationId,
       locationId: locationId,

@@ -35,28 +35,32 @@ export default function Discord() {
             .then((data) => {
               if (data.success) {
                 refreshCurrentUser();
-                push('/settings/3?discordLinked=true');
+                push('/settings/linked-accounts?discordLinked=true');
               } else {
-                push('/settings/3');
+                push('/settings/linked-accounts');
               }
             });
         })
         .catch((err: any) => {
           console.error(err);
         })
-        .finally(() => { });
+        .finally(() => {});
     }
     if (query.error) {
-      push('/settings/3');
+      push('/settings/linked-accounts');
     }
   }, [user, code, push, query, refreshCurrentUser]);
 
   return (
-    <Container as={Flex} centerContent h={'100dvh'} align={'center'} justify={'center'}>
+    <Container
+      as={Flex}
+      centerContent
+      h={'100dvh'}
+      align={'center'}
+      justify={'center'}
+    >
       <Spinner />
-      <Text pt={4}>
-        Verifying...
-      </Text>
+      <Text pt={4}>Verifying...</Text>
     </Container>
   );
 }

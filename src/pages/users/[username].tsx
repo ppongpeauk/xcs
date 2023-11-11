@@ -8,7 +8,7 @@ import { useAuthContext } from '@/contexts/AuthContext';
 import Layout from '@/layouts/PlatformLayout';
 
 // Layouts
-import UserProfile from '@/components/PlatformProfile';
+import UserProfile from '@/components/PlatformProfileNew';
 
 // Get profile data
 export async function getServerSideProps({ query }: any) {
@@ -67,8 +67,9 @@ export default function UserProfileNS({ user }: any) {
             />
             <meta
               property="og:description"
-              content={`Join ${user?.displayName || user.name.first
-                } and a community of architects in managing access points on Restrafes XCS.`}
+              content={`Join ${
+                user?.displayName || user.name.first
+              } and a community of architects in managing access points on Restrafes XCS.`}
             />
             <meta
               property="og:image"

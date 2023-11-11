@@ -7,11 +7,11 @@ import theme from '@/theme';
 import { ChakraProvider } from '@chakra-ui/react';
 
 // Mantine UI
-import '@mantine/code-highlight/styles.css';
 import { MantineProvider, createTheme } from '@mantine/core';
+import { ModalsProvider } from '@mantine/modals';
 import '@mantine/core/styles.css';
-import '@mantine/dates/styles.css';
-import '@mantine/dropzone/styles.css';
+import '@mantine/core/styles.layer.css';
+import 'mantine-datatable/styles.layer.css';
 
 // Contexts
 import { AuthProvider } from '@/contexts/AuthContext';
@@ -42,13 +42,15 @@ export default function App({ Component, pageProps }: any) {
         theme={theme}
         cssVarsRoot="body"
       >
-        <MantineProvider theme={createTheme({})}>
-          <AuthProvider>
-            <DialogProvider>
-              <PageProgress />
-              {getLayout(<Component {...pageProps} />)}
-            </DialogProvider>
-          </AuthProvider>
+        <MantineProvider>
+          <ModalsProvider>
+            <AuthProvider>
+              <DialogProvider>
+                <PageProgress />
+                {getLayout(<Component {...pageProps} />)}
+              </DialogProvider>
+            </AuthProvider>
+          </ModalsProvider>
         </MantineProvider>
       </ChakraProvider>
     </>

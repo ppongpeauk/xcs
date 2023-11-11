@@ -32,9 +32,9 @@ export default function RobloxOauth2() {
             .then((data) => {
               if (data.success) {
                 refreshCurrentUser();
-                push('/settings/3?robloxLinked=true');
+                push('/settings/linked-accounts?robloxLinked=true');
               } else {
-                push('/settings/3');
+                push('/settings/linked-accounts');
               }
             });
         })
@@ -43,16 +43,20 @@ export default function RobloxOauth2() {
         });
     }
     if (query.error) {
-      push('/settings/3');
+      push('/settings/linked-accounts');
     }
   }, [user, code, push, query, refreshCurrentUser]);
 
   return (
-    <Container as={Flex} centerContent h={'100dvh'} align={'center'} justify={'center'}>
+    <Container
+      as={Flex}
+      centerContent
+      h={'100dvh'}
+      align={'center'}
+      justify={'center'}
+    >
       <Spinner />
-      <Text pt={4}>
-        Verifying...
-      </Text>
+      <Text pt={4}>Verifying...</Text>
     </Container>
   );
 }
