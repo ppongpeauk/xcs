@@ -384,7 +384,7 @@ function NotificationMenu({ currentUser }: { currentUser?: User }) {
                 variant="dot"
                 color="red"
                 h={20}
-                disabled
+                // disabled
                 // disabled={!currentUser?.notifications?.length}
               >
                 <IconBell size={20} />
@@ -417,15 +417,21 @@ function NotificationMenu({ currentUser }: { currentUser?: User }) {
           </Flex>
           <SegmentedControl
             fullWidth
+            mt={8}
             data={['All', 'Invitations', 'System']}
           />
-          <Text
-            px={16}
-            py={8}
-            c={'gray.5'}
+          <Flex
+            align={'center'}
+            justify={'center'}
+            mih={128}
           >
-            You have no notifications.
-          </Text>
+            <Text
+              px={16}
+              c={'gray.5'}
+            >
+              You have no notifications.
+            </Text>
+          </Flex>
         </Popover.Dropdown>
       </Popover>
     </>

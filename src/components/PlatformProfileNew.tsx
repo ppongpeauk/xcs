@@ -18,7 +18,8 @@ import {
   Tooltip,
   Indicator,
   UnstyledButton,
-  AspectRatio
+  AspectRatio,
+  Group
 } from '@mantine/core';
 import { modals } from '@mantine/modals';
 
@@ -32,7 +33,7 @@ import NextLink from 'next/link';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { BsFillShieldFill } from 'react-icons/bs';
 import { IoHammerSharp } from 'react-icons/io5';
-import { IconCheck, IconSettings, IconSettings2 } from '@tabler/icons-react';
+import { IconCheck, IconMoodSmile, IconSettings, IconSettings2, IconTrophy, IconUsersGroup } from '@tabler/icons-react';
 
 function OrganizationItem({ organization }: { organization: Organization | never }) {
   return (
@@ -218,7 +219,13 @@ export default function Profile({ username, user }: { username: string | null; u
           direction={'column'}
           mt={16}
         >
-          <Title order={3}>About Me</Title>
+          <Group
+            align="center"
+            gap={8}
+          >
+            <IconMoodSmile size={16} />
+            <Title order={4}>About Me</Title>
+          </Group>
           <Text
             size={'md'}
             c={!user?.bio ? 'gray.6' : 'unset'}
@@ -233,7 +240,13 @@ export default function Profile({ username, user }: { username: string | null; u
             direction={'column'}
             mt={16}
           >
-            <Title order={3}>Achievements</Title>
+            <Group
+              align="center"
+              gap={8}
+            >
+              <IconTrophy size={16} />
+              <Title order={4}>Achievements</Title>
+            </Group>
             {!Object.keys(user?.achievements || {}).length ? (
               <Text
                 size={'md'}
@@ -259,7 +272,13 @@ export default function Profile({ username, user }: { username: string | null; u
           direction={'column'}
           mt={16}
         >
-          <Title order={3}>Organizations</Title>
+          <Group
+            align="center"
+            gap={8}
+          >
+            <IconUsersGroup size={16} />
+            <Title order={4}>Organizations</Title>
+          </Group>
           {!user?.organizations?.length ? (
             <Text
               size={'md'}

@@ -119,7 +119,7 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
           return false;
         }
 
-        if (tagQuery.length && !tagQuery.some((d) => tags.includes(d))) {
+        if (tagQuery.length && !tagQuery.filter((d) => tags.includes(d))) {
           return false;
         }
         return true;
@@ -250,7 +250,7 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
                     return (
                       <Pill
                         key={tag}
-                        color={colorScheme === 'dark' ? 'white' : 'border'}
+                        bg={colorScheme === 'dark' ? 'dark.4' : undefined}
                       >
                         {tag}
                       </Pill>
