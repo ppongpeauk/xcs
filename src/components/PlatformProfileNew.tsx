@@ -33,7 +33,15 @@ import NextLink from 'next/link';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { BsFillShieldFill } from 'react-icons/bs';
 import { IoHammerSharp } from 'react-icons/io5';
-import { IconCheck, IconMoodSmile, IconSettings, IconSettings2, IconTrophy, IconUsersGroup } from '@tabler/icons-react';
+import {
+  IconCheck,
+  IconLink,
+  IconMoodSmile,
+  IconSettings,
+  IconSettings2,
+  IconTrophy,
+  IconUsersGroup
+} from '@tabler/icons-react';
 
 function OrganizationItem({ organization }: { organization: Organization | never }) {
   return (
@@ -217,7 +225,7 @@ export default function Profile({ username, user }: { username: string | null; u
         {/* user about-me */}
         <Flex
           direction={'column'}
-          mt={16}
+          mt={currentUser?.id === user?.id ? 16 : 32}
         >
           <Group
             align="center"
@@ -279,22 +287,31 @@ export default function Profile({ username, user }: { username: string | null; u
             <IconUsersGroup size={16} />
             <Title order={4}>Organizations</Title>
           </Group>
-          {!user?.organizations?.length ? (
+          {user?.privacy?.organizations ? (
+            !user?.organizations?.length ? (
+              <Text
+                size={'md'}
+                c="gray.6"
+              >
+                This user isn&apos;t in any organizations yet.
+              </Text>
+            ) : (
+              <Flex style={styles.cellContainer}>
+                {user?.organizations?.map((organization: Organization) => (
+                  <OrganizationItem
+                    key={organization.id}
+                    organization={organization}
+                  />
+                ))}
+              </Flex>
+            )
+          ) : (
             <Text
               size={'md'}
               c="gray.6"
             >
-              This user isn&apos;t in any organizations yet.
+              This user&apos;s organizations are private.
             </Text>
-          ) : (
-            <Flex style={styles.cellContainer}>
-              {user?.organizations?.map((organization: Organization) => (
-                <OrganizationItem
-                  key={organization.id}
-                  organization={organization}
-                />
-              ))}
-            </Flex>
           )}
         </Flex>
       </Container>

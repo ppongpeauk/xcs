@@ -9,6 +9,7 @@ import { useAuthContext } from '@/contexts/AuthContext';
 import DeleteDialog from '@/components/DeleteDialog';
 import { Link } from '@chakra-ui/next-js';
 import { IconLink, IconLinkOff } from '@tabler/icons-react';
+import { modals } from '@mantine/modals';
 
 export default function SettingsLinkedAccounts() {
   const { currentUser, refreshCurrentUser, user } = useAuthContext();
@@ -128,11 +129,11 @@ export default function SettingsLinkedAccounts() {
           id={'roblox'}
           mb={4}
         >
-          <Title size={rem(24)}>Roblox</Title>
-          {!currentUser?.roblox?.verified ? (
+          <Title order={4}>Roblox</Title>
+          {currentUser?.roblox?.verified ? (
             <>
               <Text py={1}>
-                You&apos;ve linked your Roblox account to {currentUser?.roblox.username} on{' '}
+                You&apos;ve linked your XCS account to {currentUser?.roblox.username} on{' '}
                 {moment(currentUser?.roblox.verifiedAt).format('MMMM Do YYYY.')}
               </Text>
               <Button
@@ -140,7 +141,16 @@ export default function SettingsLinkedAccounts() {
                 color={'red'}
                 leftSection={<IconLinkOff size={16} />}
                 onClick={() => {
-                  onUnlinkRobloxOpen();
+                  // onUnlinkRobloxOpen();
+                  modals.openConfirmModal({
+                    title: <Title order={4}>Unlink Roblox account?</Title>,
+                    children: <Text size="sm">Are you sure you want to unlink your Roblox account?</Text>,
+                    labels: { confirm: 'Unlink', cancel: 'Nevermind' },
+                    confirmProps: { color: 'red' },
+                    onConfirm: () => {
+                      unlinkRoblox();
+                    }
+                  });
                 }}
               >
                 Unlink
@@ -170,7 +180,7 @@ export default function SettingsLinkedAccounts() {
           mt={16}
           mb={4}
         >
-          <Title size={rem(24)}>Discord</Title>
+          <Title order={4}>Discord</Title>
           <Text py={1}>
             Link your Discord account to Restrafes XCS to receive the <strong>XCS</strong> role on the{' '}
             <Link
@@ -197,7 +207,16 @@ export default function SettingsLinkedAccounts() {
                   color={'red'}
                   leftSection={<IconLinkOff size={16} />}
                   onClick={() => {
-                    onUnlinkDiscordOpen();
+                    // onUnlinkDiscordOpen();
+                    modals.openConfirmModal({
+                      title: <Title order={4}>Unlink Discord account?</Title>,
+                      children: <Text size="sm">Are you sure you want to unlink your Discord account?</Text>,
+                      labels: { confirm: 'Unlink', cancel: 'Nevermind' },
+                      confirmProps: { color: 'red' },
+                      onConfirm: () => {
+                        unlinkDiscord();
+                      }
+                    });
                   }}
                 >
                   Unlink

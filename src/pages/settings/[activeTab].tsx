@@ -22,6 +22,9 @@ import { useMediaQuery } from '@mantine/hooks';
 import {
   Icon3dCubeSphere,
   IconExternalLink,
+  IconHandClick,
+  IconHandFinger,
+  IconHandStop,
   IconLink,
   IconMailFilled,
   IconPaint,
@@ -31,6 +34,7 @@ import {
   IconUser,
   IconUserFilled
 } from '@tabler/icons-react';
+import SettingsPrivacy from '@/components/settings/SettingsPrivacy';
 
 export default function Settings() {
   const { query, push } = useRouter();
@@ -163,6 +167,12 @@ export default function Settings() {
               Appearance
             </Tabs.Tab>
             <Tabs.Tab
+              value="privacy"
+              leftSection={<IconHandStop style={iconStyle} />}
+            >
+              Privacy
+            </Tabs.Tab>
+            <Tabs.Tab
               value="linked-accounts"
               leftSection={<IconExternalLink style={iconStyle} />}
             >
@@ -197,6 +207,16 @@ export default function Settings() {
                 Profile
               </Title>
               <SettingsProfile />
+            </Tabs.Panel>
+            <Tabs.Panel value="privacy">
+              <Title
+                size={rem(24)}
+                py={4}
+                mb={16}
+              >
+                Privacy
+              </Title>
+              <SettingsPrivacy />
             </Tabs.Panel>
             <Tabs.Panel value="appearance">
               <Title

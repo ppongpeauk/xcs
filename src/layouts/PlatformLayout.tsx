@@ -16,7 +16,7 @@ import { Alert as AlertType } from '@/types';
 import { useAuthContext } from '@/contexts/AuthContext';
 
 // Components
-import Footer from '@/components/Footer';
+import Footer from '@/components/FooterNew';
 import PlatformAlert from '@/components/PlatformAlert';
 import PlatformNav from '@/components/nav/PlatformNav';
 import PlatformNavNew from '@/components/nav/PlatformNavNew';
@@ -77,7 +77,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         {children}
       </Box> */}
       <PlatformNavNew main={children} />
-      <Footer />
     </>
   );
 }

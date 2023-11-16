@@ -44,6 +44,11 @@ export interface User {
     membership: number;
     invites: number;
   };
+  privacy?: {
+    organizations: boolean;
+    linkedAccounts: boolean;
+    linkScans: boolean;
+  };
   statistics?: {
     referrals: number;
     scans: number;

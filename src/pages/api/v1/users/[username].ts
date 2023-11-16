@@ -2,14 +2,19 @@ import { NextApiRequest, NextApiResponse } from 'next';
 
 import clientPromise from '@/lib/mongodb';
 import { Achievement, Organization, User } from '@/types';
+import { authToken } from '@/lib/auth';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { username } = req.query as { username: string };
+
+  // check if the user is authenticated
+  const uid = await authToken(req);
 
   const mongoClient = await clientPromise;
   const db = mongoClient.db(process.env.MONGODB_DB as string);
   const users = db.collection('users');
   const organizations = db.collection('organizations');
+
   let user = (await users.findOne(
     { username: username },
     { projection: { email: 0, notifications: 0, alerts: 0, payment: 0 } }
@@ -20,14 +25,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   if (req.method === 'GET') {
-    let userOrgs = await organizations
-      .find(
-        { [`members.${user.id}`]: { $exists: true } },
-        { projection: { id: 1, name: 1, description: 1, avatar: 1, verified: 1, [`members.${user.id}`]: 1 } }
-      )
-      .toArray();
+    // get user organizations
+    // check privacy
 
-    user.organizations = userOrgs as unknown as Organization[];
+    if (user.privacy?.organizations || user.id === uid) {
+      let userOrgs = await organizations
+        .find(
+          { [`members.${user.id}`]: { $exists: true } },
+          { projection: { id: 1, name: 1, description: 1, avatar: 1, verified: 1, [`members.${user.id}`]: 1 } }
+        )
+        .toArray();
+
+      user.organizations = userOrgs as unknown as Organization[];
+    }
 
     // get user achievements
     let achievements: Record<string, Achievement> = {};

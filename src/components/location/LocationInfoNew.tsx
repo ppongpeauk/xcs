@@ -298,7 +298,7 @@ export default function LocationInfo({
                     {...field}
                     label="Experience ID"
                     description="The ID of the experience this XCS location belongs to."
-                    placeholder="1234567890"
+                    placeholder="Experience ID"
                     disabled={true}
                     leftSection={<Icon123 size={'20px'} />}
                   />

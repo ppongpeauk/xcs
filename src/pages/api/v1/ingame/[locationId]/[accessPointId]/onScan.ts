@@ -5,7 +5,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import clientPromise from '@/lib/mongodb';
 // @ts-ignore
 import { getRobloxUsers } from '@/lib/utils';
-import { Organization, OrganizationMember, ScanEvent } from '@/types';
+import { Organization, OrganizationMember, ScanEvent, User } from '@/types';
 import { generate as generateString } from 'randomstring';
 
 const mergicianOptions = { appendArrays: true, dedupArrays: true };
@@ -267,7 +267,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   );
 
-  const user = await dbUsers
+  let user = await dbUsers
     .findOne(
       { 'roblox.id': userId },
       {
@@ -276,11 +276,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           displayName: 1,
           username: 1,
           roblox: 1,
-          avatar: 1
+          avatar: 1,
+          privacy: 1
         }
       }
     )
     .then((user) => user);
+
+  // check if user has privacy enabled
+  if (user && !user?.privacy?.linkScans) {
+    user = null;
+  }
 
   // log scan
   let scanId;
@@ -320,7 +326,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         !(!isAllowed && !accessPoint?.config?.webhook?.eventDenied)
       ) {
         const webhook = accessPoint?.config?.webhook;
-        let member = organization.members[user?.id] || {
+        let member = organization.members[user?.id || ''] || {
           type: 'roblox',
           id: userId
         };

@@ -71,6 +71,7 @@ import {
 } from '@tabler/icons-react';
 import { useMediaQuery } from '@mantine/hooks';
 import { useColorMode } from '@chakra-ui/react';
+import Footer from '../FooterNew';
 
 const styles = {
   horizontalBar: {}
@@ -219,6 +220,10 @@ export default function PlatformNavNew({
         </AppShell.Navbar>
 
         <AppShell.Main bg={colorScheme === 'dark' ? 'dark.7' : 'unset'}>{main}</AppShell.Main>
+
+        <AppShell.Footer pos={'relative'}>
+          <Footer />
+        </AppShell.Footer>
       </AppShell>
       {/* <Flex
         component={Paper}
@@ -288,7 +293,7 @@ function SettingsMenu({ currentUser }: { currentUser?: User }) {
   return (
     <>
       <Popover
-        width={isMobile ? 'unset' : 320}
+        width={320}
         position="bottom"
         shadow="md"
         // transitionProps={{ duration: 0 }}
@@ -369,7 +374,7 @@ function NotificationMenu({ currentUser }: { currentUser?: User }) {
   return (
     <>
       <Popover
-        width={isMobile ? 'unset' : 480}
+        width={isMobile ? 320 : 480}
         position="bottom"
         shadow="md"
         // transitionProps={{ duration: 0 }}
@@ -448,7 +453,7 @@ function AvatarMenu({ currentUser, onLogoutOpen }: { currentUser?: User; onLogou
   return (
     <>
       <Menu
-        width={isMobile ? 'unset' : 320}
+        width={320}
         position="bottom"
         shadow="md"
         opened={opened}
@@ -469,13 +474,15 @@ function AvatarMenu({ currentUser, onLogoutOpen }: { currentUser?: User; onLogou
                   backgroundColor: 'var(--chakra-colors-gray-200)'
                 }}
               />
-              <Text
-                fw={'bold'}
-                size="sm"
-                display={{ base: 'none', md: 'block' }}
-              >
-                {currentUser?.displayName}
-              </Text>
+              {currentUser && (
+                <Text
+                  fw={'bold'}
+                  size="sm"
+                  display={{ base: 'none', md: 'block' }}
+                >
+                  {currentUser?.displayName}
+                </Text>
+              )}
               {opened ? <IconCaretUpFilled size={12} /> : <IconCaretDownFilled size={12} />}
             </Flex>
           </UnstyledButton>

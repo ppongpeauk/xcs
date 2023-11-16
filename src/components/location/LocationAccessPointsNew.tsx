@@ -119,7 +119,7 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
           return false;
         }
 
-        if (tagQuery.length && !tagQuery.filter((d) => tags.includes(d))) {
+        if (tagQuery.length && !tagQuery.some((d) => tags.includes(d))) {
           return false;
         }
         return true;
