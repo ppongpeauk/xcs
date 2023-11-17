@@ -14,7 +14,7 @@ import {
 
 import moment from 'moment';
 import NextImage from 'next/image';
-import Link from 'next/link';
+import NextLink from 'next/link';
 import Marquee from 'react-fast-marquee';
 import { BsArrowRight } from 'react-icons/bs';
 import Section from '../section';
@@ -24,15 +24,11 @@ import fragments from '@/assets/front-page/fragments.jpg';
 
 import { useEffect, useState } from 'react';
 import { IconArrowRight } from '@tabler/icons-react';
+import { useMediaQuery } from '@mantine/hooks';
 
 export default function Home({ allPostsData: posts }: { allPostsData: any }) {
   const { colorScheme } = useMantineColorScheme();
-  const [bg, setBG] = useState('var(--mantine-color-dark-6)');
-
-  useEffect(() => {
-    console.log(colorScheme);
-    setBG(colorScheme === 'dark' ? 'var(--mantine-color-dark-6)' : 'var(--mantine-color-dark-8)');
-  }, [colorScheme]);
+  const isMobile = useMediaQuery('(max-width: 768px)');
 
   return (
     // New Bold Typography Design
@@ -41,7 +37,7 @@ export default function Home({ allPostsData: posts }: { allPostsData: any }) {
       <Flex
         h={64}
         style={{
-          background: bg
+          background: colorScheme === 'dark' ? 'var(--mantine-color-dark-6)' : 'var(--mantine-color-dark-8)'
         }}
         align={'center'}
       >
@@ -49,6 +45,7 @@ export default function Home({ allPostsData: posts }: { allPostsData: any }) {
           c={'white'}
           mx={'auto'}
           px={16}
+          size={isMobile ? 'sm' : 'md'}
         >
           Registrations are now open for the beta program.{' '}
           <Anchor
@@ -124,12 +121,14 @@ export default function Home({ allPostsData: posts }: { allPostsData: any }) {
           </Flex>
           <Flex direction={'column'}>
             <Button
+              component={NextLink}
+              href={'mailto:xcs@restrafes.co'}
               variant={'outline'}
               size="lg"
               color={colorScheme === 'dark' ? 'gray' : 'black'}
               rightSection={<IconArrowRight />}
             >
-              Apply for beta
+              Apply for early access
             </Button>
           </Flex>
         </Flex>

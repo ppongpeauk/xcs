@@ -9,9 +9,11 @@ import { ChakraProvider } from '@chakra-ui/react';
 // Mantine UI
 import { ColorSchemeScript, MantineProvider, createTheme, useMantineColorScheme } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
+import { Notifications } from '@mantine/notifications';
 import '@mantine/core/styles.css';
 import '@mantine/core/styles.layer.css';
 import 'mantine-datatable/styles.layer.css';
+import '@mantine/notifications/styles.css';
 
 // Contexts
 import { AuthProvider } from '@/contexts/AuthContext';
@@ -44,6 +46,7 @@ function App({ Component, pageProps }: AppProps | any) {
         theme={theme}
         withCssVariables
       >
+        <Notifications />
         <ModalsProvider>
           <AuthProvider>
             <DialogProvider>

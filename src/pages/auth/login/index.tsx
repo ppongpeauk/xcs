@@ -1,62 +1,53 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-// Next
-
-import {
-  AbsoluteCenter,
-  Box,
-  Button,
-  Flex,
-  FormControl,
-  FormLabel,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  Link,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Spinner,
-  Text,
-  useColorModeValue,
-  useDisclosure,
-  useToast
-} from '@chakra-ui/react';
-
-// Icons
-import { MdEmail } from 'react-icons/md';
-import { RiLockPasswordFill } from 'react-icons/ri';
-
-// Authentication
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import { Field, Form, Formik } from 'formik';
-import Head from 'next/head';
-import NextLink from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useRouter } from 'next/router';
-import { useAuthState } from 'react-firebase-hooks/auth';
-
-// Components
-import CheckActivationCodeModal from '@/components/CheckActivationCodeModal';
 import Section from '@/components/section';
 import Layout from '@/layouts/PublicLayout';
+import {
+  Alert,
+  Anchor,
+  Button,
+  Center,
+  Container,
+  Flex,
+  Modal,
+  Stack,
+  Text,
+  TextInput,
+  Title,
+  UnstyledButton,
+  rem
+} from '@mantine/core';
+import { useDisclosure, useMediaQuery } from '@mantine/hooks';
+import { IconAccessPoint, IconInfoCircle, IconKey, IconMailFilled, IconQuestionMark } from '@tabler/icons-react';
+import NextLink from 'next/link';
+import { useState } from 'react';
+import { useForm } from '@mantine/form';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
+import { useAuthContext } from '@/contexts/AuthContext';
+import { useRouter } from 'next/router';
+import { notifications } from '@mantine/notifications';
 
 export default function Login() {
+  // states
+  const [opened, { open, close }] = useDisclosure();
+  const [formSubmitting, setFormSubmitting] = useState(false);
+  const isMobile = useMediaQuery('(max-width: 768px)');
+
+  // user
+  const { user, currentUser } = useAuthContext();
+
+  // router
   const router = useRouter();
-  const pathname = usePathname();
 
-  const auth = getAuth();
-  const [user, loading, error] = useAuthState(auth);
-
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const { isOpen: isActivationCodeOpen, onOpen: onActivationCodeOpen, onClose: onActivationCodeClose } = useDisclosure();
-  const toast = useToast();
+  // form
+  const form = useForm({
+    initialValues: {
+      email: '',
+      password: ''
+    }
+  });
 
   function redirectOnAuth() {
-    // Check to see if there are any redirect query parameters
+    // check to see if there are any redirect query parameters
     // otherwise, redirect to the platform home
     if (router.query.redirect) {
       router.push(router.query.redirect as string);
@@ -65,273 +56,211 @@ export default function Login() {
     }
   }
 
+  // redirect if user is already logged in
   if (user) {
     redirectOnAuth();
   }
 
   return (
-
     <>
-      <Head>
-        <title>Login - Restrafes XCS</title>
-        <meta
-          name="description"
-          content="Login - Restrafes XCS"
-        />
-        <link
-          rel="icon"
-          href="/favicon.ico"
-        />
-        <meta
-          name="og:site_name"
-          content="Restrafes XCS"
-        />
-        <meta
-          name="og:title"
-          content="Login - Restrafes XCS"
-        />
-        <meta
-          name="og:description"
-          content="Authenticate into Restrafes XCS."
-        />
-        <meta
-          name="og:type"
-          content="website"
-        />
-        <meta
-          name="og:url"
-          content="https://xcs.restrafes.co/login"
-        />
-        <meta
-          property="og:image"
-          content="/images/logo-square.jpg"
-        />
-        <meta
-          name="og:locale"
-          content="en_US"
-        />
-      </Head>
-      <CheckActivationCodeModal isOpen={isActivationCodeOpen} onClose={onActivationCodeClose} />
-      <Modal
-        onClose={onClose}
-        isOpen={isOpen}
-        isCentered
-        size={'md'}
-      >
-        <ModalOverlay />
-        <ModalContent bg={useColorModeValue('white', 'gray.800')}>
-          <ModalHeader>Frequently Asked Questions (FAQ)</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <>
-              <Text fontWeight={'bold'}>What is Restrafes XCS?</Text>
-              <Text>
-                Restrafes XCS is an online access point control platform developed by RESTRAFES & CO that allows
-                organizations to manage and control access to their facilities remotely.
-              </Text>
-            </>
-            <br />
-            <>
-              <Text fontWeight={'bold'}>What is my login?</Text>
-              <Text>
-                Your login for Restrafes XCS is the email address that was used to invite you to the platform. If you
-                are unsure of your login or did not receive an invitation, please contact your sponsor or email
-                xcs@restrafes.co for assistance.
-              </Text>
-            </>
-          </ModalBody>
-          <ModalFooter>
-            <Button onClick={onClose}>Close</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <FAQModal
+        opened={opened}
+        onClose={close}
+      />
       <Section>
-        <Box
-          position={'relative'}
-          minH={"calc(100dvh - 6rem)"}
-          h={'calc(100dvh - 6rem)'}
-        >
-          <Flex
-            position={'relative'}
-            align={'center'}
-            justify={'center'}
-            height={'100%'}
-            bottom={{ base: '0', md: '3em' }}
-          >
-            {
-              !loading && !user ?
-                (<Flex
-                  position={'relative'}
-                  flexDir={'row'}
-                  align={{ base: 'center', md: 'flex-start' }}
-                  outline={['0px solid', '1px solid']}
-                  outlineColor={['unset', useColorModeValue('gray.200', 'gray.700')]}
-                  rounded={'lg'}
-                  maxW={"container.md"}
-                  overflow={'hidden'}
-                  height={{ base: 'auto', md: '500px' }}
-                // boxShadow={'rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;'}
+        <Container fluid>
+          <Center h={'calc(100dvh - 128px)'}>
+            <Flex
+              direction={'row'}
+              w={{ base: '100%', md: '720px' }}
+              style={{
+                border: '1px solid var(--mantine-color-default-border)',
+                borderRadius: '4px',
+                aspectRatio: isMobile ? 'unset' : '3 / 2'
+              }}
+            >
+              <Flex
+                h={'100%'}
+                w={'50%'}
+                style={{
+                  backgroundColor: 'var(--mantine-color-default-border)'
+                }}
+                display={{ base: 'none', md: 'flex' }}
+              />
+              <Flex
+                py={32}
+                px={48}
+                direction={'column'}
+                w={{ base: '100%', md: '50%' }}
+              >
+                <Stack gap={0}>
+                  <Title order={2}>Log in to XCS</Title>
+                  <Title
+                    order={5}
+                    fw={'normal'}
+                  >
+                    Please present your credentials to continue.
+                  </Title>
+                </Stack>
+                <form
+                  onSubmit={form.onSubmit((values) => {
+                    setFormSubmitting(true);
+                    signInWithEmailAndPassword(auth, values.email, values.password)
+                      .then(() => {
+                        redirectOnAuth();
+                      })
+                      .catch((error) => {
+                        const errorCode = error.code;
+                        let errorMessage = error.message;
+                        setFormSubmitting(false);
+                        switch (errorCode) {
+                          case 'auth/invalid-email':
+                            errorMessage = 'The email address you provided is invalid.';
+                            break;
+                          case 'auth/invalid-password':
+                            errorMessage = 'Invalid email address or password. Please try again.';
+                            break;
+                          case 'auth/user-disabled':
+                            errorMessage = 'Your account has been disabled.';
+                            break;
+                          case 'auth/user-not-found':
+                            errorMessage = 'Invalid email address or password. Please try again.';
+                            break;
+                          case 'auth/wrong-password':
+                            errorMessage = 'Invalid email address or password. Please try again.';
+                            break;
+                          case 'auth/too-many-requests':
+                            errorMessage = 'Too many attempts. Please try again later.';
+                          default:
+                            errorMessage = 'An unknown error occurred.';
+                        }
+                        notifications.show({
+                          title: errorMessage,
+                          message: 'Please try again.',
+                          color: 'red'
+                        });
+                      })
+                      .finally(() => {});
+                  })}
                 >
-                  {/* <Image flex={"0 0 auto"} display={{ base: "none", md: "flex" }} src={'/images/login4.jpeg'} alt={'Login'} objectFit={'cover'} w={'sm'} h={"full"} /> */}
-                  <Flex flex={"0 0 auto"} display={{ base: "none", md: "flex" }} objectFit={'cover'} w={'sm'} h={"full"} flexDir={'column'}>
-                    <Box
-                      backgroundColor={useColorModeValue('gray.200', 'gray.700')}
-                      w={'full'}
-                      h={'full'}
+                  <Stack
+                    gap={8}
+                    mt={16}
+                  >
+                    <TextInput
+                      label={'Email address'}
+                      placeholder={'Email address'}
+                      leftSection={<IconMailFilled size={16} />}
+                      {...form.getInputProps('email')}
                     />
-                  </Flex>
-                  <Flex flex={"1 1 auto"} flexDir={'column'} justify={"center"} align={"flex-start"} py={8} px={10}>
-                    <Box
-                      w={'full'}
+                    <TextInput
+                      label={'Password'}
+                      placeholder={'Password'}
+                      type={'password'}
+                      leftSection={<IconKey size={16} />}
+                      {...form.getInputProps('password')}
+                    />
+                    <Button
+                      type={'submit'}
+                      variant={'default'}
+                      fullWidth
+                      mt={8}
+                      loading={formSubmitting}
                     >
-                      <Text
-                        fontSize={"3xl"}
-                        fontWeight={'bold'}
-                      >
-                        Log in to XCS
-                      </Text>
-                      <Text color={"gray.500"} fontSize={'md'}>Please present your credentials to continue.</Text>
-                    </Box>
-                    <br />
-                    <Box px={[0, 4]} w={"full"}>
-                      <Formik
-                        initialValues={{
-                          email: '',
-                          password: '',
-                        }}
-                        onSubmit={(values, actions) => {
-                          signInWithEmailAndPassword(auth, values.email, values.password)
-                            .then(() => {
-                              redirectOnAuth();
-                            })
-                            .catch((error) => {
-                              const errorCode = error.code;
-                              let errorMessage = error.message;
-                              switch (errorCode) {
-                                case 'auth/invalid-email':
-                                  errorMessage = 'The email address you provided is invalid.';
-                                  break;
-                                case 'auth/invalid-password':
-                                  errorMessage = "Invalid email address or password. Please try again.";
-                                  break;
-                                case 'auth/user-disabled':
-                                  errorMessage = 'Your account has been disabled.';
-                                  break;
-                                case 'auth/user-not-found':
-                                  errorMessage = "Invalid email address or password. Please try again.";
-                                  break;
-                                case 'auth/wrong-password':
-                                  errorMessage = "Invalid email address or password. Please try again.";
-                                  break;
-                                case 'auth/too-many-requests':
-                                  errorMessage = 'Too many attempts. Please try again later.';
-                                default:
-                                  errorMessage = 'An unknown error occurred.';
-                              }
-                              toast({
-                                title: errorMessage,
-                                status: 'error',
-                                duration: 5000,
-                                isClosable: true
-                              });
-                            })
-                            .finally(() => {
-                              actions.setSubmitting(false);
-                            });
-                        }}
-                      >
-                        {(props) => (
-                          <Form>
-                            <Field name="email">
-                              {({ field, form }: any) => (
-                                <FormControl mt={2}>
-                                  <FormLabel>Email</FormLabel>
-                                  <InputGroup>
-                                    <InputLeftElement pointerEvents="none">
-                                      <MdEmail color="gray.300" />
-                                    </InputLeftElement>
-                                    <Input
-                                      {...field}
-                                      type="text"
-                                      placeholder="Email address"
-                                      variant={'outline'}
-                                    />
-                                  </InputGroup>
-                                </FormControl>
-                              )}
-                            </Field>
-                            <Field name="password">
-                              {({ field, form }: any) => (
-                                <FormControl my={2}>
-                                  <FormLabel>Password</FormLabel>
-                                  <InputGroup>
-                                    <InputLeftElement pointerEvents="none">
-                                      <RiLockPasswordFill color="gray.300" />
-                                    </InputLeftElement>
-                                    <Input
-                                      {...field}
-                                      type={'password'}
-                                      placeholder="Password"
-                                      variant={'outline'}
-                                    />
-                                  </InputGroup>
-                                </FormControl>
-                              )}
-                            </Field>
-                            <Button
-                              my={2}
-                              w={'full'}
-                              isLoading={props.isSubmitting}
-                              type={'submit'}
-                            >
-                              Log in
-                            </Button>
-                          </Form>
-                        )}
-                      </Formik>
-                      <Text fontSize={'sm'}>
-                        <Link
-                          as={NextLink}
-                          href="/auth/reset"
-                          textUnderlineOffset={4}
-                        >
-                          Forgot your password?
-                        </Link>
-                      </Text>
-                      <Text fontSize={"sm"}>
-                        <Link
-                          onClick={onActivationCodeOpen}
-                          textUnderlineOffset={4}
-                        >
-                          Have an activation code?
-                        </Link>
-                      </Text>
-                      <Text fontSize={'sm'}>
-                        Need help?{' '}
-                        <Box
-                          as="button"
-                          onClick={onOpen}
-                          textDecor={'underline'}
-                          textUnderlineOffset={4}
-                          transition={'all 0.15s ease'}
-                          _hover={{ color: ['gray.300', 'gray.500'] }}
-                        >
-                          View the FAQ.
-                        </Box>
-                      </Text>
-                    </Box>
-                  </Flex>
-                </Flex>
-                ) : <>
-                  <AbsoluteCenter>
-                    <Spinner />
-                  </AbsoluteCenter>
-                </>
-            }
-          </Flex>
-        </Box>
+                      Log in
+                    </Button>
+                  </Stack>
+                </form>
+                <Stack
+                  py={8}
+                  gap={0}
+                >
+                  <Anchor
+                    component={NextLink}
+                    href={'/auth/reset'}
+                    c={'var(--mantine-color-default-text)'}
+                    size="sm"
+                    style={{
+                      textUnderlineOffset: '0.25rem'
+                    }}
+                  >
+                    Forgot your password?
+                  </Anchor>
+                  <Text
+                    c={'var(--mantine-color-default-text)'}
+                    size="sm"
+                  >
+                    Need help?{' '}
+                    <UnstyledButton
+                      onClick={open}
+                      c={'var(--mantine-color-default-text)'}
+                      size="sm"
+                      fw={'bold'}
+                      style={{
+                        textUnderlineOffset: '0.25rem',
+                        fontSize: 'inherit'
+                      }}
+                    >
+                      View the FAQ.
+                    </UnstyledButton>
+                  </Text>
+                </Stack>
+              </Flex>
+            </Flex>
+          </Center>
+        </Container>
       </Section>
     </>
+  );
+}
+
+function FAQModal({ opened, onClose }: { opened: boolean; onClose: () => void }) {
+  return (
+    <Modal
+      opened={opened}
+      onClose={onClose}
+      title={
+        <Flex align={'center'}>
+          <IconQuestionMark stroke={2.5} />
+          <Title
+            order={4}
+            ml={10}
+            fw={'bold'}
+          >
+            Frequently Asked Questions (FAQ)
+          </Title>
+        </Flex>
+      }
+      centered
+    >
+      <Stack mb={24}>
+        <Stack gap={0}>
+          <Text
+            fw={'bold'}
+            size={'md'}
+          >
+            What is Restrafes XCS?
+          </Text>
+          <Text>
+            Restrafes XCS is an online access point control platform developed by RESTRAFES & CO that allows
+            organizations to manage and control access to their facilities remotely.
+          </Text>
+        </Stack>
+        <Stack gap={0}>
+          <Text
+            fw={'bold'}
+            size={'md'}
+          >
+            What is my login?
+          </Text>
+          <Text>
+            Your login for Restrafes XCS is the email address that was used to invite you to the platform. If you are
+            unsure of your login or did not receive an invitation, please contact your sponsor or email xcs@restrafes.co
+            for assistance.
+          </Text>
+        </Stack>
+      </Stack>
+    </Modal>
   );
 }
 
