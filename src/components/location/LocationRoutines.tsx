@@ -70,9 +70,7 @@ import { useRouter } from 'next/navigation';
 import CreateAccessPoint from '../modals/access-points/CreateAccessPoint';
 import { modals } from '@mantine/modals';
 
-const PAGE_SIZE = 15;
-
-export default function LocationAccessPoints({ idToken, location, refreshData }: any) {
+export default function LocationRoutines({ idToken, location, refreshData }: any) {
   const [sortStatus, setSortStatus] = useState<DataTableSortStatus<any>>({
     columnAccessor: 'name',
     direction: 'asc'
@@ -83,7 +81,6 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
   const [debouncedQuery] = useDebouncedValue(query, 200);
   const [records, setRecords] = useState<any[]>([]);
   const [selectedRecords, setSelectedRecords] = useState<any[]>([]);
-  const [page, setPage] = useState(1);
   const [accessPoints, setAccessPoints] = useState<any>(null);
   const { user } = useAuthContext();
   const { push } = useRouter();
@@ -168,7 +165,7 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
           variant={'default'}
           onClick={openCreateModal}
         >
-          New Access Point
+          Add Routine
         </Button>
         {/* <BulkActionMenu
           selectedRecords={selectedRecords}
@@ -193,7 +190,7 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
         striped
         highlightOnHover
         pinLastColumn
-        noRecordsText="No access points found."
+        noRecordsText="No routines found."
         columns={[
           {
             accessor: 'name',
@@ -413,14 +410,13 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
             </Box>
           )
         }}
-        selectedRecords={selectedRecords}
-        onSelectedRecordsChange={setSelectedRecords}
-        // page={page}
-        // onPageChange={setPage}
+        // selectedRecords={selectedRecords}
+        // onSelectedRecordsChange={setSelectedRecords}
+        // page={1}
+        // onPageChange={() => {}}
         // totalRecords={records.length}
-        // recordsPerPage={2}
-        // paginationActiveBackgroundColor={'dark.4'}
-        // paginationActiveTextColor="white"
+        // recordsPerPage={16}
+        // paginationActiveTextColor={colorScheme === 'dark' ? 'dark' : 'gray'}
       />
     </>
   );

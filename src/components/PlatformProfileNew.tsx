@@ -195,16 +195,15 @@ export default function Profile({ username, user }: { username: string | null; u
             direction={'column'}
             align={'center'}
             mb={'20%'}
-            gap={4}
           >
-            <Text
-              size={rem(24)}
+            <Title
+              order={2}
               fw={'bold'}
               mt={4}
             >
               {user?.displayName}
-            </Text>
-            <Text size={'lg'}>@{user?.username}</Text>
+            </Title>
+            <Title order={4}>@{user?.username}</Title>
           </Flex>
         </Flex>
 

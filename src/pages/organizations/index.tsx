@@ -37,6 +37,7 @@ import Layout from '@/layouts/PlatformLayout';
 import { useDebouncedValue } from '@mantine/hooks';
 import { default as sortBy } from 'lodash/sortBy';
 import CreateOrganization from '@/components/modals/organizations/CreateOrganization';
+import InfoLink from '@/components/InfoLink';
 
 export default function PlatformOrganizations() {
   const { query, push } = useRouter();
@@ -150,7 +151,13 @@ export default function PlatformOrganizations() {
         pt={16}
       >
         {/* page title */}
-        <Title fw={'bold'}>Organizations</Title>
+        <Title fw={'bold'}>
+          Organizations
+          <InfoLink
+            title="Organizations"
+            description="In Restrafes XCS, organizations are the central hubs that oversee and coordinate multiple locations and members. They provide a framework for managing various sites, like offices or campuses, under a single administration. This setup streamlines control while enabling customization for specific locations."
+          />
+        </Title>
         {/* buttons */}
         <Flex
           direction={{ base: 'column', lg: 'row' }}
@@ -186,7 +193,7 @@ export default function PlatformOrganizations() {
         </Flex>
         {/* main table */}
         <DataTable
-          minHeight={400}
+          minHeight={480}
           noRecordsText="No organizations found."
           records={records}
           withTableBorder
@@ -291,7 +298,7 @@ export default function PlatformOrganizations() {
           onSortStatusChange={setSortStatus}
           rowExpansion={{
             content: ({ record }) => (
-              <Box>
+              <Box p={16}>
                 <Text c={!!record.description ? 'unset' : 'dark.2'}>
                   {record.description || 'No description available.'}
                 </Text>

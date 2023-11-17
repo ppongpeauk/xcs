@@ -10,7 +10,6 @@ import { ChakraProvider } from '@chakra-ui/react';
 import { ColorSchemeScript, MantineProvider, createTheme, useMantineColorScheme } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
-import '@mantine/core/styles.css';
 import '@mantine/core/styles.layer.css';
 import 'mantine-datatable/styles.layer.css';
 import '@mantine/notifications/styles.css';
@@ -25,6 +24,7 @@ import { Familjen_Grotesk } from 'next/font/google';
 
 import { AppProps } from 'next/app';
 import dynamic from 'next/dynamic';
+import NavAsideProvider from '@/contexts/NavAsideContext';
 
 const font = Familjen_Grotesk({ subsets: ['latin'] });
 
@@ -47,14 +47,16 @@ function App({ Component, pageProps }: AppProps | any) {
         withCssVariables
       >
         <Notifications />
-        <ModalsProvider>
-          <AuthProvider>
-            <DialogProvider>
-              <PageProgress />
-              {getLayout(<Component {...pageProps} />)}
-            </DialogProvider>
-          </AuthProvider>
-        </ModalsProvider>
+        <NavAsideProvider>
+          <ModalsProvider>
+            <AuthProvider>
+              <DialogProvider>
+                <PageProgress />
+                {getLayout(<Component {...pageProps} />)}
+              </DialogProvider>
+            </AuthProvider>
+          </ModalsProvider>
+        </NavAsideProvider>
       </MantineProvider>
       {/* </ChakraProvider> */}
     </>

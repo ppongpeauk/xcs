@@ -37,6 +37,7 @@ import Layout from '@/layouts/PlatformLayout';
 import { useDebouncedValue } from '@mantine/hooks';
 import { default as sortBy } from 'lodash/sortBy';
 import CreateLocation from '@/components/modals/locations/CreateLocation';
+import InfoLink from '@/components/InfoLink';
 
 export default function PlatformLocations() {
   const { query, push } = useRouter();
@@ -219,7 +220,13 @@ export default function PlatformLocations() {
         pt={16}
       >
         {/* page title */}
-        <Title fw={'bold'}>Locations</Title>
+        <Title fw={'bold'}>
+          Locations
+          <InfoLink
+            title="Locations"
+            description="Locations are the places where your experiences are hosted. Each Roblox experience corresponds to a location."
+          />
+        </Title>
         {/* buttons */}
         <Flex
           direction={{ base: 'column', lg: 'row' }}
@@ -269,7 +276,7 @@ export default function PlatformLocations() {
         </Flex>
         {/* main table */}
         <DataTable
-          minHeight={400}
+          minHeight={480}
           noRecordsText="No locations found."
           records={records}
           withTableBorder
@@ -399,7 +406,7 @@ export default function PlatformLocations() {
           onSortStatusChange={setSortStatus}
           rowExpansion={{
             content: ({ record }) => (
-              <Box>
+              <Box p={16}>
                 <Text c={!!record.description ? 'unset' : 'dark.2'}>
                   {record.description || 'No description available.'}
                 </Text>

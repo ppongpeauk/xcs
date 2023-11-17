@@ -144,7 +144,7 @@ export default function PlatformAccessPoint() {
       href={item.href}
       key={index}
       size="md"
-      c={colorScheme === 'dark' ? 'white' : 'black'}
+      c={'var(--mantine-color-text)'}
     >
       {item.title || 'Loading'}
     </Anchor>
@@ -208,7 +208,7 @@ export default function PlatformAccessPoint() {
               size={'md'}
               fw={'normal'}
             >
-              {accessPoint?.location?.name || 'Unknown Location'} -{' '}
+              {accessPoint?.location?.name || 'Unknown Location'} –{' '}
               {accessPoint?.organization?.name || 'Unknown Organization'}
             </Title>
           </Skeleton>

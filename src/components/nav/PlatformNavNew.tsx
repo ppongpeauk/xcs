@@ -26,7 +26,9 @@ import {
   AppShell,
   Burger,
   Radio,
-  useComputedColorScheme
+  useComputedColorScheme,
+  Alert,
+  CloseButton
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { modals } from '@mantine/modals';
@@ -43,6 +45,7 @@ import DeleteDialog from '@/components/DeleteDialog';
 import ThemeButton from '@/components/ThemeButton';
 import { User } from '@/types';
 import {
+  Icon3dCubeSphere,
   IconActivity,
   IconBell,
   IconBuildingArch,
@@ -55,14 +58,18 @@ import {
   IconChevronCompactDown,
   IconChevronDown,
   IconCopy,
+  IconCube,
   IconHelp,
   IconHome,
   IconHome2,
+  IconInfoCircleFilled,
   IconKey,
   IconLifebuoy,
+  IconLocation,
   IconLogout,
   IconMoneybag,
   IconNotification,
+  IconQuestionMark,
   IconReceipt,
   IconSettings,
   IconTerminal2,
@@ -73,21 +80,23 @@ import {
 import { useMediaQuery } from '@mantine/hooks';
 import { useColorMode } from '@chakra-ui/react';
 import Footer from '../FooterNew';
+import brandLogo from '@/assets/platform/company-brand-logo.jpeg';
+import { useAsideContext } from '@/contexts/NavAsideContext';
 
 const styles = {
   horizontalBar: {}
 };
 
 function NavButton({ ...props }: any) {
-  // const { colorScheme } = useMantineColorScheme();
+  const { colorScheme } = useMantineColorScheme();
   const href = props.href;
   const pathname = usePathname();
-  const isActive = href === pathname;
+  const isActive = pathname?.startsWith(href);
 
   return (
     <Button
       variant={isActive ? 'light' : 'transparent'}
-      color="var(--mantine-color-default-color)"
+      color={colorScheme === 'dark' ? 'gray' : 'black'}
       justify="flex-start"
       fullWidth
       {...props}
@@ -109,14 +118,24 @@ export default function PlatformNavNew({
   const { push } = useRouter();
   const colorScheme = useComputedColorScheme('light', { getInitialValueInEffect: true });
   const [opened, { toggle }] = useDisclosure();
+  const {
+    title: asideTitle,
+    description: asideDescription,
+    asideClose,
+    asideOpened,
+    asideToggle,
+    closeHelp
+  } = useAsideContext();
 
   return (
     <>
       <AppShell
         header={{ height: 64 }}
         navbar={{ width: 200, breakpoint: 'sm', collapsed: { mobile: !opened } }}
+        aside={{ width: 320, breakpoint: 'md', collapsed: { mobile: true, desktop: !asideOpened } }}
         padding="md"
         zIndex={5}
+        transitionDuration={0}
       >
         <AppShell.Header px={'md'}>
           <Flex
@@ -198,7 +217,7 @@ export default function PlatformNavNew({
             colorScheme={colorScheme}
             component={NextLink}
             href={'/event-logs'}
-            leftSection={<IconActivity size={16} />}
+            leftSection={<IconCube size={16} />}
           >
             Event Logs
           </NavButton>
@@ -214,74 +233,52 @@ export default function PlatformNavNew({
             colorScheme={colorScheme}
             component={NextLink}
             href={'/locations'}
-            leftSection={<IconBuildingArch size={16} />}
+            leftSection={<IconLocation size={16} />}
           >
             Locations
           </NavButton>
         </AppShell.Navbar>
 
-        <AppShell.Main bg={colorScheme === 'dark' ? 'dark.7' : 'white'}>{main}</AppShell.Main>
+        <AppShell.Main>
+          {/* <Alert
+            color={'gray'}
+            title={
+              <Flex direction={'column'}>
+                <Text fw={'bold'}>Test Alert</Text>
+                <Text>We are aware of the issue and are working on a fix. Please check back later.</Text>
+              </Flex>
+            }
+          /> */}
+          {main}
+        </AppShell.Main>
+
+        <AppShell.Aside
+          miw={320}
+          p={24}
+        >
+          <Flex align={'center'}>
+            <Title
+              order={3}
+              style={{
+                display: 'flex',
+                alignItems: 'center'
+              }}
+            >
+              <IconInfoCircleFilled style={{ marginRight: 8 }} /> {asideTitle}
+            </Title>
+            <CloseButton
+              ml={'auto'}
+              onClick={() => closeHelp()}
+            />
+          </Flex>
+          <Divider my={16} />
+          <Text>{asideDescription}</Text>
+        </AppShell.Aside>
 
         <AppShell.Footer pos={'relative'}>
           <Footer />
         </AppShell.Footer>
       </AppShell>
-      {/* <Flex
-        component={Paper}
-        direction={'row'}
-        id="platform-nav-horizontal"
-        style={{
-          position: 'sticky',
-          top: 0,
-          zIndex: 5
-        }}
-      >
-        <Flex
-          w={'100vw'}
-          h={rem(64)}
-          align={'center'}
-          justify={'space-between'}
-          px={8}
-          style={{
-            backgroundColor: colorScheme === 'dark' ? 'var(--mantine-color-dark-6)' : 'var(--chakra-colors-white)',
-            borderBottom: '1px solid',
-            borderColor: colorScheme === 'dark' ? 'var(--mantine-color-dark-4)' : 'var(--chakra-colors-gray-100)',
-            zIndex: 6
-          }}
-        >
-          <NextLink href={'/home'}>
-            <Flex
-              display={{ base: 'flex', md: 'flex' }}
-              w={'128px'}
-              h={'100%'}
-              align={'center'}
-              justify={'center'}
-            >
-              <Image
-                src={colorScheme === 'dark' ? '/images/logo-white.png' : '/images/logo-black.png'}
-                alt={'Restrafes XCS'}
-                maw={'128px'}
-                p={rem(16)}
-                style={{
-                  objectFit: 'contain'
-                }}
-              />
-            </Flex>
-          </NextLink>
-
-          <Spacer />
-
-          <NotificationMenu currentUser={currentUser} />
-
-          <Divider
-            orientation="vertical"
-            mx={16}
-            my={8}
-          />
-
-          <AvatarMenu currentUser={currentUser} />
-        </Flex>
-      </Flex> */}
     </>
   );
 }
@@ -485,16 +482,35 @@ function AvatarMenu({ currentUser, onLogoutOpen }: { currentUser?: User; onLogou
                   <Text
                     fw={'bold'}
                     size="sm"
-                    lh={1}
+                    // lh={1}
                   >
                     {currentUser?.displayName}
                   </Text>
-                  <Text
+                  {/* <Text
                     size="xs"
                     lh={1.25}
                   >
                     @{currentUser?.username}
-                  </Text>
+                  </Text> */}
+                  <Flex
+                    direction={'row'}
+                    align={'center'}
+                  >
+                    <Avatar
+                      size={16}
+                      src={brandLogo.src}
+                      style={{
+                        borderRadius: '4px',
+                        border: '1px solid var(--mantine-color-default-border)'
+                      }}
+                    />
+                    <Text
+                      size="xs"
+                      ml={4}
+                    >
+                      Restrafes Technologies
+                    </Text>
+                  </Flex>
                 </Flex>
               )}
               {opened ? <IconCaretUpFilled size={12} /> : <IconCaretDownFilled size={12} />}

@@ -1,13 +1,13 @@
 import { ButtonGroup, Heading, useDisclosure, useToast } from '@chakra-ui/react';
 
-import { Box, Button, Title, Text, rem, Group } from '@mantine/core';
+import { Box, Button, Title, Text, rem, Group, Anchor } from '@mantine/core';
 import moment from 'moment';
 import { useRouter } from 'next/router';
 
 import { useAuthContext } from '@/contexts/AuthContext';
 
 import DeleteDialog from '@/components/DeleteDialog';
-import { Link } from '@chakra-ui/next-js';
+import NextLink from 'next/link';
 import { IconLink, IconLinkOff } from '@tabler/icons-react';
 import { modals } from '@mantine/modals';
 
@@ -183,13 +183,18 @@ export default function SettingsLinkedAccounts() {
           <Title order={4}>Discord</Title>
           <Text py={1}>
             Link your Discord account to Restrafes XCS to receive the <strong>XCS</strong> role on the{' '}
-            <Link
+            <Anchor
+              component={NextLink}
               href={'https://discord.gg/BWVa3yE9M3'}
               target="_blank"
-              textDecor={'underline'}
+              c={'inherit'}
+              style={{
+                textUnderlineOffset: '0.25rem',
+                textDecoration: 'underline'
+              }}
             >
               R&C Community
-            </Link>
+            </Anchor>
             .
           </Text>
           {currentUser?.discord.verified ? (

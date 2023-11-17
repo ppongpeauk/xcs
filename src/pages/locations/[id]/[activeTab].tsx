@@ -12,18 +12,40 @@ import Layout from '@/layouts/PlatformLayout';
 
 import LocationAccessPoints from '@/components/location/LocationAccessPointsNew';
 import LocationInfo from '@/components/location/LocationInfoNew';
-import { Anchor, Badge, Box, Breadcrumbs, Container, Divider, Skeleton, Tabs, Text, Title, rem } from '@mantine/core';
+import {
+  Anchor,
+  Badge,
+  Box,
+  Breadcrumbs,
+  Container,
+  Divider,
+  Flex,
+  Group,
+  Skeleton,
+  Stack,
+  Tabs,
+  Text,
+  Title,
+  Tooltip,
+  rem
+} from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import {
   IconAccessPoint,
   IconBroadcast,
   IconHistory,
   IconLiveView,
+  IconLocation,
   IconSettings,
+  IconTimeline,
+  IconTimelineEvent,
   IconUsersGroup
 } from '@tabler/icons-react';
 import NextLink from 'next/link';
 import { useMantineColorScheme } from '@mantine/core';
+import { useAsideContext } from '@/contexts/NavAsideContext';
+import InfoLink from '@/components/InfoLink';
+import LocationRoutines from '@/components/location/LocationRoutines';
 
 export default function PlatformLocation() {
   const router = useRouter();
@@ -33,6 +55,7 @@ export default function PlatformLocation() {
   const toast = useToast();
   const isMobile = useMediaQuery('(max-width: 768px)');
   const { colorScheme } = useMantineColorScheme();
+  const { openHelp } = useAsideContext();
   const breadcrumbItems = [
     { title: 'Platform', href: '/home' },
     { title: location?.organization?.name, href: `/organizations/${location?.organization?.id}` },
@@ -44,7 +67,8 @@ export default function PlatformLocation() {
       href={item.href}
       key={index}
       size="md"
-      c={colorScheme === 'dark' ? 'white' : 'black'}
+      fw={'bold'}
+      c={'var(--mantine-color-text)'}
     >
       {item.title || 'Loading'}
     </Anchor>
@@ -133,17 +157,23 @@ export default function PlatformLocation() {
           </Breadcrumbs>
         </Skeleton>
         {/* Location Title and Organization */}
-        <Skeleton visible={!location}>
-          <Box>
-            <Title>{location?.name || 'Loading'}</Title>
+        <Group>
+          <Tooltip.Floating label={'Location'}>
+            <IconLocation size={32} />
+          </Tooltip.Floating>
+          <Skeleton
+            visible={!location}
+            w={'fit-content'}
+          >
+            <Title fw={'bold'}>{location?.name || 'Unknown Location'}</Title>
             <Title
               size={'md'}
               fw={'normal'}
             >
-              {location?.organization.name || 'Loading'}
+              {location?.organization.name || 'Unknown Organization'}
             </Title>
-          </Box>
-        </Skeleton>
+          </Skeleton>
+        </Group>
         <Divider my={24} />
         {/* Tabs */}
         <Tabs
@@ -161,12 +191,6 @@ export default function PlatformLocation() {
               General Settings
             </Tabs.Tab>
             <Tabs.Tab
-              value="access-points"
-              leftSection={<IconAccessPoint style={iconStyle} />}
-            >
-              Access Points
-            </Tabs.Tab>
-            <Tabs.Tab
               value="access-groups"
               leftSection={<IconUsersGroup style={iconStyle} />}
             >
@@ -176,7 +200,19 @@ export default function PlatformLocation() {
               value="event-log"
               leftSection={<IconHistory style={iconStyle} />}
             >
-              Event Log
+              Event Logs
+            </Tabs.Tab>
+            <Tabs.Tab
+              value="access-points"
+              leftSection={<IconAccessPoint style={iconStyle} />}
+            >
+              Access Points
+            </Tabs.Tab>
+            <Tabs.Tab
+              value="routines"
+              leftSection={<IconTimelineEvent style={iconStyle} />}
+            >
+              Routines
             </Tabs.Tab>
           </Tabs.List>
 
@@ -187,7 +223,7 @@ export default function PlatformLocation() {
           >
             <Tabs.Panel value="general">
               <Title
-                size={rem(24)}
+                order={2}
                 py={4}
               >
                 General Settings
@@ -201,13 +237,45 @@ export default function PlatformLocation() {
 
             <Tabs.Panel value="access-points">
               <Title
-                size={rem(24)}
+                order={2}
                 pt={4}
                 mb={16}
               >
                 Access Points
+                <InfoLink
+                  title="Access Points"
+                  description={
+                    <Stack>
+                      <Text>
+                        Access points are card readers, keypads, and other devices that facilitate access to an entry.
+                      </Text>
+                      <Text>
+                        Routines, temporary access, and always-allowed configurations can be set up for each access
+                        point.
+                      </Text>
+                    </Stack>
+                  }
+                />
               </Title>
               <LocationAccessPoints
+                location={location}
+                refreshData={refreshData}
+              />
+            </Tabs.Panel>
+
+            <Tabs.Panel value="routines">
+              <Title
+                order={2}
+                pt={4}
+                mb={16}
+              >
+                Routines
+                <InfoLink
+                  title="Routines"
+                  description="Location routines allow you to set up schedules."
+                />
+              </Title>
+              <LocationRoutines
                 location={location}
                 refreshData={refreshData}
               />
