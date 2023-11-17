@@ -7,7 +7,7 @@ import '@/styles/globals.css';
 import { ChakraProvider } from '@chakra-ui/react';
 
 // Mantine UI
-import { ColorSchemeScript, MantineProvider, createTheme } from '@mantine/core';
+import { ColorSchemeScript, MantineProvider, createTheme, useMantineColorScheme } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
 import '@mantine/core/styles.css';
 import '@mantine/core/styles.layer.css';
@@ -22,6 +22,7 @@ import { DialogProvider } from '@/contexts/DialogContext';
 import { Familjen_Grotesk } from 'next/font/google';
 
 import { AppProps } from 'next/app';
+import dynamic from 'next/dynamic';
 
 const font = Familjen_Grotesk({ subsets: ['latin'] });
 
@@ -57,4 +58,6 @@ function App({ Component, pageProps }: AppProps | any) {
   );
 }
 
-export default App;
+export default dynamic(() => Promise.resolve(App), {
+  ssr: false
+});

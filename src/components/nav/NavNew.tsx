@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 // React
 import { Suspense, forwardRef, useMemo, useState } from 'react';
-
 import { Link } from '@chakra-ui/next-js';
+import dynamic from 'next/dynamic';
 
 import {
   Flex,
@@ -44,6 +44,7 @@ import ThemeButton from '@/components/ThemeButton';
 import { User } from '@/types';
 import {
   IconActivity,
+  IconArrowUpRight,
   IconBell,
   IconBuildingArch,
   IconCaretDown,
@@ -62,9 +63,13 @@ import {
   IconLifebuoy,
   IconLogout,
   IconMoneybag,
+  IconMoon,
+  IconMoonFilled,
   IconNotification,
   IconReceipt,
   IconSettings,
+  IconSun,
+  IconSunFilled,
   IconTerminal2,
   IconUser,
   IconUserFilled,
@@ -107,7 +112,7 @@ export default function Nav({
   const pathname = usePathname();
   const { currentUser, isAuthLoaded, user } = useAuthContext();
   const { push } = useRouter();
-  const colorScheme = useComputedColorScheme('light', { getInitialValueInEffect: true });
+  const { colorScheme } = useMantineColorScheme();
   const [opened, { toggle }] = useDisclosure();
 
   return (
@@ -154,14 +159,22 @@ export default function Nav({
               </Flex>
             </NextLink>
 
-            {/* buttons */}
-            <Button
-              component={NextLink}
-              href={'/auth/login'}
-              variant="default"
-            >
-              Access Platform
-            </Button>
+            {/* navigation */}
+            <Flex gap={8}>
+              {/* theme toggle */}
+              <ThemeToggle />
+
+              {/* buttons */}
+              <Button
+                component={NextLink}
+                href={'/auth/login'}
+                variant="outline"
+                color={colorScheme === 'dark' ? 'gray' : 'black'}
+                rightSection={<IconArrowUpRight size={16} />}
+              >
+                Access Platform
+              </Button>
+            </Flex>
           </Flex>
         </AppShell.Header>
 
@@ -178,5 +191,27 @@ export default function Nav({
         </AppShell.Footer>
       </AppShell>
     </>
+  );
+}
+
+function ThemeToggle() {
+  const { toggleColorScheme, colorScheme } = useMantineColorScheme();
+  const [isDark, setIsDark] = useState(colorScheme === 'dark');
+
+  return (
+    <Button
+      variant={'outline'}
+      color={colorScheme === 'dark' ? 'gray' : 'black'}
+      onClick={() => {
+        toggleColorScheme();
+        setIsDark(!isDark);
+      }}
+      px={0}
+      style={{
+        aspectRatio: 1
+      }}
+    >
+      {isDark ? <IconSunFilled size={16} /> : <IconMoonFilled size={16} />}
+    </Button>
   );
 }

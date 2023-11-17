@@ -466,6 +466,7 @@ function AvatarMenu({ currentUser, onLogoutOpen }: { currentUser?: User; onLogou
           <UnstyledButton>
             <Flex
               align={'center'}
+              justify={'center'}
               gap={12}
             >
               <Avatar
@@ -484,7 +485,7 @@ function AvatarMenu({ currentUser, onLogoutOpen }: { currentUser?: User; onLogou
                   <Text
                     fw={'bold'}
                     size="sm"
-                    lh={1.25}
+                    lh={1}
                   >
                     {currentUser?.displayName}
                   </Text>

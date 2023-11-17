@@ -13,7 +13,6 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 
 module.exports = withBundleAnalyzer({
   reactStrictMode: true,
-  transpilePackages: ['gridstack'],
   async rewrites() {
     return [
       // legacy oauth endpoints

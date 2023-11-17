@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Container,
+  Divider,
   Flex,
   Image,
   Text,
@@ -18,10 +19,20 @@ import Marquee from 'react-fast-marquee';
 import { BsArrowRight } from 'react-icons/bs';
 import Section from '../section';
 
-import fragments from '@/assets/fragments.jpg';
+// images
+import fragments from '@/assets/front-page/fragments.jpg';
+
+import { useEffect, useState } from 'react';
+import { IconArrowRight } from '@tabler/icons-react';
 
 export default function Home({ allPostsData: posts }: { allPostsData: any }) {
   const { colorScheme } = useMantineColorScheme();
+  const [bg, setBG] = useState('var(--mantine-color-dark-6)');
+
+  useEffect(() => {
+    console.log(colorScheme);
+    setBG(colorScheme === 'dark' ? 'var(--mantine-color-dark-6)' : 'var(--mantine-color-dark-8)');
+  }, [colorScheme]);
 
   return (
     // New Bold Typography Design
@@ -30,7 +41,7 @@ export default function Home({ allPostsData: posts }: { allPostsData: any }) {
       <Flex
         h={64}
         style={{
-          background: colorScheme === 'dark' ? 'var(--mantine-color-dark-6)' : 'var(--mantine-color-dark-8)'
+          background: bg
         }}
         align={'center'}
       >
@@ -89,6 +100,39 @@ export default function Home({ allPostsData: posts }: { allPostsData: any }) {
             aspectRatio: 2
           }}
         ></Image>
+        <Divider my={64} />
+        <Flex
+          direction={{
+            base: 'column',
+            md: 'row'
+          }}
+          align={'center'}
+          justify={'space-between'}
+          gap={16}
+        >
+          <Flex
+            direction={'column'}
+            gap={4}
+          >
+            <Title order={1}>Get started today.</Title>
+            <Title
+              order={4}
+              fw={'normal'}
+            >
+              Restrafes XCS is currently in beta. We are currently accepting applications for the beta program.
+            </Title>
+          </Flex>
+          <Flex direction={'column'}>
+            <Button
+              variant={'outline'}
+              size="lg"
+              color={colorScheme === 'dark' ? 'gray' : 'black'}
+              rightSection={<IconArrowRight />}
+            >
+              Apply for beta
+            </Button>
+          </Flex>
+        </Flex>
       </Container>
     </>
   );
