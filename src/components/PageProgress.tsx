@@ -7,7 +7,7 @@ import NextNProgress from 'nextjs-progressbar';
 export default function PageProgress() {
   return (
     <NextNProgress
-      color={useColorModeValue('#000', '#fff')}
+      color={'var(--mantine-color-default-color)'}
       startPosition={0}
       // stopDelayMs={500}
       height={2}

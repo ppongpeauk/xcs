@@ -178,12 +178,6 @@ export default function Settings() {
             >
               Linked Accounts
             </Tabs.Tab>
-            <Tabs.Tab
-              value="referrals"
-              leftSection={<IconMailFilled style={iconStyle} />}
-            >
-              Referrals
-            </Tabs.Tab>
             {currentUser?.platform?.staff ? (
               <Tabs.Tab
                 value="staff"
@@ -248,16 +242,6 @@ export default function Settings() {
                 Linked Accounts
               </Title>
               <SettingsLinkedAccounts />
-            </Tabs.Panel>
-            <Tabs.Panel value="referrals">
-              <Title
-                size={rem(24)}
-                py={4}
-                mb={16}
-              >
-                Referrals
-              </Title>
-              <SettingsInvite />
             </Tabs.Panel>
             <Tabs.Panel value="staff">
               <Title

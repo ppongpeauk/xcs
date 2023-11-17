@@ -1,6 +1,7 @@
 // types
 import { type User, type AccessPoint, Organization } from '@/types';
 import { type NextApiRequest, type NextApiResponse } from 'next';
+
 // auth & database
 import { authToken } from '@/lib/auth';
 import clientPromise from '@/lib/mongodb';

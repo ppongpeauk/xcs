@@ -133,7 +133,7 @@ export default function CreateAccessPoint({
           })}
         >
           <Box>
-            <SegmentedControl
+            {/* <SegmentedControl
               name="type"
               mb={16}
               fullWidth
@@ -159,7 +159,7 @@ export default function CreateAccessPoint({
                 }
               ]}
               {...form.getInputProps('type')}
-            />
+            /> */}
             <Flex
               direction={'column'}
               gap={8}

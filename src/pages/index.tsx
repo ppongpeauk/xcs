@@ -1,6 +1,6 @@
 import Head from 'next/head';
 
-import Home from '@/components/Home';
+import Home from '@/components/pages/HomeNew';
 import Layout from '@/layouts/PublicLayout';
 
 import { getSortedPostsData } from '@/lib/posts';
@@ -9,8 +9,8 @@ export async function getStaticProps() {
   const allPostsData = await getSortedPostsData();
   return {
     props: {
-      allPostsData,
-    },
+      allPostsData
+    }
   };
 }
 

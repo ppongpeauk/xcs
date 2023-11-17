@@ -44,7 +44,11 @@ module.exports = withBundleAnalyzer({
       {
         source: '/api/v1/ip-api/:slug*',
         destination: 'http://ip-api.com/:slug*'
-      }
+      },
+      {
+        source: '/api/docs',
+        destination: '/docs',
+      },
     ];
   },
   async redirects() {

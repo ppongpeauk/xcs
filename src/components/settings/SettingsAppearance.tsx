@@ -39,8 +39,8 @@ export default function SettingsAppearance() {
           <Button
             variant={'unstyled'}
             onClick={() => {
-              setColorMode('light');
               setColorScheme('light');
+              // setColorMode('light');
             }}
             h={'fit-content'}
           >
@@ -70,8 +70,8 @@ export default function SettingsAppearance() {
           <Button
             variant={'unstyled'}
             onClick={() => {
-              setColorMode('dark');
               setColorScheme('dark');
+              // setColorMode('dark');
             }}
             h={'fit-content'}
           >

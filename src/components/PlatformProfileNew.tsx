@@ -55,7 +55,7 @@ function OrganizationItem({ organization }: { organization: Organization | never
           width: '48px',
           height: '48px',
           borderRadius: '8px',
-          border: '1px solid var(--mantine-color-placeholder)'
+          border: '1px solid var(--mantine-color-default-border)'
         }}
       />
     </Tooltip.Floating>
@@ -87,7 +87,7 @@ function AchievementItem({ achievement }: { achievement: Achievement | never }) 
                     src={achievement?.icon}
                     style={{
                       borderRadius: '8px',
-                      border: '1px solid var(--mantine-color-placeholder)'
+                      border: '1px solid var(--mantine-color-default-border)'
                     }}
                   />
                 </AspectRatio>
@@ -135,8 +135,8 @@ export default function Profile({ username, user }: { username: string | null; u
       justifyContent: 'space-between',
       width: '300px',
       aspectRatio: '1 / 1.588',
-      // backgroundColor: 'var(--mantine-color-placeholder)',
-      border: '2px solid var(--mantine-color-placeholder)',
+      backgroundColor: 'var(--mantine-color-default)',
+      border: '2px solid var(--mantine-color-default-border)',
       borderRadius: '8px'
     },
     badgeHole: {
@@ -144,7 +144,7 @@ export default function Profile({ username, user }: { username: string | null; u
       width: '33%',
       height: '24px',
       backgroundColor: 'var(--mantine-color-body)',
-      border: '2px solid var(--mantine-color-placeholder)',
+      border: '2px solid var(--mantine-color-default-border)',
       borderRadius: '8px'
     },
     badgeImage: {
@@ -152,7 +152,7 @@ export default function Profile({ username, user }: { username: string | null; u
       minWidth: '128px',
       aspectRatio: '1 / 1',
       borderRadius: '8px',
-      border: '2px solid var(--mantine-color-placeholder)'
+      border: '2px solid var(--mantine-color-default-border)'
     },
     cellContainer: {
       display: 'flex',

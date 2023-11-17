@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 
 import { Flex, Stack, useToast } from '@chakra-ui/react';
-import { Box, useMantineColorScheme } from '@mantine/core';
+import { Box, MantineProvider, useMantineColorScheme } from '@mantine/core';
 
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
@@ -20,6 +20,7 @@ import Footer from '@/components/FooterNew';
 import PlatformAlert from '@/components/PlatformAlert';
 import PlatformNav from '@/components/nav/PlatformNav';
 import PlatformNavNew from '@/components/nav/PlatformNavNew';
+import { ModalsProvider } from '@mantine/modals';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { user, currentUser, isAuthLoaded } = useAuthContext();

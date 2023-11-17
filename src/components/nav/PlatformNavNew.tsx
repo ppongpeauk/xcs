@@ -25,7 +25,8 @@ import {
   Paper,
   AppShell,
   Burger,
-  Radio
+  Radio,
+  useComputedColorScheme
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { modals } from '@mantine/modals';
@@ -77,7 +78,7 @@ const styles = {
   horizontalBar: {}
 };
 
-function NavButton(props: any) {
+function NavButton({ ...props }: any) {
   // const { colorScheme } = useMantineColorScheme();
   const href = props.href;
   const pathname = usePathname();
@@ -86,7 +87,7 @@ function NavButton(props: any) {
   return (
     <Button
       variant={isActive ? 'light' : 'transparent'}
-      color={props.colorScheme === 'dark' ? 'white' : 'black'}
+      color="var(--mantine-color-default-color)"
       justify="flex-start"
       fullWidth
       {...props}
@@ -106,7 +107,7 @@ export default function PlatformNavNew({
   const pathname = usePathname();
   const { currentUser, isAuthLoaded, user } = useAuthContext();
   const { push } = useRouter();
-  const { colorScheme } = useMantineColorScheme();
+  const colorScheme = useComputedColorScheme('light', { getInitialValueInEffect: true });
   const [opened, { toggle }] = useDisclosure();
 
   return (
@@ -219,7 +220,7 @@ export default function PlatformNavNew({
           </NavButton>
         </AppShell.Navbar>
 
-        <AppShell.Main bg={colorScheme === 'dark' ? 'dark.7' : 'unset'}>{main}</AppShell.Main>
+        <AppShell.Main bg={colorScheme === 'dark' ? 'dark.7' : 'white'}>{main}</AppShell.Main>
 
         <AppShell.Footer pos={'relative'}>
           <Footer />
@@ -337,6 +338,7 @@ function SettingsMenu({ currentUser }: { currentUser?: User }) {
                 <Badge
                   ml={8}
                   variant="outline"
+                  color="var(--mantine-color-default-color)"
                 >
                   Beta
                 </Badge>
@@ -347,7 +349,7 @@ function SettingsMenu({ currentUser }: { currentUser?: User }) {
                 checked={colorScheme === 'light'}
                 onClick={() => {
                   setColorScheme('light');
-                  setColorMode('light');
+                  // setColorMode('light');
                 }}
               />
               <Radio
@@ -356,7 +358,7 @@ function SettingsMenu({ currentUser }: { currentUser?: User }) {
                 checked={colorScheme === 'dark'}
                 onClick={() => {
                   setColorScheme('dark');
-                  setColorMode('dark');
+                  // setColorMode('dark');
                 }}
               />
             </Flex>
@@ -475,13 +477,24 @@ function AvatarMenu({ currentUser, onLogoutOpen }: { currentUser?: User; onLogou
                 }}
               />
               {currentUser && (
-                <Text
-                  fw={'bold'}
-                  size="sm"
+                <Flex
+                  direction={'column'}
                   display={{ base: 'none', md: 'block' }}
                 >
-                  {currentUser?.displayName}
-                </Text>
+                  <Text
+                    fw={'bold'}
+                    size="sm"
+                    lh={1.25}
+                  >
+                    {currentUser?.displayName}
+                  </Text>
+                  <Text
+                    size="xs"
+                    lh={1.25}
+                  >
+                    @{currentUser?.username}
+                  </Text>
+                </Flex>
               )}
               {opened ? <IconCaretUpFilled size={12} /> : <IconCaretDownFilled size={12} />}
             </Flex>
@@ -533,14 +546,16 @@ function AvatarMenu({ currentUser, onLogoutOpen }: { currentUser?: User; onLogou
           >
             Settings
           </Menu.Item>
-          <Menu.Item
-            component={NextLink}
-            href={'/settings/staff'}
-            leftSection={<IconTerminal2 style={{ width: rem(14), height: rem(14) }} />}
-            hidden={!currentUser?.platform.staff}
-          >
-            Staff Dashboard
-          </Menu.Item>
+          {currentUser?.platform.staff && (
+            <Menu.Item
+              component={NextLink}
+              href={'/settings/staff'}
+              leftSection={<IconTerminal2 style={{ width: rem(14), height: rem(14) }} />}
+              hidden={!currentUser?.platform.staff}
+            >
+              Staff Dashboard
+            </Menu.Item>
+          )}
           <Menu.Item
             component={NextLink}
             href={'/settings/api-keys'}

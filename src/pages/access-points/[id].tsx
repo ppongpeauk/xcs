@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useDisclosure, useToast } from '@chakra-ui/react';
 
@@ -55,74 +55,53 @@ export default function PlatformAccessPoint() {
   const { colorScheme } = useMantineColorScheme();
   const [formSubmitting, setFormSubmitting] = useState(false);
 
+  const [occupiedTags, setOccupiedTags] = useState<string[]>([]);
+
   let refreshData = useCallback(async () => {
     if (!id || !user) return;
     setAccessPoint(null);
-    await user.getIdToken().then(async (idToken: any) => {
-      await fetch(`/api/v2/access-points/${id}`, {
-        method: 'GET',
-        headers: { Authorization: `Bearer ${idToken}` }
+    const token = await user.getIdToken().then((idToken: any) => idToken);
+    await fetch(`/api/v2/access-points/${id}`, {
+      method: 'GET',
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then((res) => {
+        if (res.status === 200) return res.json();
+        push('/organizations');
+        switch (res.status) {
+          case 404:
+            throw new Error('Access point not found.');
+          case 403:
+            throw new Error('You do not have permission to view this access point.');
+          case 401:
+            throw new Error('You do not have permission to view this access point.');
+          case 500:
+            throw new Error('An internal server error occurred.');
+          default:
+            throw new Error('An unknown error occurred.');
+        }
       })
-        .then((res) => {
-          if (res.status === 200) return res.json();
-          push('/organizations');
-          switch (res.status) {
-            case 404:
-              throw new Error('Access point not found.');
-            case 403:
-              throw new Error('You do not have permission to view this access point.');
-            case 401:
-              throw new Error('You do not have permission to view this access point.');
-            case 500:
-              throw new Error('An internal server error occurred.');
-            default:
-              throw new Error('An unknown error occurred.');
-          }
-        })
-        .then((data) => {
-          setAccessPoint(data);
-          form.setValues({
-            name: data.name,
-            id: data.id,
-            description: data.description,
-            tags: data.tags,
-            active: data.config.active,
-            armed: data.config.armed
-          });
-        })
-        .catch((err) => {
-          toast({
-            title: 'There was an error fetching the access point.',
-            description: err.message,
-            status: 'error',
-            duration: 5000,
-            isClosable: true
-          });
+      .then((data) => {
+        setAccessPoint(data);
+        form.setValues({
+          name: data.name,
+          id: data.id,
+          description: data.description,
+          tags: data.tags,
+          active: data.config.active,
+          armed: data.config.armed
         });
-    });
-  }, [push, id, toast, user]);
-
-  const [tagsOptions, setTagsOptions] = useState<any>([]);
-
-  // get tags
-  // useEffect(() => {
-  //   if (!accessPoints) return;
-  //   let res = [] as string[];
-  //   accessPoints?.accessPoints?.forEach((accessPoint: any) => {
-  //     res = [...res, ...(accessPoint?.tags || [])];
-  //   });
-  //   res = [...(new Set(res as any) as any)];
-  //   setTagsOptions([
-  //     ...(new Set(
-  //       res.map((value: string) => {
-  //         return {
-  //           value,
-  //           label: value as string
-  //         };
-  //       })
-  //     ) as any)
-  //   ]);
-  // }, [accessPoints]);
+      })
+      .catch((err) => {
+        toast({
+          title: 'There was an error fetching the access point.',
+          description: err.message,
+          status: 'error',
+          duration: 5000,
+          isClosable: true
+        });
+      });
+  }, [id, user, push, toast]);
 
   useEffect(() => {
     refreshData();
@@ -348,7 +327,7 @@ export default function PlatformAccessPoint() {
               <TagsInput
                 label="Tags"
                 description="Use tags to help organize your access points. (optional)"
-                data={tagsOptions}
+                data={occupiedTags}
                 placeholder="Add tags..."
                 clearable
                 {...form.getInputProps('tags')}
