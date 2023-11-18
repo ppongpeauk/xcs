@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import CreateAccessPointDialog from '@/components/CreateAccessPointDialog';
 import { useAuthContext } from '@/contexts/AuthContext';
-import { AccessPoint, Location } from '@/types';
+import { AccessPoint, Location, Organization } from '@/types';
 import {
   ActionIcon,
   Autocomplete,
@@ -73,7 +73,7 @@ import { modals } from '@mantine/modals';
 import CreateRoutine from '../modals/routines/CreateRoutine';
 import { notifications } from '@mantine/notifications';
 
-export default function LocationRoutines({ idToken, location, refreshData }: any) {
+export default function OrganizationMembers({ data, refreshData }: { data: Organization; refreshData: () => void }) {
   const [sortStatus, setSortStatus] = useState<DataTableSortStatus<any>>({
     columnAccessor: 'name',
     direction: 'asc'
@@ -131,15 +131,15 @@ export default function LocationRoutines({ idToken, location, refreshData }: any
     );
   }, [sortStatus, debouncedQuery, tagQuery]);
 
-  const refreshRoutines = useCallback(async () => {
+  const refreshMembers = useCallback(async () => {
     const token = user.getIdToken();
-    fetch(`/api/v2/locations/${location.id}/routines`, {
+    fetch(`/api/v2/organizations/${data?.id}/members`, {
       method: 'GET',
       headers: { Authorization: `Bearer ${token}` }
     })
       .then((res) => {
         if (res.status === 200) return res.json();
-        throw new Error(`Failed to fetch routines. (${res.status})`);
+        throw new Error(`Failed to fetch members. (${res.status})`);
       })
       .then((data) => {
         setRoutines(data);
@@ -147,7 +147,7 @@ export default function LocationRoutines({ idToken, location, refreshData }: any
       })
       .catch((error) => {
         notifications.show({
-          title: 'There was an error fetching the routines.',
+          title: 'There was an error fetching members.',
           message: error.message,
           color: 'red'
         });
@@ -157,7 +157,7 @@ export default function LocationRoutines({ idToken, location, refreshData }: any
   useEffect(() => {
     if (!location) return;
     if (!user) return;
-    refreshRoutines();
+    refreshMembers();
   }, [location, user]);
 
   return (
@@ -175,7 +175,7 @@ export default function LocationRoutines({ idToken, location, refreshData }: any
           variant={'default'}
           onClick={openCreateModal}
         >
-          Add Routine
+          Add Member
         </Button>
         {/* <BulkActionMenu
           selectedRecords={selectedRecords}
@@ -185,7 +185,7 @@ export default function LocationRoutines({ idToken, location, refreshData }: any
         <Button
           variant="default"
           onClick={() => {
-            refreshRoutines();
+            refreshMembers();
           }}
         >
           <IconRefresh size={16} />
@@ -196,7 +196,7 @@ export default function LocationRoutines({ idToken, location, refreshData }: any
       <Box pos={'relative'}>
         <LoadingOverlay
           visible={!routines}
-          zIndex={6}
+          zIndex={4}
           overlayProps={{ radius: 'sm', blur: 2 }}
           loaderProps={{ size: 'md', color: 'var(--mantine-color-default-color)' }}
         />
@@ -207,7 +207,7 @@ export default function LocationRoutines({ idToken, location, refreshData }: any
           striped
           highlightOnHover
           pinLastColumn
-          noRecordsText="No routines found."
+          noRecordsText="No members found."
           columns={[
             {
               accessor: 'name',

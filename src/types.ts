@@ -10,11 +10,6 @@ export interface Alert {
 }
 export interface User {
   id: string;
-  name?: {
-    first: string;
-    last?: string;
-    privacyLevel: number;
-  }; // deprecated
   displayName: string;
   username: string;
   bio?: string | null;
@@ -22,7 +17,6 @@ export interface User {
   sponsorId?: string;
   email: {
     address: string;
-    privacyLevel: number;
   };
   roblox: {
     id: string | null;
@@ -362,4 +356,27 @@ export interface ScanEvent {
 
   createdAt: Date;
   expiresAt: Date;
+}
+
+export interface ConsumerApiKey {
+  id: string;
+  userId: string;
+  scope: {
+    organizations: {
+      read: boolean;
+      write: boolean;
+    };
+    locations: {
+      read: boolean;
+      write: boolean;
+    };
+    accessPoints: {
+      read: boolean;
+      write: boolean;
+    };
+    accessGroups: {
+      read: boolean;
+      write: boolean;
+    };
+  };
 }

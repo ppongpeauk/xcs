@@ -1,6 +1,6 @@
 import { useAuthContext } from '@/contexts/AuthContext';
-import { type AccessPoint, type Organization } from '@/types';
-import { useToast } from '@chakra-ui/react';
+import { AccessPoint } from '@/types';
+import { Spacer, useToast } from '@chakra-ui/react';
 import {
   Autocomplete,
   Box,
@@ -8,42 +8,54 @@ import {
   Center,
   Flex,
   Modal,
+  MultiSelect,
   SegmentedControl,
   Select,
+  TagsInput,
   Text,
   TextInput,
   Textarea,
-  rem,
-  useMantineColorScheme
+  Tooltip,
+  rem
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { IconAccessPoint, IconElevator, IconLocation, IconPencil, IconPlus } from '@tabler/icons-react';
+import {
+  IconAccessPoint,
+  IconAt,
+  IconElevator,
+  IconEye,
+  IconPencil,
+  IconPlus,
+  IconTimelineEvent,
+  IconTimelineEventFilled
+} from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { notifications } from '@mantine/notifications';
 
-export default function CreateLocation({
+export default function CreateRoutine({
   opened,
   onClose,
-  refresh,
-  organization
+  location,
+  refresh
 }: {
   opened: boolean;
   onClose: () => void;
+  location: any;
   refresh: () => void;
-  organization: Organization;
 }) {
   const { user } = useAuthContext();
   const [formSubmitting, setFormSubmitting] = useState(false);
   const toast = useToast();
   const { push } = useRouter();
-  const { colorScheme } = useMantineColorScheme();
 
   const form = useForm({
     initialValues: {
       type: 'normal',
       template: null,
       name: '',
-      description: ''
+      description: '',
+      tags: []
     },
 
     validate: {}
@@ -58,7 +70,7 @@ export default function CreateLocation({
         onClose={onClose}
         title={
           <Flex align={'center'}>
-            <IconLocation
+            <IconTimelineEvent
               style={{ width: rem(18), height: rem(18) }}
               stroke={1.5}
             />
@@ -66,7 +78,7 @@ export default function CreateLocation({
               ml={10}
               fw={'bold'}
             >
-              Create Location
+              Create Routine
             </Text>
           </Flex>
         }
@@ -76,7 +88,7 @@ export default function CreateLocation({
           onSubmit={form.onSubmit((values) => {
             setFormSubmitting(true);
             user.getIdToken().then((token: any) => {
-              fetch('/api/v1/locations', {
+              fetch(`/api/v2/routines`, {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
@@ -85,7 +97,9 @@ export default function CreateLocation({
                 body: JSON.stringify({
                   name: values.name,
                   description: values.description,
-                  organizationId: organization.id
+                  locationId: location.id,
+                  templateId: null,
+                  tags: values.tags
                 })
               })
                 .then((res) => {
@@ -107,14 +121,13 @@ export default function CreateLocation({
                   form.reset();
                   refresh();
                   onClose();
+                  // push(`/access-points/${data.accessPointId}`);
                 })
                 .catch((error) => {
-                  toast({
-                    title: 'There was an error creating the location.',
-                    description: error.message,
-                    status: 'error',
-                    duration: 5000,
-                    isClosable: true
+                  notifications.show({
+                    title: 'There was an error creating the routine.',
+                    message: error.message,
+                    color: 'red'
                   });
                 })
                 .finally(() => {
@@ -131,19 +144,25 @@ export default function CreateLocation({
               <TextInput
                 name="name"
                 label="Name"
-                description="The name of this location."
-                placeholder="ACME Headquarters"
+                description="The name of this routine."
+                placeholder="Office Access Hours 7am-10pm"
                 withAsterisk
                 {...form.getInputProps('name')}
               />
               <Textarea
                 name="description"
                 label="Description"
-                description="A short description of this location."
-                placeholder="This is the headquarters for ACME Inc."
+                description="A short description of this routine. (optional)"
+                placeholder="This routine is for the office access hours from 7am to 10pm."
                 minRows={2}
                 {...form.getInputProps('description')}
               />
+              <Text
+                size="xs"
+                c={'dark.2'}
+              >
+                You will be able to configure this routine after it is created.
+              </Text>
               <Button
                 mt={16}
                 ml={'auto'}

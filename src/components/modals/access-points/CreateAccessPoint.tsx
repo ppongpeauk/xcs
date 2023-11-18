@@ -19,7 +19,7 @@ import {
   rem
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { IconAccessPoint, IconAt, IconElevator, IconEye, IconPencil } from '@tabler/icons-react';
+import { IconAccessPoint, IconAt, IconElevator, IconEye, IconPencil, IconPlus } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -210,7 +210,7 @@ export default function CreateAccessPoint({
               <Button
                 mt={16}
                 ml={'auto'}
-                leftSection={<IconPencil size={16} />}
+                leftSection={<IconPlus size={16} />}
                 color="dark.5"
                 type="submit"
                 loading={formSubmitting}

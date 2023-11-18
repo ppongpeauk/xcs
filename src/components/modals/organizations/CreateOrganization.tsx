@@ -17,7 +17,7 @@ import {
   useMantineColorScheme
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { IconAccessPoint, IconElevator, IconLocation, IconPencil, IconUsersGroup } from '@tabler/icons-react';
+import { IconAccessPoint, IconElevator, IconLocation, IconPencil, IconPlus, IconUsersGroup } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -143,7 +143,7 @@ export default function CreateOrganization({
               <Button
                 mt={16}
                 ml={'auto'}
-                leftSection={<IconPencil size={16} />}
+                leftSection={<IconPlus size={16} />}
                 color="dark.5"
                 type="submit"
                 loading={formSubmitting}

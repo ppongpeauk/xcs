@@ -371,7 +371,7 @@ export default function PlatformAccessPoint() {
                   modals.openConfirmModal({
                     title: <Title order={4}>Delete access point?</Title>,
                     children: <Text size="sm">Are you sure you want to delete this access point?</Text>,
-                    labels: { confirm: 'Delete access point', cancel: "No, don't delete it" },
+                    labels: { confirm: 'Delete access point', cancel: 'Nevermind' },
                     confirmProps: { color: 'red' },
                     onConfirm: () => {
                       user.getIdToken().then((token: string) => {

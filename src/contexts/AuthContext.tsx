@@ -13,7 +13,7 @@ const AuthContext = createContext(null);
 
 interface AuthContextValues {
   user: any; // TODO: fix this
-  currentUser?: any;
+  currentUser?: User | any;
   refreshCurrentUser: () => void;
   auth: any;
   getAuth: () => any;

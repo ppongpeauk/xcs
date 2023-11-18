@@ -242,7 +242,7 @@ export default function Profile({ username, user }: { username: string | null; u
         </Flex>
 
         {/* achievements */}
-        {Object.keys(user?.achievements || {}).length && (
+        {Object.keys(user?.achievements || {}).length ? (
           <Flex
             direction={'column'}
             mt={16}
@@ -272,7 +272,7 @@ export default function Profile({ username, user }: { username: string | null; u
               </Flex>
             )}
           </Flex>
-        )}
+        ) : null}
 
         {/* organizations */}
         <Flex

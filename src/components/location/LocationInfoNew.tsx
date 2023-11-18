@@ -81,7 +81,7 @@ export default function LocationInfo({
           with this location. This action cannot be undone.
         </Text>
       ),
-      labels: { confirm: 'Delete location', cancel: "No, don't delete it" },
+      labels: { confirm: 'Delete location', cancel: 'Nevermind' },
       confirmProps: { color: 'red' },
       onCancel: () => {},
       onConfirm: () => {

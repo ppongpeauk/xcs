@@ -1,9 +1,10 @@
+import Layout from '@/layouts/PublicLayout';
 import { Box } from '@mantine/core';
 import Head from 'next/head';
 import SwaggerUI from 'swagger-ui-react';
 import 'swagger-ui-react/swagger-ui.css';
 
-export default function App() {
+export default function SpecPage() {
   return (
     <>
       <Head>
@@ -35,9 +36,10 @@ export default function App() {
         py={1}
       >
         <main>
-          <SwaggerUI url="https://petstore.swagger.io/v2/swagger.json" />
+          <SwaggerUI url={`/api/consumer/v2/swagger.json`} />
         </main>
       </Box>
     </>
   );
 }
+SpecPage.getLayout = (page: any) => <Layout>{page}</Layout>;

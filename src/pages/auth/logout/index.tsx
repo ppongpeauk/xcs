@@ -1,28 +1,35 @@
 // React
 import { useContext, useEffect } from 'react';
 
-// Chakra UI
-import { Center, Spinner, useToast } from '@chakra-ui/react';
-
 // Next
 import { useRouter } from 'next/router';
 
 // Authentication
 import { useAuthContext } from '@/contexts/AuthContext';
+import { Center, Loader } from '@mantine/core';
 
 export default function Logout() {
   const router = useRouter();
-  const { logOut } = useAuthContext();
+  const { logOut, isAuthLoaded, user } = useAuthContext();
 
   useEffect(() => {
     logOut();
-    router.push('/auth/login');
-  }, []);
+  }, [logOut]);
+
+  useEffect(() => {
+    if (!isAuthLoaded) return;
+    if (!user) {
+      router.push('/auth/login');
+    }
+  }, [isAuthLoaded, user, router]);
 
   return (
     <>
       <Center h="100vh">
-        <Spinner size={'lg'} />
+        <Loader
+          size={'md'}
+          color="var(--mantine-color-default-color)"
+        />
       </Center>
     </>
   );

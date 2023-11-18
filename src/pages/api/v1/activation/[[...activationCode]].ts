@@ -175,7 +175,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         bio: null,
         email: {
           address: email.trim().toLowerCase(),
-          privacyLevel: 2,
           verified: false
         },
         notifications: {

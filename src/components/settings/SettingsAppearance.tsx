@@ -18,25 +18,54 @@ import moment from 'moment';
 import { useAuthContext } from '@/contexts/AuthContext';
 
 import DeleteDialog from '@/components/DeleteDialog';
-import { useMantineColorScheme } from '@mantine/core';
+import { Badge, Radio, useMantineColorScheme } from '@mantine/core';
 
 export default function SettingsAppearance() {
   const { currentUser, refreshCurrentUser, user } = useAuthContext();
   const toast = useToast();
 
   const { colorMode, setColorMode } = useColorMode();
-  const { setColorScheme } = useMantineColorScheme();
+  const { colorScheme, setColorScheme } = useMantineColorScheme();
 
   return (
     <>
-      <FormControl>
-        <FormLabel>Color Mode</FormLabel>
-        <Stack
-          direction={{ base: 'column', md: 'row' }}
-          spacing={4}
-          h={'max-content'}
+      <Text
+        style={{
+          alignContent: 'center'
+        }}
+      >
+        Visual mode
+        <Badge
+          ml={8}
+          variant="outline"
+          color="var(--mantine-color-default-color)"
         >
-          <Button
+          Beta
+        </Badge>
+      </Text>
+      <Stack
+        spacing={4}
+        h={'max-content'}
+      >
+        <Radio
+          name="colorSchemeLight"
+          label="Light"
+          checked={colorScheme === 'light'}
+          onClick={() => {
+            setColorScheme('light');
+            // setColorMode('light');
+          }}
+        />
+        <Radio
+          name="colorSchemeDark"
+          label="Dark"
+          checked={colorScheme === 'dark'}
+          onClick={() => {
+            setColorScheme('dark');
+            // setColorMode('dark');
+          }}
+        />
+        {/* <Button
             variant={'unstyled'}
             onClick={() => {
               setColorScheme('light');
@@ -101,9 +130,8 @@ export default function SettingsAppearance() {
             >
               Dark
             </Text>
-          </Button>
-        </Stack>
-      </FormControl>
+          </Button> */}
+      </Stack>
     </>
   );
 }

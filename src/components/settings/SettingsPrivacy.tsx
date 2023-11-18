@@ -4,6 +4,7 @@ import { useForm } from '@mantine/form';
 import { useEffect, useState } from 'react';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { useToast } from '@chakra-ui/react';
+import { notifications } from '@mantine/notifications';
 
 export default function SettingsPrivacy() {
   const { currentUser, user, refreshCurrentUser } = useAuthContext();
@@ -56,21 +57,17 @@ export default function SettingsPrivacy() {
                 }
               })
               .then((data) => {
-                toast({
-                  title: data.message,
-                  status: 'success',
-                  duration: 5000,
-                  isClosable: true
+                notifications.show({
+                  message: data.message,
+                  color: 'green'
                 });
                 refreshCurrentUser();
               })
               .catch((error) => {
-                toast({
+                notifications.show({
                   title: 'There was an error updating your privacy settings.',
-                  description: error.message,
-                  status: 'error',
-                  duration: 5000,
-                  isClosable: true
+                  message: error.message,
+                  color: 'red'
                 });
               })
               .finally(() => {

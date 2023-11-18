@@ -28,7 +28,8 @@ import {
   Radio,
   useComputedColorScheme,
   Alert,
-  CloseButton
+  CloseButton,
+  Tooltip
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { modals } from '@mantine/modals';
@@ -53,12 +54,14 @@ import {
   IconCaretDownFilled,
   IconCaretUp,
   IconCaretUpFilled,
+  IconChartBubbleFilled,
   IconCheck,
   IconChecklist,
   IconChevronCompactDown,
   IconChevronDown,
   IconCopy,
   IconCube,
+  IconDashboard,
   IconHelp,
   IconHome,
   IconHome2,
@@ -66,6 +69,8 @@ import {
   IconKey,
   IconLifebuoy,
   IconLocation,
+  IconLocationFilled,
+  IconLogin,
   IconLogout,
   IconMoneybag,
   IconNotification,
@@ -135,7 +140,7 @@ export default function PlatformNavNew({
         aside={{ width: 320, breakpoint: 'md', collapsed: { mobile: true, desktop: !asideOpened } }}
         padding="md"
         zIndex={5}
-        transitionDuration={0}
+        // transitionDuration={0}
       >
         <AppShell.Header px={'md'}>
           <Flex
@@ -173,30 +178,37 @@ export default function PlatformNavNew({
               </Flex>
             </NextLink>
 
-            {/* notifications */}
-            <NotificationMenu currentUser={currentUser} />
+            {((isAuthLoaded && user) || currentUser) && (
+              <>
+                {/* notifications */}
+                <NotificationMenu currentUser={currentUser} />
 
-            <Divider
-              orientation="vertical"
-              mx={16}
-              my={8}
-            />
+                <Divider
+                  orientation="vertical"
+                  mx={16}
+                  my={8}
+                />
 
-            {/* settings */}
-            <SettingsMenu currentUser={currentUser} />
+                {/* settings */}
+                <SettingsMenu currentUser={currentUser} />
 
-            <Divider
-              orientation="vertical"
-              mx={16}
-              my={8}
-            />
+                <Divider
+                  orientation="vertical"
+                  mx={16}
+                  my={8}
+                />
+              </>
+            )}
 
             {/* avatar menu */}
             <AvatarMenu currentUser={currentUser} />
           </Flex>
         </AppShell.Header>
 
-        <AppShell.Navbar p="sm">
+        <AppShell.Navbar
+          p="sm"
+          display={isAuthLoaded && !user ? 'none' : 'flex'}
+        >
           <NavButton
             colorScheme={colorScheme}
             component={NextLink}
@@ -286,7 +298,6 @@ export default function PlatformNavNew({
 function SettingsMenu({ currentUser }: { currentUser?: User }) {
   const isMobile = useMediaQuery('(max-width: 768px)');
   const { colorScheme, setColorScheme } = useMantineColorScheme();
-  const { setColorMode } = useColorMode();
 
   return (
     <>
@@ -346,7 +357,6 @@ function SettingsMenu({ currentUser }: { currentUser?: User }) {
                 checked={colorScheme === 'light'}
                 onClick={() => {
                   setColorScheme('light');
-                  // setColorMode('light');
                 }}
               />
               <Radio
@@ -355,7 +365,6 @@ function SettingsMenu({ currentUser }: { currentUser?: User }) {
                 checked={colorScheme === 'dark'}
                 onClick={() => {
                   setColorScheme('dark');
-                  // setColorMode('dark');
                 }}
               />
             </Flex>
@@ -369,6 +378,7 @@ function SettingsMenu({ currentUser }: { currentUser?: User }) {
 function NotificationMenu({ currentUser }: { currentUser?: User }) {
   const isMobile = useMediaQuery('(max-width: 768px)');
   const { colorScheme } = useMantineColorScheme();
+  const { isAuthLoaded, user } = useAuthContext();
 
   return (
     <>
@@ -446,6 +456,7 @@ function AvatarMenu({ currentUser, onLogoutOpen }: { currentUser?: User; onLogou
   const [opened, setOpened] = useState(false);
   const { user, isAuthLoaded } = useAuthContext();
   const { push } = useRouter();
+  const pathname = usePathname();
   const { colorScheme } = useMantineColorScheme();
   const isMobile = useMediaQuery('(max-width: 768px)');
 
@@ -518,90 +529,107 @@ function AvatarMenu({ currentUser, onLogoutOpen }: { currentUser?: User; onLogou
           </UnstyledButton>
         </Menu.Target>
         <Menu.Dropdown>
-          <Flex
-            direction={'column'}
-            py={8}
-          >
-            <Flex
-              direction={'row'}
-              align={'center'}
-              gap={4}
-              px={16}
-            >
-              <Text
-                c={colorScheme === 'dark' ? 'white' : 'black'}
-                size="sm"
-              >
-                Account ID: {currentUser?.username}
-              </Text>
-              <CopyButton value={currentUser?.username as string}>
-                {({ copied, copy }) => (
-                  <ActionIcon
-                    variant="transparent"
-                    size="xs"
-                    color={'gray'}
-                    onClick={copy}
-                  >
-                    {copied ? <IconCheck /> : <IconCopy />}
-                  </ActionIcon>
-                )}
-              </CopyButton>
-            </Flex>
-          </Flex>
-          <Menu.Divider />
-          <Menu.Item
-            component={NextLink}
-            href={`/@${currentUser?.username}`}
-            leftSection={<IconUser style={{ width: rem(14), height: rem(14) }} />}
-          >
-            Profile
-          </Menu.Item>
-          <Menu.Item
-            component={NextLink}
-            href={'/settings/profile'}
-            leftSection={<IconSettings style={{ width: rem(14), height: rem(14) }} />}
-          >
-            Settings
-          </Menu.Item>
-          {currentUser?.platform.staff && (
+          {isAuthLoaded && !user ? (
             <Menu.Item
-              component={NextLink}
-              href={'/settings/staff'}
-              leftSection={<IconTerminal2 style={{ width: rem(14), height: rem(14) }} />}
-              hidden={!currentUser?.platform.staff}
+              leftSection={<IconLogin style={{ width: rem(14), height: rem(14) }} />}
+              onClick={() => {
+                push('/auth/login?redirect=' + pathname);
+              }}
             >
-              Staff Dashboard
+              Log in
             </Menu.Item>
+          ) : (
+            <>
+              <Flex
+                direction={'column'}
+                py={8}
+              >
+                <Flex
+                  direction={'row'}
+                  align={'center'}
+                  gap={4}
+                  px={16}
+                >
+                  <Text
+                    c={colorScheme === 'dark' ? 'white' : 'black'}
+                    size="sm"
+                  >
+                    Account ID: {currentUser?.username}
+                  </Text>
+                  <Tooltip.Floating label="Copy ID">
+                    <Flex align={'center'}>
+                      <CopyButton value={currentUser?.username as string}>
+                        {({ copied, copy }) => (
+                          <ActionIcon
+                            variant="transparent"
+                            size="xs"
+                            color={'gray'}
+                            onClick={copy}
+                          >
+                            {copied ? <IconCheck /> : <IconCopy />}
+                          </ActionIcon>
+                        )}
+                      </CopyButton>
+                    </Flex>
+                  </Tooltip.Floating>
+                </Flex>
+              </Flex>
+              <Menu.Divider />
+              <Menu.Item
+                component={NextLink}
+                href={`/@${currentUser?.username}`}
+                leftSection={<IconUser style={{ width: rem(14), height: rem(14) }} />}
+              >
+                Profile
+              </Menu.Item>
+              <Menu.Item
+                component={NextLink}
+                href={'/settings/profile'}
+                leftSection={<IconSettings style={{ width: rem(14), height: rem(14) }} />}
+              >
+                Settings
+              </Menu.Item>
+              {currentUser?.platform.staff && (
+                <Menu.Item
+                  component={NextLink}
+                  href={'/settings/staff'}
+                  leftSection={<IconTerminal2 style={{ width: rem(14), height: rem(14) }} />}
+                  hidden={!currentUser?.platform.staff}
+                >
+                  Staff Dashboard
+                </Menu.Item>
+              )}
+              <Menu.Item
+                component={NextLink}
+                href={'/settings/api-keys'}
+                leftSection={<IconKey style={{ width: rem(14), height: rem(14) }} />}
+              >
+                Security credentials
+              </Menu.Item>
+              <Menu.Item
+                component={NextLink}
+                href={'mailto:xcs@restrafes.co'}
+                leftSection={<IconLifebuoy style={{ width: rem(14), height: rem(14) }} />}
+              >
+                Help & Support
+              </Menu.Item>
+              <Menu.Item
+                leftSection={<IconLogout style={{ width: rem(14), height: rem(14) }} />}
+                onClick={() => {
+                  modals.openConfirmModal({
+                    title: <Title order={4}>Log out?</Title>,
+                    children: <Text size="sm">Are you sure you want to log out?</Text>,
+                    labels: { confirm: 'Log out', cancel: 'Nevermind' },
+                    confirmProps: { color: 'red' },
+                    onCancel: () => null,
+                    onConfirm: () => push('/auth/logout')
+                  });
+                }}
+              >
+                Log out
+              </Menu.Item>
+            </>
           )}
-          <Menu.Item
-            component={NextLink}
-            href={'/settings/api-keys'}
-            leftSection={<IconKey style={{ width: rem(14), height: rem(14) }} />}
-          >
-            Security credentials
-          </Menu.Item>
-          <Menu.Item
-            component={NextLink}
-            href={'mailto:xcs@restrafes.co'}
-            leftSection={<IconLifebuoy style={{ width: rem(14), height: rem(14) }} />}
-          >
-            Help & Support
-          </Menu.Item>
-          <Menu.Item
-            leftSection={<IconLogout style={{ width: rem(14), height: rem(14) }} />}
-            onClick={() => {
-              modals.openConfirmModal({
-                title: <Title order={4}>Log out?</Title>,
-                children: <Text size="sm">Are you sure you want to log out?</Text>,
-                labels: { confirm: 'Log out', cancel: 'Nevermind' },
-                confirmProps: { color: 'red' },
-                onCancel: () => null,
-                onConfirm: () => push('/auth/logout')
-              });
-            }}
-          >
-            Log out
-          </Menu.Item>
         </Menu.Dropdown>
       </Menu>
     </>

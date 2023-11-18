@@ -19,12 +19,15 @@ import {
   ActionIcon,
   useMantineColorScheme,
   Stack,
-  Box
+  Box,
+  Tooltip,
+  Anchor
 } from '@mantine/core';
 import { DataTable, DataTableSortStatus } from 'mantine-datatable';
 import CreateLocationDialog from '@/components/CreateLocationDialog';
 import { Location, Organization } from '@/types';
-import { IconClick, IconEdit, IconPencil, IconRefresh, IconSearch, IconX } from '@tabler/icons-react';
+import { IconClick, IconEdit, IconPencil, IconPlus, IconRefresh, IconSearch, IconX } from '@tabler/icons-react';
+import NextLink from 'next/link';
 
 // contexts
 import { useAuthContext } from '@/contexts/AuthContext';
@@ -235,15 +238,23 @@ export default function PlatformLocations() {
           gap={8}
           py={16}
         >
-          <Button
-            leftSection={<IconPencil size={16} />}
-            color={'dark.5'}
-            onClick={onCreateLocationModalOpen}
-            disabled={!selectedOrganization}
+          <Tooltip.Floating
+            disabled={!!selectedOrganization}
+            label={'Select an organization before creating a location.'}
           >
-            New Location
-          </Button>
+            <span>
+              <Button
+                leftSection={<IconPlus size={16} />}
+                color={'dark.5'}
+                onClick={onCreateLocationModalOpen}
+                disabled={!selectedOrganization}
+              >
+                New Location
+              </Button>
+            </span>
+          </Tooltip.Floating>
           <Select
+            disabled={organizationsLoading || organizations.length === 0}
             value={selectedOrganization?.id}
             onChange={(id: string | null) => {
               const organization = organizations.find((organization: Organization) => organization.id === id);
@@ -310,7 +321,7 @@ export default function PlatformLocations() {
                 />
               ),
               filtering: searchQuery !== '',
-              render: ({ roblox, name }) => {
+              render: ({ roblox, name, id }) => {
                 return (
                   <Flex
                     direction={'row'}
@@ -318,15 +329,23 @@ export default function PlatformLocations() {
                     gap={16}
                     my={4}
                   >
-                    <Image
-                      src={roblox?.place?.thumbnail || '/images/default-avatar-location.png'}
-                      alt={name}
-                      w={48}
-                      h={48}
-                      style={{
-                        borderRadius: 4
+                    <Anchor
+                      component={NextLink}
+                      href={`/locations/${id}/general`}
+                      onClick={(e) => {
+                        e.stopPropagation();
                       }}
-                    />
+                    >
+                      <Image
+                        src={roblox?.place?.thumbnail || '/images/default-avatar-location.png'}
+                        alt={name}
+                        w={48}
+                        h={48}
+                        style={{
+                          borderRadius: 4
+                        }}
+                      />
+                    </Anchor>
                     <Flex direction={'column'}>
                       <Text
                         lh={1}

@@ -19,12 +19,16 @@ import {
   ActionIcon,
   useMantineColorScheme,
   Stack,
-  Box
+  Box,
+  Tooltip,
+  TypographyStylesProvider,
+  Anchor
 } from '@mantine/core';
 import { DataTable, DataTableSortStatus } from 'mantine-datatable';
 import CreateLocationDialog from '@/components/CreateLocationDialog';
 import { Location, Organization } from '@/types';
-import { IconClick, IconEdit, IconPencil, IconRefresh, IconSearch, IconX } from '@tabler/icons-react';
+import { IconClick, IconEdit, IconPencil, IconPlus, IconRefresh, IconSearch, IconX } from '@tabler/icons-react';
+import NextLink from 'next/link';
 
 // contexts
 import { useAuthContext } from '@/contexts/AuthContext';
@@ -52,7 +56,7 @@ export default function PlatformOrganizations() {
 
   const [selectedOrganization, setSelectedOrganization] = useState<Organization | null>(null);
 
-  const { user } = useAuthContext();
+  const { user, currentUser } = useAuthContext();
 
   const { colorScheme } = useMantineColorScheme();
   const [searchQuery, setSearchQuery] = useState('');
@@ -166,14 +170,21 @@ export default function PlatformOrganizations() {
           gap={8}
           py={16}
         >
-          <Button
-            leftSection={<IconPencil size={16} />}
-            color={'dark.5'}
-            onClick={onCreateOrganizationModalOpen}
-            disabled={!selectedOrganization}
+          <Tooltip.Floating
+            disabled={currentUser?.roblox?.verified}
+            label={"You cannot create an organization because you don't have a Roblox account linked."}
           >
-            New Organization
-          </Button>
+            <span>
+              <Button
+                leftSection={<IconPlus size={16} />}
+                color={'dark.5'}
+                onClick={onCreateOrganizationModalOpen}
+                disabled={!currentUser?.roblox?.verified}
+              >
+                New Organization
+              </Button>
+            </span>
+          </Tooltip.Floating>
           <Flex
             w={'fit-content'}
             gap={8}
@@ -227,7 +238,7 @@ export default function PlatformOrganizations() {
                 />
               ),
               filtering: searchQuery !== '',
-              render: ({ avatar, owner, name }) => {
+              render: ({ avatar, owner, name, id }) => {
                 return (
                   <Flex
                     direction={'row'}
@@ -235,15 +246,23 @@ export default function PlatformOrganizations() {
                     gap={16}
                     my={4}
                   >
-                    <Image
-                      src={avatar || '/images/default-avatar-organization.png'}
-                      alt={name}
-                      w={48}
-                      h={48}
-                      style={{
-                        borderRadius: 4
+                    <Anchor
+                      component={NextLink}
+                      href={`/organizations/${id}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
                       }}
-                    />
+                    >
+                      <Image
+                        src={avatar || '/images/default-avatar-organization.png'}
+                        alt={name}
+                        w={48}
+                        h={48}
+                        style={{
+                          borderRadius: 4
+                        }}
+                      />
+                    </Anchor>
                     <Flex direction={'column'}>
                       <Text
                         lh={1}
@@ -283,7 +302,7 @@ export default function PlatformOrganizations() {
                     size="xs"
                     onClick={(e) => {
                       e.stopPropagation();
-                      push(`/organizations/${cell.id}/general`);
+                      push(`/organizations/${cell.id}/overview`);
                     }}
                     color={colorScheme === 'dark' ? 'dark.5' : 'dark.5'}
                     leftSection={<IconEdit size={16} />}

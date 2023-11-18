@@ -1,0 +1,92 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "XCS Consumer Api v2",
+    "version": "v2",
+    "termsOfService": "http://xcs.restrafes.co/legal/terms",
+    "contact": { "email": "xcs@restrafes.co" }
+  },
+  "host": "localhost:3000",
+  "basePath": "/api/consumer/v2",
+  "tags": [
+    {
+      "name": "Routines",
+      "description": "Operations to manage routines"
+    },
+    {
+      "name": "Test"
+    }
+  ],
+  "schemes": ["https", "http"],
+  "paths": {
+    "/routines": {
+      "post": {
+        "tags": ["Routines"],
+        "summary": "Create a new routine",
+        "description": "Creates a new routine in a location.",
+        "operationId": "newRoutine",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "description": "The name of the routine.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "in": "path",
+            "description": "The description of the routine.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "locationId",
+            "in": "path",
+            "description": "The location id that the routine belongs to.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": { "description": "successful operation", "schema": { "$ref": "#/definitions/RoutineResponse" } }
+        },
+        "security": [{ "api_key": ["write:locations", "read:locations"] }]
+      }
+    },
+    "/ping": {
+      "get": {
+        "tags": ["Test"],
+        "summary": "Check connectivity to the API server",
+        "description": "Checks if the API server is ready to accept requests.",
+        "operationId": "pingServer",
+        "consumes": [],
+        "produces": ["application/json"],
+        "parameters": [],
+        "responses": { "default": { "description": "successful operation" } }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "api_key": { "type": "apiKey", "name": "x-api-key", "in": "header" }
+  },
+  "definitions": {
+    "ApiResponse": {
+      "type": "object",
+      "properties": {
+        "code": { "type": "integer", "format": "int32" },
+        "type": { "type": "string" },
+        "message": { "type": "string" }
+      }
+    },
+    "RoutineResponse": {
+      "type": "object",
+      "properties": {
+        "success": { "type": "boolean" },
+        "id": { "type": "string" }
+      }
+    }
+  }
+}

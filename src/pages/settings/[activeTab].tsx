@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 
 import { useToast } from '@chakra-ui/react';
 
-import { Container, Box, Divider, Tabs, Title, rem, useMantineColorScheme, Badge } from '@mantine/core';
+import { Container, Box, Divider, Tabs, Title, rem, useMantineColorScheme, Badge, Text, Stack } from '@mantine/core';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
@@ -21,6 +21,8 @@ import SettingsProfile from '@/components/settings/SettingsProfile';
 import { useMediaQuery } from '@mantine/hooks';
 import {
   Icon3dCubeSphere,
+  IconCode,
+  IconCylinder,
   IconExternalLink,
   IconHandClick,
   IconHandFinger,
@@ -35,6 +37,9 @@ import {
   IconUserFilled
 } from '@tabler/icons-react';
 import SettingsPrivacy from '@/components/settings/SettingsPrivacy';
+import InfoLink from '@/components/InfoLink';
+import { AiFillExperiment, AiOutlineExperiment } from 'react-icons/ai';
+import SettingsBeta from '@/components/settings/SettingsBeta';
 
 export default function Settings() {
   const { query, push } = useRouter();
@@ -147,13 +152,14 @@ export default function Settings() {
         <Divider my={24} />
         {/* Tabs */}
         <Tabs
-          color={colorScheme === 'dark' ? 'white' : 'black'}
+          color={colorScheme === 'dark' ? 'dark.5' : 'black'}
           orientation={isMobile ? 'horizontal' : 'vertical'}
           defaultValue={'settings'}
           value={query.activeTab as string}
           onChange={(value) => push(`/settings/${value}`)}
+          variant="pills"
         >
-          <Tabs.List>
+          <Tabs.List style={{ gap: 0 }}>
             <Tabs.Tab
               value="profile"
               leftSection={<IconUserFilled style={iconStyle} />}
@@ -186,6 +192,18 @@ export default function Settings() {
                 Staff Dashboard
               </Tabs.Tab>
             ) : null}
+            <Tabs.Tab
+              value="beta"
+              leftSection={<AiOutlineExperiment style={iconStyle} />}
+            >
+              Beta Program
+            </Tabs.Tab>
+            <Tabs.Tab
+              value="developer"
+              leftSection={<IconCode style={iconStyle} />}
+            >
+              Developer Settings
+            </Tabs.Tab>
           </Tabs.List>
 
           <Box
@@ -223,13 +241,6 @@ export default function Settings() {
                 }}
               >
                 Appearance
-                <Badge
-                  ml={8}
-                  variant="light"
-                  color="blue"
-                >
-                  Beta
-                </Badge>
               </Title>
               <SettingsAppearance />
             </Tabs.Panel>
@@ -252,6 +263,44 @@ export default function Settings() {
                 Staff Dashboard
               </Title>
               {currentUser?.platform?.staff ? <SettingsAdmin /> : null}
+            </Tabs.Panel>
+            <Tabs.Panel value="beta">
+              <Title
+                size={rem(24)}
+                py={4}
+                mb={16}
+              >
+                Beta Program
+                <InfoLink
+                  title="Beta Program"
+                  description={
+                    <Stack>
+                      <Text>Manage your membership in the beta program.</Text>
+                      <Text>
+                        Beta users have access to experimental features before they are released to the public.
+                      </Text>
+                    </Stack>
+                  }
+                />
+              </Title>
+              <SettingsBeta />
+            </Tabs.Panel>
+            <Tabs.Panel value="developer">
+              <Title
+                size={rem(24)}
+                py={4}
+                mb={16}
+              >
+                Developer Settings
+                <InfoLink
+                  title="Developer Settings"
+                  description={
+                    <Stack>
+                      <Text>Developer settings are only available to users with the &quot;Beta&quot; atrribute.</Text>
+                    </Stack>
+                  }
+                />
+              </Title>
             </Tabs.Panel>
           </Box>
         </Tabs>

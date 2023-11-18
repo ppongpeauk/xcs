@@ -1,95 +1,71 @@
-import { TooltipAvatar } from '@/components/TooltipAvatar';
 import { useAuthContext } from '@/contexts/AuthContext';
 import Layout from '@/layouts/PlatformLayout';
-import { Organization, OrganizationMember } from '@/types';
+import { Organization } from '@/types';
 import {
-  Link
-} from '@chakra-ui/next-js';
-import {
+  Anchor,
   Avatar,
-  AvatarGroup,
+  Badge,
+  Box,
   Button,
   Container,
+  Divider,
   Flex,
-  Heading,
-  Icon,
+  Group,
+  Paper,
   Skeleton,
   Text,
+  Title,
   Tooltip,
-  useColorModeValue,
-  useToast
-} from '@chakra-ui/react';
+  TypographyStylesProvider
+} from '@mantine/core';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
-import { AiFillSetting } from 'react-icons/ai';
-import { VscVerifiedFilled } from 'react-icons/vsc';
+import NextLink from 'next/link';
+import {
+  IconArrowsJoin,
+  IconCircleCheck,
+  IconDoorEnter,
+  IconDoorExit,
+  IconEdit,
+  IconEditCircle,
+  IconGitPullRequest
+} from '@tabler/icons-react';
+import { BiSolidExit } from 'react-icons/bi';
+import moment from 'moment';
+import { modals } from '@mantine/modals';
+import * as DOMPurify from 'dompurify';
 
-const memberTypeOrder = ['user', 'roblox', 'roblox-group', 'card'];
+export default function Organization() {
+  const { push, query } = useRouter();
+  const { id } = query;
+  const { user, isAuthLoaded } = useAuthContext();
+  const [organization, setOrganization] = useState<Organization>();
 
-export async function getServerSideProps({ params, req, res }: any) {
-  const id = params.id;
-  if (!id) return { notFound: true };
-
-  // fetch organization data
-  const data = await fetch(`${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/organizations/${id}/public`);
-  if (data.status === 404) return { notFound: true };
-  if (data.status !== 200) {
-    res.statusCode = data.status;
-    return { props: {} };
-  }
-  const organization: Organization = await data.json();
-  return { props: organization };
-}
-export default function OrganizationPublic({ organization }: { organization: Organization | null }) {
-  const { query, push } = useRouter();
-  const toast = useToast();
-  const { user } = useAuthContext();
-  const [permissions, setPermissions] = useState<any>({});
-
-  let refreshPermissions = useCallback(async () => {
-    const token = await user?.getIdToken().then((token: string) => token);
-    await fetch(`/api/v1/organizations/${query.id}/access`, {
-      method: 'GET',
+  const refreshData = useCallback(async () => {
+    const token = await user
+      ?.getIdToken()
+      .then((token: string) => token)
+      .catch(() => null);
+    await fetch(`/api/v2/organizations/${id}`, {
       headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
+        Authorization: token ? `Bearer ${token}` : undefined
+      } as any
+    }).then(async (res) => {
+      if (res.status === 200) {
+        const data = await res.json();
+        console.log(data);
+        setOrganization(data);
+      } else {
+        // push('/404');
       }
-    })
-      .then((res) => {
-        if (res.status === 200) return res.json();
-        switch (res.status) {
-          case 404:
-            throw new Error('Organization not found.');
-          case 403:
-            throw new Error('You do not have permission to view this organization.');
-          case 401:
-            throw new Error('You do not have permission to view this organization.');
-          case 500:
-            throw new Error('An internal server error occurred.');
-          default:
-            throw new Error('An unknown error occurred.');
-        }
-      })
-      .then((data) => {
-        setPermissions(data);
-      })
-      .catch((err) => {
-        toast({
-          title: 'There was an error fetching the organization.',
-          description: err.message,
-          status: 'error',
-          duration: 5000,
-          isClosable: true
-        });
-      });
-  }, [query, toast, user]);
+    });
+  }, [user, id]);
 
   useEffect(() => {
-    if (!query.id) return;
-    if (!user) return;
-    refreshPermissions();
-  }, [query, refreshPermissions, user]);
+    if (!id || !isAuthLoaded) return;
+    refreshData();
+  }, [user, id, refreshData, isAuthLoaded]);
 
   return (
     <>
@@ -108,173 +84,157 @@ export default function OrganizationPublic({ organization }: { organization: Org
           content="https://xcs.restrafes.co"
         />
         <meta
-          property="og:description"
-          content={`${organization?.name} is one of many organizations that use Restrafes XCS to manage their access points.`}
-        />
-        <meta
           property="og:type"
           content="website"
         />
         <meta
           property="og:image"
-          content={organization?.avatar || '/images/default-avatar-organization.png'}
+          content="/images/logo-square.jpg"
         />
       </Head>
-      <Container maxW="full" p={8}>
-        <Flex flexDir={'row'} align={'center'} gap={8} pb={4}>
-          <Skeleton isLoaded={!!organization}>
-            <Avatar
-              name={organization?.name}
-              src={organization?.avatar || '/images/default-avatar-organization.png'}
-              boxSize={{ base: '6rem', md: '10rem' }}
-              borderRadius={'lg'}
-              overflow={'hidden'}
+      <Container
+        size={'100%'}
+        pt={16}
+        style={{
+          textUnderlineOffset: '4px'
+        }}
+        h={'1200px'}
+      >
+        <Flex
+          w={'100%'}
+          h={'100%'}
+        >
+          {/* left section */}
+          <Box
+            miw={'300px'}
+            w={'50%'}
+            h={'fit-content'}
+            style={{
+              position: 'sticky',
+              top: 'calc(64px + 16px + 1rem)'
+            }}
+          >
+            <Paper
+              w={'100%'}
+              style={{
+                borderRadius: '16px'
+              }}
             >
-            </Avatar>
-          </Skeleton>
-          <Flex flexDir={'column'}>
-            <Skeleton as={Flex} isLoaded={!!organization} flexDir={'row'} align={'center'}>
-              <Text
-                as={Flex}
-                fontSize={{ base: '2xl', md: '4xl' }}
-                fontWeight={'bold'}
-                lineHeight={0.9}
-              >
-                {organization?.name || 'Organization Name'}
-              </Text>
-              {
-                organization?.verified &&
-                <Tooltip label='Verified Organization'>
-                  <span>
-                    <Icon
-                      as={VscVerifiedFilled}
-                      color={'gold'}
-                      boxSize={'1.5em'}
-                      ml={2}
-                    />
-                  </span>
-                </Tooltip>
-              }
-            </Skeleton>
-            <Skeleton
-              isLoaded={!!organization}
-              my={2}
-            >
-              <Text
-                fontSize={'md'}
-                fontWeight={'500'}
-                color={'gray.500'}
-              >
-                Owned by{' '}
-                <Link
-                  textUnderlineOffset={4}
-                  href={`/@${organization?.owner?.username}`}
+              {/* Location Title and Organization */}
+              <Group>
+                <Tooltip.Floating label={organization?.name}>
+                  <Avatar
+                    src={organization?.avatar}
+                    alt={organization?.name}
+                    size={128}
+                    style={{
+                      borderRadius: '8px'
+                    }}
+                  />
+                </Tooltip.Floating>
+                <Skeleton
+                  visible={!organization}
+                  w={'fit-content'}
                 >
-                  {organization?.owner?.displayName || 'Organization Owner'}
-                </Link>
-              </Text>
-            </Skeleton>
-            <Skeleton
-              isLoaded={!!organization}
-            >
-              <AvatarGroup
-                size={'md'}
-                max={4}
-              >
-                <TooltipAvatar
-                  name={organization?.owner?.displayName}
-                  as={Link}
-                  key={organization?.owner?.id}
-                  href={`/@${organization?.owner?.username}`}
-                  src={organization?.owner?.avatar || '/images/default-avatar.png'}
-                />
-                {Object.values(organization?.members || {})
-                  .filter((member: OrganizationMember) => ['user'].includes(member.type))
-                  .sort((a: OrganizationMember, b: OrganizationMember) => ((memberTypeOrder.indexOf(a.type) - a.role) - (memberTypeOrder.indexOf(b.type) - b.role)))
-                  .map(
-                    (member: OrganizationMember) =>
-                      member.id !== organization?.owner?.id &&
-                      (!member.type.startsWith('roblox') ? (
-                        <TooltipAvatar
-                          name={member?.displayName}
-                          as={Link}
-                          key={member?.id}
-                          href={`/@${member?.username}`}
-                          src={member?.avatar}
-                          bg={'gray.300'}
-                        />
-                      ) : member.type === 'roblox' ? (
-                        <TooltipAvatar
-                          name={`${member?.displayName} (${member?.username})`}
-                          as={Link}
-                          key={member?.id}
-                          href={`https://www.roblox.com/users/${member?.id}/profile`}
-                          src={member?.avatar}
-                          bg={'gray.300'}
-                          target={'_blank'}
-                        />
-                      ) : (
-                        <>
-                          <TooltipAvatar
-                            name={member?.displayName}
-                            as={Link}
-                            key={member?.id}
-                            href={`https://www.roblox.com/groups/${member?.id}/group`}
-                            src={member?.avatar}
-                            bg={'gray.300'}
-                            target={'_blank'}
-                          />
-                        </>
-                      ))
-                  )}
-              </AvatarGroup>
-            </Skeleton>
-          </Flex>
-        </Flex>
-        {
-          permissions?.edit &&
-          <>
-            <Flex align={'center'} w={'fit-content'}>
-              <Skeleton as={Flex} isLoaded={!!organization} py={1} gap={4} flexDir={{ base: 'column', md: 'row' }}>
-                <Button
-                  colorScheme={'black'}
-                  leftIcon={<Icon as={AiFillSetting} />}
-                  onClick={() => push(`/organizations/${query.id}/settings`)}
-                >
-                  Manage Organization
-                </Button>
-              </Skeleton>
-            </Flex>
-          </>
-        }
-        <Skeleton isLoaded={!!organization} maxW={'container.sm'} my={4}>
-          <Flex flexDir={'column'} p={8} border={'1px solid'} borderColor={useColorModeValue('gray.200', 'gray.700')} borderRadius={'lg'} gap={1}>
-            <Heading as={'h2'} fontSize={'2xl'} fontWeight={'900'}>
-              About {organization?.name}
-            </Heading>
-            <Text color={'gray.500'}>
-              Created on {new Date(organization?.createdAt || 0).toLocaleDateString()}
-              {' • '}
-              {Object.values(organization?.members || {}).filter((member: OrganizationMember) => member.type === 'user').length} member{Object.values(organization?.members || {}).filter((member: OrganizationMember) => member.type === 'user').length !== 1 && 's'}
-              {' • '}
-              {organization?.statistics?.numLocations} location{organization?.statistics?.numLocations !== 1 && 's'}
-            </Text>
-            <Text variant={!organization?.description ? 'subtext' : 'unset'}>
-              {organization?.description ? (
-                organization?.description.split('\n').map((line: string, i: number) => (
-                  <Text
-                    key={i}
+                  <Title
+                    order={2}
+                    fw={'bold'}
                   >
-                    {line}
-                  </Text>
-                ))
-              ) : 'This organization has not set a bio yet.'}
-            </Text>
-          </Flex>
-        </Skeleton>
+                    {organization?.name || 'Unknown Organization'}
+                  </Title>
+
+                  <Title
+                    size={'md'}
+                    fw={'normal'}
+                    c={'dark.2'}
+                  >
+                    By{' '}
+                    <Anchor
+                      component={NextLink}
+                      href={`/@${organization?.owner?.username}`}
+                      c={'dark.2'}
+                    >
+                      {organization?.owner?.displayName || 'Unknown Owner'}
+                    </Anchor>
+                  </Title>
+                </Skeleton>
+              </Group>
+            </Paper>
+            <Paper
+              withBorder
+              mt={16}
+              p={16}
+            >
+              <Title order={4}>About {organization?.name}</Title>
+              <Text
+                size={'sm'}
+                c={!organization?.description ? 'dark.2' : undefined}
+              >
+                {organization?.description || 'No description provided.'}
+              </Text>
+              <Text
+                size={'xs'}
+                c={'dark.2'}
+              >
+                Created on {moment(organization?.createdAt).format('MMMM Do YYYY')}
+              </Text>
+            </Paper>
+            <Group mt={16}>
+              <Button
+                component={NextLink}
+                href={`/organizations/${id}/overview`}
+                variant={'filled'}
+                color="gray.8"
+                leftSection={<IconEditCircle size={16} />}
+              >
+                Manage Organization
+              </Button>
+              <Button
+                variant={'filled'}
+                color="red"
+                leftSection={<BiSolidExit size={16} />}
+                onClick={() => {
+                  modals.openConfirmModal({
+                    zIndex: 1000,
+                    title: <Title order={4}>Leave {organization?.name}?</Title>,
+                    children: <Text size="sm">Are you sure you want to leave {organization?.name}?</Text>,
+                    labels: { confirm: 'Leave organization', cancel: 'Nevermind' },
+                    confirmProps: { color: 'red' },
+                    onCancel: () => {},
+                    onConfirm: () => {
+                      user.getIdToken().then((token: string) => {
+                        fetch(`/api/v2/me/organizations/${organization?.id}`, {
+                          method: 'DELETE',
+                          headers: { Authorization: `Bearer ${token}` }
+                        })
+                          .then((res) => {
+                            if (res.status === 200) return res.json();
+                            throw new Error(`Failed to leave organization. (${res.status})`);
+                          })
+                          .then(() => {
+                            refreshData();
+                          })
+                          .catch((err) => {
+                            console.log(err);
+                          });
+                      });
+                    }
+                  });
+                }}
+              >
+                Leave
+              </Button>
+            </Group>
+          </Box>
+          {/* right section */}
+          <Box
+            w={'50%'}
+            pl={16}
+          ></Box>
+        </Flex>
       </Container>
     </>
-  )
+  );
 }
 
-OrganizationPublic.getLayout = (page: any) => <Layout>{page}</Layout>;
+Organization.getLayout = (page: any) => <Layout>{page}</Layout>;
