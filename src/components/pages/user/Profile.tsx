@@ -167,13 +167,13 @@ export default function Profile({ username, user }: { username: string | null; u
             </Group>
             <Text
               size={'md'}
-              c={!user?.bio ? 'gray.6' : 'unset'}
+              c={!user?.about?.bio ? 'gray.6' : 'unset'}
               style={{
                 whiteSpace: 'pre-wrap',
                 wordBreak: 'break-word'
               }}
             >
-              {user?.bio || 'This user has not set a bio yet.'}
+              {user?.about?.bio || 'This user has not set a bio yet.'}
             </Text>
             {/* links */}
             <AboutMeLinks user={user} />
