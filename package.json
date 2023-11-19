@@ -112,5 +112,8 @@
     "cross-env": "^7.0.3",
     "postcss-preset-mantine": "^1.9.1",
     "postcss-simple-vars": "^7.0.1"
-  }
+  },
+  "trustedDependencies": [
+    "sharp"
+  ]
 }
