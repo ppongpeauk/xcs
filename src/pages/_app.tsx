@@ -21,7 +21,6 @@ import { AuthProvider } from '@/contexts/AuthContext';
 
 // Theme
 import PageProgress from '@/components/PageProgress';
-import { DialogProvider } from '@/contexts/DialogContext';
 import { Familjen_Grotesk } from 'next/font/google';
 
 import { AppProps } from 'next/app';
@@ -51,10 +50,8 @@ function App({ Component, pageProps }: AppProps | any) {
         <NavAsideProvider>
           <ModalsProvider>
             <AuthProvider>
-              <DialogProvider>
-                <PageProgress />
-                {getLayout(<Component {...pageProps} />)}
-              </DialogProvider>
+              <PageProgress />
+              {getLayout(<Component {...pageProps} />)}
             </AuthProvider>
           </ModalsProvider>
         </NavAsideProvider>

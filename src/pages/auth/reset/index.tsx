@@ -1,4 +1,3 @@
-
 import {
   Box,
   Button,
@@ -23,7 +22,7 @@ import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 
 import Section from '@/components/section';
-import Layout from '@/layouts/PublicLayout';
+import Layout from '@/layouts/LayoutPublic';
 
 export default function Recover() {
   const auth = getAuth();
@@ -109,7 +108,12 @@ export default function Recover() {
                 >
                   Reset Password
                 </Text>
-                <Text color={"gray.500"} fontSize={'md'}>Enter your email address to reset your password.</Text>
+                <Text
+                  color={'gray.500'}
+                  fontSize={'md'}
+                >
+                  Enter your email address to reset your password.
+                </Text>
               </Box>
               <br />
               <Box px={[0, 4]}>

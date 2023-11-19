@@ -37,7 +37,7 @@ import { useAuthContext } from '@/contexts/AuthContext';
 import moment from 'moment';
 
 // layouts
-import Layout from '@/layouts/PlatformLayout';
+import Layout from '@/layouts/LayoutPlatform';
 import { useDebouncedValue } from '@mantine/hooks';
 import { default as sortBy } from 'lodash/sortBy';
 import CreateOrganization from '@/components/modals/organizations/CreateOrganization';

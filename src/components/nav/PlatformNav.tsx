@@ -1,47 +1,38 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 // React
-import { Suspense, forwardRef, useMemo } from 'react';
+import { Suspense, forwardRef, useMemo, useState } from 'react';
+
+import { Link } from '@chakra-ui/next-js';
 
 import {
-  Avatar,
-  Box,
-  Button,
   Flex,
-  HStack,
-  IconButton,
-  Link,
-  Menu,
-  MenuButton,
-  MenuDivider,
-  MenuItem,
-  MenuList,
+  Image,
   Popover,
-  PopoverBody,
-  PopoverCloseButton,
-  PopoverContent,
-  PopoverHeader,
-  PopoverTrigger,
-  Skeleton,
-  SkeletonCircle,
-  Spacer,
-  Stack,
+  Menu,
+  Divider,
+  Button,
   Text,
-  VStack,
-  useColorMode,
-  useColorModeValue,
-  useDisclosure
-} from '@chakra-ui/react';
-
-import { HamburgerIcon } from '@chakra-ui/icons';
-
-import { AiFillHome, AiFillInfoCircle, AiFillSetting } from 'react-icons/ai';
-import { BiSolidExit, BiSolidNotification, BiSolidTime } from 'react-icons/bi';
-import { FaBell, FaBuilding, FaIdBadge } from 'react-icons/fa';
-import { ImTree } from 'react-icons/im';
-import { IoHomeSharp } from 'react-icons/io5';
-import { PiCubeFill } from 'react-icons/pi';
-import { RiAdminFill, RiHome6Fill } from 'react-icons/ri';
-
+  Avatar,
+  Badge,
+  UnstyledButton,
+  rem,
+  CopyButton,
+  ActionIcon,
+  useMantineColorScheme,
+  Indicator,
+  Title,
+  SegmentedControl,
+  Paper,
+  AppShell,
+  Burger,
+  Radio,
+  useComputedColorScheme,
+  Alert,
+  CloseButton,
+  Tooltip
+} from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { modals } from '@mantine/modals';
 import NextImage from 'next/image';
 import NextLink from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -53,640 +44,592 @@ import { useAuthContext } from '@/contexts/AuthContext';
 // Components
 import DeleteDialog from '@/components/DeleteDialog';
 import ThemeButton from '@/components/ThemeButton';
+import { User } from '@/types';
+import {
+  Icon3dCubeSphere,
+  IconActivity,
+  IconBell,
+  IconBuildingArch,
+  IconCaretDown,
+  IconCaretDownFilled,
+  IconCaretUp,
+  IconCaretUpFilled,
+  IconChartBubbleFilled,
+  IconCheck,
+  IconChecklist,
+  IconChevronCompactDown,
+  IconChevronDown,
+  IconCopy,
+  IconCube,
+  IconDashboard,
+  IconHelp,
+  IconHome,
+  IconHome2,
+  IconInfoCircleFilled,
+  IconKey,
+  IconLifebuoy,
+  IconLocation,
+  IconLocationFilled,
+  IconLogin,
+  IconLogout,
+  IconMoneybag,
+  IconNotification,
+  IconQuestionMark,
+  IconReceipt,
+  IconSettings,
+  IconTerminal2,
+  IconUser,
+  IconUserFilled,
+  IconUsersGroup
+} from '@tabler/icons-react';
+import { useMediaQuery } from '@mantine/hooks';
+import { useColorMode } from '@chakra-ui/react';
+import Footer from '../FooterNew';
+import brandLogo from '@/assets/platform/company-brand-logo.jpeg';
+import { useAsideContext } from '@/contexts/NavAsideContext';
 
-function AvatarPopover({ currentUser, onLogoutOpen }: { currentUser?: any; onLogoutOpen?: any }) {
+const styles = {
+  horizontalBar: {}
+};
+
+function NavButton({ ...props }: any) {
+  const { colorScheme } = useMantineColorScheme();
+  const href = props.href;
+  const pathname = usePathname();
+  const isActive = pathname?.startsWith(href);
+
+  return (
+    <Button
+      variant={isActive ? 'light' : 'transparent'}
+      color={colorScheme === 'dark' ? 'gray' : 'black'}
+      justify="flex-start"
+      fullWidth
+      {...props}
+    />
+  );
+}
+
+export default function PlatformNav({
+  type,
+  title,
+  main
+}: {
+  type?: string;
+  title?: string | null | undefined;
+  main: React.ReactNode;
+}) {
+  const pathname = usePathname();
+  const { currentUser, isAuthLoaded, user } = useAuthContext();
   const { push } = useRouter();
-  const { colorMode, toggleColorMode } = useColorMode();
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const { user, isAuthLoaded } = useAuthContext();
+  const colorScheme = useComputedColorScheme('light', { getInitialValueInEffect: true });
+  const [opened, { toggle }] = useDisclosure();
+  const {
+    title: asideTitle,
+    description: asideDescription,
+    asideClose,
+    asideOpened,
+    asideToggle,
+    closeHelp
+  } = useAsideContext();
+
+  return (
+    <>
+      <AppShell
+        header={{ height: 64 }}
+        navbar={{ width: 200, breakpoint: 'sm', collapsed: { mobile: !opened } }}
+        aside={{ width: 320, breakpoint: 'md', collapsed: { mobile: true, desktop: !asideOpened } }}
+        padding="md"
+        zIndex={5}
+        // transitionDuration={0}
+      >
+        <AppShell.Header px={'md'}>
+          <Flex
+            direction={'row'}
+            align={'center'}
+            h={'100%'}
+          >
+            <Burger
+              opened={opened}
+              onClick={toggle}
+              hiddenFrom="sm"
+              size="sm"
+            />
+            {/* Logo */}
+            <NextLink
+              href={'/home'}
+              style={{ marginRight: 'auto' }}
+            >
+              <Flex
+                display={{ base: 'flex', md: 'flex' }}
+                w={'128px'}
+                h={'100%'}
+                align={'center'}
+                justify={'center'}
+              >
+                <Image
+                  src={colorScheme === 'dark' ? '/images/logo-white.png' : '/images/logo-black.png'}
+                  alt={'Restrafes XCS'}
+                  maw={'128px'}
+                  p={rem(16)}
+                  style={{
+                    objectFit: 'contain'
+                  }}
+                />
+              </Flex>
+            </NextLink>
+
+            {((isAuthLoaded && user) || currentUser) && (
+              <>
+                {/* notifications */}
+                <NotificationMenu currentUser={currentUser} />
+
+                <Divider
+                  orientation="vertical"
+                  mx={16}
+                  my={8}
+                />
+
+                {/* settings */}
+                <SettingsMenu currentUser={currentUser} />
+
+                <Divider
+                  orientation="vertical"
+                  mx={16}
+                  my={8}
+                />
+              </>
+            )}
+
+            {/* avatar menu */}
+            <AvatarMenu currentUser={currentUser} />
+          </Flex>
+        </AppShell.Header>
+
+        <AppShell.Navbar
+          p="sm"
+          display={isAuthLoaded && !user ? 'none' : 'flex'}
+        >
+          <NavButton
+            colorScheme={colorScheme}
+            component={NextLink}
+            href={'/home'}
+            leftSection={<IconHome2 size={16} />}
+          >
+            Home
+          </NavButton>
+          <NavButton
+            colorScheme={colorScheme}
+            component={NextLink}
+            href={'/@' + currentUser?.username}
+            leftSection={<IconUser size={16} />}
+          >
+            Profile
+          </NavButton>
+          <NavButton
+            colorScheme={colorScheme}
+            component={NextLink}
+            href={'/event-logs'}
+            leftSection={<IconCube size={16} />}
+          >
+            Event Logs
+          </NavButton>
+          <NavButton
+            colorScheme={colorScheme}
+            component={NextLink}
+            href={'/organizations'}
+            leftSection={<IconUsersGroup size={16} />}
+          >
+            Organizations
+          </NavButton>
+          <NavButton
+            colorScheme={colorScheme}
+            component={NextLink}
+            href={'/locations'}
+            leftSection={<IconLocation size={16} />}
+          >
+            Locations
+          </NavButton>
+        </AppShell.Navbar>
+
+        <AppShell.Main>
+          {/* <Alert
+            color={'gray'}
+            title={
+              <Flex direction={'column'}>
+                <Text fw={'bold'}>Test Alert</Text>
+                <Text>We are aware of the issue and are working on a fix. Please check back later.</Text>
+              </Flex>
+            }
+          /> */}
+          {main}
+        </AppShell.Main>
+
+        <AppShell.Aside
+          miw={320}
+          p={24}
+        >
+          <Flex align={'center'}>
+            <Title
+              order={3}
+              style={{
+                display: 'flex',
+                alignItems: 'center'
+              }}
+            >
+              <IconInfoCircleFilled style={{ marginRight: 8 }} /> {asideTitle}
+            </Title>
+            <CloseButton
+              ml={'auto'}
+              onClick={() => closeHelp()}
+            />
+          </Flex>
+          <Divider my={16} />
+          <Text>{asideDescription}</Text>
+        </AppShell.Aside>
+
+        <AppShell.Footer pos={'relative'}>
+          <Footer />
+        </AppShell.Footer>
+      </AppShell>
+    </>
+  );
+}
+
+function SettingsMenu({ currentUser }: { currentUser?: User }) {
+  const isMobile = useMediaQuery('(max-width: 768px)');
+  const { colorScheme, setColorScheme } = useMantineColorScheme();
 
   return (
     <>
       <Popover
-        isOpen={isOpen}
-        onOpen={onOpen}
-        onClose={onClose}
+        width={320}
+        position="bottom"
+        shadow="md"
+        // transitionProps={{ duration: 0 }}
       >
-        <PopoverTrigger>
-          <Button
-            variant={'unstyled'}
-            h={'full'}
-            onClick={() => {}}
-            transition={'opacity 0.2s ease-out'}
-            _hover={{ opacity: 0.75 }}
-            _active={{ opacity: 0.5 }}
-          >
-            <Skeleton
-              isLoaded={currentUser || !user}
-              w={'auto'}
-              h={'auto'}
-              borderRadius={'full'}
-              overflow={'hidden'}
+        <Popover.Target>
+          <UnstyledButton>
+            <Flex
+              align={'center'}
+              justify={'center'}
             >
-              <Avatar
-                src={currentUser?.avatar || ''}
-                size={'md'}
-                borderRadius={0}
-              />
-            </Skeleton>
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent
-          m={0}
-          my={{ base: 4, md: 6 }}
-          mx={{ base: 0, md: 2 }}
-          zIndex={2}
-          minW={{ base: '100vw', md: '320px' }}
-          w={{ base: '100vw', md: 'auto' }}
-          bg={useColorModeValue('white', 'none')}
-          backdropFilter={'blur(2em)'}
-          rounded={'lg'}
-        >
-          <PopoverBody>
-            <Stack>
-              {(!isAuthLoaded || currentUser) && (
-                <>
-                  <Flex
-                    as={Button}
-                    onClick={() => {
-                      push(`/@${currentUser?.username}`);
-                      onClose();
-                    }}
-                    variant={'ghost'}
-                    w={'100%'}
-                    h={'auto'}
-                    align={'center'}
-                    rounded={'lg'}
-                    p={4}
-                    m={0}
-                  >
-                    <Flex
-                      flexDir={'column'}
-                      align={'flex-start'}
-                      w={'min-content'}
-                    >
-                      <Text
-                        fontSize={'xl'}
-                        fontWeight={'900'}
-                        textOverflow={'ellipsis'}
-                      >
-                        {currentUser?.displayName}
-                      </Text>
-                      <Text
-                        fontSize={'md'}
-                        fontWeight={'400'}
-                        color={'gray.500'}
-                      >
-                        @{currentUser?.username}
-                      </Text>
-                    </Flex>
-                    <Spacer />
-                    <SkeletonCircle
-                      isLoaded={!!currentUser}
-                      w={'auto'}
-                      h={'auto'}
-                      pl={4}
-                    >
-                      <Avatar
-                        src={currentUser?.avatar}
-                        size={'lg'}
-                      />
-                    </SkeletonCircle>
-                  </Flex>
-
-                  <Button
-                    as={NextLink}
-                    href={'/settings/profile'}
-                    variant={'outline'}
-                    size={'md'}
-                    leftIcon={<AiFillSetting />}
-                    onClick={() => {
-                      onClose();
-                    }}
-                  >
-                    Settings
-                  </Button>
-                </>
-              )}
-              {currentUser?.platform.staff && (
-                <Button
-                  as={NextLink}
-                  href={'/settings/staff-settings'}
-                  variant={'outline'}
-                  size={'md'}
-                  leftIcon={<RiAdminFill />}
-                  onClick={() => {
-                    onClose();
-                  }}
+              <IconSettings size={20} />
+            </Flex>
+          </UnstyledButton>
+        </Popover.Target>
+        <Popover.Dropdown>
+          <Flex
+            direction={'column'}
+            py={8}
+          >
+            <Flex
+              direction={'row'}
+              align={'center'}
+              gap={4}
+              px={16}
+            >
+              <Title size="sm">Settings</Title>
+            </Flex>
+            {/* visual mode */}
+            <Flex
+              direction={'column'}
+              gap={4}
+              px={16}
+              py={8}
+            >
+              <Text
+                style={{
+                  alignContent: 'center'
+                }}
+              >
+                Visual mode
+                <Badge
+                  ml={8}
+                  variant="outline"
+                  color="var(--mantine-color-default-color)"
                 >
-                  Staff Settings
-                </Button>
-              )}
-              {!isAuthLoaded || currentUser ? (
-                <>
-                  <Button
-                    variant={'outline'}
-                    size={'md'}
-                    leftIcon={<BiSolidExit />}
-                    onClick={() => {
-                      onLogoutOpen();
-                    }}
-                  >
-                    Log Out
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <Button
-                    variant={'outline'}
-                    size={'md'}
-                    leftIcon={<BiSolidExit />}
-                    onClick={() => {
-                      push('/auth/login');
-                    }}
-                  >
-                    Log In
-                  </Button>
-                </>
-              )}
-            </Stack>
-          </PopoverBody>
-        </PopoverContent>
+                  Beta
+                </Badge>
+              </Text>
+              <Radio
+                label="Light"
+                checked={colorScheme === 'light'}
+                onClick={() => {
+                  setColorScheme('light');
+                }}
+              />
+              <Radio
+                label="Dark"
+                checked={colorScheme === 'dark'}
+                onClick={() => {
+                  setColorScheme('dark');
+                }}
+              />
+            </Flex>
+          </Flex>
+        </Popover.Dropdown>
       </Popover>
     </>
   );
 }
 
-// eslint-disable-next-line react/display-name
-const MenuLink = forwardRef((props: any, ref: any) => (
-  <Link
-    _hover={{ textDecor: 'unset' }}
-    as={NextLink}
-    ref={ref}
-    {...props}
-  />
-));
-
-function NavLink({
-  href,
-  target,
-  onClick,
-  variant = 'ghost',
-  pathname,
-  children,
-  leftIcon,
-  disabled,
-  exact = false
-}: {
-  href?: string;
-  target?: string;
-  onClick?: () => void;
-  variant?: string;
-  pathname: string;
-  children: React.ReactNode;
-  leftIcon: React.ReactElement;
-  disabled?: boolean;
-  exact?: boolean;
-}) {
-  const isCurrent = useMemo(() => {
-    if (!href || !pathname) return false;
-    if (exact) {
-      return pathname === href;
-    } else {
-      return pathname.startsWith(href as any);
-    }
-  }, [pathname, href, exact]);
-
-  return (
-    <Button
-      isDisabled={disabled}
-      as={!onClick ? NextLink : undefined}
-      href={!onClick ? href : undefined}
-      target={target ? target : undefined}
-      variant={pathname === href ? 'solid' : variant}
-      onClick={onClick}
-      leftIcon={
-        leftIcon ? (
-          <Box
-            mr={2}
-            fontSize={'2xl'}
-          >
-            {leftIcon}
-          </Box>
-        ) : (
-          <></>
-        )
-      }
-      w={'full'}
-      justifyContent={'flex-start'}
-      m={0}
-      px={4}
-      py={6}
-      rounded={'lg'}
-      // fontSize={'md'}
-      fontWeight={'900'}
-      color={isCurrent ? useColorModeValue('gray.100', 'gray.900') : useColorModeValue('gray.900', 'gray.100')}
-      bg={isCurrent ? useColorModeValue('gray.900', 'gray.200') : 'none'}
-      _hover={
-        isCurrent
-          ? {}
-          : {
-              color: useColorModeValue('gray.900', 'gray.100'),
-              bg: useColorModeValue('gray.100', 'gray.700')
-            }
-      }
-      _active={
-        isCurrent
-          ? {
-              color: useColorModeValue('gray.100', 'gray.900'),
-              bg: useColorModeValue('gray.700', 'gray.400')
-            }
-          : {
-              color: useColorModeValue('gray.900', 'gray.100'),
-              bg: useColorModeValue('gray.200', 'gray.600')
-            }
-      }
-    >
-      {children}
-    </Button>
-  );
-}
-
-export default function PlatformNav({ type, title }: { type?: string; title?: string | null | undefined }) {
-  const pathname = usePathname();
-  const { currentUser, isAuthLoaded, user } = useAuthContext();
-  const { isOpen: isLogoutOpen, onOpen: onLogoutOpen, onClose: onLogoutClose } = useDisclosure();
-  const { push } = useRouter();
+function NotificationMenu({ currentUser }: { currentUser?: User }) {
+  const isMobile = useMediaQuery('(max-width: 768px)');
+  const { colorScheme } = useMantineColorScheme();
+  const { isAuthLoaded, user } = useAuthContext();
 
   return (
     <>
-      <DeleteDialog
-        isOpen={isLogoutOpen}
-        onClose={onLogoutClose}
-        onDelete={() => {
-          onLogoutClose();
-          push('/auth/logout');
-        }}
-        title={'Log Out'}
-        body={'Are you sure you want to log out?'}
-        buttonText={'Log Out'}
-      />
-      <Flex
-        id="platform-nav"
-        as="nav"
-        display={{ base: 'none', md: 'flex' }}
-        position={'fixed'}
-        top={0}
-        h={'100dvh'}
-        w={'240px'}
-        flexDir={'column'}
-        align={'flex-start'}
-        bg={useColorModeValue('white', 'gray.800')}
-        border={'1px solid'}
-        borderColor={useColorModeValue('gray.300', 'gray.700')}
-        zIndex={500}
+      <Popover
+        width={isMobile ? 320 : 480}
+        position="bottom"
+        shadow="md"
+        // transitionProps={{ duration: 0 }}
       >
-        {/* Title */}
-        <Flex
-          transform={'translateY(-1px)'}
-          h={'6rem'}
-          width={'full'}
-          borderBottom={'1px solid'}
-          borderColor={useColorModeValue('gray.300', 'gray.700')}
-        >
+        <Popover.Target>
+          <UnstyledButton>
+            <Flex
+              align={'center'}
+              justify={'center'}
+            >
+              <Indicator
+                variant="dot"
+                color="red"
+                h={20}
+                // disabled
+                // disabled={!currentUser?.notifications?.length}
+              >
+                <IconBell size={20} />
+              </Indicator>
+            </Flex>
+          </UnstyledButton>
+        </Popover.Target>
+        <Popover.Dropdown>
           <Flex
-            as={NextLink}
-            width={'full'}
-            h={'full'}
-            href={!isAuthLoaded || currentUser ? '/home' : '/'}
-            align={'center'}
-            justify={'center'}
-            transition={'filter 0.2s ease'}
-            _hover={{
-              filter: useColorModeValue('opacity(0.75)', 'brightness(0.75)')
-            }}
-            _active={{
-              filter: useColorModeValue('opacity(0.5)', 'brightness(0.5)')
-            }}
+            direction={'column'}
+            py={8}
           >
             <Flex
-              position={'relative'}
-              w={'128px'}
-              h={'100%'}
+              direction={'row'}
+              align={'center'}
+              gap={4}
+              px={16}
             >
-              <NextImage
-                src={useColorModeValue('/images/logo-black.png', '/images/logo-white.png')}
-                priority={true}
-                fill={true}
-                quality={64}
-                alt={'Restrafes XCS'}
-                style={{
-                  objectFit: 'contain'
-                }}
-              />
+              <Title size="sm">Notifications</Title>
+              <Button
+                ml={'auto'}
+                variant={'subtle'}
+                color={'text'}
+                size={'xs'}
+                leftSection={<IconChecklist size={16} />}
+              >
+                Mark all as read
+              </Button>
             </Flex>
           </Flex>
-        </Flex>
-        <Box w={'full'}>
-          {/* Links */}
-          <VStack
-            flexDir={'column'}
-            align={'flex-start'}
-            justify={'flex-start'}
-            w={'100%'}
-            px={4}
-            py={8}
-            spacing={1}
+          <SegmentedControl
+            fullWidth
+            mt={8}
+            data={['All', 'Invitations', 'System']}
+          />
+          <Flex
+            align={'center'}
+            justify={'center'}
+            mih={128}
           >
-            {!isAuthLoaded || currentUser ? (
-              <>
-                <NavLink
-                  href={'/home'}
-                  pathname={pathname}
-                  leftIcon={<RiHome6Fill />}
+            <Text
+              px={16}
+              c={'gray.5'}
+            >
+              You have no notifications.
+            </Text>
+          </Flex>
+        </Popover.Dropdown>
+      </Popover>
+    </>
+  );
+}
+
+function AvatarMenu({ currentUser, onLogoutOpen }: { currentUser?: User; onLogoutOpen?: any }) {
+  const [opened, setOpened] = useState(false);
+  const { user, isAuthLoaded } = useAuthContext();
+  const { push } = useRouter();
+  const pathname = usePathname();
+  const { colorScheme } = useMantineColorScheme();
+  const isMobile = useMediaQuery('(max-width: 768px)');
+
+  return (
+    <>
+      <Menu
+        width={320}
+        position="bottom"
+        shadow="md"
+        opened={opened}
+        onChange={setOpened}
+        // transitionProps={{ duration: 0 }}
+      >
+        <Menu.Target>
+          <UnstyledButton>
+            <Flex
+              align={'center'}
+              justify={'center'}
+              gap={12}
+            >
+              <Avatar
+                src={currentUser?.avatar}
+                alt={currentUser?.displayName}
+                size={rem(32)}
+                style={{
+                  backgroundColor: 'var(--chakra-colors-gray-200)'
+                }}
+              />
+              {currentUser && (
+                <Flex
+                  direction={'column'}
+                  display={{ base: 'none', md: 'block' }}
                 >
-                  Home
-                </NavLink>
-                <NavLink
-                  href={'/event-logs'}
-                  pathname={pathname}
-                  leftIcon={<PiCubeFill />}
-                >
-                  Event Logs
-                </NavLink>
-                <NavLink
-                  href={`/@${currentUser?.username}`}
-                  pathname={pathname}
-                  leftIcon={<FaIdBadge />}
-                >
-                  Profile
-                </NavLink>
-                <NavLink
-                  href={'/organizations'}
-                  pathname={pathname}
-                  leftIcon={<FaBuilding />}
-                >
-                  Organizations
-                </NavLink>
-                <NavLink
-                  href={'/locations'}
-                  pathname={pathname}
-                  leftIcon={<ImTree />}
-                >
-                  Locations
-                </NavLink>
-              </>
-            ) : (
-              <>
-                <NavLink
-                  href={'/auth/login'}
-                  pathname={pathname}
-                  leftIcon={<BiSolidExit />}
-                >
-                  Log In
-                </NavLink>
-              </>
-            )}
-          </VStack>
-        </Box>
-        <VStack
-          flexDir={'column'}
-          align={'flex-start'}
-          justify={'flex-start'}
-          w={'100%'}
-          px={4}
-          py={8}
-          spacing={1}
-          mt={'auto'}
-        >
-          {(!isAuthLoaded || currentUser) && (
+                  <Text
+                    fw={'bold'}
+                    size="sm"
+                    // lh={1}
+                  >
+                    {currentUser?.displayName}
+                  </Text>
+                  {/* <Text
+                    size="xs"
+                    lh={1.25}
+                  >
+                    @{currentUser?.username}
+                  </Text> */}
+                  {/* <Flex
+                    direction={'row'}
+                    align={'center'}
+                  >
+                    <Avatar
+                      size={16}
+                      src={brandLogo.src}
+                      style={{
+                        borderRadius: '4px',
+                        border: '1px solid var(--mantine-color-default-border)'
+                      }}
+                    />
+                    <Text
+                      size="xs"
+                      ml={4}
+                    >
+                      Restrafes Technologies
+                    </Text>
+                  </Flex> */}
+                </Flex>
+              )}
+              {opened ? <IconCaretUpFilled size={12} /> : <IconCaretDownFilled size={12} />}
+            </Flex>
+          </UnstyledButton>
+        </Menu.Target>
+        <Menu.Dropdown>
+          {isAuthLoaded && !user ? (
+            <Menu.Item
+              leftSection={<IconLogin style={{ width: rem(14), height: rem(14) }} />}
+              onClick={() => {
+                push('/auth/login?redirect=' + pathname);
+              }}
+            >
+              Log in
+            </Menu.Item>
+          ) : (
             <>
-              <NavLink
-                href={'/settings'}
-                pathname={pathname}
-                leftIcon={<AiFillSetting />}
+              <Flex
+                direction={'column'}
+                py={8}
+              >
+                <Flex
+                  direction={'row'}
+                  align={'center'}
+                  gap={4}
+                  px={16}
+                >
+                  <Text
+                    c={colorScheme === 'dark' ? 'white' : 'black'}
+                    size="sm"
+                  >
+                    Account ID: {currentUser?.username}
+                  </Text>
+                  <Tooltip.Floating label="Copy ID">
+                    <Flex align={'center'}>
+                      <CopyButton value={currentUser?.username as string}>
+                        {({ copied, copy }) => (
+                          <ActionIcon
+                            variant="transparent"
+                            size="xs"
+                            color={'gray'}
+                            onClick={copy}
+                          >
+                            {copied ? <IconCheck /> : <IconCopy />}
+                          </ActionIcon>
+                        )}
+                      </CopyButton>
+                    </Flex>
+                  </Tooltip.Floating>
+                </Flex>
+              </Flex>
+              <Menu.Divider />
+              <Menu.Item
+                component={NextLink}
+                href={`/@${currentUser?.username}`}
+                leftSection={<IconUser style={{ width: rem(14), height: rem(14) }} />}
+              >
+                Profile
+              </Menu.Item>
+              <Menu.Item
+                component={NextLink}
+                href={'/settings/profile'}
+                leftSection={<IconSettings style={{ width: rem(14), height: rem(14) }} />}
               >
                 Settings
-              </NavLink>
-              <NavLink
-                href={'https://xcs-docs.restrafes.co/'}
-                target={'_blank'}
-                pathname={pathname}
-                leftIcon={<AiFillInfoCircle />}
+              </Menu.Item>
+              {currentUser?.platform.staff && (
+                <Menu.Item
+                  component={NextLink}
+                  href={'/settings/staff'}
+                  leftSection={<IconTerminal2 style={{ width: rem(14), height: rem(14) }} />}
+                  hidden={!currentUser?.platform.staff}
+                >
+                  Staff Dashboard
+                </Menu.Item>
+              )}
+              <Menu.Item
+                component={NextLink}
+                href={'/settings/api-keys'}
+                leftSection={<IconKey style={{ width: rem(14), height: rem(14) }} />}
               >
-                Help & Information
-              </NavLink>
+                Security credentials
+              </Menu.Item>
+              <Menu.Item
+                component={NextLink}
+                href={'mailto:xcs@restrafes.co'}
+                leftSection={<IconLifebuoy style={{ width: rem(14), height: rem(14) }} />}
+              >
+                Help & Support
+              </Menu.Item>
+              <Menu.Item
+                leftSection={<IconLogout style={{ width: rem(14), height: rem(14) }} />}
+                onClick={() => {
+                  modals.openConfirmModal({
+                    title: <Title order={4}>Log out?</Title>,
+                    children: <Text size="sm">Are you sure you want to log out?</Text>,
+                    labels: { confirm: 'Log out', cancel: 'Nevermind' },
+                    confirmProps: { color: 'red' },
+                    onCancel: () => null,
+                    onConfirm: () => push('/auth/logout')
+                  });
+                }}
+              >
+                Log out
+              </Menu.Item>
             </>
           )}
-          {!isAuthLoaded || currentUser ? (
-            <NavLink
-              // href={"/auth/logout"}
-              onClick={onLogoutOpen}
-              pathname={pathname}
-              leftIcon={<BiSolidExit />}
-            >
-              Log Out
-            </NavLink>
-          ) : (
-            <></>
-          )}
-        </VStack>
-      </Flex>
-
-      <Flex
-        flexDir={'row'}
-        id="platform-nav-horizontal"
-        position={'sticky'}
-        top={0}
-        zIndex={499}
-      >
-        {/* Horizontal Bar */}
-        <Flex
-          as={'header'}
-          w={'100vw'}
-          h={'6rem'}
-          align={'center'}
-          justify={'space-between'}
-          px={8}
-          bg={useColorModeValue('white', 'gray.800')}
-          borderY={'1px solid'}
-          borderX={'1px solid'}
-          borderColor={useColorModeValue('gray.300', 'gray.700')}
-        >
-          <Flex
-            as={NextLink}
-            href={'/home'}
-            display={{ base: 'flex', md: 'none' }}
-            position={'relative'}
-            w={'96px'}
-            h={'100%'}
-          >
-            <NextImage
-              src={useColorModeValue('/images/logo-black.png', '/images/logo-white.png')}
-              priority={true}
-              fill={true}
-              quality={50}
-              alt={'Restrafes XCS'}
-              style={{
-                objectFit: 'contain'
-              }}
-            />
-          </Flex>
-          <Spacer />
-
-          <HStack
-            align={'center'}
-            justify={'flex-end'}
-            spacing={4}
-          >
-            {/* Notifications */}
-            <Popover>
-              <PopoverTrigger>
-                <Button
-                  variant={'unstyled'}
-                  rounded={'full'}
-                  onClick={() => {}}
-                  aria-label="Notifications"
-                >
-                  {<BiSolidNotification size={24} />}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent
-                m={0}
-                my={{ base: 5, md: 7 }}
-                mx={{ base: 0, md: 2 }}
-                zIndex={2}
-                minW={{ base: '100vw', md: '320px' }}
-                bg={useColorModeValue('white', 'none')}
-                backdropFilter={'blur(2em)'}
-                rounded={'lg'}
-              >
-                <PopoverCloseButton />
-                <PopoverHeader>
-                  <Text fontWeight={'900'}>Notifications</Text>
-                </PopoverHeader>
-                <PopoverBody>
-                  <Text fontSize={'md'}>The service is unavailable.</Text>
-                </PopoverBody>
-              </PopoverContent>
-            </Popover>
-
-            {/* Avatar */}
-            <AvatarPopover
-              currentUser={currentUser}
-              onLogoutOpen={onLogoutOpen}
-            />
-
-            {/* Theme Button */}
-            {/* <Box display={{ base: "none", md: "flex" }}>
-              <ThemeButton />
-            </Box> */}
-
-            {/* Mobile Nav */}
-            <Box
-              display={{ base: 'flex', md: 'none' }}
-              zIndex={512}
-            >
-              <Menu>
-                <MenuButton
-                  as={IconButton}
-                  icon={<HamburgerIcon />}
-                  variant={'solid'}
-                  aria-label="Options"
-                />
-                <MenuList>
-                  <MenuItem
-                    as={MenuLink}
-                    icon={<AiFillHome />}
-                    href={!isAuthLoaded || currentUser ? '/home' : '/'}
-                  >
-                    Home
-                  </MenuItem>
-                  {(!isAuthLoaded || currentUser) && (
-                    <>
-                      <MenuItem
-                        as={MenuLink}
-                        icon={<BiSolidTime />}
-                        href="/event-logs"
-                      >
-                        Event Logs
-                      </MenuItem>
-                      <MenuItem
-                        as={MenuLink}
-                        icon={<FaIdBadge />}
-                        href={`/@${currentUser?.username}`}
-                      >
-                        Profile
-                      </MenuItem>
-                      <MenuItem
-                        as={MenuLink}
-                        icon={<FaBuilding />}
-                        href="/organizations"
-                      >
-                        Organizations
-                      </MenuItem>
-                      <MenuItem
-                        as={MenuLink}
-                        icon={<ImTree />}
-                        href="/locations"
-                      >
-                        Locations
-                      </MenuItem>
-                      <MenuDivider />
-                      <MenuItem
-                        as={MenuLink}
-                        icon={<AiFillSetting />}
-                        href="/settings"
-                      >
-                        Settings
-                      </MenuItem>
-                    </>
-                  )}
-                  {currentUser?.platform.staff && (
-                    <MenuItem
-                      as={MenuLink}
-                      icon={<RiAdminFill />}
-                      href="/settings/staff-settings"
-                    >
-                      Staff Settings
-                    </MenuItem>
-                  )}
-                  {(!isAuthLoaded || currentUser) && (
-                    <>
-                      <MenuItem
-                        as={MenuLink}
-                        icon={<AiFillInfoCircle />}
-                        href="https://xcs-docs.restrafes.co/"
-                      >
-                        Help & Information
-                      </MenuItem>
-                    </>
-                  )}
-                  <ThemeButton menu={true} />
-                  <MenuDivider />
-                  {!isAuthLoaded || currentUser ? (
-                    <MenuItem
-                      as={MenuLink}
-                      icon={<BiSolidExit />}
-                      href="/auth/logout"
-                    >
-                      Log Out
-                    </MenuItem>
-                  ) : (
-                    <MenuItem
-                      as={MenuLink}
-                      icon={<BiSolidExit />}
-                      href="/auth/login"
-                    >
-                      Log In
-                    </MenuItem>
-                  )}
-                </MenuList>
-              </Menu>
-            </Box>
-          </HStack>
-        </Flex>
-      </Flex>
+        </Menu.Dropdown>
+      </Menu>
     </>
   );
 }

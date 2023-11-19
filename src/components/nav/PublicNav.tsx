@@ -4,30 +4,7 @@ import { Suspense, forwardRef, useMemo, useState } from 'react';
 import { Link } from '@chakra-ui/next-js';
 import dynamic from 'next/dynamic';
 
-import {
-  Flex,
-  Image,
-  Popover,
-  Menu,
-  Divider,
-  Button,
-  Text,
-  Avatar,
-  Badge,
-  UnstyledButton,
-  rem,
-  CopyButton,
-  ActionIcon,
-  useMantineColorScheme,
-  Indicator,
-  Title,
-  SegmentedControl,
-  Paper,
-  AppShell,
-  Burger,
-  Radio,
-  useComputedColorScheme
-} from '@mantine/core';
+import { Flex, Image, Button, rem, useMantineColorScheme, AppShell } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { modals } from '@mantine/modals';
 import NextImage from 'next/image';
@@ -39,81 +16,13 @@ import { useRouter } from 'next/router';
 import { useAuthContext } from '@/contexts/AuthContext';
 
 // Components
-import DeleteDialog from '@/components/DeleteDialog';
-import ThemeButton from '@/components/ThemeButton';
-import { User } from '@/types';
-import {
-  IconActivity,
-  IconArrowUpRight,
-  IconBell,
-  IconBuildingArch,
-  IconCaretDown,
-  IconCaretDownFilled,
-  IconCaretUp,
-  IconCaretUpFilled,
-  IconCheck,
-  IconChecklist,
-  IconChevronCompactDown,
-  IconChevronDown,
-  IconCopy,
-  IconHelp,
-  IconHome,
-  IconHome2,
-  IconKey,
-  IconLifebuoy,
-  IconLogout,
-  IconMoneybag,
-  IconMoon,
-  IconMoonFilled,
-  IconNotification,
-  IconReceipt,
-  IconSettings,
-  IconSun,
-  IconSunFilled,
-  IconTerminal2,
-  IconUser,
-  IconUserFilled,
-  IconUsersGroup
-} from '@tabler/icons-react';
+import { IconArrowUpRight, IconMoonFilled, IconSunFilled } from '@tabler/icons-react';
 import { useMediaQuery } from '@mantine/hooks';
-import { useColorMode } from '@chakra-ui/react';
 import Footer from '../FooterNew';
 
-const styles = {
-  horizontalBar: {}
-};
-
-function NavButton({ ...props }: any) {
-  // const { colorScheme } = useMantineColorScheme();
-  const href = props.href;
-  const pathname = usePathname();
-  const isActive = href === pathname;
-
-  return (
-    <Button
-      variant={isActive ? 'light' : 'transparent'}
-      color="var(--mantine-color-default-color)"
-      justify="flex-start"
-      fullWidth
-      {...props}
-    />
-  );
-}
-
-export default function Nav({
-  type,
-  title,
-  main
-}: {
-  type?: string;
-  title?: string | null | undefined;
-  main: React.ReactNode;
-}) {
-  const pathname = usePathname();
-  const { currentUser, isAuthLoaded, user } = useAuthContext();
+export default function Nav({ main }: { main: React.ReactNode }) {
   const { push } = useRouter();
   const { colorScheme } = useMantineColorScheme();
-  const [opened, { toggle }] = useDisclosure();
 
   return (
     <>
@@ -122,14 +31,7 @@ export default function Nav({
         padding="md"
         zIndex={5}
       >
-        <AppShell.Header
-          px={'md'}
-          style={
-            {
-              // border: 'none'
-            }
-          }
-        >
+        <AppShell.Header px={'md'}>
           <Flex
             direction={'row'}
             align={'center'}
@@ -160,11 +62,38 @@ export default function Nav({
             </NextLink>
 
             {/* navigation */}
-            <Flex gap={8}>
-              {/* theme toggle */}
-              <ThemeToggle />
-
+            <Flex gap={16}>
               {/* buttons */}
+              <Button
+                component={NextLink}
+                href={'/'}
+                variant={'transparent'}
+                color={colorScheme === 'dark' ? 'gray' : 'black'}
+                px={0}
+              >
+                Home
+              </Button>
+
+              <Button
+                component={NextLink}
+                href={'/#features'}
+                variant={'transparent'}
+                color={colorScheme === 'dark' ? 'gray' : 'black'}
+                px={0}
+              >
+                Features
+              </Button>
+
+              <Button
+                component={NextLink}
+                href={'/beta-program'}
+                variant={'transparent'}
+                color={colorScheme === 'dark' ? 'gray' : 'black'}
+                px={0}
+              >
+                Beta Program
+              </Button>
+
               <Button
                 component={NextLink}
                 href={'/auth/login'}
@@ -174,6 +103,9 @@ export default function Nav({
               >
                 Access Platform
               </Button>
+
+              {/* theme toggle */}
+              <ThemeToggle />
             </Flex>
           </Flex>
         </AppShell.Header>

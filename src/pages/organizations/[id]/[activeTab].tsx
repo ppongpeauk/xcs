@@ -8,9 +8,9 @@ import { useRouter } from 'next/router';
 
 import { useAuthContext } from '@/contexts/AuthContext';
 
-import Layout from '@/layouts/PlatformLayout';
+import Layout from '@/layouts/LayoutPlatform';
 
-import LocationAccessPoints from '@/components/location/LocationAccessPointsNew';
+import LocationAccessPoints from '@/components/location/LocationAccessPoints';
 import LocationInfo from '@/components/location/LocationInfoNew';
 import {
   Anchor,
@@ -72,7 +72,6 @@ export default function PlatformOrganization() {
       href={item.href}
       key={index}
       size="md"
-      fw={'bold'}
       c={'var(--mantine-color-text)'}
     >
       {item.title || 'Loading'}

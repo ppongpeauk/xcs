@@ -1,4 +1,4 @@
-import Layout from '@/layouts/PublicLayout';
+import Layout from '@/layouts/LayoutPublic';
 import { Box, Container, FormControl, HStack, Heading, PinInput, PinInputField, Text, chakra } from '@chakra-ui/react';
 
 export default function Demo() {

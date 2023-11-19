@@ -1,8 +1,12 @@
+/*
+ * Name: [id].tsx
+ * Author: Pete Pongpeauk <pete@ppkl.dev>
+ *
+ * Copyright (c) 2023 Pete Pongpeauk and contributors
+ * License: MIT License
+ */
+
 import { useCallback, useEffect, useMemo, useState } from 'react';
-
-import { useDisclosure, useToast } from '@chakra-ui/react';
-
-import { AccessGroup, Organization, OrganizationMember } from '@/types';
 import { modals } from '@mantine/modals';
 import Head from 'next/head';
 import NextLink from 'next/link';
@@ -10,16 +14,14 @@ import { useRouter } from 'next/router';
 
 import { useAuthContext } from '@/contexts/AuthContext';
 
-import Layout from '@/layouts/PlatformLayout';
+import Layout from '@/layouts/LayoutPlatform';
 import {
   Anchor,
   Text,
-  Box,
   Breadcrumbs,
   Button,
   Container,
   Divider,
-  Fieldset,
   Flex,
   Group,
   Skeleton,
@@ -45,11 +47,11 @@ import {
   IconRecycle
 } from '@tabler/icons-react';
 import { DataTable } from 'mantine-datatable';
+import { notifications } from '@mantine/notifications';
 
 export default function PlatformAccessPoint() {
   const [accessPoint, setAccessPoint] = useState<any>(null);
   const { user, currentUser } = useAuthContext();
-  const toast = useToast();
   const { push, query } = useRouter();
   const id = query.id as string;
   const { colorScheme } = useMantineColorScheme();
@@ -93,15 +95,13 @@ export default function PlatformAccessPoint() {
         });
       })
       .catch((err) => {
-        toast({
+        notifications.show({
           title: 'There was an error fetching the access point.',
-          description: err.message,
-          status: 'error',
-          duration: 5000,
-          isClosable: true
+          message: err.message,
+          color: 'red'
         });
       });
-  }, [id, user, push, toast]);
+  }, [id, user, push]);
 
   useEffect(() => {
     refreshData();
@@ -252,22 +252,18 @@ export default function PlatformAccessPoint() {
                     }
                   })
                   .then(() => {
-                    toast({
-                      title: 'Access point updated successfully.',
-                      status: 'success',
-                      duration: 5000,
-                      isClosable: true
+                    notifications.show({
+                      message: 'Access point updated successfully.',
+                      color: 'green'
                     });
                     setFormSubmitting(false);
                     refreshData();
                   })
                   .catch((err) => {
-                    toast({
+                    notifications.show({
                       title: 'There was an error updating the access point.',
-                      description: err.message,
-                      status: 'error',
-                      duration: 5000,
-                      isClosable: true
+                      message: err.message,
+                      color: 'red'
                     });
                     setFormSubmitting(false);
                   });

@@ -28,10 +28,16 @@ import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 
 import Section from '@/components/section';
-import Layout from '@/layouts/PublicLayout';
+import Layout from '@/layouts/LayoutPublic';
 import http from 'http';
 
-export const getServerSideProps = async ({ query, res }: { query: { activationCode?: string }, res: http.ServerResponse }) => {
+export const getServerSideProps = async ({
+  query,
+  res
+}: {
+  query: { activationCode?: string };
+  res: http.ServerResponse;
+}) => {
   if (!query.activationCode) {
     return {
       redirect: {
@@ -46,12 +52,13 @@ export const getServerSideProps = async ({ query, res }: { query: { activationCo
     headers: {
       'Content-Type': 'application/json'
     }
-  })
-    .then((res) => res)
+  }).then((res) => res);
 
-  if (response.status !== 200) { return { redirect: { destination: '/auth/login', permanent: false } } };
+  if (response.status !== 200) {
+    return { redirect: { destination: '/auth/login', permanent: false } };
+  }
   return { props: { valid: true } };
-}
+};
 
 export default function Activate({ valid }: { valid: boolean }) {
   const toast = useToast();

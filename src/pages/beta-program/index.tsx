@@ -8,26 +8,16 @@
 
 import Head from 'next/head';
 import Layout from '@/layouts/LayoutPublic';
-import Home from '@/components/pages/landing-page/Home';
-import { getSortedPostsData } from '@/lib/posts';
+import BetaProgram from '@/components/pages/landing-page/BetaProgram';
 
-export async function getStaticProps() {
-  const allPostsData = await getSortedPostsData();
-  return {
-    props: {
-      allPostsData
-    }
-  };
-}
-
-export default function Homepage({ allPostsData }: { allPostsData: any }) {
+export default function BetaProgramPage() {
   return (
     <>
       <Head>
-        <title>Home - Restrafes XCS</title>
+        <title>Beta Program - Restrafes XCS</title>
         <meta
           property="og:title"
-          content="Home - Restrafes XCS"
+          content="Beta Program - Restrafes XCS"
         />
         <meta
           property="og:site_name"
@@ -50,9 +40,9 @@ export default function Homepage({ allPostsData }: { allPostsData: any }) {
           content="/images/logo-square.jpg"
         />
       </Head>
-      <Home allPostsData={allPostsData} />
+      <BetaProgram />
     </>
   );
 }
 
-Homepage.getLayout = (page: any) => <Layout>{page}</Layout>;
+BetaProgramPage.getLayout = (page: any) => <Layout>{page}</Layout>;

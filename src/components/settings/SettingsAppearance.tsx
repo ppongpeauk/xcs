@@ -48,7 +48,6 @@ export default function SettingsAppearance() {
         h={'max-content'}
       >
         <Radio
-          name="colorSchemeLight"
           label="Light"
           checked={colorScheme === 'light'}
           onClick={() => {
@@ -57,7 +56,6 @@ export default function SettingsAppearance() {
           }}
         />
         <Radio
-          name="colorSchemeDark"
           label="Dark"
           checked={colorScheme === 'dark'}
           onClick={() => {

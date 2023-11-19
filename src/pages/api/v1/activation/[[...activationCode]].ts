@@ -168,11 +168,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     await users
       .insertOne({
+        id: firebaseUser.uid,
         displayName: displayName,
         username: username.toLowerCase(),
-        id: firebaseUser.uid,
         avatar: `${process.env.NEXT_PUBLIC_ROOT_URL}/images/default-avatar.png`,
-        bio: null,
         email: {
           address: email.trim().toLowerCase(),
           verified: false
@@ -194,11 +193,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
           }
         ],
+        about: {
+          bio: null,
+          website: null
+        },
         platform: {
           staff: false,
           staffTitle: null,
           membership: 0,
-          invites: invitation.startingReferrals || 0
+          invites: invitation.startingReferrals || 0,
+          features: {}
         },
         payment: {
           customerId: null

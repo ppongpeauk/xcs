@@ -11,7 +11,7 @@ import { useRouter } from 'next/router';
 import { useAuthContext } from '@/contexts/AuthContext';
 
 // Layouts
-import Layout from '@/layouts/PlatformLayout';
+import Layout from '@/layouts/LayoutPlatform';
 
 import SettingsAdmin from '@/components/settings/SettingsAdmin';
 import SettingsAppearance from '@/components/settings/SettingsAppearance';
@@ -193,8 +193,9 @@ export default function Settings() {
               </Tabs.Tab>
             ) : null}
             <Tabs.Tab
-              value="beta"
+              value="beta-program"
               leftSection={<AiOutlineExperiment style={iconStyle} />}
+              display={currentUser?.platform?.features?.beta?.enabled ? 'flex' : 'none'}
             >
               Beta Program
             </Tabs.Tab>
@@ -264,7 +265,7 @@ export default function Settings() {
               </Title>
               {currentUser?.platform?.staff ? <SettingsAdmin /> : null}
             </Tabs.Panel>
-            <Tabs.Panel value="beta">
+            <Tabs.Panel value="beta-program">
               <Title
                 size={rem(24)}
                 py={4}

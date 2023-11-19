@@ -1,4 +1,4 @@
-import Layout from '@/layouts/PublicLayout';
+import Layout from '@/layouts/LayoutPublic';
 import { Box } from '@mantine/core';
 import Head from 'next/head';
 import SwaggerUI from 'swagger-ui-react';

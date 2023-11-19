@@ -1,5 +1,5 @@
 import Section from '@/components/section';
-import Layout from '@/layouts/PublicLayout';
+import Layout from '@/layouts/LayoutPublic';
 import {
   Alert,
   Anchor,

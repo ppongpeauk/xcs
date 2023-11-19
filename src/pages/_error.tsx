@@ -3,8 +3,8 @@ import { NextPageContext } from 'next';
 
 import Error from '@/components/Error';
 import Footer from '@/components/Footer';
-import NavNew from '@/components/nav/NavNew';
-import Layout from '@/layouts/PublicLayout';
+import NavNew from '@/components/nav/PublicNav';
+import Layout from '@/layouts/LayoutPublic';
 import { Center, Container, Flex, Overlay, Text, Title } from '@mantine/core';
 
 function ErrorPage({ statusCode }: { statusCode: number }) {

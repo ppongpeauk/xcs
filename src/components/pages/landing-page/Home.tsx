@@ -17,7 +17,7 @@ import NextImage from 'next/image';
 import NextLink from 'next/link';
 import Marquee from 'react-fast-marquee';
 import { BsArrowRight } from 'react-icons/bs';
-import Section from '../section';
+import Section from '../../section';
 
 // images
 import fragments from '@/assets/front-page/fragments.jpg';
@@ -49,7 +49,7 @@ export default function Home({ allPostsData: posts }: { allPostsData: any }) {
         >
           Registrations are now open for the beta program.{' '}
           <Anchor
-            href={'/beta'}
+            href={'/beta-program'}
             c={'inherit'}
             style={{
               textUnderlineOffset: '0.25rem',
@@ -122,7 +122,7 @@ export default function Home({ allPostsData: posts }: { allPostsData: any }) {
           <Flex direction={'column'}>
             <Button
               component={NextLink}
-              href={'mailto:xcs@restrafes.co'}
+              href={'/beta-program'}
               variant={'outline'}
               size="lg"
               color={colorScheme === 'dark' ? 'gray' : 'black'}

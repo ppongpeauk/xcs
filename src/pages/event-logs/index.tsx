@@ -2,7 +2,7 @@ import { Container, Text } from '@chakra-ui/react';
 
 import Head from 'next/head';
 
-import Layout from '@/layouts/PlatformLayout';
+import Layout from '@/layouts/LayoutPlatform';
 
 export default function PlatformEventLogs() {
   return (

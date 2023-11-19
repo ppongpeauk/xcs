@@ -1,8 +1,6 @@
 import { getApps, initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 
-// TODO: Replace the following with your app's Firebase project configuration
-// See: https://firebase.google.com/docs/web/learn-more#config-object
 const firebaseConfig = {
   apiKey: 'AIzaSyBoNw4Rdor3ZtV1rvW-gHX8sQSTo4WFyrA',
   authDomain: 'xcs-v2.firebaseapp.com',
@@ -13,19 +11,16 @@ const firebaseConfig = {
   measurementId: 'G-WWDP45MK4K'
 };
 
-// Initialize Firebase
 const app = () => {
   const apps = getApps();
-  if (apps.length < 1) {
-    initializeApp(firebaseConfig);
-  }
+  if (apps.length < 1) initializeApp(firebaseConfig);
   return apps[0];
 };
-
 const auth = getAuth(app());
 
-export default app;
 export const initFirebase = () => {
   return app();
 };
+
 export { auth };
+export default app;

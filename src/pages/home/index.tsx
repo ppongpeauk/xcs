@@ -1,4 +1,4 @@
-import Layout from '@/layouts/PlatformLayout';
+import Layout from '@/layouts/LayoutPlatform';
 import { Box, Container, Flex, Text, Title } from '@mantine/core';
 import Head from 'next/head';
 

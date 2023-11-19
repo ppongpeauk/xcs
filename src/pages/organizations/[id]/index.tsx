@@ -1,5 +1,5 @@
 import { useAuthContext } from '@/contexts/AuthContext';
-import Layout from '@/layouts/PlatformLayout';
+import Layout from '@/layouts/LayoutPlatform';
 import { Organization } from '@/types';
 import {
   Anchor,
@@ -179,7 +179,7 @@ export default function Organization() {
                 Created on {moment(organization?.createdAt).format('MMMM Do YYYY')}
               </Text>
             </Paper>
-            <Group mt={16}>
+            {/* <Group mt={16}>
               <Button
                 component={NextLink}
                 href={`/organizations/${id}/overview`}
@@ -224,7 +224,7 @@ export default function Organization() {
               >
                 Leave
               </Button>
-            </Group>
+            </Group> */}
           </Box>
           {/* right section */}
           <Box

@@ -1,44 +1,101 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useEffect, useState } from 'react';
-
-import {
-  Badge,
-  Box,
-  Button,
-  Flex,
-  FormControl,
-  HStack,
-  Input,
-  Skeleton,
-  Stack,
-  Text,
-  useColorModeValue,
-  useDisclosure,
-  useToast
-} from '@chakra-ui/react';
-
-import { MdOutlineAddCircle } from 'react-icons/md';
-
-import { Select } from 'chakra-react-select';
-import NextLink from 'next/link';
+import { DataTable, type DataTableSortStatus } from 'mantine-datatable';
+import { useCallback, useEffect, useState } from 'react';
 
 import CreateAccessPointDialog from '@/components/CreateAccessPointDialog';
 import { useAuthContext } from '@/contexts/AuthContext';
+import { AccessPoint, Location } from '@/types';
+import {
+  ActionIcon,
+  Autocomplete,
+  Box,
+  Button,
+  Center,
+  Code,
+  CopyButton,
+  Divider,
+  Flex,
+  Group,
+  MultiSelect,
+  Pill,
+  PillGroup,
+  Space,
+  Stack,
+  TagsInput,
+  Text,
+  TextInput,
+  Title,
+  Tooltip,
+  Menu,
+  rem,
+  useMantineColorScheme,
+  LoadingOverlay
+} from '@mantine/core';
+import { useDebouncedValue, useDisclosure } from '@mantine/hooks';
+import {
+  IconArrowsLeftRight,
+  IconBolt,
+  IconBoltOff,
+  IconCheck,
+  IconClick,
+  IconClipboard,
+  IconClipboardCheck,
+  IconCopy,
+  IconEdit,
+  IconEye,
+  IconLock,
+  IconLockAccess,
+  IconLockAccessOff,
+  IconLockOff,
+  IconLockOpen,
+  IconPencil,
+  IconRecycle,
+  IconRefresh,
+  IconSearch,
+  IconSettings,
+  IconShield,
+  IconShieldOff,
+  IconTrash,
+  IconX,
+  IconMessageCircle,
+  IconPhoto,
+  IconBoxMultiple,
+  IconTag,
+  IconTagOff,
+  IconPlus,
+  IconJson
+} from '@tabler/icons-react';
+import { default as sortBy } from 'lodash/sortBy';
+import { default as moment } from 'moment';
+import { useRouter } from 'next/navigation';
+import CreateAccessPoint from '../modals/access-points/CreateAccessPoint';
+import { modals } from '@mantine/modals';
+import { notifications } from '@mantine/notifications';
+import CreateAccessPointBulk from '../modals/access-points/CreateAccessPointBulk';
+
+const PAGE_SIZE = 15;
 
 export default function LocationAccessPoints({ idToken, location, refreshData }: any) {
-  const [accessPoints, setAccessPoints] = useState<any>(null);
-  const [selectedTags, setSelectedTags] = useState<any>([]);
-  const [tags, setTags] = useState<any>([]);
-  const [tagsOptions, setTagsOptions] = useState<any>([]); // [{ value: 'tag', label: 'tag' }
-  const [nameFilter, setNameFilter] = useState<string>('');
-  const toast = useToast();
-  const { user } = useAuthContext();
+  const [sortStatus, setSortStatus] = useState<DataTableSortStatus<any>>({
+    columnAccessor: 'name',
+    direction: 'asc'
+  });
+  const [query, setQuery] = useState('');
+  const [tagQuery, setTagQuery] = useState<string[]>([]);
 
-  const {
-    isOpen: isCreateAccessPointModalOpen,
-    onOpen: onCreateAccessPointModalOpen,
-    onClose: onCreateAccessPointModalClose
-  } = useDisclosure();
+  const [debouncedQuery] = useDebouncedValue(query, 200);
+  const [records, setRecords] = useState<any[]>([]);
+  const [selectedRecords, setSelectedRecords] = useState<any[]>([]);
+  const [page, setPage] = useState(1);
+  const [accessPoints, setAccessPoints] = useState<any>(null);
+  const { user } = useAuthContext();
+  const { push } = useRouter();
+  const { colorScheme } = useMantineColorScheme();
+  const [isCreateModalOpen, { open: openCreateModal, close: closeCreateModal }] = useDisclosure(false);
+  const [isCreateBulkModalOpen, { open: openCreateBulkModal, close: closeCreateBulkModal }] = useDisclosure(false);
+
+  const [tagsOptions, setTagsOptions] = useState<any>([]);
 
   // get tags
   useEffect(() => {
@@ -47,8 +104,7 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
     accessPoints?.accessPoints?.forEach((accessPoint: any) => {
       res = [...res, ...(accessPoint?.tags || [])];
     });
-    res = [...new Set(res as any) as any];
-    setTags(res);
+    res = [...(new Set(res as any) as any)];
     setTagsOptions([
       ...(new Set(
         res.map((value: string) => {
@@ -62,246 +118,404 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
   }, [accessPoints]);
 
   useEffect(() => {
+    const data = sortBy(accessPoints?.accessPoints, sortStatus.columnAccessor) as AccessPoint[];
+    let newRecords = data;
+    setRecords(sortStatus.direction === 'desc' ? newRecords.reverse() : newRecords);
+
+    setRecords(
+      newRecords.filter(({ name, tags }) => {
+        if (debouncedQuery !== '' && !`${name}`.toLowerCase().includes(debouncedQuery.trim().toLowerCase())) {
+          return false;
+        }
+
+        if (tagQuery.length && !tagQuery.some((d) => tags.includes(d))) {
+          return false;
+        }
+        return true;
+      })
+    );
+  }, [sortStatus, debouncedQuery, tagQuery]);
+
+  const refreshAccessPoints = useCallback(async () => {
+    if (!user || !location) return;
+    const token = await user.getIdToken();
+    fetch(`/api/v1/locations/${location?.id}/access-points`, {
+      method: 'GET',
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then((res) => {
+        if (res.status === 200) return res.json();
+        throw new Error(`Failed to fetch access points. (${res.status})`);
+      })
+      .then((data) => {
+        setAccessPoints(data);
+        setRecords(sortBy(data.accessPoints, 'name'));
+      })
+      .catch((error) => {
+        notifications.show({
+          title: 'There was an error fetching the routines.',
+          message: error.message,
+          color: 'red'
+        });
+      });
+  }, [user, location]);
+
+  useEffect(() => {
     if (!location) return;
     if (!user) return;
-    user.getIdToken().then((token: string) => {
-      fetch(`/api/v1/locations/${location.id}/access-points`, {
-        method: 'GET',
-        headers: { Authorization: `Bearer ${token}` }
-      })
-        .then((res) => {
-          if (res.status === 200) return res.json();
-          throw new Error(`Failed to fetch access points. (${res.status})`);
-        })
-        .then((data) => {
-          setAccessPoints(data);
-        })
-        .catch((err) => {
-          toast({
-            title: 'Error',
-            description: err.message,
-            status: 'error',
-            duration: 5000,
-            isClosable: true
-          });
-        });
-    });
+    refreshAccessPoints();
   }, [location, user]);
 
   return (
     <>
-      <CreateAccessPointDialog
-        isOpen={isCreateAccessPointModalOpen}
-        onClose={onCreateAccessPointModalClose}
+      <CreateAccessPoint
+        opened={isCreateModalOpen}
+        onClose={closeCreateModal}
         location={location}
-        onCreate={refreshData}
         accessPoints={accessPoints?.accessPoints || []}
+        tagsOptions={tagsOptions}
+        refresh={refreshData}
       />
-      <Text
-        as={'h1'}
-        fontSize={'4xl'}
-        fontWeight={'900'}
-        mb={2}
-      >
-        Access Points
-      </Text>
-      <Stack
-        mb={4}
-        direction={{ base: 'column', md: 'row' }}
-      >
+      <CreateAccessPointBulk
+        opened={isCreateBulkModalOpen}
+        onClose={closeCreateBulkModal}
+        location={location}
+        accessPoints={accessPoints?.accessPoints || []}
+        tagsOptions={tagsOptions}
+        refresh={refreshData}
+      />
+
+      <Button.Group pb={16}>
         <Button
-          leftIcon={<MdOutlineAddCircle />}
-          onClick={onCreateAccessPointModalOpen}
-          isDisabled={accessPoints?.self?.role <= 1}
+          leftSection={<IconPlus size={'16px'} />}
+          variant={'default'}
+          onClick={openCreateModal}
         >
           New Access Point
         </Button>
-        <FormControl w={{ base: 'full', md: 'fit-content' }}>
-          <Input
-            placeholder="Search"
-            variant={'filled'}
-            onChange={(e) => {
-              setNameFilter(e.target.value);
-            }}
-            value={nameFilter}
-          />
-        </FormControl>
-        <FormControl w={{ base: 'full', md: 'fit-content' }} h={'min-content'}>
-          <Select
-            options={tagsOptions}
-            placeholder="Filter by Tags"
-            onChange={(value) => {
-              setSelectedTags(value);
-            }}
-            variant={'filled'}
-            value={selectedTags}
-            isMulti
-            closeMenuOnSelect={false}
-            hideSelectedOptions={false}
-            selectedOptionStyle={'check'}
-          />
-        </FormControl>
-      </Stack>
-      <Flex
-        as={Stack}
-        direction={'row'}
-        h={'full'}
-        spacing={4}
-        overflow={'auto'}
-        flexWrap={'wrap'}
-      >
-        {accessPoints && accessPoints?.accessPoints?.length > 0 ? (
-          <Flex
-            as={Stack}
-            direction={'row'}
-            h={'full'}
-            spacing={4}
-            overflow={'auto'}
-            flexWrap={'wrap'}
-          >
-            {!accessPoints
-              ? Array.from({ length: 6 }).map((_, i) => (
-                <Box
-                  key={i}
-                  as={Skeleton}
-                  w={{ base: 'full', md: '384px' }}
-                  h={'max-content'}
-                  py={4}
-                  px={8}
-                  borderWidth={1}
-                  borderRadius={'lg'}
-                  borderColor={useColorModeValue('gray.200', 'gray.700')}
-                >
-                  <HStack
-                    p={2}
-                    w={'full'}
-                  >
-                    <Box flexGrow={1}>
-                      <Text
-                        fontSize={'2xl'}
-                        fontWeight={'bold'}
-                      >
-                        Loading...
-                      </Text>
-                      <Text color={'gray.500'}>0 Members</Text>
-                      <Text color={'gray.500'}>Owned by</Text>
-                      <Text>Organization</Text>
-                    </Box>
-                  </HStack>
-                </Box>
-              ))
-              : null}
-            {accessPoints?.accessPoints
-              ?.filter(
-                (accessPoint: any) =>
-                  (!selectedTags.length || selectedTags.every((tag: any) => accessPoint?.tags?.includes(tag.value))) &&
-                  (!nameFilter || accessPoint?.name?.toLowerCase().includes(nameFilter.toLowerCase()))
-              )
-              .map((accessPoint: any) => (
-                <Flex
-                  direction={'column'}
-                  justify={'space-between'}
-                  key={accessPoint.id}
-                  w={{ base: 'full', md: '384px' }}
-                  p={6}
-                  borderWidth={1}
-                  borderRadius={'lg'}
-                  borderColor={useColorModeValue('gray.200', 'gray.700')}
-                >
-                  <Text
-                    fontSize={'xl'}
-                    fontWeight={'bold'}
-                    noOfLines={1}
-                    mb={1}
-                  >
-                    {accessPoint?.name}
-                  </Text>
-                  <HStack
-                    align={'center'}
-                    justify={'flex-start'}
-                    fontSize={'xl'}
-                    mt={1}
-                  >
-                    {accessPoint?.config?.active ? (
-                      <Badge colorScheme={'green'}>Active</Badge>
-                    ) : (
-                      <Badge colorScheme={'red'}>Inactive</Badge>
-                    )}
-                    {accessPoint?.config?.armed ? (
-                      <Badge colorScheme={'black'}>Armed</Badge>
-                    ) : (
-                      <Badge colorScheme={'red'}>Not Armed</Badge>
-                    )}
-                  </HStack>
-                  {accessPoint?.tags?.length ? (
-                    <Flex
-                      flexWrap={'wrap'}
-                      pt={1}
-                      gap={2}
+        <Button
+          leftSection={<IconJson size={'16px'} />}
+          variant={'default'}
+          onClick={openCreateBulkModal}
+        >
+          Bulk Import
+        </Button>
+        {/* <BulkActionMenu
+          selectedRecords={selectedRecords}
+          location={location}
+          refresh={refreshData}
+        /> */}
+        <Button
+          variant="default"
+          onClick={() => {
+            refreshAccessPoints();
+          }}
+        >
+          <IconRefresh size={16} />
+        </Button>
+      </Button.Group>
+
+      {/* Main Datatable */}
+      <Box pos={'relative'}>
+        <LoadingOverlay
+          visible={!accessPoints}
+          zIndex={6}
+          overlayProps={{ radius: 'sm', blur: 2 }}
+          loaderProps={{ size: 'md', color: 'var(--mantine-color-default-color)' }}
+        />
+        <DataTable
+          minHeight={480}
+          withTableBorder
+          withColumnBorders
+          striped
+          highlightOnHover
+          pinLastColumn
+          noRecordsText="No access points found."
+          columns={[
+            {
+              accessor: 'name',
+              title: 'Name',
+              sortable: true,
+              filter: (
+                <TextInput
+                  label="Access Point Name"
+                  description="Show all access points which names include the specified text."
+                  placeholder="Search access point..."
+                  leftSection={<IconSearch size={16} />}
+                  rightSection={
+                    <ActionIcon
+                      size="sm"
+                      variant="transparent"
+                      c="dimmed"
+                      onClick={() => setQuery('')}
                     >
-                      {accessPoint?.tags?.map((tag: string) => (
-                        <Badge
+                      <IconX size={14} />
+                    </ActionIcon>
+                  }
+                  value={query}
+                  onChange={(e) => setQuery(e.currentTarget.value)}
+                />
+              ),
+              filtering: query !== '',
+              render: ({ name, config: { active, armed } }) => {
+                return (
+                  <Flex style={{ gap: 8, alignItems: 'center' }}>
+                    <Text style={{ background: 'transparent' }}>{name}</Text>
+                  </Flex>
+                );
+              }
+            },
+            {
+              accessor: 'tags',
+              title: 'Tags',
+              hidden: tagsOptions.length === 0,
+              filter: (
+                <MultiSelect
+                  label="Tags"
+                  description="Show all access points that possess the specified tags."
+                  data={tagsOptions}
+                  value={tagQuery}
+                  placeholder="Search tags..."
+                  onChange={setTagQuery}
+                  leftSection={<IconSearch size={16} />}
+                  clearable
+                  searchable
+                />
+              ),
+              filtering: tagQuery.length > 0,
+              render: ({ tags }) => {
+                return (
+                  <Flex style={{ gap: 8, alignItems: 'center' }}>
+                    {(tags || []).map((tag: any) => {
+                      return (
+                        <Pill
                           key={tag}
-                          colorScheme={'gray'}
+                          bg={colorScheme === 'dark' ? 'dark.4' : undefined}
                         >
                           {tag}
-                        </Badge>
-                      ))}
+                        </Pill>
+                      );
+                    })}
+                  </Flex>
+                );
+              }
+            },
+            {
+              accessor: 'id',
+              title: 'ID',
+              textAlign: 'left',
+              width: 120,
+              render: ({ id }) => {
+                return (
+                  <Flex align={'center'}>
+                    <Code style={{ background: 'transparent' }}>{id}</Code>
+                    <Tooltip.Floating label="Copy ID">
+                      <Flex align={'center'}>
+                        <CopyButton value={id}>
+                          {({ copied, copy }) => (
+                            <ActionIcon
+                              variant="transparent"
+                              size="xs"
+                              color={colorScheme === 'dark' ? 'white' : 'black'}
+                              onClick={copy}
+                            >
+                              {copied ? <IconCheck /> : <IconCopy />}
+                            </ActionIcon>
+                          )}
+                        </CopyButton>
+                      </Flex>
+                    </Tooltip.Floating>
+                  </Flex>
+                );
+              }
+            },
+            {
+              accessor: 'status',
+              title: 'Status',
+              render: ({ config: { active, armed } }) => {
+                return (
+                  <>
+                    <Flex style={{ gap: 8 }}>
+                      <Tooltip.Floating label={active ? 'Active' : 'Not Active'}>
+                        <Box>
+                          {active ? (
+                            <IconBolt size={16} />
+                          ) : (
+                            <IconBoltOff
+                              color="red"
+                              size={16}
+                            />
+                          )}{' '}
+                        </Box>
+                      </Tooltip.Floating>
+                      <Tooltip.Floating label={armed ? 'Armed' : 'Not Armed'}>
+                        <Box>
+                          {armed ? (
+                            <IconLock size={16} />
+                          ) : (
+                            <IconLockOpen
+                              color="red"
+                              size={16}
+                            />
+                          )}{' '}
+                        </Box>
+                      </Tooltip.Floating>
                     </Flex>
-                  ) : <>
-
-                  </>}
-                  <Box mb={'auto'}>
-                    {accessPoint.description ? (
-                      <Text pt={1}>{accessPoint.description}</Text>
-                    ) : (
-                      <Text
-                        pt={1}
-                        color={'gray.500'}
-                      >
-                        No description available.
-                      </Text>
-                    )}
-                  </Box>
-                  <Button
-                    mt={4}
-                    as={NextLink}
-                    href={`/access-points/${accessPoint.id}`}
-                    variant={'solid'}
-                    w={'full'}
-                  >
-                    View
-                  </Button>
-                </Flex>
-              ))}
-          </Flex>
-        ) : (
-          <Text>
-            This location does not have any access points yet.{' '}
-            {accessPoints?.self?.role >= 2 ? (
-              <>
-                <Text as={'span'}>
-                  <Button
-                    variant={'link'}
-                    color={'unset'}
-                    textDecor={'underline'}
-                    textUnderlineOffset={4}
-                    onClick={onCreateAccessPointModalOpen}
-                    _hover={{
-                      color: useColorModeValue('gray.600', 'gray.400')
+                  </>
+                );
+              }
+            },
+            {
+              accessor: 'updatedAt',
+              title: 'Last Updated',
+              render: ({ updatedAt }) => {
+                return <Text style={{ background: 'transparent' }}>{moment(updatedAt).fromNow()}</Text>;
+              },
+              sortable: true
+            },
+            {
+              accessor: 'actions',
+              title: (
+                <Center>
+                  <IconClick size={16} />
+                </Center>
+              ),
+              width: '0%',
+              textAlign: 'right',
+              render: (cell) => (
+                <Group
+                  gap={4}
+                  justify="right"
+                  wrap="nowrap"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
+                  <ActionIcon
+                    variant="subtle"
+                    size="sm"
+                    onClick={() => {
+                      push(`/access-points/${cell.id}`);
                     }}
+                    color={colorScheme === 'dark' ? 'white' : 'black'}
                   >
-                    Create one
-                  </Button>
-                </Text>{' '}
-                to get started.
-              </>
-            ) : (
-              <></>
-            )}
-          </Text>
-        )}
-      </Flex>
+                    <IconEdit size={16} />
+                  </ActionIcon>
+                  <ActionIcon
+                    variant="subtle"
+                    size="sm"
+                    onClick={() => {
+                      modals.openConfirmModal({
+                        title: <Title order={4}>Delete access point?</Title>,
+                        children: <Text size="sm">Are you sure you want to delete this access point?</Text>,
+                        labels: { confirm: 'Delete access point', cancel: 'Nevermind' },
+                        confirmProps: { color: 'red' },
+                        onConfirm: () => {
+                          user.getIdToken().then((token: string) => {
+                            fetch(`/api/v1/access-points/${cell.id}`, {
+                              method: 'DELETE',
+                              headers: { Authorization: `Bearer ${token}` }
+                            })
+                              .then((res) => {
+                                if (res.status === 200) return res.json();
+                                throw new Error(`Failed to delete access point. (${res.status})`);
+                              })
+                              .then(() => {
+                                refreshData();
+                              })
+                              .catch((err) => {
+                                console.log(err);
+                              });
+                          });
+                        }
+                      });
+                    }}
+                    color={'red'}
+                  >
+                    <IconRecycle size={16} />
+                  </ActionIcon>
+                </Group>
+              )
+            }
+          ]}
+          sortStatus={sortStatus}
+          onSortStatusChange={setSortStatus}
+          records={records}
+          rowExpansion={{
+            content: ({ record }) => (
+              <Box p={16}>
+                <Text c={!!record.description ? 'unset' : 'dark.2'}>
+                  {record.description || 'No description available.'}
+                </Text>
+              </Box>
+            )
+          }}
+          selectedRecords={selectedRecords}
+          onSelectedRecordsChange={setSelectedRecords}
+          // page={page}
+          // onPageChange={setPage}
+          // totalRecords={records.length}
+          // recordsPerPage={2}
+          // paginationActiveBackgroundColor={'dark.4'}
+          // paginationActiveTextColor="white"
+        />
+      </Box>
+    </>
+  );
+}
+
+function BulkActionMenu({
+  selectedRecords,
+  location,
+  refresh
+}: {
+  selectedRecords: AccessPoint[];
+  location: Location;
+  refresh: () => void;
+}) {
+  return (
+    <>
+      <Menu
+        shadow="md"
+        width={200}
+      >
+        <Menu.Target>
+          <Button
+            variant={'default'}
+            leftSection={<IconBoxMultiple size={16} />}
+            // disabled={selectedRecords.length === 0}
+            disabled
+          >
+            Bulk Actions
+          </Button>
+        </Menu.Target>
+
+        <Menu.Dropdown>
+          <Menu.Label>Tags</Menu.Label>
+          <Menu.Item
+            disabled
+            leftSection={<IconTag size={16} />}
+          >
+            Add Tag
+          </Menu.Item>
+          <Menu.Item
+            disabled
+            leftSection={<IconTagOff size={16} />}
+          >
+            Remove Tag
+          </Menu.Item>
+
+          <Menu.Divider />
+
+          <Menu.Label>Danger zone</Menu.Label>
+          <Menu.Item
+            color="red"
+            leftSection={<IconRecycle size={16} />}
+          >
+            Delete
+          </Menu.Item>
+        </Menu.Dropdown>
+      </Menu>
     </>
   );
 }

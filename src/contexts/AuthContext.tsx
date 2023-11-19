@@ -1,18 +1,29 @@
+/*
+ * Name: AuthContext.tsx
+ * Author: Pete Pongpeauk <pete@ppkl.dev>
+ *
+ * Copyright (c) 2023 Pete Pongpeauk and contributors
+ * License: MIT License
+ */
+
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
-
-import { useToast } from '@chakra-ui/react';
-
-import { UserCredential, getAuth, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { useRouter } from 'next/router';
-import { useAuthState } from 'react-firebase-hooks/auth';
 
+// firebase
+import { UserCredential, getAuth, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '@/lib/firebase';
+
+// types
 import { User } from '@/types';
+
+// notifications
+import { notifications } from '@mantine/notifications';
 
 const AuthContext = createContext(null);
 
 interface AuthContextValues {
-  user: any; // TODO: fix this
+  user: any;
   currentUser?: User | any;
   refreshCurrentUser: () => void;
   auth: any;
@@ -31,7 +42,6 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
   const [user, loading, error] = useAuthState(auth);
   const [currentUser, setCurrentUser] = useState<User | null>();
   const [isAuthLoaded, setIsAuthLoaded] = useState<boolean>(false);
-  const toast = useToast();
   const { push } = useRouter();
 
   const refreshCurrentUser = useCallback(async () => {
@@ -53,13 +63,11 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
           .then((data) => {
             setCurrentUser(data.user);
           })
-          .catch((err) => {
-            toast({
-              title: 'An error occurred while fetching your user data.',
-              description: 'Please try again later. If this issue persists, please contact customer support.',
-              status: 'error',
-              duration: 16000,
-              isClosable: true
+          .catch(() => {
+            notifications.show({
+              title: 'A server error occurred.',
+              message: 'Please try again later.',
+              color: 'red'
             });
             setTimeout(() => {
               push('/auth/logout');
@@ -71,7 +79,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
       setCurrentUser(null);
       setIsAuthLoaded(true);
     }
-  }, [user, push, toast]);
+  }, [user, push]);
 
   async function waitForAuthInit() {
     let unsubscribe = null;

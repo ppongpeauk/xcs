@@ -15,6 +15,10 @@ export interface User {
   bio?: string | null;
   avatar: string;
   sponsorId?: string;
+  about: {
+    bio?: string | null;
+    website?: string | null;
+  };
   email: {
     address: string;
   };
@@ -37,6 +41,12 @@ export interface User {
     staffTitle?: string | null;
     membership: number;
     invites: number;
+    features?: {
+      beta?: {
+        enabled: boolean;
+        createdAt: string;
+      };
+    };
   };
   privacy?: {
     organizations: boolean;

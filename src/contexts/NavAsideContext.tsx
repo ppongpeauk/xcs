@@ -1,3 +1,12 @@
+/*
+ * Name: NavAsideContext.tsx
+ * Description: Context for the navigation aside, which is used for help and other things
+ * Author: Pete Pongpeauk <pete@ppkl.dev>
+ *
+ * Copyright (c) 2023 Pete Pongpeauk and contributors
+ * License: MIT License
+ */
+
 import { useDisclosure } from '@mantine/hooks';
 import { createContext, useContext, useState } from 'react';
 

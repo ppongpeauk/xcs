@@ -1,6 +1,5 @@
-import Footer from '@/components/Footer';
-import Nav from '@/components/nav/Nav';
-import { Box, Container, Heading, Link, Text, useColorModeValue } from '@chakra-ui/react';
+import Layout from '@/layouts/LayoutPublic';
+import { Box, Container, Title, Anchor, Text, Flex } from '@mantine/core';
 import Head from 'next/head';
 
 export default function Terms() {
@@ -9,32 +8,26 @@ export default function Terms() {
       <Head>
         <title>Privacy Policy - Restrafes XCS</title>
       </Head>
-      <Nav />
-      <Box bg={useColorModeValue('black', 'white')} w={'full'} h={'240px'} />
       <Container
-        maxW={'container.md'}
-        py={16}
+        size={'md'}
+        my={64}
       >
-        <Heading
-          as="h1"
-          size="xl"
-          mb={4}
+        <Title
+          style={{ fontSize: '4rem', lineHeight: '4rem' }}
+          mb={8}
         >
           Privacy Policy
-        </Heading>
-        <Box>
+        </Title>
+        <Flex
+          direction={'column'}
+          gap={8}
+        >
           <Text>
             RESTRAFES & CO (&quot;we&quot; or &quot;us&quot;) respects the privacy of its users (&quot;you&quot;). This
             Privacy Policy outlines how we collect, use, disclose, and protect your personal information.
           </Text>
 
-          <Heading
-            as="h2"
-            size="md"
-            mt={4}
-          >
-            Information Collection
-          </Heading>
+          <Title order={2}>Information Collection</Title>
 
           <Text>
             We collect your name, email address, and other personal information you voluntarily provide to create an
@@ -42,26 +35,24 @@ export default function Terms() {
             processor Stripe.
           </Text>
 
-          <Heading
-            as="h2"
-            size="md"
+          <Title
+            order={2}
             mt={4}
           >
             Information Use
-          </Heading>
+          </Title>
 
           <Text>
             The information we collect allows us to provide our services to you, customize your experience, communicate
             with you, provide customer support, and improve our services.
           </Text>
 
-          <Heading
-            as="h2"
-            size="md"
+          <Title
+            order={2}
             mt={4}
           >
             Cookies
-          </Heading>
+          </Title>
 
           <Text>
             We use cookies to remember your preferences and authenticate you. We do not use cookies to track your
@@ -69,42 +60,39 @@ export default function Terms() {
             website may not function properly as a result.
           </Text>
 
-          <Heading
-            as="h2"
-            size="md"
+          <Title
+            order={2}
             mt={4}
           >
             Data Sharing
-          </Heading>
+          </Title>
 
           <Text>
             We do not share or sell your personal information to any third parties. Information may be disclosed if
             required by law or to cooperate with regulators or law enforcement authorities.
           </Text>
 
-          <Heading
-            as="h2"
-            size="md"
+          <Title
+            order={2}
             mt={4}
           >
             Minor Privacy
-          </Heading>
+          </Title>
 
           <Text>
             Our services are not directed at children under 13. We do not knowingly collect personal information from
             children under 13. If we become aware that a child under 13 has provided us with personal information, we
             will delete such information from our systems. Users must be over the age of 13 to use our services. If you
-            are between 13 and 18 years old, you may only use our services with the consent of a parent
-            or legal guardian.
+            are between 13 and 18 years old, you may only use our services with the consent of a parent or legal
+            guardian.
           </Text>
 
-          <Heading
-            as="h2"
-            size="md"
+          <Title
+            order={2}
             mt={4}
           >
             Data Security
-          </Heading>
+          </Title>
 
           <Text>
             We have implemented technical and organizational security measures to protect your information against
@@ -112,59 +100,57 @@ export default function Terms() {
             Identity services.
           </Text>
 
-          <Heading
-            as="h2"
-            size="md"
+          <Title
+            order={2}
             mt={4}
           >
             User Rights
-          </Heading>
+          </Title>
 
           <Text>
             At any time, you have the right to request access to the personal information we collect or delete your
-            account by emailing <Link href="mailto:xcs@restrafes.co">xcs@restrafes.co</Link> with the subject line, &quot;Account Deletion Request.&quot;. Event logs are retained for up to 6 months before deletion.
+            account by emailing <Anchor href="mailto:xcs@restrafes.co">xcs@restrafes.co</Anchor> with the subject line,
+            &quot;Account Deletion Request.&quot;. Event logs are retained for up to 6 months before deletion.
           </Text>
 
-          <Heading
-            as="h2"
-            size="md"
+          <Title
+            order={2}
             mt={4}
           >
             Breach Notification
-          </Heading>
+          </Title>
 
           <Text>
             If we become aware that your information has been compromised, we will notify you via email within 72 hours.
           </Text>
 
-          <Heading
-            as="h2"
-            size="md"
+          <Title
+            order={2}
             mt={4}
           >
             Contact Us
-          </Heading>
+          </Title>
 
           <Text>
-            If you have any questions about this Privacy Policy or our privacy practices, please email us at{" "}
-            <Link href="mailto:xcs@restrafes.co">xcs@restrafes.co</Link>
+            If you have any questions about this Privacy Policy or our privacy practices, please email us at{' '}
+            <Anchor href="mailto:xcs@restrafes.co">xcs@restrafes.co</Anchor>
           </Text>
 
-          <Heading
-            as="h2"
-            size="md"
+          <Title
+            order={2}
             mt={4}
           >
             Changes to Policy
-          </Heading>
+          </Title>
 
           <Text>
             We may periodically update this policy. We will notify you of any material changes via email or on our
             website. Your continued use of our services after any changes indicates your acceptance of the new terms.
           </Text>
-        </Box>
+        </Flex>
       </Container>
-      <Footer />
     </>
   );
 }
+
+Terms.getLayout = (page: any) => <Layout>{page}</Layout>;

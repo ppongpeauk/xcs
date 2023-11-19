@@ -5,10 +5,10 @@ import { useRouter } from 'next/router';
 // Authentication
 import { useAuthContext } from '@/contexts/AuthContext';
 
-import Layout from '@/layouts/PlatformLayout';
+import Layout from '@/layouts/LayoutPlatform';
 
 // Layouts
-import UserProfile from '@/components/PlatformProfileNew';
+import UserProfile from '@/components/pages/user/Profile';
 
 // Get profile data
 export async function getServerSideProps({ query }: any) {
