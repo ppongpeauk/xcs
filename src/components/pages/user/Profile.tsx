@@ -151,13 +151,10 @@ export default function Profile({ username, user }: { username: string | null; u
 
         <Flex
           direction="column"
-          mt={currentUser?.id === user?.id ? 0 : 16}
+          mt={currentUser?.id === user?.id ? 16 : 24}
         >
           {/* user about-me */}
-          <Flex
-            direction={'column'}
-            mt={currentUser?.id === user?.id ? 16 : 32}
-          >
+          <Flex direction={'column'}>
             <Group
               align="center"
               gap={8}

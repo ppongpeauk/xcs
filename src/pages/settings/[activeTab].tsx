@@ -21,9 +21,11 @@ import SettingsProfile from '@/components/settings/SettingsProfile';
 import { useMediaQuery } from '@mantine/hooks';
 import {
   Icon3dCubeSphere,
+  IconBeta,
   IconCode,
   IconCylinder,
   IconExternalLink,
+  IconFlask,
   IconHandClick,
   IconHandFinger,
   IconHandStop,
@@ -194,10 +196,17 @@ export default function Settings() {
             ) : null}
             <Tabs.Tab
               value="beta-program"
-              leftSection={<AiOutlineExperiment style={iconStyle} />}
+              leftSection={<IconBeta style={iconStyle} />}
               display={currentUser?.platform?.features?.beta?.enabled ? 'flex' : 'none'}
             >
               Beta Program
+            </Tabs.Tab>
+            <Tabs.Tab
+              value="experiments"
+              leftSection={<IconFlask style={iconStyle} />}
+              display={currentUser?.platform?.features?.beta?.enabled ? 'flex' : 'none'}
+            >
+              Experimental Features
             </Tabs.Tab>
             <Tabs.Tab
               value="developer"

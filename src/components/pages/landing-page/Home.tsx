@@ -94,7 +94,8 @@ export default function Home({ allPostsData: posts }: { allPostsData: any }) {
           src={fragments.src}
           w={'full'}
           style={{
-            aspectRatio: 2
+            aspectRatio: 2,
+            border: '1px solid var(--mantine-color-default-border)'
           }}
         ></Image>
         <Divider my={64} />

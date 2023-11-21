@@ -80,6 +80,7 @@
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.43",
     "mongodb": "^5.6.0",
+    "mongodb-rest-relay": "^1.9.4",
     "next": "latest",
     "next-pwa": "^5.6.0",
     "nextjs-progressbar": "^0.0.16",

@@ -34,6 +34,7 @@ import { useMediaQuery } from '@mantine/hooks';
 import {
   IconAccessPoint,
   IconBroadcast,
+  IconExternalLink,
   IconHistory,
   IconLiveView,
   IconLocation,
@@ -195,6 +196,17 @@ export default function PlatformOrganization() {
               leftSection={<IconUsersGroup style={iconStyle} />}
             >
               Members
+            </Tabs.Tab>
+            <Tabs.Tab
+              value="locations"
+              leftSection={<IconLocation style={iconStyle} />}
+              rightSection={<IconExternalLink size={16} />}
+              onClick={(e) => {
+                e.preventDefault();
+                push(`/locations?organizaion=${data?.id}`);
+              }}
+            >
+              Locations
             </Tabs.Tab>
           </Tabs.List>
 
