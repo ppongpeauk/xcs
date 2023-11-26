@@ -70,6 +70,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     // check if avatar is valid
+    let newAvatarUrl = null;
     if (avatar) {
       let imageFormat = avatar.split(';')[0].split('/')[1]; // ex: jpeg
       // limit gifs for only staff due to storage
@@ -92,7 +93,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       // upload to firebase
       const url = await uploadProfilePicture('user', uid, image as any, imageFormat)
         .then((url) => {
-          req.body.avatar = url;
+          newAvatarUrl = url;
         })
         .catch((error) => {
           console.log(error);
@@ -104,7 +105,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       {
         $set: {
           displayName: displayName || user.displayName,
-          avatar: avatar || user.avatar,
+          avatar: newAvatarUrl || avatar || user.avatar,
           'about.bio': bio,
           'about.website': website
         },
