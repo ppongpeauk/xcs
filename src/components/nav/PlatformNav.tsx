@@ -137,7 +137,7 @@ export default function PlatformNav({
       <AppShell
         header={{ height: 64 }}
         navbar={{ width: 200, breakpoint: 'sm', collapsed: { mobile: !opened } }}
-        aside={{ width: 320, breakpoint: 'md', collapsed: { mobile: true, desktop: !asideOpened } }}
+        aside={{ width: 340, breakpoint: 'md', collapsed: { mobile: true, desktop: !asideOpened } }}
         padding="md"
         zIndex={5}
         // transitionDuration={0}

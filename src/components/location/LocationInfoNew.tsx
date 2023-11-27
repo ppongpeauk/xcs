@@ -224,8 +224,8 @@ export default function LocationInfo({
                     id: location?.roblox?.universe?.id
                       ? location?.roblox?.universe?.id
                       : values.universeId.trim() == ''
-                      ? ''
-                      : values.universeId.trim()
+                        ? ''
+                        : values.universeId.trim()
                   }
                 }
               })
@@ -294,14 +294,18 @@ export default function LocationInfo({
               </Field>
               <Field name="universeId">
                 {({ field, form }: any) => (
-                  <TextInput
-                    {...field}
-                    label="Experience ID"
-                    description="The ID of the experience this XCS location belongs to."
-                    placeholder="Experience ID"
-                    disabled={true}
-                    leftSection={<Icon123 size={'20px'} />}
-                  />
+                  <Tooltip.Floating label="This field is automatically set in-experience. If you wish to reset this, please contact customer support.">
+                    <span>
+                      <TextInput
+                        {...field}
+                        label="Experience ID"
+                        description="The ID of the experience this XCS location belongs to."
+                        placeholder="Experience ID"
+                        disabled={true}
+                        leftSection={<Icon123 size={'20px'} />}
+                      />
+                    </span>
+                  </Tooltip.Floating>
                 )}
               </Field>
             </Flex>

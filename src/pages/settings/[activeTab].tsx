@@ -42,6 +42,7 @@ import SettingsPrivacy from '@/components/settings/SettingsPrivacy';
 import InfoLink from '@/components/InfoLink';
 import { AiFillExperiment, AiOutlineExperiment } from 'react-icons/ai';
 import SettingsBeta from '@/components/settings/SettingsBeta';
+import SettingsExperiments from '@/components/settings/SettingsExperiments';
 
 export default function Settings() {
   const { query, push } = useRouter();
@@ -202,7 +203,7 @@ export default function Settings() {
               Beta Program
             </Tabs.Tab>
             <Tabs.Tab
-              value="experiments"
+              value="experimental-features"
               leftSection={<IconFlask style={iconStyle} />}
               display={currentUser?.platform?.features?.beta?.enabled ? 'flex' : 'none'}
             >
@@ -294,6 +295,26 @@ export default function Settings() {
                 />
               </Title>
               <SettingsBeta />
+            </Tabs.Panel>
+            <Tabs.Panel value="experimental-features">
+              <Title
+                size={rem(24)}
+                py={4}
+                mb={16}
+              >
+                Experimental Features
+                <InfoLink
+                  title="Experimental Features"
+                  description={
+                    <Stack>
+                      <Text>
+                        Experimental features are only available to users with the &quot;Beta&quot; atrribute.
+                      </Text>
+                    </Stack>
+                  }
+                />
+              </Title>
+              <SettingsExperiments />
             </Tabs.Panel>
             <Tabs.Panel value="developer">
               <Title
