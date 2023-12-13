@@ -381,7 +381,7 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
               accessor: 'updatedAt',
               title: 'Last Updated',
               render: ({ updatedAt }) => {
-                return <Text style={{ background: 'transparent' }}>{moment(updatedAt).fromNow()}</Text>;
+                return <Text style={{ background: 'transparent' }}>{moment(updatedAt).calendar()}</Text>;
               },
               sortable: true
             },

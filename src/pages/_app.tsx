@@ -21,14 +21,14 @@ import { AuthProvider } from '@/contexts/AuthContext';
 
 // Theme
 import PageProgress from '@/components/PageProgress';
-import { Familjen_Grotesk } from 'next/font/google';
+import { Familjen_Grotesk, Inter, Roboto_Flex } from 'next/font/google';
 
 import { AppProps } from 'next/app';
 import dynamic from 'next/dynamic';
 import NavAsideProvider from '@/contexts/NavAsideContext';
 import { ChakraProvider } from '@chakra-ui/react';
 
-const font = Familjen_Grotesk({ subsets: ['latin'] });
+const font = Roboto_Flex({ subsets: ['latin'] });
 
 const theme = createTheme({
   fontFamily: font.style.fontFamily

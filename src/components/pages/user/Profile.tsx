@@ -34,6 +34,7 @@ import { useAuthContext } from '@/contexts/AuthContext';
 import { BsFillShieldFill } from 'react-icons/bs';
 import { IoHammerSharp } from 'react-icons/io5';
 import {
+  IconBadges,
   IconBrandDiscordFilled,
   IconBrandTwitter,
   IconBrandTwitterFilled,
@@ -186,15 +187,15 @@ export default function Profile({ username, user }: { username: string | null; u
                 align="center"
                 gap={8}
               >
-                <IconTrophy size={16} />
-                <Title order={4}>Achievements</Title>
+                <IconBadges size={16} />
+                <Title order={4}>Badges</Title>
               </Group>
               {!Object.keys(user?.achievements || {}).length ? (
                 <Text
                   size={'md'}
                   c="gray.6"
                 >
-                  This user doesn&apos;t have any achievements yet.
+                  This user doesn&apos;t have any badges yet.
                 </Text>
               ) : (
                 <Flex style={styles.cellContainer}>
@@ -337,7 +338,8 @@ function AchievementItem({ achievement }: { achievement: Achievement | never }) 
                     src={achievement?.icon}
                     style={{
                       borderRadius: '8px',
-                      border: '1px solid var(--mantine-color-default-border)'
+                      objectFit: 'contain'
+                      // border: '1px solid var(--mantine-color-default-border)'
                     }}
                   />
                 </AspectRatio>
@@ -358,11 +360,11 @@ function AchievementItem({ achievement }: { achievement: Achievement | never }) 
         <Avatar
           alt={achievement?.name}
           src={achievement?.icon}
+          w={72}
+          h={72}
           style={{
-            width: '48px',
-            height: '48px',
-            borderRadius: '8px',
-            border: '1px solid var(--mantine-color-placeholder)'
+            borderRadius: '8px'
+            // border: '1px solid var(--mantine-color-placeholder)'
           }}
         />
       </UnstyledButton>

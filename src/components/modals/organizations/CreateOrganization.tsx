@@ -20,6 +20,7 @@ import { useForm } from '@mantine/form';
 import { IconAccessPoint, IconElevator, IconLocation, IconPencil, IconPlus, IconUsersGroup } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { notifications } from '@mantine/notifications';
 
 export default function CreateOrganization({
   opened,
@@ -32,7 +33,6 @@ export default function CreateOrganization({
 }) {
   const { user } = useAuthContext();
   const [formSubmitting, setFormSubmitting] = useState(false);
-  const toast = useToast();
 
   const form = useForm({
     initialValues: {
@@ -97,18 +97,21 @@ export default function CreateOrganization({
                     });
                   }
                 })
-                .then((data) => {
-                  toast({
-                    title: data.message,
-                    status: 'success',
-                    duration: 5000,
-                    isClosable: true
+                .then((data: any) => {
+                  notifications.show({
+                    message: data.message,
+                    color: 'green'
                   });
                   form.reset();
                   refresh();
                   onClose();
                 })
-                .catch((error) => {})
+                .catch((error) => {
+                  notifications.show({
+                    message: error.message,
+                    color: 'red'
+                  });
+                })
                 .finally(() => {
                   setFormSubmitting(false);
                 });
@@ -124,7 +127,7 @@ export default function CreateOrganization({
                 name="name"
                 label="Name"
                 description="The name of this organization."
-                placeholder="ACME Inc."
+                placeholder="Restrafes & Co."
                 withAsterisk
                 {...form.getInputProps('name')}
               />
@@ -132,7 +135,7 @@ export default function CreateOrganization({
                 name="description"
                 label="Description"
                 description="A short description of this organization."
-                placeholder="ACME Inc. is a company that..."
+                placeholder="Restrafes & Co. is a company that..."
                 minRows={2}
                 {...form.getInputProps('description')}
               />

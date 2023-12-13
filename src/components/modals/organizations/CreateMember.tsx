@@ -136,13 +136,16 @@ export default function CreateMember({
                 label="Member Type"
                 description="The type of member to add."
                 placeholder="Select a member type..."
+                defaultValue={'user'}
                 data={[
-                  { label: 'Access Point 1', value: '1' },
-                  { label: 'Access Point 2', value: '2' },
-                  { label: 'Access Point 3', value: '3' }
+                  { label: 'XCS User', value: 'user' },
+                  { label: 'Roblox User', value: 'roblox' },
+                  { label: 'Roblox Group', value: 'roblox-group' }
                 ]}
+                allowDeselect={false}
               ></Select>
-              <TextInput
+
+              {/* <TextInput
                 name="name"
                 label="Name"
                 description="The name of this organization."
@@ -157,7 +160,7 @@ export default function CreateMember({
                 placeholder="ACME Inc. is a company that..."
                 minRows={2}
                 {...form.getInputProps('description')}
-              />
+              /> */}
               <Button
                 mt={16}
                 ml={'auto'}

@@ -18,6 +18,7 @@ import {
   Badge,
   Box,
   Breadcrumbs,
+  Button,
   Container,
   Divider,
   Flex,
@@ -39,6 +40,7 @@ import {
   IconLiveView,
   IconLocation,
   IconSettings,
+  IconShadow,
   IconTimeline,
   IconTimelineEvent,
   IconUsersGroup
@@ -219,6 +221,17 @@ export default function PlatformOrganization() {
               }}
             >
               Locations
+            </Tabs.Tab>
+            <Tabs.Tab
+              value="public-page"
+              leftSection={<IconShadow style={iconStyle} />}
+              rightSection={<IconExternalLink size={16} />}
+              onClick={(e) => {
+                e.stopPropagation();
+                push(`/locations?organizaion=${data?.id}`);
+              }}
+            >
+              Public Page
             </Tabs.Tab>
           </Tabs.List>
 

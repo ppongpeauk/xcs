@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 // React
-import { Suspense, forwardRef, useMemo, useState } from 'react';
+import { Suspense, forwardRef, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { Link } from '@chakra-ui/next-js';
 
@@ -30,7 +30,10 @@ import {
   Alert,
   CloseButton,
   Tooltip,
-  Anchor
+  Anchor,
+  Card,
+  Group,
+  Stack
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { modals } from '@mantine/modals';
@@ -49,6 +52,7 @@ import { User } from '@/types';
 import {
   Icon3dCubeSphere,
   IconActivity,
+  IconAlertCircle,
   IconArrowRight,
   IconBell,
   IconBuildingArch,
@@ -58,6 +62,7 @@ import {
   IconCaretUpFilled,
   IconChartBubbleFilled,
   IconCheck,
+  IconCheckbox,
   IconChecklist,
   IconChevronCompactDown,
   IconChevronDown,
@@ -89,6 +94,7 @@ import { useColorMode } from '@chakra-ui/react';
 import Footer from '../FooterNew';
 import brandLogo from '@/assets/platform/company-brand-logo.jpeg';
 import { useAsideContext } from '@/contexts/NavAsideContext';
+import moment from 'moment';
 
 const styles = {
   horizontalBar: {}
@@ -395,6 +401,49 @@ function NotificationMenu({ currentUser }: { currentUser?: User }) {
   const isMobile = useMediaQuery('(max-width: 768px)');
   const { colorScheme } = useMantineColorScheme();
   const { isAuthLoaded, user } = useAuthContext();
+  const [notifications, setNotifications] = useState<any[]>([
+    // {
+    //   id: '1',
+    //   // icon: brandLogo.src,
+    //   title: 'Test Notification',
+    //   description: 'This is a test notification.',
+    //   // buttonPrimary: {
+    //   //   label: 'Accept',
+    //   //   onClick: () => null
+    //   // },
+    //   // buttonSecondary: {
+    //   //   label: 'Deny',
+    //   //   onClick: () => null
+    //   // },
+    //   read: false,
+    //   dismissVisible: true,
+    //   createdAt: new Date(),
+    //   updatedAt: new Date()
+    // }
+  ]);
+
+  const refreshNotifications = useCallback(async () => {
+    if (!isAuthLoaded) return;
+    if (!user) return;
+
+    const token = await user.getIdToken();
+    const res = await fetch('/api/v2/notifications', {
+      method: 'GET',
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    if (res.status !== 200) return;
+
+    const data = await res.json();
+    setNotifications(data || []);
+  }, [user, isAuthLoaded]);
+
+  useEffect(() => {
+    if (!currentUser) return;
+    if (!isAuthLoaded) return;
+    if (!user) return;
+    // refreshNotifications();
+  }, [currentUser, isAuthLoaded, user, refreshNotifications]);
 
   return (
     <>
@@ -414,17 +463,21 @@ function NotificationMenu({ currentUser }: { currentUser?: User }) {
                 variant="dot"
                 color="red"
                 h={20}
-                // disabled
-                // disabled={!currentUser?.notifications?.length}
+                disabled={notifications.length === 0}
               >
                 <IconBell size={20} />
               </Indicator>
             </Flex>
           </UnstyledButton>
         </Popover.Target>
-        <Popover.Dropdown>
+        <Popover.Dropdown
+          px={0}
+          py={0}
+        >
           <Flex
             direction={'column'}
+            mx={8}
+            my={8}
             py={8}
           >
             <Flex
@@ -433,35 +486,116 @@ function NotificationMenu({ currentUser }: { currentUser?: User }) {
               gap={4}
               px={16}
             >
-              <Title size="sm">Notifications</Title>
-              <Button
-                ml={'auto'}
-                variant={'subtle'}
-                color={'text'}
-                size={'xs'}
-                leftSection={<IconChecklist size={16} />}
-              >
-                Mark all as read
-              </Button>
+              <Title size="md">Inbox</Title>
             </Flex>
           </Flex>
-          <SegmentedControl
-            fullWidth
-            mt={8}
-            data={['All', 'Invitations', 'System']}
-          />
-          <Flex
-            align={'center'}
-            justify={'center'}
-            mih={128}
-          >
-            <Text
-              px={16}
-              c={'gray.5'}
+          <Divider />
+          {!notifications.length ? (
+            <Flex
+              align={'center'}
+              justify={'center'}
+              mih={128}
             >
-              You have no notifications.
-            </Text>
-          </Flex>
+              <Text
+                px={8}
+                c={'gray.5'}
+              >
+                You have no notifications.
+              </Text>
+            </Flex>
+          ) : (
+            <Stack
+              mx={8}
+              py={16}
+              gap={16}
+            >
+              {notifications.map((notification) => (
+                <Flex
+                  px={16}
+                  key={notification?.id}
+                >
+                  <Indicator
+                    position="top-start"
+                    size={8}
+                    color="red"
+                    disabled={notification?.read}
+                  >
+                    <Flex gap={16}>
+                      {notification?.icon ? (
+                        <Avatar
+                          src={notification?.icon}
+                          alt={'Notification Icon'}
+                          size={'lg'}
+                          radius={8}
+                        />
+                      ) : (
+                        <IconAlertCircle size={48} />
+                      )}
+                      <Flex
+                        direction={'column'}
+                        h={'max-content'}
+                        w={'100%'}
+                        pt={4}
+                      >
+                        <Text size="md">{notification?.title}</Text>
+                        <Text
+                          size="sm"
+                          c={'var(--mantine-color-placeholder)'}
+                        >
+                          {moment(notification?.createdAt).calendar()}
+                        </Text>
+                        <Text
+                          size="sm"
+                          pt={4}
+                        >
+                          {notification?.description}
+                        </Text>
+                        <Flex
+                          direction={'row'}
+                          align={'center'}
+                          gap={8}
+                          mt={8}
+                        >
+                          {notification?.buttonPrimary && (
+                            <Button
+                              variant={colorScheme === 'light' ? 'filled' : 'light'}
+                              color={colorScheme === 'light' ? 'dark' : 'gray'}
+                              size={'xs'}
+                              radius={8}
+                              onClick={notification?.buttonPrimary?.onClick}
+                            >
+                              {notification?.buttonPrimary?.label}
+                            </Button>
+                          )}
+                          {notification?.buttonSecondary && (
+                            <Button
+                              variant={'default'}
+                              size={'xs'}
+                              radius={8}
+                              onClick={notification?.buttonSecondary?.onClick}
+                            >
+                              {notification?.buttonSecondary?.label}
+                            </Button>
+                          )}
+                          {notification?.dismissVisible && (
+                            <Button
+                              variant={'default'}
+                              size={'xs'}
+                              radius={8}
+                              leftSection={<IconCheck size={16} />}
+                              onClick={() => null}
+                            >
+                              Dismiss
+                            </Button>
+                          )}
+                        </Flex>
+                      </Flex>
+                    </Flex>
+                  </Indicator>
+                </Flex>
+              ))}
+            </Stack>
+          )}
         </Popover.Dropdown>
       </Popover>
     </>

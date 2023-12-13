@@ -2,6 +2,7 @@ import { useAuthContext } from '@/contexts/AuthContext';
 import { type AccessPoint, type Organization } from '@/types';
 import { useToast } from '@chakra-ui/react';
 import {
+  ActionIcon,
   Autocomplete,
   Box,
   Button,
@@ -17,7 +18,7 @@ import {
   useMantineColorScheme
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { IconAccessPoint, IconElevator, IconLocation, IconPencil, IconPlus } from '@tabler/icons-react';
+import { IconAccessPoint, IconElevator, IconLocation, IconPencil, IconPlus, IconSparkles } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -132,7 +133,7 @@ export default function CreateLocation({
                 name="name"
                 label="Name"
                 description="The name of this location."
-                placeholder="ACME Headquarters"
+                placeholder="R&C Headquarters"
                 withAsterisk
                 {...form.getInputProps('name')}
               />
@@ -140,8 +141,16 @@ export default function CreateLocation({
                 name="description"
                 label="Description"
                 description="A short description of this location."
-                placeholder="This is the headquarters for ACME Inc."
+                placeholder="This is the headquarters of R&C."
                 minRows={2}
+                // rightSection={
+                //   <ActionIcon
+                //     variant="subtle"
+                //     color={'gray'}
+                //   >
+                //     <IconSparkles size={16} />
+                //   </ActionIcon>
+                // }
                 {...form.getInputProps('description')}
               />
               <Button
