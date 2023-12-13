@@ -50,6 +50,7 @@ import {
   IconTrophy,
   IconUsersGroup
 } from '@tabler/icons-react';
+import moment from 'moment';
 
 export default function Profile({ username, user }: { username: string | null; user: User }) {
   const router = useRouter();
@@ -319,7 +320,7 @@ function AchievementItem({ achievement }: { achievement: Achievement | never }) 
       <UnstyledButton
         onClick={() =>
           modals.open({
-            size: 'md',
+            size: 480,
             title: (
               <>
                 <Title order={4}>About {achievement?.name}</Title>
@@ -330,36 +331,34 @@ function AchievementItem({ achievement }: { achievement: Achievement | never }) 
                 direction={'row'}
                 gap={16}
               >
-                <AspectRatio
-                  ratio={1}
-                  w={'128px'}
-                >
-                  <Avatar
-                    src={achievement?.icon}
-                    style={{
-                      borderRadius: '8px',
-                      objectFit: 'contain'
-                      // border: '1px solid var(--mantine-color-default-border)'
-                    }}
-                  />
-                </AspectRatio>
+                <Image
+                  src={achievement?.icon}
+                  w={96}
+                  h={96}
+                  alt={achievement?.name}
+                  style={{
+                    borderRadius: '8px',
+                    aspectRatio: '1 / 1',
+                    objectFit: 'contain'
+                    // border: '1px solid var(--mantine-color-default-border)'
+                  }}
+                />
                 <Flex
                   direction={'column'}
                   gap={8}
+                  h={'100%'}
                 >
-                  <Text>{achievement?.description}</Text>
-                  <Text fw={'bold'}>
-                    Unlocked on {new Date(achievement.earnedAt || 0).toLocaleDateString('en-US', {})}.
-                  </Text>
+                  <Text maw={300}>{achievement?.description}</Text>
+                  <Text fw={'bold'}>Unlocked on {moment(achievement.earnedAt).format('MMMM Do YYYY')}.</Text>
                 </Flex>
               </Flex>
             )
           })
         }
       >
-        <Avatar
-          alt={achievement?.name}
+        <Image
           src={achievement?.icon}
+          alt={achievement?.name}
           w={72}
           h={72}
           style={{
