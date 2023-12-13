@@ -26,12 +26,14 @@ import { Familjen_Grotesk, Inter, Roboto_Flex } from 'next/font/google';
 import { AppProps } from 'next/app';
 import dynamic from 'next/dynamic';
 import NavAsideProvider from '@/contexts/NavAsideContext';
-import { ChakraProvider } from '@chakra-ui/react';
 
-const font = Roboto_Flex({ subsets: ['latin'] });
+const font = Familjen_Grotesk({ subsets: ['latin'] });
 
 const theme = createTheme({
-  fontFamily: font.style.fontFamily
+  fontFamily: font.style.fontFamily,
+  colors: {
+    dark: ['#C1C2C5', '#A6A7AB', '#909296', '#5c5f66', '#373A40', '#2C2E33', '#25262b', '#1A1B1E', '#141517', '#101113']
+  }
 });
 
 function App({ Component, pageProps }: AppProps | any) {
