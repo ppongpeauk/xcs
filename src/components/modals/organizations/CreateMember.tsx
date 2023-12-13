@@ -6,6 +6,7 @@ import {
   Box,
   Button,
   Center,
+  Combobox,
   Flex,
   Modal,
   SegmentedControl,
@@ -17,18 +18,29 @@ import {
   useMantineColorScheme
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { IconAccessPoint, IconElevator, IconLocation, IconPencil, IconPlus, IconUsersGroup } from '@tabler/icons-react';
+import {
+  IconAccessPoint,
+  IconElevator,
+  IconLocation,
+  IconPencil,
+  IconPlus,
+  IconUserPlus,
+  IconUserScan,
+  IconUsersGroup
+} from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-export default function CreateOrganization({
+export default function CreateMember({
   opened,
   onClose,
-  refresh
+  refresh,
+  organization
 }: {
   opened: boolean;
   onClose: () => void;
   refresh: () => void;
+  organization: Organization;
 }) {
   const { user } = useAuthContext();
   const [formSubmitting, setFormSubmitting] = useState(false);
@@ -59,7 +71,7 @@ export default function CreateOrganization({
         onClose={onClose}
         title={
           <Flex align={'center'}>
-            <IconUsersGroup
+            <IconUserPlus
               style={{ width: rem(18), height: rem(18) }}
               stroke={1.5}
             />
@@ -67,7 +79,7 @@ export default function CreateOrganization({
               ml={10}
               fw={'bold'}
             >
-              Create Organization
+              Add Member
             </Text>
           </Flex>
         }
@@ -120,6 +132,16 @@ export default function CreateOrganization({
               direction={'column'}
               gap={8}
             >
+              <Select
+                label="Member Type"
+                description="The type of member to add."
+                placeholder="Select a member type..."
+                data={[
+                  { label: 'Access Point 1', value: '1' },
+                  { label: 'Access Point 2', value: '2' },
+                  { label: 'Access Point 3', value: '3' }
+                ]}
+              ></Select>
               <TextInput
                 name="name"
                 label="Name"

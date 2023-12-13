@@ -311,34 +311,6 @@ export default function LocationInfo({
             </Flex>
             <Flex
               mt={16}
-              gap={8}
-              direction={'row'}
-              style={{
-                alignItems: 'flex-start',
-                justifyContent: 'flex-start',
-                justifyItems: 'center'
-              }}
-            >
-              <Button
-                variant="default"
-                onClick={roleModalOnOpen}
-                leftSection={<IconUsersGroup size={'16px'} />}
-              >
-                Access Groups
-              </Button>
-              <Tooltip.Floating label="Download everything you need to integrate XCS into your place.">
-                <Button
-                  variant="default"
-                  onClick={downloadTemplate}
-                  leftSection={<IconDownload size={'16px'} />}
-                  loading={packLoading}
-                >
-                  Download Template
-                </Button>
-              </Tooltip.Floating>
-            </Flex>
-            <Flex
-              mt={8}
               style={{
                 flexDirection: 'row',
                 gap: '0.5rem'
@@ -355,6 +327,16 @@ export default function LocationInfo({
               >
                 Save Changes
               </Button>
+              <Tooltip.Floating label="Download everything you need to integrate XCS into your place.">
+                <Button
+                  variant="default"
+                  onClick={downloadTemplate}
+                  leftSection={<IconDownload size={'16px'} />}
+                  loading={packLoading}
+                >
+                  Download Template
+                </Button>
+              </Tooltip.Floating>
               <Button
                 color="red"
                 leftSection={<IconRecycle size={'16px'} />}

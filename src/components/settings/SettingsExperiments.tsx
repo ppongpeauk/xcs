@@ -1,17 +1,4 @@
-import {
-  Container,
-  Flex,
-  Box,
-  Title,
-  Text,
-  Button,
-  UnstyledButton,
-  Paper,
-  Anchor,
-  LoadingOverlay,
-  Switch,
-  Group
-} from '@mantine/core';
+import { Container, Flex, Switch, Group } from '@mantine/core';
 import {
   IconCircleCheckFilled,
   IconCode,
@@ -20,12 +7,8 @@ import {
   IconLogout,
   IconSparkles
 } from '@tabler/icons-react';
-import { modals } from '@mantine/modals';
-import { notifications } from '@mantine/notifications';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { useMediaQuery } from '@mantine/hooks';
-import moment from 'moment';
-import { useRouter } from 'next/router';
 
 export default function SettingsExperiments() {
   const { user, currentUser, refreshCurrentUser, isAuthLoaded } = useAuthContext();

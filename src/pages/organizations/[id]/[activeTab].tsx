@@ -51,6 +51,7 @@ import LocationRoutines from '@/components/location/LocationRoutines';
 import { Organization } from '@/types';
 import OrganizationInfo from '@/components/organization/OrganizationInfo';
 import OrganizationMembers from '@/components/organization/OrganizationMembers';
+import OrganizationEvents from '@/components/organization/OrganizationEvents';
 
 export default function PlatformOrganization() {
   const router = useRouter();
@@ -159,7 +160,7 @@ export default function PlatformOrganization() {
           <Tooltip.Floating label={data?.name}>
             {/* <IconUsersGroup size={32} /> */}
             <Avatar
-              size={96}
+              size={64}
               src={data?.avatar}
               style={{
                 borderRadius: '8px'
@@ -170,7 +171,12 @@ export default function PlatformOrganization() {
             visible={!data}
             w={'fit-content'}
           >
-            <Title fw={'bold'}>{data?.name || 'Unknown Organization'}</Title>
+            <Title
+              fw={'bold'}
+              order={2}
+            >
+              {data?.name || 'Unknown Organization'}
+            </Title>
           </Skeleton>
         </Group>
         <Divider my={24} />
@@ -198,11 +204,17 @@ export default function PlatformOrganization() {
               Members
             </Tabs.Tab>
             <Tabs.Tab
+              value="event-log"
+              leftSection={<IconTimelineEvent style={iconStyle} />}
+            >
+              Event Log
+            </Tabs.Tab>
+            <Tabs.Tab
               value="locations"
               leftSection={<IconLocation style={iconStyle} />}
               rightSection={<IconExternalLink size={16} />}
               onClick={(e) => {
-                e.preventDefault();
+                e.stopPropagation();
                 push(`/locations?organizaion=${data?.id}`);
               }}
             >
@@ -235,11 +247,18 @@ export default function PlatformOrganization() {
                 pb={16}
               >
                 Members
+                <InfoLink
+                  title="Members"
+                  description="Manage members of this organization."
+                />
               </Title>
               <OrganizationMembers
                 data={data as Organization}
                 refreshData={refreshData}
               />
+            </Tabs.Panel>
+            <Tabs.Panel value="event-log">
+              <OrganizationEvents />
             </Tabs.Panel>
           </Box>
         </Tabs>

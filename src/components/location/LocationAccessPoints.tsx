@@ -64,7 +64,8 @@ import {
   IconTag,
   IconTagOff,
   IconPlus,
-  IconJson
+  IconJson,
+  IconTimelineEvent
 } from '@tabler/icons-react';
 import { default as sortBy } from 'lodash/sortBy';
 import { default as moment } from 'moment';
@@ -89,7 +90,7 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
   const [selectedRecords, setSelectedRecords] = useState<any[]>([]);
   const [page, setPage] = useState(1);
   const [accessPoints, setAccessPoints] = useState<any>(null);
-  const { user } = useAuthContext();
+  const { user, currentUser } = useAuthContext();
   const { push } = useRouter();
   const { colorScheme } = useMantineColorScheme();
   const [isCreateModalOpen, { open: openCreateModal, close: closeCreateModal }] = useDisclosure(false);
@@ -193,13 +194,15 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
         >
           New Access Point
         </Button>
-        <Button
-          leftSection={<IconJson size={'16px'} />}
-          variant={'default'}
-          onClick={openCreateBulkModal}
-        >
-          Bulk Import
-        </Button>
+        {currentUser?.platform?.features?.bulkImport && (
+          <Button
+            leftSection={<IconJson size={'16px'} />}
+            variant={'default'}
+            onClick={openCreateBulkModal}
+          >
+            Bulk Import
+          </Button>
+        )}
         {/* <BulkActionMenu
           selectedRecords={selectedRecords}
           location={location}
@@ -317,7 +320,10 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
                               variant="transparent"
                               size="xs"
                               color={colorScheme === 'dark' ? 'white' : 'black'}
-                              onClick={copy}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                copy();
+                              }}
                             >
                               {copied ? <IconCheck /> : <IconCopy />}
                             </ActionIcon>
@@ -335,9 +341,15 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
               render: ({ config: { active, armed } }) => {
                 return (
                   <>
-                    <Flex style={{ gap: 8 }}>
+                    <Flex
+                      style={{ gap: 8 }}
+                      w={'fit-content'}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                      }}
+                    >
                       <Tooltip.Floating label={active ? 'Active' : 'Not Active'}>
-                        <Box>
+                        <Flex>
                           {active ? (
                             <IconBolt size={16} />
                           ) : (
@@ -346,10 +358,10 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
                               size={16}
                             />
                           )}{' '}
-                        </Box>
+                        </Flex>
                       </Tooltip.Floating>
                       <Tooltip.Floating label={armed ? 'Armed' : 'Not Armed'}>
-                        <Box>
+                        <Flex>
                           {armed ? (
                             <IconLock size={16} />
                           ) : (
@@ -358,7 +370,7 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
                               size={16}
                             />
                           )}{' '}
-                        </Box>
+                        </Flex>
                       </Tooltip.Floating>
                     </Flex>
                   </>
@@ -391,49 +403,65 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
                     e.stopPropagation();
                   }}
                 >
-                  <ActionIcon
-                    variant="subtle"
-                    size="sm"
-                    onClick={() => {
-                      push(`/access-points/${cell.id}`);
-                    }}
-                    color={colorScheme === 'dark' ? 'white' : 'black'}
-                  >
-                    <IconEdit size={16} />
-                  </ActionIcon>
-                  <ActionIcon
-                    variant="subtle"
-                    size="sm"
-                    onClick={() => {
-                      modals.openConfirmModal({
-                        title: <Title order={4}>Delete access point?</Title>,
-                        children: <Text size="sm">Are you sure you want to delete this access point?</Text>,
-                        labels: { confirm: 'Delete access point', cancel: 'Nevermind' },
-                        confirmProps: { color: 'red' },
-                        onConfirm: () => {
-                          user.getIdToken().then((token: string) => {
-                            fetch(`/api/v1/access-points/${cell.id}`, {
-                              method: 'DELETE',
-                              headers: { Authorization: `Bearer ${token}` }
-                            })
-                              .then((res) => {
-                                if (res.status === 200) return res.json();
-                                throw new Error(`Failed to delete access point. (${res.status})`);
+                  <Tooltip label="Edit">
+                    <ActionIcon
+                      variant="subtle"
+                      size="sm"
+                      onClick={() => {
+                        push(`/access-points/${cell.id}`);
+                      }}
+                      color={colorScheme === 'dark' ? 'white' : 'black'}
+                    >
+                      <IconEdit size={16} />
+                    </ActionIcon>
+                  </Tooltip>
+                  <Tooltip label="View in Event Log">
+                    <ActionIcon
+                      variant="subtle"
+                      size="sm"
+                      onClick={() => {
+                        push(`/access-points/${cell.id}`);
+                      }}
+                      color={colorScheme === 'dark' ? 'white' : 'black'}
+                    >
+                      <IconTimelineEvent size={16} />
+                    </ActionIcon>
+                  </Tooltip>
+                  <Tooltip label="Delete">
+                    <ActionIcon
+                      variant="subtle"
+                      size="sm"
+                      onClick={() => {
+                        modals.openConfirmModal({
+                          title: <Title order={4}>Delete access point?</Title>,
+                          children: <Text size="sm">Are you sure you want to delete this access point?</Text>,
+                          labels: { confirm: 'Delete access point', cancel: 'Nevermind' },
+                          confirmProps: { color: 'red' },
+                          onConfirm: () => {
+                            user.getIdToken().then((token: string) => {
+                              fetch(`/api/v1/access-points/${cell.id}`, {
+                                method: 'DELETE',
+                                headers: { Authorization: `Bearer ${token}` }
                               })
-                              .then(() => {
-                                refreshData();
-                              })
-                              .catch((err) => {
-                                console.log(err);
-                              });
-                          });
-                        }
-                      });
-                    }}
-                    color={'red'}
-                  >
-                    <IconRecycle size={16} />
-                  </ActionIcon>
+                                .then((res) => {
+                                  if (res.status === 200) return res.json();
+                                  throw new Error(`Failed to delete access point. (${res.status})`);
+                                })
+                                .then(() => {
+                                  refreshData();
+                                })
+                                .catch((err) => {
+                                  console.log(err);
+                                });
+                            });
+                          }
+                        });
+                      }}
+                      color={'red'}
+                    >
+                      <IconTrash size={16} />
+                    </ActionIcon>
+                  </Tooltip>
                 </Group>
               )
             }

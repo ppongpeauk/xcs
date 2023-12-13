@@ -267,6 +267,7 @@ export default function PlatformLocations() {
                 value: organization.id
               })) || []
             }
+            allowDeselect={false}
           />
           <Flex
             w={'fit-content'}
@@ -406,13 +407,12 @@ export default function PlatformLocations() {
                     </Button>
                   )}
                   <Button
-                    variant="filled"
+                    variant="default"
                     size="xs"
                     onClick={(e) => {
                       e.stopPropagation();
                       push(`/locations/${cell.id}/general`);
                     }}
-                    color={colorScheme === 'dark' ? 'dark.5' : 'dark.5'}
                     leftSection={<IconEdit size={16} />}
                   >
                     Manage

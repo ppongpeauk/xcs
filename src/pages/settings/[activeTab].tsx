@@ -206,6 +206,7 @@ export default function Settings() {
               value="experimental-features"
               leftSection={<IconFlask style={iconStyle} />}
               display={currentUser?.platform?.features?.beta?.enabled ? 'flex' : 'none'}
+              disabled
             >
               Experimental Features
             </Tabs.Tab>

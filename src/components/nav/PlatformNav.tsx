@@ -29,7 +29,8 @@ import {
   useComputedColorScheme,
   Alert,
   CloseButton,
-  Tooltip
+  Tooltip,
+  Anchor
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { modals } from '@mantine/modals';
@@ -48,6 +49,7 @@ import { User } from '@/types';
 import {
   Icon3dCubeSphere,
   IconActivity,
+  IconArrowRight,
   IconBell,
   IconBuildingArch,
   IconCaretDown,
@@ -140,7 +142,7 @@ export default function PlatformNav({
         aside={{ width: 340, breakpoint: 'md', collapsed: { mobile: true, desktop: !asideOpened } }}
         padding="md"
         zIndex={5}
-        // transitionDuration={0}
+        transitionDuration={0}
       >
         <AppShell.Header px={'md'}>
           <Flex
@@ -225,14 +227,14 @@ export default function PlatformNav({
           >
             Profile
           </NavButton>
-          <NavButton
+          {/* <NavButton
             colorScheme={colorScheme}
             component={NextLink}
             href={'/event-logs'}
             leftSection={<IconCube size={16} />}
           >
             Event Logs
-          </NavButton>
+          </NavButton> */}
           <NavButton
             colorScheme={colorScheme}
             component={NextLink}
@@ -365,6 +367,22 @@ function SettingsMenu({ currentUser }: { currentUser?: User }) {
                   setColorScheme('dark');
                 }}
               />
+              {/* <Anchor
+                component={NextLink}
+                href={'/settings/profile'}
+                pt={8}
+                size="sm"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 4,
+                  textUnderlineOffset: '0.25rem'
+                }}
+                w={'fit-content'}
+              >
+                <Text>View all settings</Text>
+                <IconArrowRight size={16} />
+              </Anchor> */}
             </Flex>
           </Flex>
         </Popover.Dropdown>

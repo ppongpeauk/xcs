@@ -113,7 +113,7 @@ export default function Login() {
             }}
           >
             <LoadingOverlay
-              visible={!isAuthLoaded}
+              visible={!isAuthLoaded || user}
               zIndex={1000}
               overlayProps={{ radius: 'sm', blur: 2 }}
               loaderProps={{ size: 'md', color: 'var(--mantine-color-default-color)' }}

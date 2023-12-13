@@ -27,7 +27,16 @@ import {
 import { DataTable, DataTableSortStatus } from 'mantine-datatable';
 import CreateLocationDialog from '@/components/CreateLocationDialog';
 import { Location, Organization } from '@/types';
-import { IconClick, IconEdit, IconPencil, IconPlus, IconRefresh, IconSearch, IconX } from '@tabler/icons-react';
+import {
+  IconArrowsJoin,
+  IconClick,
+  IconEdit,
+  IconPencil,
+  IconPlus,
+  IconRefresh,
+  IconSearch,
+  IconX
+} from '@tabler/icons-react';
 import NextLink from 'next/link';
 
 // contexts
@@ -147,7 +156,6 @@ export default function PlatformOrganizations() {
         opened={isCreateOrganizationModalOpen}
         onClose={onCreateOrganizationModalClose}
         refresh={refreshOrganizations}
-        organization={selectedOrganization as Organization}
       />
       {/* main container */}
       <Container
@@ -185,6 +193,14 @@ export default function PlatformOrganizations() {
               </Button>
             </span>
           </Tooltip.Floating>
+          <Button
+            leftSection={<IconArrowsJoin size={16} />}
+            color={'dark.5'}
+            onClick={onCreateOrganizationModalOpen}
+            disabled={!currentUser?.roblox?.verified}
+          >
+            Join Organization
+          </Button>
           <Flex
             w={'fit-content'}
             gap={8}
@@ -298,13 +314,12 @@ export default function PlatformOrganizations() {
                   wrap="nowrap"
                 >
                   <Button
-                    variant="filled"
+                    variant="default"
                     size="xs"
                     onClick={(e) => {
                       e.stopPropagation();
                       push(`/organizations/${cell.id}/overview`);
                     }}
-                    color={colorScheme === 'dark' ? 'dark.5' : 'dark.5'}
                     leftSection={<IconEdit size={16} />}
                   >
                     Manage

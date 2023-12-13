@@ -30,7 +30,8 @@ import {
   Menu,
   rem,
   useMantineColorScheme,
-  LoadingOverlay
+  LoadingOverlay,
+  Image
 } from '@mantine/core';
 import { useDebouncedValue, useDisclosure } from '@mantine/hooks';
 import {
@@ -63,7 +64,11 @@ import {
   IconBoxMultiple,
   IconTag,
   IconTagOff,
-  IconPlus
+  IconPlus,
+  IconLinkPlus,
+  IconRowRemove,
+  IconTrashX,
+  IconUserPlus
 } from '@tabler/icons-react';
 import { default as sortBy } from 'lodash/sortBy';
 import { default as moment } from 'moment';
@@ -72,6 +77,8 @@ import CreateAccessPoint from '../modals/access-points/CreateAccessPoint';
 import { modals } from '@mantine/modals';
 import CreateRoutine from '../modals/routines/CreateRoutine';
 import { notifications } from '@mantine/notifications';
+import CreateOrganization from '../modals/organizations/CreateOrganization';
+import CreateMember from '../modals/organizations/CreateMember';
 
 export default function OrganizationMembers({ data, refreshData }: { data: Organization; refreshData: () => void }) {
   const [sortStatus, setSortStatus] = useState<DataTableSortStatus<any>>({
@@ -84,7 +91,7 @@ export default function OrganizationMembers({ data, refreshData }: { data: Organ
   const [debouncedQuery] = useDebouncedValue(query, 200);
   const [records, setRecords] = useState<any[]>([]);
   const [selectedRecords, setSelectedRecords] = useState<any[]>([]);
-  const [routines, setRoutines] = useState<any>(null);
+  const [members, setMembers] = useState<any>(null);
   const { user } = useAuthContext();
   const { push } = useRouter();
   const { colorScheme } = useMantineColorScheme();
@@ -94,9 +101,9 @@ export default function OrganizationMembers({ data, refreshData }: { data: Organ
 
   // get tags
   useEffect(() => {
-    if (!routines) return;
+    if (!members) return;
     let res = [] as string[];
-    routines?.forEach((accessPoint: any) => {
+    members?.forEach((accessPoint: any) => {
       res = [...res, ...(accessPoint?.tags || [])];
     });
     res = [...(new Set(res as any) as any)];
@@ -110,10 +117,10 @@ export default function OrganizationMembers({ data, refreshData }: { data: Organ
         })
       ) as any)
     ]);
-  }, [routines]);
+  }, [members]);
 
   useEffect(() => {
-    const data = sortBy(routines, sortStatus.columnAccessor) as AccessPoint[];
+    const data = sortBy(members, sortStatus.columnAccessor) as AccessPoint[];
     let newRecords = data;
     setRecords(sortStatus.direction === 'desc' ? newRecords.reverse() : newRecords);
 
@@ -132,7 +139,8 @@ export default function OrganizationMembers({ data, refreshData }: { data: Organ
   }, [sortStatus, debouncedQuery, tagQuery]);
 
   const refreshMembers = useCallback(async () => {
-    const token = user.getIdToken();
+    if (!user || !data) return;
+    const token = await user.getIdToken();
     fetch(`/api/v2/organizations/${data?.id}/members`, {
       method: 'GET',
       headers: { Authorization: `Bearer ${token}` }
@@ -142,8 +150,8 @@ export default function OrganizationMembers({ data, refreshData }: { data: Organ
         throw new Error(`Failed to fetch members. (${res.status})`);
       })
       .then((data) => {
-        setRoutines(data);
-        setRecords(sortBy(data.accessPoints, 'name'));
+        setMembers(data);
+        setRecords(sortBy(data, 'name'));
       })
       .catch((error) => {
         notifications.show({
@@ -152,30 +160,38 @@ export default function OrganizationMembers({ data, refreshData }: { data: Organ
           color: 'red'
         });
       });
-  }, [location]);
+  }, [location, user, data]);
 
   useEffect(() => {
     if (!location) return;
-    if (!user) return;
+    if (!user || !data) return;
+    console.log('refreshing members');
     refreshMembers();
-  }, [location, user]);
+  }, [location, user, data]);
 
   return (
     <>
-      <CreateRoutine
+      <CreateMember
         opened={isCreateModalOpen}
         onClose={closeCreateModal}
-        location={location}
+        organization={data}
         refresh={refreshData}
       />
 
       <Button.Group pb={16}>
         <Button
-          leftSection={<IconPlus size={'16px'} />}
+          leftSection={<IconUserPlus size={'16px'} />}
           variant={'default'}
           onClick={openCreateModal}
         >
           Add Member
+        </Button>
+        <Button
+          leftSection={<IconLinkPlus size={'16px'} />}
+          variant={'default'}
+          onClick={openCreateModal}
+        >
+          Create Invite Link
         </Button>
         {/* <BulkActionMenu
           selectedRecords={selectedRecords}
@@ -195,7 +211,7 @@ export default function OrganizationMembers({ data, refreshData }: { data: Organ
       {/* Main Datatable */}
       <Box pos={'relative'}>
         <LoadingOverlay
-          visible={!routines}
+          visible={!members}
           zIndex={4}
           overlayProps={{ radius: 'sm', blur: 2 }}
           loaderProps={{ size: 'md', color: 'var(--mantine-color-default-color)' }}
@@ -215,9 +231,9 @@ export default function OrganizationMembers({ data, refreshData }: { data: Organ
               sortable: true,
               filter: (
                 <TextInput
-                  label="Access Point Name"
-                  description="Show all access points which names include the specified text."
-                  placeholder="Search access point..."
+                  label="Member Name"
+                  description="Show all members which names include the specified text."
+                  placeholder="Search member..."
                   leftSection={<IconSearch size={16} />}
                   rightSection={
                     <ActionIcon
@@ -234,84 +250,40 @@ export default function OrganizationMembers({ data, refreshData }: { data: Organ
                 />
               ),
               filtering: query !== '',
-              render: ({ name, config: { active, armed } }) => {
+              render: ({ username, displayName, avatar }) => {
                 return (
-                  <Flex style={{ gap: 8, alignItems: 'center' }}>
-                    <Text style={{ background: 'transparent' }}>{name}</Text>
+                  <Flex style={{ gap: 12, alignItems: 'center' }}>
+                    <Image
+                      src={avatar}
+                      alt={displayName}
+                      width={48}
+                      height={48}
+                      radius={'xl'}
+                    />
+                    <Stack gap={0}>
+                      <Text
+                        style={{ background: 'transparent' }}
+                        size={'sm'}
+                        fw={'bold'}
+                      >
+                        {displayName}
+                      </Text>
+                      <Text
+                        style={{ background: 'transparent' }}
+                        size={'sm'}
+                      >
+                        @{username}
+                      </Text>
+                    </Stack>
                   </Flex>
                 );
               }
             },
             {
-              accessor: 'tags',
-              title: 'Tags',
-              hidden: tagsOptions.length === 0,
-              filter: (
-                <MultiSelect
-                  label="Tags"
-                  description="Show all access points that possess the specified tags."
-                  data={tagsOptions}
-                  value={tagQuery}
-                  placeholder="Search tags..."
-                  onChange={setTagQuery}
-                  leftSection={<IconSearch size={16} />}
-                  clearable
-                  searchable
-                />
-              ),
-              filtering: tagQuery.length > 0,
-              render: ({ tags }) => {
-                return (
-                  <Flex style={{ gap: 8, alignItems: 'center' }}>
-                    {(tags || []).map((tag: any) => {
-                      return (
-                        <Pill
-                          key={tag}
-                          bg={colorScheme === 'dark' ? 'dark.4' : undefined}
-                        >
-                          {tag}
-                        </Pill>
-                      );
-                    })}
-                  </Flex>
-                );
-              }
-            },
-            {
-              accessor: 'status',
-              title: 'Status',
-              render: ({ config: { active, armed } }) => {
-                return (
-                  <>
-                    <Flex style={{ gap: 8 }}>
-                      <Tooltip.Floating label={active ? 'Active' : 'Not Active'}>
-                        <Box>
-                          {active ? (
-                            <IconBolt size={16} />
-                          ) : (
-                            <IconBoltOff
-                              color="red"
-                              size={16}
-                            />
-                          )}{' '}
-                        </Box>
-                      </Tooltip.Floating>
-                      <Tooltip.Floating label={armed ? 'Armed' : 'Not Armed'}>
-                        <Box>
-                          {armed ? (
-                            <IconLock size={16} />
-                          ) : (
-                            <IconLockOpen
-                              color="red"
-                              size={16}
-                            />
-                          )}{' '}
-                        </Box>
-                      </Tooltip.Floating>
-                    </Flex>
-                  </>
-                );
-              }
+              accessor: 'createdAt',
+              title: 'Join Date',
+              sortable: true,
+              render: (cell) => moment(cell.joinedAt).calendar()
             },
             {
               accessor: 'actions',
@@ -346,9 +318,9 @@ export default function OrganizationMembers({ data, refreshData }: { data: Organ
                     size="sm"
                     onClick={() => {
                       modals.openConfirmModal({
-                        title: <Title order={4}>Delete access point?</Title>,
-                        children: <Text size="sm">Are you sure you want to delete this access point?</Text>,
-                        labels: { confirm: 'Delete access point', cancel: 'Nevermind' },
+                        title: <Title order={4}>Remove member from organization?</Title>,
+                        children: <Text size="sm">Are you sure you want to remove this member?</Text>,
+                        labels: { confirm: 'Remove member', cancel: 'Nevermind' },
                         confirmProps: { color: 'red' },
                         onConfirm: () => {
                           user.getIdToken().then((token: string) => {
@@ -358,7 +330,7 @@ export default function OrganizationMembers({ data, refreshData }: { data: Organ
                             })
                               .then((res) => {
                                 if (res.status === 200) return res.json();
-                                throw new Error(`Failed to delete access point. (${res.status})`);
+                                throw new Error(`Failed to remove member. (${res.status})`);
                               })
                               .then(() => {
                                 refreshData();
@@ -372,7 +344,7 @@ export default function OrganizationMembers({ data, refreshData }: { data: Organ
                     }}
                     color={'red'}
                   >
-                    <IconRecycle size={16} />
+                    <IconTrash size={16} />
                   </ActionIcon>
                 </Group>
               )

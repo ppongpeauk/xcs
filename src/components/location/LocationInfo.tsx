@@ -3,7 +3,10 @@ import { Suspense, useEffect, useState } from 'react';
 
 import {
   Box,
-  Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator,
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbSeparator,
   Button,
   Container,
   Flex,
@@ -340,7 +343,10 @@ export default function LocationInfo({ location, query, idToken, refreshData }: 
                         <Button
                           onClick={() => {
                             if (location?.roblox?.universe?.id !== null) {
-                              window.open(`https://www.roblox.com/games/${location?.roblox?.place?.rootPlaceId}/game`, '_blank');
+                              window.open(
+                                `https://www.roblox.com/games/${location?.roblox?.place?.rootPlaceId}/game`,
+                                '_blank'
+                              );
                             }
                           }}
                           variant={'solid'}
@@ -398,13 +404,25 @@ export default function LocationInfo({ location, query, idToken, refreshData }: 
                   >
                     Save Changes
                   </Button>
-                  <Tooltip label={<Flex flexDir={'column'} p={2}>
-                    <Text fontSize={'lg'} fontWeight={'bold'}>Download Template</Text>
-                    <Text>
-                      Download everything you need to integrate XCS into your experience, including pre-configured server scripts and access point readers.
-                    </Text>
-
-                  </Flex>}>
+                  <Tooltip
+                    label={
+                      <Flex
+                        flexDir={'column'}
+                        p={2}
+                      >
+                        <Text
+                          fontSize={'lg'}
+                          fontWeight={'bold'}
+                        >
+                          Download Template
+                        </Text>
+                        <Text>
+                          Download everything you need to integrate XCS into your experience, including pre-configured
+                          server scripts and access point readers.
+                        </Text>
+                      </Flex>
+                    }
+                  >
                     <Button
                       mb={2}
                       onClick={downloadStarterPack}
