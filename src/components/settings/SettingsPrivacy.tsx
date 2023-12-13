@@ -84,6 +84,13 @@ export default function SettingsPrivacy() {
             {...form.getInputProps('organizations')}
             checked={form.values.organizations}
           />
+          <Switch
+            label="Linked accounts are public"
+            description="Show your linked accounts on your profile."
+            {...form.getInputProps('linkedAccounts')}
+            checked={form.values.linkedAccounts}
+            disabled
+          />
           <Title order={4}>Roblox</Title>
           <Switch
             label="Link Roblox scans to XCS profile"

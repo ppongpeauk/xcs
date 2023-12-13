@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useToast } from '@chakra-ui/react';
 
-import { Flex, Button, Box, Avatar, Title, rem, TextInput, Group, Textarea, Input } from '@mantine/core';
+import { Flex, Button, Box, Avatar, Title, rem, TextInput, Group, Textarea, Input, Tooltip } from '@mantine/core';
 import { Field, Form, Formik } from 'formik';
 
 import { useAuthContext } from '@/contexts/AuthContext';
@@ -116,7 +116,7 @@ export default function SettingsProfile() {
           return 'Email is required.';
         }
         const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-        if (!regex.test(value)) {
+        if (!regex.test(value) && value !== currentUser?.email?.address) {
           return 'Invalid email address.';
         }
         return false;
@@ -255,14 +255,18 @@ export default function SettingsProfile() {
                   leftSection={<IconDeviceLaptop size={16} />}
                   {...form.getInputProps('displayName')}
                 />
-                <TextInput
-                  label="Username"
-                  placeholder="Username"
-                  required
-                  disabled
-                  leftSection={<IconUser size={16} />}
-                  {...form.getInputProps('username')}
-                />
+                <Tooltip.Floating label="Your username cannot be changed.">
+                  <span>
+                    <TextInput
+                      label="Username"
+                      placeholder="Username"
+                      required
+                      disabled
+                      leftSection={<IconUser size={16} />}
+                      {...form.getInputProps('username')}
+                    />
+                  </span>
+                </Tooltip.Floating>
               </Flex>
               <TextInput
                 label="Email"
@@ -294,6 +298,7 @@ export default function SettingsProfile() {
               type={'submit'}
               color={'dark.5'}
               loading={formSubmitting}
+              disabled={currentUser?.platform?.features?.demo?.enabled}
             >
               Save Changes
             </Button>

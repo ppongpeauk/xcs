@@ -27,7 +27,7 @@ import { AppProps } from 'next/app';
 import dynamic from 'next/dynamic';
 import NavAsideProvider from '@/contexts/NavAsideContext';
 
-const font = Familjen_Grotesk({ subsets: ['latin'] });
+const font = Roboto_Flex({ subsets: ['latin'] });
 
 const theme = createTheme({
   fontFamily: font.style.fontFamily,

@@ -50,6 +50,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   // update profile
   if (req.method === 'PATCH') {
     // parameters to update
+    if (user?.platform?.features?.demo?.enabled)
+      return res.status(400).json({ message: 'You cannot edit your profile while in demo mode.' });
     if (!req.body) return res.status(400).json({ message: 'No body provided.' });
     let { displayName, bio, avatar, email, website } = req.body as any;
 

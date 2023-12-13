@@ -46,6 +46,10 @@ export interface User {
         enabled: boolean;
         createdAt: string;
       };
+      demo?: {
+        enabled: boolean;
+        createdAt: string;
+      };
     };
   };
   privacy?: {
@@ -60,6 +64,7 @@ export interface User {
   };
   achievements?: Record<string, Achievement>;
   organizations?: Organization[];
+  createdAt: Date;
 }
 
 export interface Organization {

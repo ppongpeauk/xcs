@@ -174,8 +174,7 @@ export default function Login() {
                           errorMessage = 'An unknown error occurred.';
                       }
                       notifications.show({
-                        title: errorMessage,
-                        message: 'Please try again.',
+                        message: errorMessage,
                         color: 'red'
                       });
                     })

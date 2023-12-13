@@ -19,7 +19,8 @@ import {
   AspectRatio,
   Group,
   Paper,
-  Anchor
+  Anchor,
+  Pill
 } from '@mantine/core';
 import { modals } from '@mantine/modals';
 
@@ -48,6 +49,7 @@ import {
   IconSettings,
   IconSettings2,
   IconTrophy,
+  IconUserEdit,
   IconUsersGroup
 } from '@tabler/icons-react';
 import moment from 'moment';
@@ -133,7 +135,12 @@ export default function Profile({ username, user }: { username: string | null; u
             >
               {user?.displayName}
             </Title>
-            <Title order={4}>@{user?.username}</Title>
+            <Title
+              order={4}
+              fw={'normal'}
+            >
+              @{user?.username}
+            </Title>
           </Flex>
         </Flex>
 
@@ -146,6 +153,7 @@ export default function Profile({ username, user }: { username: string | null; u
             fullWidth
             variant="default"
             loading={!isAuthLoaded}
+            leftSection={<IconUserEdit size={16} />}
           >
             Edit profile
           </Button>
@@ -165,7 +173,7 @@ export default function Profile({ username, user }: { username: string | null; u
               <Title order={4}>About Me</Title>
             </Group>
             <Text
-              size={'md'}
+              size={'sm'}
               c={!user?.about?.bio ? 'gray.6' : 'unset'}
               style={{
                 whiteSpace: 'pre-wrap',
@@ -173,6 +181,13 @@ export default function Profile({ username, user }: { username: string | null; u
               }}
             >
               {user?.about?.bio || 'This user has not set a bio yet.'}
+            </Text>
+            <Text
+              size={'sm'}
+              c={'gray.6'}
+              mt={4}
+            >
+              Joined {moment(user?.createdAt).format('MMMM Do YYYY')}.
             </Text>
             {/* links */}
             <AboutMeLinks user={user} />
@@ -257,6 +272,8 @@ export default function Profile({ username, user }: { username: string | null; u
 }
 
 function AboutMeLinks({ user }: { user: User }) {
+  const { colorScheme } = useMantineColorScheme();
+
   return (
     <Flex
       direction={'column'}
@@ -264,32 +281,46 @@ function AboutMeLinks({ user }: { user: User }) {
     >
       {/* home page */}
       {user?.about?.website && (
-        <Flex
-          align={'center'}
-          gap={8}
+        <Button
+          variant={colorScheme === 'dark' ? 'light' : 'subtle'}
+          color={colorScheme === 'dark' ? 'gray' : 'dark'}
+          w={'fit-content'}
+          px={0}
+          style={{
+            // backgroundColor: 'var(--mantine-color-default)',
+            border: '1px solid var(--mantine-color-default-border)',
+            borderRadius: '24px'
+          }}
         >
-          <IconHome size={16} />
-          <Anchor
-            size={'md'}
-            fw={'bold'}
-            href={user?.about?.website}
-            c={'inherit'}
-            target={'_blank'}
-            maw={240}
-            style={{
-              overflow: 'hidden',
-              textUnderlineOffset: '0.25rem',
-              whiteSpace: 'nowrap',
-              textOverflow: 'ellipsis'
-            }}
+          <Flex
+            align={'center'}
+            gap={8}
+            mx={16}
           >
-            {user?.about?.website}
-            <IconExternalLink
-              size={12}
-              style={{ marginLeft: 4 }}
-            />
-          </Anchor>
-        </Flex>
+            <IconHome size={14} />
+            <Anchor
+              size={'sm'}
+              fw={'bold'}
+              href={user?.about?.website}
+              c={'inherit'}
+              target={'_blank'}
+              maw={240}
+              style={{
+                overflow: 'hidden',
+                // textUnderlineOffset: '0.25rem',
+                textDecoration: 'none',
+                whiteSpace: 'nowrap',
+                textOverflow: 'ellipsis'
+              }}
+            >
+              {user?.about?.website}
+              {/* <IconExternalLink
+                size={12}
+                style={{ marginLeft: 4 }}
+              /> */}
+            </Anchor>
+          </Flex>
+        </Button>
       )}
     </Flex>
   );

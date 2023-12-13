@@ -108,8 +108,8 @@ function NavButton({ ...props }: any) {
 
   return (
     <Button
-      variant={isActive ? 'light' : 'transparent'}
-      color={colorScheme === 'dark' ? 'gray' : 'black'}
+      variant={isActive ? 'filled' : 'transparent'}
+      color={colorScheme === 'dark' ? 'gray' : 'dark'}
       justify="flex-start"
       fullWidth
       {...props}
@@ -489,18 +489,18 @@ function NotificationMenu({ currentUser }: { currentUser?: User }) {
               <Title size="md">Inbox</Title>
             </Flex>
           </Flex>
-          <Divider />
+          <Divider color="var(--mantine-color-default-border)" />
           {!notifications.length ? (
             <Flex
               align={'center'}
               justify={'center'}
-              mih={128}
+              mih={64}
             >
               <Text
                 px={8}
                 c={'gray.5'}
               >
-                You have no notifications.
+                You have no messages.
               </Text>
             </Flex>
           ) : (
@@ -651,7 +651,7 @@ function AvatarMenu({ currentUser, onLogoutOpen }: { currentUser?: User; onLogou
                     size="xs"
                     lh={1.25}
                   >
-                    @{currentUser?.username}
+                    Restrafes & Co.
                   </Text> */}
                   {/* <Flex
                     direction={'row'}

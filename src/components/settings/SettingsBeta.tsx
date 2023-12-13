@@ -38,7 +38,7 @@ export default function SettingsBeta() {
           p={'lg'}
           withBorder
           mih={128}
-          w={isMobile ? 'unset' : 512}
+          w={isMobile ? 'unset' : '100%'}
         >
           {isAuthLoaded &&
             currentUser &&
