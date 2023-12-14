@@ -77,6 +77,7 @@ export default function CreateAccessPoint({
           </Flex>
         }
         centered
+        radius={'md'}
       >
         <form
           onSubmit={form.onSubmit((values) => {

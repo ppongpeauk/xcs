@@ -174,13 +174,13 @@ export default function Profile({ username, user }: { username: string | null; u
             </Group>
             <Text
               size={'sm'}
-              c={!user?.about?.bio ? 'gray.6' : 'unset'}
+              c={!user?.about?.bio && !user?.bio ? 'gray.6' : 'unset'}
               style={{
                 whiteSpace: 'pre-wrap',
                 wordBreak: 'break-word'
               }}
             >
-              {user?.about?.bio || 'This user has not set a bio yet.'}
+              {user?.about?.bio || user?.bio || 'This user has not set a bio yet.'}
             </Text>
             <Text
               size={'sm'}
@@ -238,7 +238,7 @@ export default function Profile({ username, user }: { username: string | null; u
               <IconUsersGroup size={16} />
               <Title order={4}>Organizations</Title>
             </Group>
-            {user?.privacy?.organizations ? (
+            {user?.privacy?.organizations || user?.privacy?.organizations === undefined ? (
               !user?.organizations?.length ? (
                 <Text
                   size={'md'}

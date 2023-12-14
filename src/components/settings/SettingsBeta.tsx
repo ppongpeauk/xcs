@@ -135,7 +135,8 @@ function EnrolledCard() {
                           color: 'red'
                         });
                       });
-                  }
+                  },
+                  radius: 'md'
                 });
               }}
             >

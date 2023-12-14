@@ -367,7 +367,8 @@ export default function LocationRoutines({ idToken, location, refreshData }: any
                                 console.log(err);
                               });
                           });
-                        }
+                        },
+                        radius: 'md'
                       });
                     }}
                     color={'red'}

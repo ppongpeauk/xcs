@@ -20,7 +20,7 @@ export async function getServerSideProps({ query }: any) {
     };
   }
 
-  const user = await fetch(`${process.env.NEXT_PUBLIC_ROOT_URL}/api/v1/users/${query.username}`, {
+  const user = await fetch(`${process.env.NEXT_PUBLIC_ROOT_URL}/api/v2/users/${query.username}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json'

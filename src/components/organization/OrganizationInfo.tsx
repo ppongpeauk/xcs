@@ -162,7 +162,8 @@ export default function OrganizationInfo({
       onCancel: () => {},
       onConfirm: () => {
         onDelete();
-      }
+      },
+      radius: 'md'
     });
 
   return (

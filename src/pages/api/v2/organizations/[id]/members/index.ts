@@ -2,6 +2,7 @@ import { authToken } from '@/lib/auth';
 import clientPromise from '@/lib/mongodb';
 import { Organization, OrganizationMember, User } from '@/types';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { uuid as uuidv4 } from 'uuidv4';
 
 const projection = { apiKeys: 0 };
 
@@ -18,6 +19,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   // check if the user is authenticated
   const uid = await authToken(req);
+  if (!uid) return res.status(401).json({ message: 'Unauthorized.' });
 
   // check if user is a member of the organization
   const organization = (await db.collection('organizations').findOne(
@@ -39,6 +41,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   )) as Organization | null;
   if (!organization) return res.status(404).json({ message: 'Organization not found.' });
+  if (!Object.values(organization.members).find((item) => item.id === uid))
+    return res.status(403).json({ message: 'Forbidden.' });
 
   if (req.method === 'GET') {
     let members = organization.members;
@@ -47,7 +51,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (member?.type === 'user' || !member?.type) {
         // fetch user data
         const user = (await db.collection('users').findOne(
-          { id: key },
+          { id: member?.id || key },
           {
             projection: {
               displayName: 1,
@@ -67,6 +71,89 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     return res.status(200).json(Object.values(members));
+  }
+
+  if (req.method === 'POST') {
+    const { type, robloxId, userId } = req.body;
+    switch (type) {
+      case 'user':
+        // check if user exists
+        const user = (await db.collection('users').findOne({ id: userId })) as User | null;
+        if (!user) return res.status(404).json({ message: 'User not found.' });
+
+        // check if user is already a member
+        if (Object.values(organization.members).find((item) => item.id === userId))
+          return res.status(400).json({ message: 'User is already a member.' });
+
+        // add user to organization
+        const uuid = uuidv4();
+        const data: OrganizationMember = {
+          type: 'user',
+          uuid: uuid,
+          id: userId,
+
+          role: 1,
+          accessGroups: [],
+          scanData: {},
+
+          joined: false, // invitee
+          createdAt: new Date(),
+          updatedAt: new Date()
+        };
+
+        await db.collection('organizations').updateOne({ id }, { $set: { [`members.${uuid}`]: data } });
+
+        return res.status(200).json({ message: `Successfully invited ${user.displayName} to your organization.` });
+      case 'roblox':
+        // check if user exists
+        const robloxUser = (await db.collection('users').findOne({ robloxId })) as User | null;
+        if (!robloxUser) return res.status(404).json({ message: 'User not found.' });
+
+        // check if user is already a member
+        if (Object.values(organization.members).find((item) => item.id === robloxUser.id))
+          return res.status(400).json({ message: 'User is already a member.' });
+
+        // add user to organization
+        const robloxUuid = uuidv4();
+        const robloxData: OrganizationMember = {
+          type: 'roblox',
+          uuid: robloxUuid,
+          id: robloxUser.id,
+
+          role: 1,
+          accessGroups: [],
+          scanData: {},
+
+          joined: false, // invitee
+          createdAt: new Date(),
+          updatedAt: new Date()
+        };
+
+        await db.collection('organizations').updateOne({ id }, { $set: { [`members.${robloxUuid}`]: robloxData } });
+
+        return res
+          .status(200)
+          .json({ message: `Successfully invited ${robloxUser.displayName} to your organization.` });
+    }
+  }
+
+  if (req.method === 'DELETE') {
+    const { uuid } = req.body;
+    console.log(uuid);
+
+    // check if user exists
+    const organizationMember = Object.values(organization.members).find((item) => item.uuid === uuid);
+
+    if (!organizationMember) return res.status(404).json({ message: 'Member not found.' });
+
+    // check if user is already a member
+    if (organizationMember.id === organization.ownerId)
+      return res.status(400).json({ message: 'Cannot remove owner.' });
+
+    // remove user from organization
+    await db.collection('organizations').updateOne({ id }, { $unset: { [`members.${uuid}`]: '' } });
+
+    return res.status(200).json({ message: 'User removed.' });
   }
 
   return res.status(405).json({ message: 'Method not allowed.' });

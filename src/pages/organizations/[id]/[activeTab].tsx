@@ -35,6 +35,7 @@ import { useMediaQuery } from '@mantine/hooks';
 import {
   IconAccessPoint,
   IconBroadcast,
+  IconCode,
   IconExternalLink,
   IconHistory,
   IconLiveView,
@@ -179,6 +180,12 @@ export default function PlatformOrganization() {
             >
               {data?.name || 'Unknown Organization'}
             </Title>
+            <Text
+              size={'sm'}
+              c={'var(--mantine-color-placeholder)'}
+            >
+              Owned by {data?.owner?.displayName} (@{data?.owner?.username})
+            </Text>
           </Skeleton>
         </Group>
         <Divider my={24} />
@@ -212,12 +219,18 @@ export default function PlatformOrganization() {
               Event Log
             </Tabs.Tab>
             <Tabs.Tab
+              value="developer"
+              leftSection={<IconCode style={iconStyle} />}
+            >
+              API Keys
+            </Tabs.Tab>
+            <Tabs.Tab
               value="locations"
               leftSection={<IconLocation style={iconStyle} />}
               rightSection={<IconExternalLink size={16} />}
               onClick={(e) => {
                 e.stopPropagation();
-                push(`/locations?organizaion=${data?.id}`);
+                push(`/locations?organization=${data?.id}`);
               }}
             >
               Locations
@@ -228,7 +241,7 @@ export default function PlatformOrganization() {
               rightSection={<IconExternalLink size={16} />}
               onClick={(e) => {
                 e.stopPropagation();
-                push(`/locations?organizaion=${data?.id}`);
+                push(`/organizations/${data?.id}`);
               }}
             >
               Public Page
@@ -254,17 +267,6 @@ export default function PlatformOrganization() {
               />
             </Tabs.Panel>
             <Tabs.Panel value="members">
-              <Title
-                order={2}
-                py={4}
-                pb={16}
-              >
-                Members
-                <InfoLink
-                  title="Members"
-                  description="Manage members of this organization."
-                />
-              </Title>
               <OrganizationMembers
                 data={data as Organization}
                 refreshData={refreshData}

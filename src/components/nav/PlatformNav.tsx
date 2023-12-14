@@ -108,7 +108,7 @@ function NavButton({ ...props }: any) {
 
   return (
     <Button
-      variant={isActive ? 'filled' : 'transparent'}
+      variant={isActive ? 'light' : 'subtle'}
       color={colorScheme === 'dark' ? 'gray' : 'dark'}
       justify="flex-start"
       fullWidth
@@ -313,6 +313,8 @@ function SettingsMenu({ currentUser }: { currentUser?: User }) {
         width={320}
         position="bottom"
         shadow="md"
+        radius={'md'}
+        withArrow
         // transitionProps={{ duration: 0 }}
       >
         <Popover.Target>
@@ -451,6 +453,8 @@ function NotificationMenu({ currentUser }: { currentUser?: User }) {
         width={isMobile ? 320 : 480}
         position="bottom"
         shadow="md"
+        radius={'md'}
+        withArrow
         // transitionProps={{ duration: 0 }}
       >
         <Popover.Target>
@@ -618,6 +622,8 @@ function AvatarMenu({ currentUser, onLogoutOpen }: { currentUser?: User; onLogou
         shadow="md"
         opened={opened}
         onChange={setOpened}
+        radius={'md'}
+        withArrow
         // transitionProps={{ duration: 0 }}
       >
         <Menu.Target>
@@ -772,7 +778,8 @@ function AvatarMenu({ currentUser, onLogoutOpen }: { currentUser?: User; onLogou
                     labels: { confirm: 'Log out', cancel: 'Nevermind' },
                     confirmProps: { color: 'red' },
                     onCancel: () => null,
-                    onConfirm: () => push('/auth/logout')
+                    onConfirm: () => push('/auth/logout'),
+                    radius: 'md'
                   });
                 }}
               >

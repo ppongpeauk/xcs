@@ -86,7 +86,8 @@ export default function LocationInfo({
       onCancel: () => {},
       onConfirm: () => {
         onDelete();
-      }
+      },
+      radius: 'md'
     });
 
   let downloadTemplate = useCallback(() => {

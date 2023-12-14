@@ -454,7 +454,8 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
                                   console.log(err);
                                 });
                             });
-                          }
+                          },
+                          radius: 'md'
                         });
                       }}
                       color={'red'}

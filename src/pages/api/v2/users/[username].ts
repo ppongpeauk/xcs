@@ -29,14 +29,66 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // check privacy
 
     if (user.privacy?.organizations || user.privacy?.organizations === undefined || user.id === uid) {
-      let userOrgs = await organizations
-        .find(
-          { [`members.${user.id}`]: { $exists: true } },
-          { projection: { id: 1, name: 1, description: 1, avatar: 1, verified: 1, [`members.${user.id}`]: 1 } }
-        )
-        .toArray();
+      // let userOrgs = await organizations
+      //   .find(
+      //     { [`members.${user.id}`]: { $exists: true } },
+      //     { projection: { id: 1, name: 1, description: 1, avatar: 1, verified: 1, [`members.${user.id}`]: 1 } }
+      //   )
+      //   .toArray();
 
-      user.organizations = userOrgs as unknown as Organization[];
+      let organizations = (await db
+        .collection('organizations')
+        .aggregate([
+          {
+            $project: {
+              id: 1,
+              name: 1,
+              description: 1,
+              avatar: 1,
+              members: 1,
+              statistics: 1,
+              updatedAt: 1,
+              createdAt: 1,
+              updatedById: 1,
+              updatedBy: 1,
+              membersValues: { $objectToArray: '$members' }
+            }
+          },
+          {
+            $match: {
+              'membersValues.v.id': user.id
+            }
+          },
+          {
+            $project: {
+              id: 1,
+              name: 1,
+              description: 1,
+              avatar: 1,
+              members: 1,
+              statistics: 1,
+              updatedAt: 1,
+              createdAt: 1,
+              updatedById: 1,
+              updatedBy: 1,
+              matchingMembers: {
+                $filter: {
+                  input: '$membersValues',
+                  as: 'member',
+                  cond: { $eq: ['$$member.v.id', user.id] }
+                }
+              }
+            }
+          },
+          {
+            $match: {
+              $or: [{ 'matchingMembers.v.joined': { $exists: false } }, { 'matchingMembers.v.joined': true }]
+            }
+          }
+        ])
+        .toArray()) as unknown as Organization[];
+
+      user.organizations = organizations as unknown as Organization[];
     }
 
     // get user achievements

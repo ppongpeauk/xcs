@@ -149,7 +149,8 @@ export default function SettingsLinkedAccounts() {
                     confirmProps: { color: 'red' },
                     onConfirm: () => {
                       unlinkRoblox();
-                    }
+                    },
+                    radius: 'md'
                   });
                 }}
               >
@@ -220,7 +221,8 @@ export default function SettingsLinkedAccounts() {
                       confirmProps: { color: 'red' },
                       onConfirm: () => {
                         unlinkDiscord();
-                      }
+                      },
+                      radius: 'md'
                     });
                   }}
                 >

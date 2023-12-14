@@ -56,6 +56,7 @@
     "@types/react-no-ssr": "^1.1.6",
     "@types/swagger-ui-react": "^4.18.3",
     "@types/uuid": "^9.0.2",
+    "@types/uuidv4": "^5.0.0",
     "autoprefixer": "10.4.14",
     "chakra-react-select": "^4.7.0",
     "class-variance-authority": "^0.6.1",
@@ -106,7 +107,8 @@
     "tss-react": "^4.9.3",
     "tweetnacl": "^1.0.3",
     "typescript": "5.1.6",
-    "undici": "^5.27.2"
+    "undici": "^5.27.2",
+    "uuidv4": "^6.2.13"
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^13.4.13",

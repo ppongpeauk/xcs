@@ -35,6 +35,7 @@ export default function ResetPasswordModal({ open, onClose } = { open: false, on
         onClose={onClose}
         size={'sm'}
         centered
+        radius={'md'}
       >
         <form
           onSubmit={resetForm.onSubmit(async (values) => {

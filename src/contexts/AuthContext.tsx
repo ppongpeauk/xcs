@@ -62,6 +62,16 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
           })
           .then((data) => {
             setCurrentUser(data.user);
+            // TODO: remove when the new site is ready
+            // check if the user is not staff and redirect to /auth/logout
+            // if (!data?.user?.platform?.staff) {
+            //   notifications.show({
+            //     title: 'You are not authorized to access this site.',
+            //     message: 'Please log in again.',
+            //     color: 'red'
+            //   });
+            //   signOut(auth);
+            // }
           })
           .catch(() => {
             notifications.show({

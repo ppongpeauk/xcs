@@ -72,6 +72,7 @@ export default function CreateLocation({
           </Flex>
         }
         centered
+        radius={'md'}
       >
         <form
           onSubmit={form.onSubmit((values) => {

@@ -108,8 +108,9 @@ export default function Login() {
             w={{ base: '100%', sm: '640px', md: '720px' }}
             style={{
               border: '1px solid var(--mantine-color-default-border)',
-              borderRadius: '4px',
-              aspectRatio: isMobile ? 'unset' : '3 / 2'
+              borderRadius: 'var(--mantine-radius-md)',
+              aspectRatio: isMobile ? 'unset' : '3 / 2',
+              overflow: 'hidden'
             }}
           >
             <LoadingOverlay
@@ -270,6 +271,7 @@ function FAQModal({ opened, onClose }: { opened: boolean; onClose: () => void })
         </Flex>
       }
       centered
+      radius={'md'}
     >
       <Stack mb={24}>
         <Stack gap={0}>

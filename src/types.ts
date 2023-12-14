@@ -107,9 +107,10 @@ export interface Organization {
 
 export interface OrganizationMember {
   type: 'user' | 'roblox' | 'roblox-group' | 'card';
+  uuid?: string;
   id: string;
-  role: number;
-  accessGroups: string[];
+  role?: number;
+  accessGroups?: string[];
   scanData?: any;
   permissions?: {
     all: boolean;
@@ -157,7 +158,9 @@ export interface OrganizationMember {
     username?: string;
   };
 
-  joinedAt: string | Date;
+  joined?: boolean;
+  joinedAt?: string | Date;
+  createdAt?: Date;
   updatedAt?: string | Date;
 }
 export interface Location {

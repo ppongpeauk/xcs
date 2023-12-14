@@ -88,6 +88,7 @@ export default function CreateAccessPointBulk({
           </Flex>
         }
         centered
+        radius={'md'}
       >
         <form
           onSubmit={form.onSubmit((values) => {

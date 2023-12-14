@@ -386,7 +386,8 @@ export default function PlatformAccessPoint() {
                             console.log(err);
                           });
                       });
-                    }
+                    },
+                    radius: 'md'
                   });
                 }}
               >

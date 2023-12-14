@@ -76,7 +76,7 @@ export default function SettingsPrivacy() {
           });
         })}
       >
-        <Stack>
+        <Stack w={320}>
           <Title order={4}>Platform</Title>
           <Switch
             label="Organizations are public"

@@ -68,7 +68,10 @@ import {
   IconLinkPlus,
   IconRowRemove,
   IconTrashX,
-  IconUserPlus
+  IconUserPlus,
+  IconMailAi,
+  IconMailForward,
+  IconUser
 } from '@tabler/icons-react';
 import { default as sortBy } from 'lodash/sortBy';
 import { default as moment } from 'moment';
@@ -79,6 +82,7 @@ import CreateRoutine from '../modals/routines/CreateRoutine';
 import { notifications } from '@mantine/notifications';
 import CreateOrganization from '../modals/organizations/CreateOrganization';
 import CreateMember from '../modals/organizations/CreateMember';
+import InfoLink from '../InfoLink';
 
 export default function OrganizationMembers({ data, refreshData }: { data: Organization; refreshData: () => void }) {
   const [sortStatus, setSortStatus] = useState<DataTableSortStatus<any>>({
@@ -92,7 +96,7 @@ export default function OrganizationMembers({ data, refreshData }: { data: Organ
   const [records, setRecords] = useState<any[]>([]);
   const [selectedRecords, setSelectedRecords] = useState<any[]>([]);
   const [members, setMembers] = useState<any>(null);
-  const { user } = useAuthContext();
+  const { user, currentUser } = useAuthContext();
   const { push } = useRouter();
   const { colorScheme } = useMantineColorScheme();
   const [isCreateModalOpen, { open: openCreateModal, close: closeCreateModal }] = useDisclosure(false);
@@ -165,7 +169,6 @@ export default function OrganizationMembers({ data, refreshData }: { data: Organ
   useEffect(() => {
     if (!location) return;
     if (!user || !data) return;
-    console.log('refreshing members');
     refreshMembers();
   }, [location, user, data]);
 
@@ -178,35 +181,51 @@ export default function OrganizationMembers({ data, refreshData }: { data: Organ
         refresh={refreshData}
       />
 
-      <Button.Group pb={16}>
-        <Button
-          leftSection={<IconUserPlus size={'16px'} />}
-          variant={'default'}
-          onClick={openCreateModal}
-        >
-          Add Member
-        </Button>
-        <Button
-          leftSection={<IconLinkPlus size={'16px'} />}
-          variant={'default'}
-          onClick={openCreateModal}
-        >
-          Create Invite Link
-        </Button>
-        {/* <BulkActionMenu
+      <Title
+        order={2}
+        py={4}
+        pb={16}
+      >
+        Member Management
+        <InfoLink
+          title="Member Management"
+          description="Manage all members in this organization by adding, removing, and editing their permissions."
+        />
+      </Title>
+      <Flex>
+        <Button.Group pb={16}>
+          <Button
+            leftSection={<IconUserPlus size={'16px'} />}
+            variant={'default'}
+            onClick={openCreateModal}
+            size="xs"
+          >
+            Add / Invite Member
+          </Button>
+          <Button
+            leftSection={<IconLinkPlus size={'16px'} />}
+            variant={'default'}
+            onClick={openCreateModal}
+            size="xs"
+          >
+            Create Invite Link
+          </Button>
+          {/* <BulkActionMenu
           selectedRecords={selectedRecords}
           location={location}
           refresh={refreshData}
         /> */}
-        <Button
-          variant="default"
-          onClick={() => {
-            refreshMembers();
-          }}
-        >
-          <IconRefresh size={16} />
-        </Button>
-      </Button.Group>
+          <Button
+            variant="default"
+            onClick={() => {
+              refreshMembers();
+            }}
+            size="xs"
+          >
+            <IconRefresh size={16} />
+          </Button>
+        </Button.Group>
+      </Flex>
 
       {/* Main Datatable */}
       <Box pos={'relative'}>
@@ -250,17 +269,28 @@ export default function OrganizationMembers({ data, refreshData }: { data: Organ
                 />
               ),
               filtering: query !== '',
-              render: ({ username, displayName, avatar }) => {
+              render: ({ username, displayName, avatar, id, joined }) => {
                 return (
-                  <Flex style={{ gap: 12, alignItems: 'center' }}>
-                    <Image
-                      src={avatar}
-                      alt={displayName}
-                      width={48}
-                      height={48}
-                      radius={'xl'}
-                    />
-                    <Stack gap={0}>
+                  <Flex
+                    style={{ gap: 12, alignItems: 'center' }}
+                    py={4}
+                  >
+                    <Tooltip.Floating label={displayName}>
+                      <Image
+                        src={avatar || '/images/default-avatar.png'}
+                        alt={displayName}
+                        width={36}
+                        height={36}
+                        radius={'xl'}
+                        style={{
+                          filter: `grayscale(${joined === false ? '100%' : '0%'})`
+                        }}
+                      />
+                    </Tooltip.Floating>
+                    <Stack
+                      gap={0}
+                      c={joined === false ? 'var(--mantine-color-placeholder)' : 'unset'}
+                    >
                       <Text
                         style={{ background: 'transparent' }}
                         size={'sm'}
@@ -270,12 +300,46 @@ export default function OrganizationMembers({ data, refreshData }: { data: Organ
                       </Text>
                       <Text
                         style={{ background: 'transparent' }}
-                        size={'sm'}
+                        size={'xs'}
                       >
                         @{username}
+                        {data?.owner?.id === id && (
+                          <Text
+                            component="span"
+                            fw={'normal'}
+                          >
+                            {' '}
+                            — Organization Owner
+                          </Text>
+                        )}
+                        {joined === false && (
+                          <Text
+                            component="span"
+                            fw={'bold'}
+                          >
+                            {' '}
+                            — Invitation Pending
+                          </Text>
+                        )}
                       </Text>
                     </Stack>
                   </Flex>
+                );
+              }
+            },
+            {
+              accessor: 'type',
+              title: 'Type',
+              sortable: true,
+              render: (cell) => {
+                return (
+                  <Text
+                    style={{ background: 'transparent' }}
+                    size={'sm'}
+                    fw={'bold'}
+                  >
+                    {switchCaseMemberType(cell.type)}
+                  </Text>
                 );
               }
             },
@@ -303,49 +367,77 @@ export default function OrganizationMembers({ data, refreshData }: { data: Organ
                     e.stopPropagation();
                   }}
                 >
-                  <ActionIcon
-                    variant="subtle"
-                    size="sm"
-                    onClick={() => {
-                      push(`/access-points/${cell.id}`);
-                    }}
-                    color={colorScheme === 'dark' ? 'white' : 'black'}
-                  >
-                    <IconEdit size={16} />
-                  </ActionIcon>
-                  <ActionIcon
-                    variant="subtle"
-                    size="sm"
-                    onClick={() => {
-                      modals.openConfirmModal({
-                        title: <Title order={4}>Remove member from organization?</Title>,
-                        children: <Text size="sm">Are you sure you want to remove this member?</Text>,
-                        labels: { confirm: 'Remove member', cancel: 'Nevermind' },
-                        confirmProps: { color: 'red' },
-                        onConfirm: () => {
-                          user.getIdToken().then((token: string) => {
-                            fetch(`/api/v1/access-points/${cell.id}`, {
-                              method: 'DELETE',
-                              headers: { Authorization: `Bearer ${token}` }
-                            })
-                              .then((res) => {
-                                if (res.status === 200) return res.json();
-                                throw new Error(`Failed to remove member. (${res.status})`);
-                              })
-                              .then(() => {
-                                refreshData();
-                              })
-                              .catch((err) => {
-                                console.log(err);
+                  <Tooltip label="Edit">
+                    <ActionIcon
+                      variant="subtle"
+                      size="sm"
+                      onClick={() => {
+                        push(`/access-points/${cell.id}`);
+                      }}
+                      color={colorScheme === 'dark' ? 'white' : 'black'}
+                    >
+                      <IconEdit size={16} />
+                    </ActionIcon>
+                  </Tooltip>
+                  {cell.type === 'user' && (
+                    <Tooltip label="View Profile">
+                      <ActionIcon
+                        variant="subtle"
+                        size="sm"
+                        onClick={() => {
+                          push(`/@${cell.username}`);
+                        }}
+                        color={colorScheme === 'dark' ? 'white' : 'black'}
+                      >
+                        <IconUser size={16} />
+                      </ActionIcon>
+                    </Tooltip>
+                  )}
+                  {cell.id !== data?.owner?.id && cell.id !== currentUser?.id && (
+                    <Tooltip label="Remove Member">
+                      <ActionIcon
+                        variant="subtle"
+                        size="sm"
+                        onClick={() => {
+                          modals.openConfirmModal({
+                            title: <Title order={4}>Remove member from organization?</Title>,
+                            children: <Text size="sm">Are you sure you want to remove this member?</Text>,
+                            labels: { confirm: 'Remove member', cancel: 'Nevermind' },
+                            confirmProps: { color: 'red' },
+                            onConfirm: () => {
+                              user.getIdToken().then((token: string) => {
+                                fetch(`/api/v2/organizations/${data?.id}/members/${cell.uuid || cell.id}`, {
+                                  method: 'DELETE',
+                                  headers: { Authorization: `Bearer ${token}` }
+                                })
+                                  .then((res) => {
+                                    if (res.status === 200) return res.json();
+                                    throw new Error(`Failed to remove member. (${res.status})`);
+                                  })
+                                  .then((res) => {
+                                    refreshMembers();
+                                    notifications.show({
+                                      message: res.message,
+                                      color: 'green'
+                                    });
+                                  })
+                                  .catch((err) => {
+                                    notifications.show({
+                                      title: 'There was an error removing the member.',
+                                      message: err.message,
+                                      color: 'red'
+                                    });
+                                  });
                               });
+                            }
                           });
-                        }
-                      });
-                    }}
-                    color={'red'}
-                  >
-                    <IconTrash size={16} />
-                  </ActionIcon>
+                        }}
+                        color={'red'}
+                      >
+                        <IconTrash size={16} />
+                      </ActionIcon>
+                    </Tooltip>
+                  )}
                 </Group>
               )
             }
@@ -353,15 +445,15 @@ export default function OrganizationMembers({ data, refreshData }: { data: Organ
           sortStatus={sortStatus}
           onSortStatusChange={setSortStatus}
           records={records}
-          rowExpansion={{
-            content: ({ record }) => (
-              <Box p={16}>
-                <Text c={!!record.description ? 'unset' : 'dark.2'}>
-                  {record.description || 'No description available.'}
-                </Text>
-              </Box>
-            )
-          }}
+          // rowExpansion={{
+          //   content: ({ record }) => (
+          //     <Box p={16}>
+          //       <Text c={!!record.description ? 'unset' : 'dark.2'}>
+          //         {record.description || 'No description available.'}
+          //       </Text>
+          //     </Box>
+          //   )
+          // }}
           // selectedRecords={selectedRecords}
           // onSelectedRecordsChange={setSelectedRecords}
           // page={1}
@@ -429,4 +521,19 @@ function BulkActionMenu({
       </Menu>
     </>
   );
+}
+
+function switchCaseMemberType(type: string) {
+  switch (type) {
+    case 'user':
+      return 'XCS';
+    case 'roblox':
+      return 'Roblox (User)';
+    case 'roblox-group':
+      return 'Roblox (Group)';
+    case 'pending':
+      return 'Pending';
+    default:
+      return 'Unknown';
+  }
 }
