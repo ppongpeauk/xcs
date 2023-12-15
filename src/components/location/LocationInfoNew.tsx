@@ -9,6 +9,7 @@ import {
   IconDownload,
   IconHttpDelete,
   IconRecycle,
+  IconTrash,
   IconUsersGroup
 } from '@tabler/icons-react';
 import { Field, Form, Formik } from 'formik';
@@ -340,7 +341,7 @@ export default function LocationInfo({
               </Tooltip.Floating>
               <Button
                 color="red"
-                leftSection={<IconRecycle size={'16px'} />}
+                leftSection={<IconTrash size={'16px'} />}
                 onClick={() => {
                   showDeleteModal();
                 }}

@@ -2,7 +2,6 @@ import * as React from 'react';
 
 import { Box, Checkbox, Flex, Text } from '@chakra-ui/react';
 
-
 // import {
 //   DropdownMenu,
 //   DropdownMenuContent,
@@ -13,7 +12,6 @@ import { Box, Checkbox, Flex, Text } from '@chakra-ui/react';
 // } from "@/components/ui/dropdown-menu";
 
 import { ColumnDef } from '@tanstack/react-table';
-
 
 type EventLog = {
   id: string;
@@ -153,12 +151,11 @@ export default function LocationEventLogs() {
       <Flex
         w={'full'}
         h={'max-content'}
-      // rounded={"xl"}
-      // border={"1px solid"}
-      // borderColor={useColorModeValue("gray.300", "gray.700")}
-      // p={4}
-      >
-      </Flex>
+        // rounded={"xl"}
+        // border={"1px solid"}
+        // borderColor={useColorModeValue("gray.300", "gray.700")}
+        // p={4}
+      ></Flex>
     </Box>
   );
 }

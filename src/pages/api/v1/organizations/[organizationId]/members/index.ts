@@ -175,7 +175,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               accessGroups: accessGroups,
               scanData: {},
 
-              joinedAt: timestamp,
+              createdAt: timestamp,
               updatedAt: timestamp
             } as OrganizationMember
           }
@@ -231,7 +231,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
               accessGroups: accessGroups,
 
-              joinedAt: timestamp,
+              createdAt: timestamp,
               updatedAt: timestamp
             }
           }

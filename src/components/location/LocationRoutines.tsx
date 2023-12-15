@@ -450,7 +450,7 @@ function BulkActionMenu({
           <Menu.Label>Danger zone</Menu.Label>
           <Menu.Item
             color="red"
-            leftSection={<IconRecycle size={16} />}
+            leftSection={<IconTrash size={16} />}
           >
             Delete
           </Menu.Item>

@@ -1,6 +1,6 @@
 import { authToken } from '@/lib/auth';
 import clientPromise from '@/lib/mongodb';
-import { Organization, OrganizationMember, User } from '@/types';
+import { Organization, OrganizationMember, User, UserNotification } from '@/types';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { uuid as uuidv4 } from 'uuidv4';
 
@@ -97,16 +97,34 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           scanData: {},
 
           joined: false, // invitee
-          createdAt: new Date(),
-          updatedAt: new Date()
+          createdAt: null,
+          updatedAt: null
         };
 
         await db.collection('organizations').updateOne({ id }, { $set: { [`members.${uuid}`]: data } });
 
+        // append notification
+        const notificationId = uuidv4();
+        const notificationData = {
+          id: notificationId,
+          recipientId: userId,
+          senderId: uid,
+          read: false,
+          type: 'organization-invitation',
+          title: 'Organization Invitation',
+          description: null,
+          organizationId: id,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        } as unknown as UserNotification;
+
+        await db.collection('notifications').insertOne(notificationData);
+
         return res.status(200).json({ message: `Successfully invited ${user.displayName} to your organization.` });
       case 'roblox':
         // check if user exists
-        const robloxUser = (await db.collection('users').findOne({ robloxId })) as User | null;
+
+        const robloxUser = (await db.collection('users').findOne({ 'roblox.id': 0 })) as User | null;
         if (!robloxUser) return res.status(404).json({ message: 'User not found.' });
 
         // check if user is already a member

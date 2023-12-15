@@ -106,7 +106,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       { id: uid },
       {
         $set: {
-          displayName: displayName || user.displayName,
+          displayName: displayName.trim() || user.displayName,
           avatar: newAvatarUrl || avatar || user.avatar,
           'about.bio': bio,
           'about.website': website

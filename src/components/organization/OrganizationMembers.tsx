@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import CreateAccessPointDialog from '@/components/CreateAccessPointDialog';
 import { useAuthContext } from '@/contexts/AuthContext';
-import { AccessPoint, Location, Organization } from '@/types';
+import { AccessPoint, Location, Organization, OrganizationMember } from '@/types';
 import {
   ActionIcon,
   Autocomplete,
@@ -71,7 +71,10 @@ import {
   IconUserPlus,
   IconMailAi,
   IconMailForward,
-  IconUser
+  IconUser,
+  IconFloatNone,
+  IconCross,
+  IconEditCircle
 } from '@tabler/icons-react';
 import { default as sortBy } from 'lodash/sortBy';
 import { default as moment } from 'moment';
@@ -83,6 +86,7 @@ import { notifications } from '@mantine/notifications';
 import CreateOrganization from '../modals/organizations/CreateOrganization';
 import CreateMember from '../modals/organizations/CreateMember';
 import InfoLink from '../InfoLink';
+import ManageMember from '../modals/organizations/ManageMember';
 
 export default function OrganizationMembers({ data, refreshData }: { data: Organization; refreshData: () => void }) {
   const [sortStatus, setSortStatus] = useState<DataTableSortStatus<any>>({
@@ -103,38 +107,17 @@ export default function OrganizationMembers({ data, refreshData }: { data: Organ
 
   const [tagsOptions, setTagsOptions] = useState<any>([]);
 
-  // get tags
   useEffect(() => {
-    if (!members) return;
-    let res = [] as string[];
-    members?.forEach((accessPoint: any) => {
-      res = [...res, ...(accessPoint?.tags || [])];
-    });
-    res = [...(new Set(res as any) as any)];
-    setTagsOptions([
-      ...(new Set(
-        res.map((value: string) => {
-          return {
-            value,
-            label: value as string
-          };
-        })
-      ) as any)
-    ]);
-  }, [members]);
-
-  useEffect(() => {
-    const data = sortBy(members, sortStatus.columnAccessor) as AccessPoint[];
+    const data = sortBy(members, sortStatus.columnAccessor) as never as OrganizationMember[];
     let newRecords = data;
     setRecords(sortStatus.direction === 'desc' ? newRecords.reverse() : newRecords);
 
     setRecords(
-      newRecords.filter(({ name, tags }) => {
-        if (debouncedQuery !== '' && !`${name}`.toLowerCase().includes(debouncedQuery.trim().toLowerCase())) {
-          return false;
-        }
-
-        if (tagQuery.length && !tagQuery.some((d) => tags.includes(d))) {
+      newRecords.filter(({ username, displayName }) => {
+        if (
+          debouncedQuery !== '' &&
+          !`${username} ${displayName}`.toLowerCase().includes(debouncedQuery.trim().toLowerCase())
+        ) {
           return false;
         }
         return true;
@@ -186,9 +169,9 @@ export default function OrganizationMembers({ data, refreshData }: { data: Organ
         py={4}
         pb={16}
       >
-        Member Management
+        Manage Members
         <InfoLink
-          title="Member Management"
+          title="Manage Members"
           description="Manage all members in this organization by adding, removing, and editing their permissions."
         />
       </Title>
@@ -200,7 +183,7 @@ export default function OrganizationMembers({ data, refreshData }: { data: Organ
             onClick={openCreateModal}
             size="xs"
           >
-            Add / Invite Member
+            Add Member
           </Button>
           <Button
             leftSection={<IconLinkPlus size={'16px'} />}
@@ -347,7 +330,9 @@ export default function OrganizationMembers({ data, refreshData }: { data: Organ
               accessor: 'createdAt',
               title: 'Join Date',
               sortable: true,
-              render: (cell) => moment(cell.joinedAt).calendar()
+              render: ({ createdAt }) => {
+                return createdAt ? moment(createdAt).calendar() : 'N/A';
+              }
             },
             {
               accessor: 'actions',
@@ -372,11 +357,28 @@ export default function OrganizationMembers({ data, refreshData }: { data: Organ
                       variant="subtle"
                       size="sm"
                       onClick={() => {
-                        push(`/access-points/${cell.id}`);
+                        modals.open({
+                          title: <Title order={4}>Manage Member</Title>,
+                          children: (
+                            <ManageMember
+                              member={cell}
+                              user={user}
+                              organization={data}
+                              onClose={(doRefresh: boolean) => {
+                                modals.closeAll();
+                                if (doRefresh) refreshMembers();
+                              }}
+                            />
+                          ),
+                          radius: 'lg',
+                          size: 'xl',
+                          withCloseButton: true,
+                          centered: true
+                        });
                       }}
                       color={colorScheme === 'dark' ? 'white' : 'black'}
                     >
-                      <IconEdit size={16} />
+                      <IconEditCircle size={16} />
                     </ActionIcon>
                   </Tooltip>
                   {cell.type === 'user' && (
@@ -513,7 +515,7 @@ function BulkActionMenu({
           <Menu.Label>Danger zone</Menu.Label>
           <Menu.Item
             color="red"
-            leftSection={<IconRecycle size={16} />}
+            leftSection={<IconTrash size={16} />}
           >
             Delete
           </Menu.Item>
@@ -534,6 +536,6 @@ function switchCaseMemberType(type: string) {
     case 'pending':
       return 'Pending';
     default:
-      return 'Unknown';
+      return 'XCS';
   }
 }

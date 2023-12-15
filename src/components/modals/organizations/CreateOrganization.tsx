@@ -78,7 +78,7 @@ export default function CreateOrganization({
           onSubmit={form.onSubmit((values) => {
             setFormSubmitting(true);
             user.getIdToken().then((token: any) => {
-              fetch('/api/v1/organizations', {
+              fetch('/api/v2/organizations', {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',

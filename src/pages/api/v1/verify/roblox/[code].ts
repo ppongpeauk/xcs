@@ -120,7 +120,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 role: organizationRobloxUser.role,
                 accessGroups: organizationRobloxUser.accessGroups,
                 scanData: organizationRobloxUser.scanData,
-                joinedAt: organizationRobloxUser.joinedAt
+                createdAt: organizationRobloxUser.joinedAt
               }
             },
             $unset: {

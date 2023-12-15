@@ -33,7 +33,10 @@ import {
   Anchor,
   Card,
   Group,
-  Stack
+  Stack,
+  Loader,
+  ScrollArea,
+  Box
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { modals } from '@mantine/modals';
@@ -48,7 +51,7 @@ import { useAuthContext } from '@/contexts/AuthContext';
 // Components
 import DeleteDialog from '@/components/DeleteDialog';
 import ThemeButton from '@/components/ThemeButton';
-import { User } from '@/types';
+import { User, UserNotification } from '@/types';
 import {
   Icon3dCubeSphere,
   IconActivity,
@@ -95,6 +98,7 @@ import Footer from '../FooterNew';
 import brandLogo from '@/assets/platform/company-brand-logo.jpeg';
 import { useAsideContext } from '@/contexts/NavAsideContext';
 import moment from 'moment';
+import Notification from './Notification';
 
 const styles = {
   horizontalBar: {}
@@ -127,7 +131,7 @@ export default function PlatformNav({
   main: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const { currentUser, isAuthLoaded, user } = useAuthContext();
+  const { currentUser, isAuthLoaded, user, platform } = useAuthContext();
   const { push } = useRouter();
   const colorScheme = useComputedColorScheme('light', { getInitialValueInEffect: true });
   const [opened, { toggle }] = useDisclosure();
@@ -260,15 +264,22 @@ export default function PlatformNav({
         </AppShell.Navbar>
 
         <AppShell.Main>
-          {/* <Alert
-            color={'gray'}
-            title={
-              <Flex direction={'column'}>
-                <Text fw={'bold'}>Test Alert</Text>
-                <Text>We are aware of the issue and are working on a fix. Please check back later.</Text>
-              </Flex>
-            }
-          /> */}
+          <Flex w={'100%'}>
+            {platform?.alerts.map((alert: any) => (
+              <Alert
+                key={alert.id}
+                color={'gray'}
+                radius={'md'}
+                w={'100%'}
+                title={
+                  <Flex direction={'column'}>
+                    <Text fw={'bold'}>{alert.title}</Text>
+                    <Text>{alert.description}</Text>
+                  </Flex>
+                }
+              />
+            ))}
+          </Flex>
           {main}
         </AppShell.Main>
 
@@ -403,33 +414,17 @@ function NotificationMenu({ currentUser }: { currentUser?: User }) {
   const isMobile = useMediaQuery('(max-width: 768px)');
   const { colorScheme } = useMantineColorScheme();
   const { isAuthLoaded, user } = useAuthContext();
-  const [notifications, setNotifications] = useState<any[]>([
-    // {
-    //   id: '1',
-    //   // icon: brandLogo.src,
-    //   title: 'Test Notification',
-    //   description: 'This is a test notification.',
-    //   // buttonPrimary: {
-    //   //   label: 'Accept',
-    //   //   onClick: () => null
-    //   // },
-    //   // buttonSecondary: {
-    //   //   label: 'Deny',
-    //   //   onClick: () => null
-    //   // },
-    //   read: false,
-    //   dismissVisible: true,
-    //   createdAt: new Date(),
-    //   updatedAt: new Date()
-    // }
-  ]);
+  const [opened, setOpened] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [notifications, setNotifications] = useState<any[]>([]);
 
   const refreshNotifications = useCallback(async () => {
     if (!isAuthLoaded) return;
     if (!user) return;
 
+    setLoading(true);
     const token = await user.getIdToken();
-    const res = await fetch('/api/v2/notifications', {
+    const res = await fetch('/api/v2/me/notifications', {
       method: 'GET',
       headers: { Authorization: `Bearer ${token}` }
     });
@@ -437,15 +432,23 @@ function NotificationMenu({ currentUser }: { currentUser?: User }) {
     if (res.status !== 200) return;
 
     const data = await res.json();
-    setNotifications(data || []);
+    setTimeout(() => {
+      setNotifications(data || []);
+      setLoading(false);
+    }, 100);
   }, [user, isAuthLoaded]);
 
   useEffect(() => {
     if (!currentUser) return;
     if (!isAuthLoaded) return;
     if (!user) return;
-    // refreshNotifications();
+    refreshNotifications();
   }, [currentUser, isAuthLoaded, user, refreshNotifications]);
+
+  useEffect(() => {
+    if (!opened) return;
+    refreshNotifications();
+  }, [opened, refreshNotifications]);
 
   return (
     <>
@@ -455,10 +458,12 @@ function NotificationMenu({ currentUser }: { currentUser?: User }) {
         shadow="md"
         radius={'md'}
         withArrow
+        opened={opened}
+        onChange={setOpened}
         // transitionProps={{ duration: 0 }}
       >
         <Popover.Target>
-          <UnstyledButton>
+          <UnstyledButton onClick={() => setOpened((o) => !o)}>
             <Flex
               align={'center'}
               justify={'center'}
@@ -468,6 +473,15 @@ function NotificationMenu({ currentUser }: { currentUser?: User }) {
                 color="red"
                 h={20}
                 disabled={notifications.length === 0}
+                radius={'xl'}
+                // label={
+                //   <Text
+                //     size="0.5rem"
+                //     fw={'bold'}
+                //   >
+                //     {notifications.length}
+                //   </Text>
+                // }
               >
                 <IconBell size={20} />
               </Indicator>
@@ -491,115 +505,64 @@ function NotificationMenu({ currentUser }: { currentUser?: User }) {
               px={16}
             >
               <Title size="md">Inbox</Title>
+              <Button
+                variant="light"
+                size="xs"
+                radius="xl"
+                color={colorScheme === 'dark' ? 'gray' : 'dark'}
+                ml={'auto'}
+              >
+                Clear all
+              </Button>
             </Flex>
           </Flex>
           <Divider color="var(--mantine-color-default-border)" />
-          {!notifications.length ? (
-            <Flex
-              align={'center'}
-              justify={'center'}
-              mih={64}
-            >
-              <Text
-                px={8}
-                c={'gray.5'}
+          <Box
+            mah={512}
+            style={{
+              overflowY: 'auto'
+            }}
+          >
+            {loading ? (
+              <Flex
+                align={'center'}
+                justify={'center'}
+                mih={64}
               >
-                You have no messages.
-              </Text>
-            </Flex>
-          ) : (
-            <Stack
-              mx={8}
-              py={16}
-              gap={16}
-            >
-              {notifications.map((notification) => (
-                <Flex
-                  px={16}
-                  key={notification?.id}
+                <Loader
+                  size={16}
+                  color={'var(--mantine-color-default-color)'}
+                />
+              </Flex>
+            ) : !notifications.length ? (
+              <Flex
+                align={'center'}
+                justify={'center'}
+                mih={64}
+              >
+                <Text
+                  px={8}
+                  c={'gray.5'}
                 >
-                  <Indicator
-                    position="top-start"
-                    size={8}
-                    color="red"
-                    disabled={notification?.read}
-                  >
-                    <Flex gap={16}>
-                      {notification?.icon ? (
-                        <Avatar
-                          src={notification?.icon}
-                          alt={'Notification Icon'}
-                          size={'lg'}
-                          radius={8}
-                        />
-                      ) : (
-                        <IconAlertCircle size={48} />
-                      )}
-                      <Flex
-                        direction={'column'}
-                        h={'max-content'}
-                        w={'100%'}
-                        pt={4}
-                      >
-                        <Text size="md">{notification?.title}</Text>
-                        <Text
-                          size="sm"
-                          c={'var(--mantine-color-placeholder)'}
-                        >
-                          {moment(notification?.createdAt).calendar()}
-                        </Text>
-                        <Text
-                          size="sm"
-                          pt={4}
-                        >
-                          {notification?.description}
-                        </Text>
-                        <Flex
-                          direction={'row'}
-                          align={'center'}
-                          gap={8}
-                          mt={8}
-                        >
-                          {notification?.buttonPrimary && (
-                            <Button
-                              variant={colorScheme === 'light' ? 'filled' : 'light'}
-                              color={colorScheme === 'light' ? 'dark' : 'gray'}
-                              size={'xs'}
-                              radius={8}
-                              onClick={notification?.buttonPrimary?.onClick}
-                            >
-                              {notification?.buttonPrimary?.label}
-                            </Button>
-                          )}
-                          {notification?.buttonSecondary && (
-                            <Button
-                              variant={'default'}
-                              size={'xs'}
-                              radius={8}
-                              onClick={notification?.buttonSecondary?.onClick}
-                            >
-                              {notification?.buttonSecondary?.label}
-                            </Button>
-                          )}
-                          {notification?.dismissVisible && (
-                            <Button
-                              variant={'default'}
-                              size={'xs'}
-                              radius={8}
-                              leftSection={<IconCheck size={16} />}
-                              onClick={() => null}
-                            >
-                              Dismiss
-                            </Button>
-                          )}
-                        </Flex>
-                      </Flex>
-                    </Flex>
-                  </Indicator>
-                </Flex>
-              ))}
-            </Stack>
-          )}
+                  You have no messages.
+                </Text>
+              </Flex>
+            ) : (
+              <Stack
+                mx={8}
+                py={16}
+                gap={16}
+              >
+                {notifications.map((notification: UserNotification) => (
+                  <Notification
+                    key={notification.id}
+                    notification={notification}
+                    refresh={refreshNotifications}
+                  />
+                ))}
+              </Stack>
+            )}
+          </Box>
         </Popover.Dropdown>
       </Popover>
     </>

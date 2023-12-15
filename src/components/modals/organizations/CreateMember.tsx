@@ -198,7 +198,7 @@ export default function CreateMember({
                 type="submit"
                 loading={formSubmitting}
               >
-                Create
+                {form.values.type === 'user' ? 'Invite' : 'Add'} User
               </Button>
             </Flex>
           </Box>

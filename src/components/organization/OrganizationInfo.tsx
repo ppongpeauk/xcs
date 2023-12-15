@@ -20,9 +20,11 @@ import { modals } from '@mantine/modals';
 import {
   Icon123,
   IconDeviceFloppy,
+  IconDoorExit,
   IconDownload,
   IconHttpDelete,
   IconRecycle,
+  IconTrash,
   IconUpload,
   IconUsersGroup
 } from '@tabler/icons-react';
@@ -129,25 +131,48 @@ export default function OrganizationInfo({
           }
         })
         .then((data) => {
-          toast({
-            title: data.message,
-            status: 'success',
-            duration: 5000,
-            isClosable: true
+          notifications.show({
+            message: data.message,
+            color: 'green'
           });
           push(`/organizations`);
         })
         .catch((err) => {
-          toast({
-            title: 'Error',
-            description: err.message,
-            status: 'error',
-            duration: 5000,
-            isClosable: true
+          notifications.show({
+            message: err.message,
+            color: 'red'
           });
+        });
+    });
+  };
+
+  const onLeave = () => {
+    user.getIdToken().then((token: string) => {
+      fetch(`/api/v2/organizations/${query.id}/leave`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      })
+        .then((res) => {
+          if (res.status === 200) {
+            return res.json();
+          } else {
+            return res.json().then((json: any) => {
+              throw new Error(json.message);
+            });
+          }
         })
-        .finally(() => {
-          onDeleteDialogClose();
+        .then((data) => {
+          notifications.show({
+            message: data.message,
+            color: 'green'
+          });
+          push(`/organizations`);
+        })
+        .catch((err) => {
+          notifications.show({
+            message: err.message,
+            color: 'red'
+          });
         });
     });
   };
@@ -166,158 +191,189 @@ export default function OrganizationInfo({
       radius: 'md'
     });
 
+  const showLeaveModal = () =>
+    modals.openConfirmModal({
+      zIndex: 1000,
+      title: <Title order={4}>Leave organization?</Title>,
+      children: <Text size="sm">Are you sure you want to leave this organization?</Text>,
+      labels: { confirm: 'Leave', cancel: 'Nevermind' },
+      confirmProps: { color: 'red' },
+      onCancel: () => {},
+      onConfirm: () => {
+        onLeave();
+      },
+      radius: 'md'
+    });
+
   return (
-    <form
-      onSubmit={form.onSubmit(async (values) => {
-        setFormSubmitting(true);
-        const token = await user.getIdToken();
-        await fetch(`/api/v1/organizations/${query.id}`, {
-          method: 'PUT',
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            name: values.name,
-            description: values.description,
-            avatar: avatar !== data?.avatar ? avatar : undefined
+    <>
+      <Title
+        order={2}
+        py={4}
+      >
+        General Settings
+      </Title>
+
+      <form
+        onSubmit={form.onSubmit(async (values) => {
+          setFormSubmitting(true);
+          const token = await user.getIdToken();
+          await fetch(`/api/v1/organizations/${query.id}`, {
+            method: 'PUT',
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              name: values.name,
+              description: values.description,
+              avatar: avatar !== data?.avatar ? avatar : undefined
+            })
           })
-        })
-          .then((res: any) => {
-            if (res.status === 200) {
-              return res.json();
-            } else {
-              return res.json().then((json: any) => {
-                throw new Error(json.message);
+            .then((res: any) => {
+              if (res.status === 200) {
+                return res.json();
+              } else {
+                return res.json().then((json: any) => {
+                  throw new Error(json.message);
+                });
+              }
+            })
+            .then((data) => {
+              notifications.show({
+                message: 'Successfully updated the organization.',
+                color: 'green',
+                autoClose: 5000
               });
-            }
-          })
-          .then((data) => {
-            notifications.show({
-              message: 'Successfully updated the organization.',
-              color: 'green',
-              autoClose: 5000
+              refreshData();
+            })
+            .catch((error) => {
+              notifications.show({
+                title: 'There was an error updating the location.',
+                message: error.message,
+                color: 'red',
+                autoClose: 5000
+              });
+            })
+            .finally(() => {
+              setFormSubmitting(false);
             });
-            refreshData();
-          })
-          .catch((error) => {
-            notifications.show({
-              title: 'There was an error updating the location.',
-              message: error.message,
-              color: 'red',
-              autoClose: 5000
-            });
-          })
-          .finally(() => {
-            setFormSubmitting(false);
-          });
-      })}
-    >
-      <Flex
-        style={{
-          flexDirection: 'column',
-          gap: '0.5rem',
-          width: 'fit-content'
-        }}
+        })}
       >
         <Flex
-          id={'avatar-picker'}
-          my={8}
-          gap={16}
-        >
-          <Avatar
-            size={rem(128)}
-            src={avatar || defaultImage}
-            style={{
-              objectFit: 'cover',
-              borderRadius: '8px'
-            }}
-          />
-          <Flex
-            ml={6}
-            direction={'column'}
-            align={'flex-start'}
-            justify={'center'}
-            gap={4}
-          >
-            {/* actual avatar upload button */}
-            <FileButton
-              onChange={handleAvatarChange}
-              accept="image/*"
-            >
-              {(props) => (
-                <Button
-                  variant={'filled'}
-                  color={'dark.5'}
-                  fullWidth
-                  size={'xs'}
-                  leftSection={<IconUpload size={16} />}
-                  {...props}
-                >
-                  Choose Icon
-                </Button>
-              )}
-            </FileButton>
-            <Button
-              variant={'default'}
-              color={'dark.5'}
-              fullWidth
-              size={'xs'}
-              onClick={() => {
-                removeAvatar();
-              }}
-            >
-              Remove Icon
-            </Button>
-          </Flex>
-        </Flex>
-        <TextInput
-          label="Name"
-          withAsterisk
-          description="The name of this organization."
-          placeholder="ACME Inc."
-          w={240}
-          {...form.getInputProps('name')}
-        />
-        <Textarea
-          label="Description"
-          description="A description of this organization."
-          placeholder="Organization description..."
-          w={320}
-          autosize
-          minRows={4}
-          maxRows={8}
-          {...form.getInputProps('description')}
-        />
-      </Flex>
-
-      <Flex
-        mt={8}
-        style={{
-          flexDirection: 'row',
-          gap: '0.5rem'
-        }}
-        w={'fit-content'}
-      >
-        <Button
-          type="submit"
-          color="dark.5"
-          loading={formSubmitting}
-          leftSection={<IconDeviceFloppy size={'16px'} />}
-          mr={'auto'}
-        >
-          Save Changes
-        </Button>
-        <Button
-          color="red"
-          leftSection={<IconRecycle size={'16px'} />}
-          onClick={() => {
-            showDeleteModal();
+          style={{
+            flexDirection: 'column',
+            gap: '0.5rem',
+            width: 'fit-content'
           }}
         >
-          Delete
-        </Button>
-      </Flex>
-    </form>
+          <Flex
+            id={'avatar-picker'}
+            my={8}
+            gap={16}
+          >
+            <Avatar
+              size={rem(128)}
+              src={avatar || defaultImage}
+              style={{
+                objectFit: 'cover',
+                borderRadius: '8px'
+              }}
+            />
+            <Flex
+              ml={6}
+              direction={'column'}
+              align={'flex-start'}
+              justify={'center'}
+              gap={4}
+            >
+              {/* actual avatar upload button */}
+              <FileButton
+                onChange={handleAvatarChange}
+                accept="image/*"
+              >
+                {(props) => (
+                  <Button
+                    variant={'filled'}
+                    color={'dark.5'}
+                    fullWidth
+                    size={'xs'}
+                    leftSection={<IconUpload size={16} />}
+                    {...props}
+                  >
+                    Choose Icon
+                  </Button>
+                )}
+              </FileButton>
+              <Button
+                variant={'default'}
+                color={'dark.5'}
+                fullWidth
+                size={'xs'}
+                onClick={() => {
+                  removeAvatar();
+                }}
+              >
+                Remove Icon
+              </Button>
+            </Flex>
+          </Flex>
+          <TextInput
+            label="Name"
+            withAsterisk
+            description="The name of this organization."
+            placeholder="ACME Inc."
+            w={240}
+            {...form.getInputProps('name')}
+          />
+          <Textarea
+            label="Description"
+            description="A description of this organization."
+            placeholder="Organization description..."
+            w={320}
+            autosize
+            minRows={4}
+            maxRows={8}
+            {...form.getInputProps('description')}
+          />
+        </Flex>
+
+        <Flex
+          mt={8}
+          style={{
+            flexDirection: 'row',
+            gap: '0.5rem'
+          }}
+          w={'fit-content'}
+        >
+          <Button
+            type="submit"
+            color="dark.5"
+            loading={formSubmitting}
+            leftSection={<IconDeviceFloppy size={'16px'} />}
+            mr={'auto'}
+          >
+            Save Changes
+          </Button>
+          {data?.ownerId === user?.uid ? (
+            <Button
+              color="red"
+              leftSection={<IconTrash size={'16px'} />}
+              onClick={showDeleteModal}
+            >
+              Delete
+            </Button>
+          ) : (
+            <Button
+              color="red"
+              leftSection={<IconDoorExit size={'16px'} />}
+              onClick={showLeaveModal}
+            >
+              Leave
+            </Button>
+          )}
+        </Flex>
+      </form>
+    </>
   );
 }

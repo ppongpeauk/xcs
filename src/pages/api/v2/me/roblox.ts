@@ -2,7 +2,8 @@ import { NextApiRequest, NextApiResponse } from 'next';
 
 import { authToken } from '@/lib/auth';
 import clientPromise from '@/lib/mongodb';
-import { AccessPoint, Organization } from '@/types';
+import { AccessPoint, Organization, UserNotification } from '@/types';
+import { uuid as uuidv4 } from 'uuidv4';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const uid = await authToken(req);
@@ -173,7 +174,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           }
         }
       )
-      .then(() => {
+      .then(async () => {
+        // remove notification from user
+        await db.collection('notifications').deleteOne({ recipientId: uid, type: 'roblox-verify' });
+
         return res.status(200).json({
           message: "You've successfully verified your Roblox account.",
           success: true
@@ -204,19 +208,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
       }
     );
-    await users.updateOne(
-      { id: uid },
-      {
-        $push: {
-          logs: {
-            type: 'account_unlink',
-            performer: uid,
-            timestamp: timestamp,
-            data: 'roblox'
-          }
-        }
-      }
-    );
+
+    // append notification to user
+    const notificationId = uuidv4();
+    const notificationData = {
+      id: notificationId,
+      recipientId: uid,
+      read: false,
+      dismissible: true,
+      type: 'roblox-verify',
+      title: 'Verify your Roblox account',
+      description: 'Please verify your Roblox account to continue using Restrafes XCS.',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    } as UserNotification;
+
+    await db.collection('notifications').insertOne(notificationData);
 
     return res.status(200).json({
       message: "You've successfully unverified your Roblox account.",

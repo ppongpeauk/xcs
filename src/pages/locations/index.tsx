@@ -77,7 +77,7 @@ export default function PlatformLocations() {
   const refreshOrganizations = useCallback(async () => {
     if (!user) return;
     await user.getIdToken().then(async (token: string) => {
-      await fetch('/api/v1/me/organizations', {
+      await fetch('/api/v2/me/organizations', {
         method: 'GET',
         headers: { Authorization: `Bearer ${token}` }
       })

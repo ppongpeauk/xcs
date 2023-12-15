@@ -44,9 +44,34 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (!Object.values(organization.members).find((item) => item.id === uid))
     return res.status(403).json({ message: 'Forbidden.' });
 
-  if (req.method === 'DELETE') {
-    const { uuid } = req.query;
+  const { uuid } = req.query;
 
+  if (req.method === 'GET') {
+    // check if user exists
+    let organizationMember = Object.values(organization.members).find((item) => item.uuid === uuid || item.id === uuid);
+
+    if (!organizationMember) return res.status(404).json({ message: 'Member not found.' });
+
+    const user = (await db.collection('users').findOne(
+      { id: organizationMember?.id },
+      {
+        projection: {
+          displayName: 1,
+          username: 1,
+          avatar: 1
+        }
+      }
+    )) as User | null;
+    if (user) {
+      organizationMember = {
+        ...organizationMember,
+        ...user
+      } as OrganizationMember;
+    }
+
+    // return user
+    return res.status(200).json(organizationMember);
+  } else if (req.method === 'DELETE') {
     // check if user exists
     const organizationMember = Object.values(organization.members).find(
       (item) => item.uuid === uuid || item.id === uuid
@@ -62,6 +87,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // remove user from organization
     await db.collection('organizations').updateOne({ id }, { $unset: { [`members.${uuid}`]: '' } });
+
+    // remove notifications from user
+    await db.collection('notifications').deleteMany({ organizationId: id, recipientId: organizationMember.id });
 
     return res.status(200).json({ message: 'Removed user from the organization.' });
   }

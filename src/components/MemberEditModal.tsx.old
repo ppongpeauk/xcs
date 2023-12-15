@@ -411,8 +411,8 @@ export default function MemberEditModal({
                                         ? member.type === 'user'
                                           ? `/@${member.username}`
                                           : member?.type === 'roblox'
-                                          ? `https://www.roblox.com/users/${member?.id}/profile`
-                                          : `https://www.roblox.com/groups/${member?.id}/group`
+                                            ? `https://www.roblox.com/users/${member?.id}/profile`
+                                            : `https://www.roblox.com/groups/${member?.id}/group`
                                         : undefined
                                     }
                                     target="_blank"
@@ -643,8 +643,8 @@ export default function MemberEditModal({
                                 ? focusedMember?.type === 'user'
                                   ? `/@${focusedMember?.username}`
                                   : focusedMember?.type === 'roblox'
-                                  ? `https://www.roblox.com/users/${focusedMember?.id}/profile`
-                                  : `https://www.roblox.com/groups/${focusedMember?.id}/group`
+                                    ? `https://www.roblox.com/users/${focusedMember?.id}/profile`
+                                    : `https://www.roblox.com/groups/${focusedMember?.id}/group`
                                 : undefined
                             }
                             target="_blank"

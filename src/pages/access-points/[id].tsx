@@ -44,7 +44,8 @@ import {
   IconCopy,
   IconDeviceFloppy,
   IconElevator,
-  IconRecycle
+  IconRecycle,
+  IconTrash
 } from '@tabler/icons-react';
 import { DataTable } from 'mantine-datatable';
 import { notifications } from '@mantine/notifications';
@@ -362,7 +363,7 @@ export default function PlatformAccessPoint() {
               </Button>
               <Button
                 color="red"
-                leftSection={<IconRecycle size={'16px'} />}
+                leftSection={<IconTrash size={'16px'} />}
                 onClick={() => {
                   modals.openConfirmModal({
                     title: <Title order={4}>Delete access point?</Title>,

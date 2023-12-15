@@ -61,7 +61,7 @@ export default function SettingsLinkedAccounts() {
 
   const unlinkRoblox = async () => {
     user.getIdToken().then((token: string) => {
-      fetch('/api/v1/me/roblox', {
+      fetch('/api/v2/me/roblox', {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

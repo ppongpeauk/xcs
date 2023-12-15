@@ -32,6 +32,7 @@ interface AuthContextValues {
   signOut: () => void;
   signInWithEmailAndPassword: (email: string, password: string) => Promise<UserCredential>;
   isAuthLoaded: boolean;
+  platform: any;
 }
 
 export function useAuthContext() {
@@ -41,6 +42,7 @@ export function useAuthContext() {
 export default function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, loading, error] = useAuthState(auth);
   const [currentUser, setCurrentUser] = useState<User | null>();
+  const [platform, setPlatform] = useState<any>(null);
   const [isAuthLoaded, setIsAuthLoaded] = useState<boolean>(false);
   const { push } = useRouter();
 
@@ -48,7 +50,10 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     setIsAuthLoaded(false);
     if (user) {
       await user.getIdToken().then(async (token) => {
-        await fetch('/api/v1/me', {
+        const plat = await fetch('/api/v2/platform').then((res) => res.json());
+        setPlatform(plat);
+
+        await fetch('/api/v2/me', {
           headers: { authorization: `Bearer ${token}` }
         })
           .then((res) => {
@@ -126,6 +131,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     getAuth,
     logOut,
     signOut,
+    platform,
     signInWithEmailAndPassword,
     isAuthLoaded
   } as unknown as AuthContextValues;

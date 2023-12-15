@@ -191,6 +191,7 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
           leftSection={<IconPlus size={'16px'} />}
           variant={'default'}
           onClick={openCreateModal}
+          size="xs"
         >
           New Access Point
         </Button>
@@ -213,6 +214,7 @@ export default function LocationAccessPoints({ idToken, location, refreshData }:
           onClick={() => {
             refreshAccessPoints();
           }}
+          size="xs"
         >
           <IconRefresh size={16} />
         </Button>
@@ -539,7 +541,7 @@ function BulkActionMenu({
           <Menu.Label>Danger zone</Menu.Label>
           <Menu.Item
             color="red"
-            leftSection={<IconRecycle size={16} />}
+            leftSection={<IconTrash size={16} />}
           >
             Delete
           </Menu.Item>

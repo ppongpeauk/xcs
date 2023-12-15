@@ -184,7 +184,10 @@ export default function PlatformLocation() {
           keepMounted={false}
           variant="pills"
         >
-          <Tabs.List style={{ gap: 0 }}>
+          <Tabs.List
+            style={{ gap: 0 }}
+            fw={'bold'}
+          >
             <Tabs.Tab
               value="general"
               leftSection={<IconSettings style={iconStyle} />}

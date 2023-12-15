@@ -37,6 +37,7 @@ import {
   IconBroadcast,
   IconCode,
   IconExternalLink,
+  IconGridDots,
   IconHistory,
   IconLiveView,
   IconLocation,
@@ -44,6 +45,8 @@ import {
   IconShadow,
   IconTimeline,
   IconTimelineEvent,
+  IconTrees,
+  IconUsers,
   IconUsersGroup
 } from '@tabler/icons-react';
 import NextLink from 'next/link';
@@ -55,6 +58,7 @@ import { Organization } from '@/types';
 import OrganizationInfo from '@/components/organization/OrganizationInfo';
 import OrganizationMembers from '@/components/organization/OrganizationMembers';
 import OrganizationEvents from '@/components/organization/OrganizationEvents';
+import OrganizationOverview from '@/components/organization/OrganizationOverview';
 
 export default function PlatformOrganization() {
   const router = useRouter();
@@ -112,7 +116,7 @@ export default function PlatformOrganization() {
     refreshData();
   }, [query, user, data, refreshData]);
 
-  const iconStyle = { width: rem(12), height: rem(12) };
+  const iconStyle = { width: rem(14), height: rem(14) };
 
   return (
     <>
@@ -183,8 +187,9 @@ export default function PlatformOrganization() {
             <Text
               size={'sm'}
               c={'var(--mantine-color-placeholder)'}
+              fw={'bold'}
             >
-              Owned by {data?.owner?.displayName} (@{data?.owner?.username})
+              by {data?.owner?.displayName} (@{data?.owner?.username})
             </Text>
           </Skeleton>
         </Group>
@@ -199,18 +204,21 @@ export default function PlatformOrganization() {
           keepMounted={false}
           variant="pills"
         >
-          <Tabs.List style={{ gap: 0 }}>
+          <Tabs.List
+            style={{ gap: 0 }}
+            fw={'bold'}
+          >
             <Tabs.Tab
               value="overview"
-              leftSection={<IconSettings style={iconStyle} />}
+              leftSection={<IconGridDots style={iconStyle} />}
             >
               Overview
             </Tabs.Tab>
             <Tabs.Tab
-              value="members"
-              leftSection={<IconUsersGroup style={iconStyle} />}
+              value="settings"
+              leftSection={<IconSettings style={iconStyle} />}
             >
-              Members
+              General Settings
             </Tabs.Tab>
             <Tabs.Tab
               value="event-log"
@@ -219,10 +227,17 @@ export default function PlatformOrganization() {
               Event Log
             </Tabs.Tab>
             <Tabs.Tab
+              value="members"
+              leftSection={<IconUsers style={iconStyle} />}
+            >
+              Members
+            </Tabs.Tab>
+
+            <Tabs.Tab
               value="developer"
               leftSection={<IconCode style={iconStyle} />}
             >
-              API Keys
+              Developer Settings
             </Tabs.Tab>
             <Tabs.Tab
               value="locations"
@@ -237,7 +252,7 @@ export default function PlatformOrganization() {
             </Tabs.Tab>
             <Tabs.Tab
               value="public-page"
-              leftSection={<IconShadow style={iconStyle} />}
+              leftSection={<IconTrees style={iconStyle} />}
               rightSection={<IconExternalLink size={16} />}
               onClick={(e) => {
                 e.stopPropagation();
@@ -254,12 +269,13 @@ export default function PlatformOrganization() {
             w={'100%'}
           >
             <Tabs.Panel value="overview">
-              <Title
-                order={2}
-                py={4}
-              >
-                Overview
-              </Title>
+              <OrganizationOverview
+                query={query}
+                data={data}
+                refreshData={refreshData}
+              />
+            </Tabs.Panel>
+            <Tabs.Panel value="settings">
               <OrganizationInfo
                 query={query}
                 data={data}
@@ -273,7 +289,7 @@ export default function PlatformOrganization() {
               />
             </Tabs.Panel>
             <Tabs.Panel value="event-log">
-              <OrganizationEvents />
+              <OrganizationEvents organization={data as Organization} />
             </Tabs.Panel>
           </Box>
         </Tabs>

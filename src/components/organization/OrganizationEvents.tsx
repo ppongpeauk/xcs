@@ -1,8 +1,11 @@
 import { Text, Title, Flex, Button, Select, Fieldset } from '@mantine/core';
 import InfoLink from '../InfoLink';
 import { IconTableExport } from '@tabler/icons-react';
+import { DataTable } from 'mantine-datatable';
+import EventDataTable from './components/EventDataTable';
+import { Organization } from '@/types';
 
-export default function OrganizationEvents() {
+export default function OrganizationEvents({ organization }: { organization: Organization }) {
   return (
     <>
       <Flex
@@ -84,6 +87,7 @@ export default function OrganizationEvents() {
           />
         </Flex>
       </Fieldset>
+      <EventDataTable organization={organization} />
     </>
   );
 }

@@ -116,7 +116,7 @@ export default function Settings() {
   }, [query, toast]);
 
   const isMobile = useMediaQuery('(max-width: 768px)');
-  const iconStyle = { width: rem(12), height: rem(12) };
+  const iconStyle = { width: rem(14), height: rem(14) };
 
   return (
     <>
@@ -162,7 +162,10 @@ export default function Settings() {
           onChange={(value) => push(`/settings/${value}`)}
           variant="pills"
         >
-          <Tabs.List style={{ gap: 0 }}>
+          <Tabs.List
+            style={{ gap: 0 }}
+            fw={'bold'}
+          >
             <Tabs.Tab
               value="profile"
               leftSection={<IconUserFilled style={iconStyle} />}

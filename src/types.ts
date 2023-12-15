@@ -109,8 +109,8 @@ export interface OrganizationMember {
   type: 'user' | 'roblox' | 'roblox-group' | 'card';
   uuid?: string;
   id: string;
-  role?: number;
-  accessGroups?: string[];
+  role: number;
+  accessGroups: string[];
   scanData?: any;
   permissions?: {
     all: boolean;
@@ -160,8 +160,8 @@ export interface OrganizationMember {
 
   joined?: boolean;
   joinedAt?: string | Date;
-  createdAt?: Date;
-  updatedAt?: string | Date;
+  createdAt?: Date | null;
+  updatedAt?: Date | null;
 }
 export interface Location {
   id: string;
@@ -397,4 +397,25 @@ export interface ConsumerApiKey {
       write: boolean;
     };
   };
+}
+
+export interface UserNotification {
+  id: string;
+  type: 'organization-invitation' | 'regular' | 'roblox-verify';
+  read: boolean;
+  recipientId: string;
+  senderId?: string;
+  sender?: never | User;
+
+  title?: string;
+  description?: string;
+  icon?: string;
+  dismissible?: boolean;
+
+  // organization-specific
+  organizationId?: string;
+  organization?: Organization;
+
+  createdAt: Date;
+  updatedAt: Date;
 }

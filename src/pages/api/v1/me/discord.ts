@@ -79,7 +79,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       { 'discord.id': userResponse.user.id },
       {
         $set: {
-          lastUpdatedAt: timestamp,
+          updatedAt: timestamp,
           discord: {
             verified: false,
             id: null,
@@ -95,7 +95,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       { id: uid },
       {
         $set: {
-          lastUpdatedAt: timestamp,
+          updatedAt: timestamp,
           discord: {
             verified: true,
             verifiedAt: timestamp,
@@ -141,7 +141,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       { id: uid },
       {
         $set: {
-          lastUpdatedAt: timestamp,
+          updatedAt: timestamp,
           discord: {
             verified: false,
             id: null,

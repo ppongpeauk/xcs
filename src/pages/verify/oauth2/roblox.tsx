@@ -1,11 +1,11 @@
-import { useAuthContext } from '@/contexts/AuthContext';
-import { Container, Flex, Spinner, Text } from '@chakra-ui/react';
-import { useRouter } from 'next/router';
 import { useEffect, useMemo } from 'react';
+import { useRouter } from 'next/router';
+import { useAuthContext } from '@/contexts/AuthContext';
+import { Center, Loader, Stack, Text, useMantineColorScheme } from '@mantine/core';
 
 export default function RobloxOauth2() {
   const { query, push } = useRouter();
-  const { currentUser, refreshCurrentUser, user } = useAuthContext();
+  const { refreshCurrentUser, user } = useAuthContext();
 
   const code = useMemo(() => {
     return query.code;
@@ -18,7 +18,7 @@ export default function RobloxOauth2() {
       user
         .getIdToken()
         .then((token: string) => {
-          fetch('/api/v1/me/roblox', {
+          fetch('/api/v2/me/roblox', {
             method: 'POST',
             headers: {
               Authorization: `Bearer ${token}`,
@@ -48,15 +48,17 @@ export default function RobloxOauth2() {
   }, [user, code, push, query, refreshCurrentUser]);
 
   return (
-    <Container
-      as={Flex}
-      centerContent
+    <Center
+      w={'100%'}
       h={'100dvh'}
-      align={'center'}
-      justify={'center'}
     >
-      <Spinner />
-      <Text pt={4}>Verifying...</Text>
-    </Container>
+      <Stack align="center">
+        <Loader
+          size={32}
+          color={'var(--mantine-color-default-color)'}
+        />
+        <Text fw={'bold'}>Your account is being verified...</Text>
+      </Stack>
+    </Center>
   );
 }

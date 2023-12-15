@@ -69,7 +69,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               accessGroups: mergician(mergicianOptions)(robloxMember.accessGroups || [], invitation.accessGroups || []),
               scanData: robloxMember.scanData || [],
 
-              joinedAt: new Date(),
+              createdAt: new Date(),
               updatedAt: new Date()
             } as OrganizationMember
           },
@@ -92,7 +92,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               accessGroups: invitation.accessGroups || [],
               scanData: {},
 
-              joinedAt: new Date(),
+              createdAt: new Date(),
               updatedAt: new Date()
             } as OrganizationMember
           }

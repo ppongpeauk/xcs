@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-
 import Invitation from '@/components/Invitation';
 
 export async function getServerSideProps({ query }: any) {
@@ -82,13 +81,17 @@ export default function Invite({ invite, errorMessage }: { invite: any; errorMes
             />
             <meta
               name="og:description"
-              content={`You've been invited by ${invite?.creator.displayName || invite.creator.name.first} to ${inviteTypeSwitch(invite.type) || 'join their organization'
-                }.`}
+              content={`You've been invited by ${invite?.creator.displayName || invite.creator.name.first} to ${
+                inviteTypeSwitch(invite.type) || 'join their organization'
+              }.`}
             />
           </>
         ) : null}
       </Head>
-      <Invitation invite={invite} errorMessage={errorMessage} />
+      <Invitation
+        invite={invite}
+        errorMessage={errorMessage}
+      />
     </>
   );
 }

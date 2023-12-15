@@ -100,7 +100,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               id: uid,
               formattedId: uid,
               role: inviteCodeData.role || 1,
-              joinedAt: timestamp,
+              createdAt: timestamp,
               updatedAt: timestamp
             }
           },

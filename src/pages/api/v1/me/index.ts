@@ -64,7 +64,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const timestamp = new Date();
-    req.body.lastUpdatedAt = timestamp;
+    req.body.updatedAt = timestamp;
 
     if (email) {
       email = email.trim().toLowerCase();
@@ -113,7 +113,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     // sanitize body to only include allowed fields
-    const allowedFields = ['displayName', 'bio', 'avatar', 'emailVerified', 'lastUpdatedAt'];
+    const allowedFields = ['displayName', 'bio', 'avatar', 'emailVerified', 'updatedAt'];
     const sanitizedBody = Object.keys(req.body)
       .filter((key) => allowedFields.includes(key))
       .reduce((obj: any, key) => {
