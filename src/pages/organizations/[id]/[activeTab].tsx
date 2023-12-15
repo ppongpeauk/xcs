@@ -271,7 +271,7 @@ export default function PlatformOrganization() {
             <Tabs.Panel value="overview">
               <OrganizationOverview
                 query={query}
-                data={data}
+                data={data as Organization}
                 refreshData={refreshData}
               />
             </Tabs.Panel>
