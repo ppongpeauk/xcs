@@ -68,11 +68,29 @@ export default function OrganizationOverview({
   refreshData
 }: {
   query: any;
-  data: Organization | any;
+  data: Organization;
   refreshData: any;
 }) {
   const { user } = useAuthContext();
   const { push } = useRouter();
+  const [swipeData, setSwipeData] = useState<any>([]);
+
+  useEffect(() => {
+    if (organization) {
+      setSwipeData([
+        {
+          id: 'denied',
+          label: 'Denied',
+          value: organization.statistics.scans.denied
+        },
+        {
+          id: 'granted',
+          label: 'Granted',
+          value: organization.statistics.scans.granted
+        }
+      ]);
+    }
+  }, [organization]);
 
   return (
     <>
@@ -95,7 +113,7 @@ export default function OrganizationOverview({
         >
           <Title order={3}>Scans</Title>
           <PieChart
-            data={data}
+            data={swipeData}
             theme={nivoTheme}
           />
         </Card>
