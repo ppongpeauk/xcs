@@ -720,7 +720,7 @@ function AvatarMenu({ currentUser, onLogoutOpen }: { currentUser?: User; onLogou
               )}
               <Menu.Item
                 component={NextLink}
-                href={'/settings/api-keys'}
+                href={'/settings/developer'}
                 leftSection={<IconKey style={{ width: rem(14), height: rem(14) }} />}
               >
                 Security credentials

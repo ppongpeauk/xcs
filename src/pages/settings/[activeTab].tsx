@@ -43,6 +43,7 @@ import InfoLink from '@/components/InfoLink';
 import { AiFillExperiment, AiOutlineExperiment } from 'react-icons/ai';
 import SettingsBeta from '@/components/settings/SettingsBeta';
 import SettingsExperiments from '@/components/settings/SettingsExperiments';
+import SettingsDeveloper from '@/components/settings/SettingsDeveloper';
 
 export default function Settings() {
   const { query, push } = useRouter();
@@ -228,7 +229,7 @@ export default function Settings() {
               <Title
                 size={rem(24)}
                 py={4}
-                mb={16}
+                mb={8}
               >
                 Profile
               </Title>
@@ -238,7 +239,7 @@ export default function Settings() {
               <Title
                 size={rem(24)}
                 py={4}
-                mb={16}
+                mb={8}
               >
                 Privacy
               </Title>
@@ -248,7 +249,7 @@ export default function Settings() {
               <Title
                 size={rem(24)}
                 py={4}
-                mb={16}
+                mb={8}
                 style={{
                   display: 'flex',
                   alignItems: 'center'
@@ -262,7 +263,7 @@ export default function Settings() {
               <Title
                 size={rem(24)}
                 py={4}
-                mb={16}
+                mb={8}
               >
                 Linked Accounts
               </Title>
@@ -272,7 +273,7 @@ export default function Settings() {
               <Title
                 size={rem(24)}
                 py={4}
-                mb={16}
+                mb={8}
               >
                 Staff Dashboard
               </Title>
@@ -282,7 +283,7 @@ export default function Settings() {
               <Title
                 size={rem(24)}
                 py={4}
-                mb={16}
+                mb={8}
               >
                 Beta Program
                 <InfoLink
@@ -303,7 +304,7 @@ export default function Settings() {
               <Title
                 size={rem(24)}
                 py={4}
-                mb={16}
+                mb={8}
               >
                 Experimental Features
                 <InfoLink
@@ -323,7 +324,7 @@ export default function Settings() {
               <Title
                 size={rem(24)}
                 py={4}
-                mb={16}
+                mb={8}
               >
                 Developer Settings
                 <InfoLink
@@ -335,6 +336,7 @@ export default function Settings() {
                   }
                 />
               </Title>
+              <SettingsDeveloper />
             </Tabs.Panel>
           </Box>
         </Tabs>

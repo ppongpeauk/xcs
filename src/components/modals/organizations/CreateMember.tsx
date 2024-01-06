@@ -182,12 +182,20 @@ export default function CreateMember({
                 </>
               )}
               {form.values.type === 'roblox' && (
-                <TextInput
-                  label="Roblox Username"
-                  description="The Roblox username of the user to add."
-                  placeholder="restrafes"
-                  {...form.getInputProps('robloxUsername')}
-                />
+                <>
+                  <TextInput
+                    label="Roblox Username"
+                    description="The Roblox username of the user to add."
+                    placeholder="restrafes"
+                    {...form.getInputProps('robloxUsername')}
+                  />
+                  <Text
+                    size="xs"
+                    c={'gray'}
+                  >
+                    You will be able to configure the user&apos;s permissions after they have been added.
+                  </Text>
+                </>
               )}
               {form.values.type === 'roblox-group' && <></>}
               <Button
@@ -380,7 +388,9 @@ export function UserAutocomplete({
           style={{ overflowY: 'auto' }}
         >
           {options}
-          {!options.length && <Combobox.Empty>No results found.</Combobox.Empty>}
+          {!options.length && (
+            <Combobox.Empty>{!search ? 'Start typing to search.' : 'No users found.'}</Combobox.Empty>
+          )}
         </Combobox.Options>
       </Combobox.Dropdown>
     </Combobox>

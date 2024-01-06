@@ -120,7 +120,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           scanData: {},
 
           createdAt: timestamp,
-          updatedAt: timestamp
+          updatedAt: timestamp,
+
+          joined: true,
+          joinedAt: timestamp
         } as OrganizationMember
       },
       logs: [],

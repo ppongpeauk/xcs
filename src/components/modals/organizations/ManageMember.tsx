@@ -13,14 +13,27 @@ import {
   Tooltip,
   rem,
   Loader,
-  LoadingOverlay
+  LoadingOverlay,
+  useMantineColorScheme,
+  MantineComponent,
+  Box,
+  ButtonGroup
 } from '@mantine/core';
 import { modals } from '@mantine/modals';
 import { notifications } from '@mantine/notifications';
-import { IconIdBadge, IconKey, IconKeyframe, IconMessageCircle, IconPhoto, IconSettings } from '@tabler/icons-react';
+import {
+  IconIdBadge,
+  IconKey,
+  IconKeyframe,
+  IconMessageCircle,
+  IconPhoto,
+  IconSettings,
+  IconTrash
+} from '@tabler/icons-react';
 import { MultiFactorUser } from 'firebase/auth';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
+import Editor from '@monaco-editor/react';
 
 const iconStyle = { width: rem(14), height: rem(14) };
 
@@ -36,6 +49,7 @@ export default function ManageMember({
   onClose: (doRefresh: boolean) => void;
 }) {
   const { push } = useRouter();
+  const { colorScheme } = useMantineColorScheme();
   const [member, setMember] = useState<OrganizationMember>();
   const refreshMember = useCallback(async () => {
     const token = await user.getIdToken();
@@ -107,18 +121,63 @@ export default function ManageMember({
                   {member?.id === organization.ownerId ? ' — Organization Owner' : ''}
                   {!member?.joined ? ' — Invitation Pending' : ''}
                 </Text>
-                <Button
+                <Group
                   mt={8}
-                  w={128}
-                  size="xs"
-                  variant={'default'}
-                  onClick={() => {
-                    push(`/@${member?.username}`);
-                    onClose(false);
-                  }}
+                  gap={8}
                 >
-                  View Profile
-                </Button>
+                  <Button
+                    w={128}
+                    size="xs"
+                    variant={'default'}
+                    onClick={() => {
+                      push(`/@${member?.username}`);
+                      onClose(false);
+                    }}
+                  >
+                    View Profile
+                  </Button>
+                  <Button
+                    variant={'filled'}
+                    size="xs"
+                    color={'red'}
+                    onClick={() => {
+                      modals.openConfirmModal({
+                        title: <Title order={4}>Remove member from organization?</Title>,
+                        children: <Text size="sm">Are you sure you want to remove this member?</Text>,
+                        labels: { confirm: 'Remove member', cancel: 'Nevermind' },
+                        confirmProps: { color: 'red' },
+                        onConfirm: () => {
+                          user.getIdToken().then((token: string) => {
+                            fetch(`/api/v2/organizations/${organization?.id}/members/${member?.uuid}`, {
+                              method: 'DELETE',
+                              headers: { Authorization: `Bearer ${token}` }
+                            })
+                              .then((res) => {
+                                if (res.status === 200) return res.json();
+                                throw new Error(`Failed to remove member. (${res.status})`);
+                              })
+                              .then((res) => {
+                                onClose(true);
+                                notifications.show({
+                                  message: res.message,
+                                  color: 'green'
+                                });
+                              })
+                              .catch((err) => {
+                                notifications.show({
+                                  title: 'There was an error removing the member.',
+                                  message: err.message,
+                                  color: 'red'
+                                });
+                              });
+                          });
+                        }
+                      });
+                    }}
+                  >
+                    <IconTrash style={iconStyle} />
+                  </Button>
+                </Group>
               </Flex>
             </Group>
             <Tabs
@@ -156,49 +215,39 @@ export default function ManageMember({
               <Flex pt={16}>
                 <Tabs.Panel value="gallery">Gallery tab content</Tabs.Panel>
 
-                <Tabs.Panel value="messages">Messages tab content</Tabs.Panel>
+                <Tabs.Panel
+                  value="swipe-data"
+                  w={'100%'}
+                  h={'100%'}
+                  style={{ flexGrow: 1 }}
+                >
+                  <Flex
+                    miw={512}
+                    w={'100%'}
+                    h={'320px'}
+                    style={{ flexGrow: 1 }}
+                    direction={'column'}
+                    pb={16}
+                  >
+                    <Editor
+                      language="json"
+                      theme={'vs-dark'}
+                      options={{
+                        minimap: {
+                          enabled: true
+                        }
+                      }}
+                      // value={form.values?.scanData}
+                      // onChange={(value) => {
+                      //   form.setFieldValue('scanData', value);
+                      // }}
+                    />
+                  </Flex>
+                  <Button variant={'default'}>Save Changes</Button>
+                </Tabs.Panel>
 
                 <Tabs.Panel value="settings">
-                  <Button
-                    variant={'outline'}
-                    color={'red'}
-                    onClick={() => {
-                      modals.openConfirmModal({
-                        title: <Title order={4}>Remove member from organization?</Title>,
-                        children: <Text size="sm">Are you sure you want to remove this member?</Text>,
-                        labels: { confirm: 'Remove member', cancel: 'Nevermind' },
-                        confirmProps: { color: 'red' },
-                        onConfirm: () => {
-                          user.getIdToken().then((token: string) => {
-                            fetch(`/api/v2/organizations/${organization?.id}/members/${member?.uuid}`, {
-                              method: 'DELETE',
-                              headers: { Authorization: `Bearer ${token}` }
-                            })
-                              .then((res) => {
-                                if (res.status === 200) return res.json();
-                                throw new Error(`Failed to remove member. (${res.status})`);
-                              })
-                              .then((res) => {
-                                onClose(true);
-                                notifications.show({
-                                  message: res.message,
-                                  color: 'green'
-                                });
-                              })
-                              .catch((err) => {
-                                notifications.show({
-                                  title: 'There was an error removing the member.',
-                                  message: err.message,
-                                  color: 'red'
-                                });
-                              });
-                          });
-                        }
-                      });
-                    }}
-                  >
-                    Remove Member
-                  </Button>
+                  <></>
                 </Tabs.Panel>
               </Flex>
             </Tabs>

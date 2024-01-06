@@ -232,7 +232,7 @@ export default function PlatformLocations() {
         </Title>
         {/* buttons */}
         <Flex
-          direction={{ base: 'column', lg: 'row' }}
+          direction={{ base: 'column', sm: 'row' }}
           display={'flex'}
           justify={'flex-start'}
           gap={8}
@@ -268,6 +268,7 @@ export default function PlatformLocations() {
               })) || []
             }
             allowDeselect={false}
+            w={{ base: '100%', sm: '320px' }}
           />
           <Flex
             w={'fit-content'}

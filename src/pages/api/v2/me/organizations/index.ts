@@ -30,6 +30,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           createdAt: 1,
           updatedById: 1,
           updatedBy: 1,
+          ownerId: 1,
           membersValues: { $objectToArray: '$members' }
         }
       },
@@ -50,6 +51,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           createdAt: 1,
           updatedById: 1,
           updatedBy: 1,
+          ownerId: 1,
           matchingMembers: {
             $filter: {
               input: '$membersValues',
@@ -69,13 +71,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   organizations = (await Promise.all(
     organizations.map(async (organization: Organization) => {
-      let ownerId = Object.keys(organization.members).find(
-        (memberId: string) =>
-          organization.members[memberId].role === 3 || organization.members[memberId].permissions?.organization.owner
-      );
       let owner = await db
         .collection('users')
-        .findOne({ id: ownerId }, { projection: { id: 1, displayName: 1, username: 1, avatar: 1 } });
+        .findOne({ id: organization.ownerId }, { projection: { id: 1, displayName: 1, username: 1, avatar: 1 } });
 
       // add statistics onto data
       let numLocations = await db.collection('locations').countDocuments({ organizationId: organization.id });

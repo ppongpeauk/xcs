@@ -297,7 +297,7 @@ function AboutMeLinks({ user }: { user: User }) {
             gap={8}
             mx={16}
           >
-            <IconHome size={14} />
+            <IconHome2 size={14} />
             <Anchor
               size={'sm'}
               fw={'bold'}
@@ -361,6 +361,7 @@ function AchievementItem({ achievement }: { achievement: Achievement | never }) 
               <Flex
                 direction={'row'}
                 gap={16}
+                pb={8}
               >
                 <Image
                   src={achievement?.icon}

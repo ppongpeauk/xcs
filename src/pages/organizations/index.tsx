@@ -290,7 +290,7 @@ export default function PlatformOrganizations() {
                         size="sm"
                         c={'dark.2'}
                       >
-                        By {owner.displayName}
+                        By {owner?.displayName}
                       </Text>
                     </Flex>
                   </Flex>

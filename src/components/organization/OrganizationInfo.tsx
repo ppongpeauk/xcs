@@ -117,7 +117,7 @@ export default function OrganizationInfo({
 
   const onDelete = () => {
     user.getIdToken().then((token: string) => {
-      fetch(`/api/v1/organizations/${query.id}`, {
+      fetch(`/api/v2/organizations/${query.id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       })
@@ -218,7 +218,7 @@ export default function OrganizationInfo({
         onSubmit={form.onSubmit(async (values) => {
           setFormSubmitting(true);
           const token = await user.getIdToken();
-          await fetch(`/api/v1/organizations/${query.id}`, {
+          await fetch(`/api/v2/organizations/${query.id}`, {
             method: 'PUT',
             headers: {
               Authorization: `Bearer ${token}`,
@@ -249,7 +249,7 @@ export default function OrganizationInfo({
             })
             .catch((error) => {
               notifications.show({
-                title: 'There was an error updating the location.',
+                title: 'There was an error updating the organization.',
                 message: error.message,
                 color: 'red',
                 autoClose: 5000
