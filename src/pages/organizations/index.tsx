@@ -51,6 +51,8 @@ import { useDebouncedValue } from '@mantine/hooks';
 import { default as sortBy } from 'lodash/sortBy';
 import CreateOrganization from '@/components/modals/organizations/CreateOrganization';
 import InfoLink from '@/components/InfoLink';
+import JoinOrganization from '@/components/modals/organizations/JoinOrganization';
+import { MdOutlineEmojiEmotions } from 'react-icons/md';
 
 export default function PlatformOrganizations() {
   const { query, push } = useRouter();
@@ -80,6 +82,12 @@ export default function PlatformOrganizations() {
     isOpen: isCreateOrganizationModalOpen,
     onOpen: onCreateOrganizationModalOpen,
     onClose: onCreateOrganizationModalClose
+  } = useDisclosure();
+
+  const {
+    isOpen: isJoinOrganizationModalOpen,
+    onOpen: onJoinOrganizationModalOpen,
+    onClose: onJoinOrganizationModalClose
   } = useDisclosure();
 
   const refreshOrganizations = useCallback(async () => {
@@ -157,6 +165,11 @@ export default function PlatformOrganizations() {
         onClose={onCreateOrganizationModalClose}
         refresh={refreshOrganizations}
       />
+      <JoinOrganization
+        opened={isJoinOrganizationModalOpen}
+        onClose={onJoinOrganizationModalClose}
+        refresh={refreshOrganizations}
+      />
       {/* main container */}
       <Container
         size={'100%'}
@@ -196,7 +209,7 @@ export default function PlatformOrganizations() {
           <Button
             leftSection={<IconArrowsJoin size={16} />}
             color={'dark.5'}
-            onClick={onCreateOrganizationModalOpen}
+            onClick={onJoinOrganizationModalOpen}
             disabled={!currentUser?.roblox?.verified}
           >
             Join Organization

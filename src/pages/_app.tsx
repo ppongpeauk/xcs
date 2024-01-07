@@ -16,6 +16,7 @@ import '@mantine/core/styles.layer.css';
 import 'mantine-datatable/styles.layer.css';
 import '@mantine/notifications/styles.css';
 import '@mantine/tiptap/styles.css';
+import '@mantine/charts/styles.css';
 
 // Contexts
 import { AuthProvider } from '@/contexts/AuthContext';

@@ -43,7 +43,7 @@ export default function OrganizationInfo({
   data: Organization | any;
   refreshData: any;
 }) {
-  const defaultImage = `${process.env.NEXT_PUBLIC_ROOT_URL}/images/default-avatar-organization.png`;
+  const defaultImage = `https://${process.env.NEXT_PUBLIC_ROOT_URL}/images/default-avatar-organization.png`;
   const [avatar, setAvatar] = useState<any>(null);
 
   const handleAvatarChange = useCallback(async (file: any) => {

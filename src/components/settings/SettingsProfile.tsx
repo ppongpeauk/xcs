@@ -24,7 +24,7 @@ export default function SettingsProfile() {
   const { currentUser, refreshCurrentUser, user, isAuthLoaded } = useAuthContext();
   const { push } = useRouter();
 
-  const defaultImage = `${process.env.NEXT_PUBLIC_ROOT_URL}/images/default-avatar.png`;
+  const defaultImage = `https://${process.env.NEXT_PUBLIC_ROOT_URL}/images/default-avatar.png`;
   const [image, setImage] = useState<null | undefined | string>(undefined);
   const [formSubmitting, setFormSubmitting] = useState(false);
 
