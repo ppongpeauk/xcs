@@ -44,12 +44,12 @@ const theme = createTheme({
     },
     Modal: {
       defaultProps: {
-        transitionProps: { duration: 0 }
+        // transitionProps: { duration: 0 }
       }
     },
     Popover: {
       defaultProps: {
-        transitionProps: { duration: 0 }
+        // transitionProps: { duration: 0 }
       }
     }
   }

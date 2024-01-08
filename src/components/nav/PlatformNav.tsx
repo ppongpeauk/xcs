@@ -152,7 +152,7 @@ export default function PlatformNav({
         aside={{ width: 340, breakpoint: 'md', collapsed: { mobile: true, desktop: !asideOpened } }}
         padding="md"
         zIndex={5}
-        transitionDuration={0}
+        // transitionDuration={0}
       >
         <AppShell.Header px={'md'}>
           <Flex
@@ -326,7 +326,6 @@ function SettingsMenu({ currentUser }: { currentUser?: User }) {
         shadow="md"
         radius={'md'}
         withArrow
-        // transitionProps={{ duration: 0 }}
       >
         <Popover.Target>
           <UnstyledButton>
@@ -460,7 +459,6 @@ function NotificationMenu({ currentUser }: { currentUser?: User }) {
         withArrow
         opened={opened}
         onChange={setOpened}
-        // transitionProps={{ duration: 0 }}
       >
         <Popover.Target>
           <UnstyledButton onClick={() => setOpened((o) => !o)}>
@@ -587,7 +585,6 @@ function AvatarMenu({ currentUser, onLogoutOpen }: { currentUser?: User; onLogou
         onChange={setOpened}
         radius={'md'}
         withArrow
-        // transitionProps={{ duration: 0 }}
       >
         <Menu.Target>
           <UnstyledButton>

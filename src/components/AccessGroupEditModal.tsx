@@ -30,8 +30,14 @@ import {
   Spacer,
   Stack,
   Switch,
-  Table, TableCaption, TableContainer, Tbody, Td, Text,
-  Th, Thead,
+  Table,
+  TableCaption,
+  TableContainer,
+  Tbody,
+  Td,
+  Text,
+  Th,
+  Thead,
   Tr,
   VStack,
   chakra,
@@ -40,14 +46,12 @@ import {
   useToast
 } from '@chakra-ui/react';
 
-
 import { IoIosCreate, IoIosRemoveCircle } from 'react-icons/io';
 import { IoSave } from 'react-icons/io5';
 import { MdEditSquare } from 'react-icons/md';
 
 import Editor from '@monaco-editor/react';
 import { Field, Form, Formik } from 'formik';
-
 
 import { useAuthContext } from '@/contexts/AuthContext';
 
@@ -86,12 +90,15 @@ export default function AccessGroupEditModal({
 
   const { isOpen: createModalOpen, onOpen: createModalOnOpen, onClose: createModalOnClose } = useDisclosure();
 
-  const filterGroups = useCallback((query: string) => {
-    if (!query) return groups;
-    return Object.keys(groups)
-      .filter((group: any) => groups[group].name.toLowerCase().includes(query.toLowerCase()))
-      .map((group: any) => groups[group]);
-  }, [groups]);
+  const filterGroups = useCallback(
+    (query: string) => {
+      if (!query) return groups;
+      return Object.keys(groups)
+        .filter((group: any) => groups[group].name.toLowerCase().includes(query.toLowerCase()))
+        .map((group: any) => groups[group]);
+    },
+    [groups]
+  );
 
   useEffect(() => {
     setFilteredGroups(groups || {});
@@ -544,7 +551,8 @@ export default function AccessGroupEditModal({
                                             />
                                           </InputGroup>
                                           <FormHelperText>
-                                            Whether or not this access group is open to everyone whose access is granted.
+                                            Whether or not this access group is open to everyone whose access is
+                                            granted.
                                           </FormHelperText>
                                         </FormControl>
                                       )}

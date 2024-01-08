@@ -419,3 +419,13 @@ export interface UserNotification {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface DeveloperApplication {
+  id: string;
+  name: string;
+  description: string;
+  apiKey: string;
+  createdBy: string;
+  createdAt: Date;
+  updatedAt: Date;
+}

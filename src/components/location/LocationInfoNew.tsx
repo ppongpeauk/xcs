@@ -17,6 +17,7 @@ import { useRouter } from 'next/navigation';
 import { useCallback, useState } from 'react';
 import AccessGroupEditModal from '../AccessGroupEditModal';
 import DeleteDialog from '../DeleteDialog';
+import { notifications } from '@mantine/notifications';
 
 export default function LocationInfo({
   query,
@@ -49,21 +50,16 @@ export default function LocationInfo({
           }
         })
         .then((data) => {
-          toast({
-            title: data.message,
-            status: 'success',
-            duration: 5000,
-            isClosable: true
+          notifications.show({
+            message: data.message,
+            color: 'green'
           });
           push(`/locations/?organization=${location?.organizationId}`);
         })
         .catch((err) => {
-          toast({
-            title: 'Error',
-            description: err.message,
-            status: 'error',
-            duration: 5000,
-            isClosable: true
+          notifications.show({
+            message: err.message,
+            color: 'red'
           });
         })
         .finally(() => {
@@ -242,22 +238,18 @@ export default function LocationInfo({
                 }
               })
               .then((data) => {
-                toast({
-                  title: data.message,
-                  status: 'success',
-                  duration: 5000,
-                  isClosable: true
+                notifications.show({
+                  message: data.message,
+                  color: 'green'
                 });
                 actions.setSubmitting(false);
                 refreshData();
               })
               .catch((error) => {
-                toast({
-                  title: 'There was an error updating the location.',
-                  description: error.message,
-                  status: 'error',
-                  duration: 5000,
-                  isClosable: true
+                notifications.show({
+                  title: 'There was an error saving the location.',
+                  message: error.message,
+                  color: 'red'
                 });
                 actions.setSubmitting(false);
               });

@@ -162,7 +162,7 @@ export default function OrganizationMembers({ data, refreshData }: { data: Organ
         opened={isCreateModalOpen}
         onClose={closeCreateModal}
         organization={data}
-        refresh={refreshData}
+        refresh={refreshMembers}
       />
 
       <Title
