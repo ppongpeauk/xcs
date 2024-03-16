@@ -72,7 +72,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       id: organization.ownerId
     });
 
-    if (ownedLocations.length >= 4 && !organizationOwner?.platform?.staff) {
+    if (
+      ownedLocations.length >= 4 &&
+      !organizationOwner?.platform?.staff &&
+      organizationOwner?.platform?.membership < 1
+    ) {
       return res.status(403).json({
         message:
           'This organization has reached the maximum amount of locations. ' +
