@@ -13,9 +13,11 @@ import {
   Flex,
   FormControl,
   FormLabel,
+  Grid,
   HStack,
   Heading,
   Icon,
+  IconButton,
   Input,
   InputGroup,
   Portal,
@@ -32,6 +34,7 @@ import {
   Thead,
   Tooltip,
   Tr,
+  chakra,
   useColorModeValue,
   useDisclosure,
   useToast
@@ -44,7 +47,7 @@ import { BsFillPencilFill } from 'react-icons/bs';
 import { HiGlobeAlt, HiUserGroup } from 'react-icons/hi';
 import { ImTree } from 'react-icons/im';
 import { IoIosRemoveCircle } from 'react-icons/io';
-import { IoSave } from 'react-icons/io5';
+import { IoEye, IoSave } from 'react-icons/io5';
 import { RiProfileFill } from 'react-icons/ri';
 
 import { Field, Form, Formik } from 'formik';
@@ -72,7 +75,7 @@ function ActionButton({ children, ...props }: any) {
   return (
     <Flex
       {...props}
-      w={'calc(50% - 1rem)'} h={'auto'} py={4} border='1px solid' borderColor={useColorModeValue('gray.200', 'gray.700')} borderRadius='lg'
+      h={'auto'} border='1px solid' p={0} borderColor={useColorModeValue('gray.200', 'gray.700')} borderRadius='lg'
       transition={'background 0.2s ease-out'}
       _hover={{
         bg: useColorModeValue('gray.50', 'gray.700')
@@ -81,7 +84,7 @@ function ActionButton({ children, ...props }: any) {
         bg: useColorModeValue('gray.100', 'gray.600')
       }}
     >
-      <Button variant={'unstyled'} w={'full'} h={'full'}>
+      <Button w={'full'} h={'full'} m={"0 !important"} py={4} >
         <Center as={Flex} flexDir={'column'}>
           {children}
         </Center>
@@ -106,7 +109,7 @@ export default function PlatformOrganization() {
 
   const { isOpen: memberModalOpen, onOpen: memberModalOnOpen, onClose: memberModalOnClose } = useDisclosure();
 
-  const defaultImage = `${process.env.NEXT_PUBLIC_ROOT_URL}/images/default-avatar.png`;
+  const defaultImage = `${process.env.NEXT_PUBLIC_ROOT_URL}/images/default-avatar-organization.png`;
   const [image, setImage] = useState<null | undefined | string>(undefined);
   const [croppedImage, setCroppedImage] = useState<null | string>(null);
 
@@ -115,6 +118,10 @@ export default function PlatformOrganization() {
 
   const toRelativeTime = useMemo(() => (date: Date) => {
     return moment(new Date(date)).fromNow();
+  }, []);
+
+  const toActualTime = useMemo(() => (date: Date) => {
+    return moment(new Date(date)).format('MMMM Do YYYY, h:mm:ss a');
   }, []);
 
   const handleChange = useCallback(async (e: any) => {
@@ -367,10 +374,10 @@ export default function PlatformOrganization() {
   return (
     <>
       <Head>
-        <title>Restrafes XCS – {organization?.name}</title>
+        <title>{organization?.name} - Restrafes XCS</title>
         <meta
           property="og:title"
-          content="Restrafes XCS – Manage Organization"
+          content="Manage Organization - Restrafes XCS"
         />
         <meta
           property="og:site_name"
@@ -462,13 +469,13 @@ export default function PlatformOrganization() {
             </BreadcrumbLink>
           </BreadcrumbItem>
         </Breadcrumb>
-
-        <Flex flexDir={{ base: 'column', '2xl': 'row' }} justify={'space-between'} align={'flex-start'} minH={'calc(100vh - 6rem)'} gap={{ base: 4, '2xl': 16 }}>
+        <Flex display={'grid'} gridTemplateColumns={{ base: '1fr', xl: '1fr 1fr' }} minH={'calc(100vh - 6rem)'} gap={{ base: 4, xl: 16 }}>
+          {/* <Flex flexDir={{ base: 'column', '2xl': 'row' }} justify={'space-between'} align={'flex-start'} minH={'calc(100vh - 6rem)'} gap={{ base: 4, '2xl': 16 }}> */}
           <Flex flexDir={'column'} flex={1} h={'100%'}>
             <Stack
               direction={'row'}
               align={'center'}
-              spacing={8}
+              gap={6}
               py={4}
             >
               <Skeleton
@@ -569,9 +576,9 @@ export default function PlatformOrganization() {
             </Stack>
             <Divider my={4} />
             <Heading as="h1" size="lg" my={2}>
-              Quick Actions
+              Manage
             </Heading>
-            <Flex flexWrap={'wrap'} w={'full'} h={'auto'} py={2} gap={4} justify={'space-evenly'}>
+            <Flex display={'grid'} gridTemplateColumns={'1fr 1fr'} flexWrap={'wrap'} w={'full'} h={'auto'} py={2} gap={4} justify={'space-evenly'}>
               <ActionButton
                 onClick={memberModalOnOpen}
               >
@@ -688,7 +695,7 @@ export default function PlatformOrganization() {
                           id={'avatar-picker'}
                           direction={'column'}
                         >
-                          <Tooltip label={'Click to change avatar.'}>
+                          <Tooltip label={'Click to change icon.'}>
                             <Avatar
                               name={organization?.name}
                               src={image || defaultImage}
@@ -737,7 +744,7 @@ export default function PlatformOrganization() {
                       </Portal>
                       <Field name="name">
                         {({ field, form }: any) => (
-                          <FormControl>
+                          <FormControl isRequired>
                             <FormLabel>Name</FormLabel>
                             <InputGroup mb={2}>
                               <Input
@@ -810,18 +817,53 @@ export default function PlatformOrganization() {
               </Skeleton>
             </Box>
           </Flex>
-          <Flex display={{ base: 'none', lg: 'flex' }} flexDir={'column'} flex={1} gap={4}>
+          <Flex display={{ base: 'none', md: 'flex' }} flexDir={'column'} flexBasis={1} gap={4}>
+            {/* Global Stats */}
+            <Box>
+              <Box w={'fit-content'} my={4}>
+                <Heading
+                  fontSize={'3xl'}
+                  w={'fit-content'}
+                >
+                  Statistics
+                </Heading>
+                <Text variant={'subtext'}>
+                  Data from all of the access points in this organization.
+                </Text>
+              </Box>
+              <Grid flexDir={{ base: 'column', md: 'row' }} templateColumns={'1fr 1fr 1fr'} gap={4}>
+                <Skeleton isLoaded={!!organization}>
+                  {/* <Stat label={"Total"} value={`${stats.total} scans total`} /> */}
+                  <StatBox
+                    label={'Total Scans'}
+                    value={`${organization?.statistics?.scans?.total || 0} scan${organization?.statistics?.scans?.total === 1 ? '' : 's'}`}
+                  />
+                </Skeleton>
+                <Skeleton isLoaded={!!organization}>
+                  <StatBox
+                    label={'Successful Scans'}
+                    value={`${organization?.statistics?.scans?.granted || 0} scan${organization?.statistics?.scans?.total === 1 ? '' : 's'}`}
+                  />
+                </Skeleton>
+                <Skeleton isLoaded={!!organization}>
+                  <StatBox
+                    label={'Failed Scans'}
+                    value={`${organization?.statistics?.scans?.denied || 0} scan${organization?.statistics?.scans?.total === 1 ? '' : 's'}`}
+                  />
+                </Skeleton>
+              </Grid>
+            </Box>
             {/* Scan Events */}
-            <Skeleton isLoaded={!!scanEvents}>
+            <Box>
               <Heading as="h1" size="lg">
                 Scan Events
               </Heading>
               <Text fontSize={'md'} color={'gray.500'}>Showing the last 25 scan events.</Text>
-            </Skeleton>
-            <Skeleton isLoaded={!!scanEvents} overflow={'scroll'} overscrollBehavior={'none'} maxH={'sm'}>
+            </Box>
+            <Skeleton isLoaded={!!scanEvents} overflow={'auto'} overscrollBehavior={'none'} maxH={'640px'}>
               <Flex flexDir={'column'}>
-                <TableContainer h={'auto'}>
-                  <Table variant='simple' size={'sm'}>
+                <TableContainer maxW={'container.sm'} h={'auto'}>
+                  <Table maxW={'100%'} overflowX={'auto'} variant='simple' size={'sm'}>
                     <TableCaption pt={0} my={4}>
                       {
                         scanEvents?.length === 0 ? (
@@ -881,14 +923,19 @@ export default function PlatformOrganization() {
                                 <Link href={`/locations/${scanEvent.accessPoint?.location?.id}`} target='_blank' fontSize={'sm'} color={'gray.500'}>{scanEvent.accessPoint?.location?.name}</Link>
                               </Flex>
                             </Td>
-                            <Td isNumeric>{toRelativeTime(scanEvent.createdAt)}</Td>
                             <Td isNumeric>
-                              <Button
+                              <chakra.div cursor={'help'}>
+                                <Tooltip label={toActualTime(scanEvent.createdAt)}>
+                                  {toRelativeTime(scanEvent.createdAt)}
+                                </Tooltip>
+                              </chakra.div>
+                            </Td>
+                            <Td isNumeric>
+                              <IconButton
                                 size={'sm'}
                                 isDisabled
-                              >
-                                View Details
-                              </Button>
+                                icon={<IoEye />} aria-label={'Inspect'}                              >
+                              </IconButton>
                             </Td>
                           </Tr>
                         ))
@@ -898,45 +945,9 @@ export default function PlatformOrganization() {
                 </TableContainer>
               </Flex>
             </Skeleton>
-            {/* Global Stats */}
-            <Box>
-              <Skeleton isLoaded={!!organization} w={'fit-content'}>
-                <Heading
-                  fontSize={'3xl'}
-                  w={'fit-content'}
-                  my={4}
-                >
-                  Statistics
-                </Heading>
-              </Skeleton>
-              <Flex flexDir={{ base: 'column', md: 'row' }} gap={4}>
-                <Skeleton isLoaded={!!organization}>
-                  {/* <Stat label={"Total"} value={`${stats.total} scans total`} /> */}
-                  <StatBox
-                    label={'Total Scans'}
-                    value={`${organization?.statistics?.scans?.total || 0} scan${organization?.statistics?.scans?.total === 1 ? '' : 's'}`}
-                    helper={'Since the beginning of time.'}
-                  />
-                </Skeleton>
-                <Skeleton isLoaded={!!organization}>
-                  <StatBox
-                    label={'Successful Scans'}
-                    value={`${organization?.statistics?.scans?.granted || 0} scan${organization?.statistics?.scans?.total === 1 ? '' : 's'}`}
-                    helper={'Scans that were successful.'}
-                  />
-                </Skeleton>
-                <Skeleton isLoaded={!!organization}>
-                  <StatBox
-                    label={'Failed Scans'}
-                    value={`${organization?.statistics?.scans?.denied || 0} scan${organization?.statistics?.scans?.total === 1 ? '' : 's'}`}
-                    helper={'Scans that were denied.'}
-                  />
-                </Skeleton>
-              </Flex>
-            </Box>
           </Flex>
         </Flex>
-      </Container>
+      </Container >
     </>
   );
 }

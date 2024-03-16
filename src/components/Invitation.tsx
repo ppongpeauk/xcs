@@ -61,7 +61,7 @@ export default function Invitation({ invite, errorMessage }: { invite: Invitatio
   return (
     <>
       <Head>
-        <title>Restrafes XCS – Invitation</title>
+        <title>Invitation - Restrafes XCS</title>
       </Head>
       <Container
         maxW={'container.lg'}
@@ -128,6 +128,7 @@ export default function Invitation({ invite, errorMessage }: { invite: Invitatio
                 <Text
                   fontSize={'lg'}
                   mb={2}
+                  textAlign={'center'}
                 >
                   {invite ? (
                     <>
@@ -187,7 +188,7 @@ export default function Invitation({ invite, errorMessage }: { invite: Invitatio
                           rounded={'full'}
                         >
                           <Avatar
-                            src={invite?.organization?.avatar || '/images/default-avatar.png'}
+                            src={invite?.organization?.avatar || '/images/default-avatar-organization.png'}
                             size={'full'}
                             maxW={'240px'}
                             aspectRatio={1 / 1}

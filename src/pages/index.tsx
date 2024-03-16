@@ -3,14 +3,25 @@ import Head from 'next/head';
 import Home from '@/components/Home';
 import Layout from '@/layouts/PublicLayout';
 
-export default function Homepage() {
+import { getSortedPostsData } from '@/lib/posts';
+
+export async function getStaticProps() {
+  const allPostsData = await getSortedPostsData();
+  return {
+    props: {
+      allPostsData,
+    },
+  };
+}
+
+export default function Homepage({ allPostsData }: { allPostsData: any }) {
   return (
     <>
       <Head>
-        <title>Restrafes XCS – Home</title>
+        <title>Home - Restrafes XCS</title>
         <meta
           property="og:title"
-          content="Restrafes XCS – Home"
+          content="Home - Restrafes XCS"
         />
         <meta
           property="og:site_name"
@@ -33,7 +44,7 @@ export default function Homepage() {
           content="/images/logo-square.jpg"
         />
       </Head>
-      <Home />
+      <Home allPostsData={allPostsData} />
     </>
   );
 }

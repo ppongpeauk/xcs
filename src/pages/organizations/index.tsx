@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Key, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import {
   Avatar,
@@ -45,13 +45,83 @@ import JoinOrganizationDialog from '@/components/JoinOrganizationDialog';
 import UserInvitationsModal from '@/components/UserInvitationsModal';
 import { Organization, OrganizationMember } from '@/types';
 import moment from 'moment';
+import { AiFillSetting } from 'react-icons/ai';
 import { BiGrid, BiRefresh } from 'react-icons/bi';
 import { BsListUl } from 'react-icons/bs';
 
+const toRelativeTime = (date: string) => {
+  return moment(new Date(date)).fromNow();
+};
+const toActualTime = (date: string) => {
+  return moment(new Date(date)).format('MMMM Do YYYY, h:mm:ss a');
+}
+
+function GridEntry({ key, organization }: { key: Key, organization?: Organization }) {
+  return <>
+    <Tooltip placement={'top'} label={organization?.name} key={key}>
+      <Flex flexDir={'column'} w={{ base: '45%', md: '128px', lg: '224px' }}>
+        {/* icon */}
+        <Skeleton isLoaded={!!organization}>
+          <Flex
+            border={'1px solid'}
+            borderColor={useColorModeValue('gray.200', 'gray.700')}
+            borderRadius={'lg'}
+            overflow={'hidden'}
+            aspectRatio={1 / 1}
+          >
+            <Avatar
+              as={Link}
+              href={`/organizations/${organization?.id}/settings`}
+              ignoreFallback={true}
+              borderRadius={'none'}
+              size={'lg'}
+              src={organization?.avatar || '/images/default-avatar-organization.png'}
+              cursor={'pointer'}
+              w={'full'}
+              h={'full'}
+              transition={'opacity 0.2s ease-out'} _hover={{ opacity: 0.75 }} _active={{ opacity: 0.5 }}
+            />
+          </Flex>
+        </Skeleton>
+        {/* text */}
+        <Skeleton isLoaded={!!organization} my={4} px={2}>
+          <Flex flexDir={'column'} textUnderlineOffset={4}>
+            <Heading
+              as={'h3'}
+              size={'md'}
+              fontWeight={'bold'}
+              noOfLines={1}
+              wordBreak={'break-word'}
+            >
+              <Link href={`/organizations/${organization?.id}/settings`}>
+                {organization?.name || "Organization"}
+              </Link>
+            </Heading>
+            <Text color={"gray.500"}>
+              by{' '}
+              <Link href={`/@${organization?.owner?.username}`}>
+                {organization?.owner?.displayName}
+              </Link>
+            </Text>
+            <Tooltip label={toActualTime(organization?.updatedAt as string)} cursor={'help'}>
+              <Flex align={'center'} color={'gray.500'} gap={1} fontSize={'md'}>
+                <Icon as={BiRefresh} />
+                <Text color={'gray.500'}>
+                  {
+                    toRelativeTime(organization?.updatedAt as string)
+                  }
+                </Text>
+              </Flex>
+            </Tooltip>
+          </Flex>
+        </Skeleton>
+      </Flex>
+    </Tooltip>
+  </>
+}
+
 function TableEntry({ key, organization, skeleton }: { key: number | string, organization?: Organization, skeleton?: boolean }) {
-  const toRelativeTime = useMemo(() => (date: string) => {
-    return moment(new Date(date)).fromNow();
-  }, []);
+  const { push } = useRouter();
 
   return <>
     <Tr key={key}>
@@ -59,7 +129,7 @@ function TableEntry({ key, organization, skeleton }: { key: number | string, org
         <Stack flexDir={'row'} align={'center'}>
           <Skeleton isLoaded={!skeleton}>
             <Tooltip label={organization?.name} placement={'top'}>
-              <Avatar as={Link} href={`/organizations/${organization?.id}`} transition={'opacity 0.2s ease-out'} _hover={{ opacity: 0.75 }} _active={{ opacity: 0.5 }} borderRadius={'lg'} size={'md'} src={organization?.avatar || '/images/default-avatar.png'} />
+              <Avatar as={Link} href={`/organizations/${organization?.id}`} transition={'opacity 0.2s ease-out'} _hover={{ opacity: 0.75 }} _active={{ opacity: 0.5 }} borderRadius={'lg'} size={'md'} src={organization?.avatar || '/images/default-avatar-organization.png'} />
             </Tooltip>
           </Skeleton>
 
@@ -71,14 +141,16 @@ function TableEntry({ key, organization, skeleton }: { key: number | string, org
               <Text size={'sm'} variant={'subtext'} textUnderlineOffset={4}>
                 Owned by {!skeleton ? <Link href={`/@${organization?.owner?.username}`}>{organization?.owner?.displayName}</Link> : "Organization Owner"}
               </Text>
-              <Flex align={'center'} color={'gray.500'} gap={1}>
-                <Icon as={BiRefresh} />
-                <Text size={'sm'} textUnderlineOffset={4}>
-                  {!skeleton ? toRelativeTime(organization?.updatedAt as string) : "Last Updated"}
-                  {!skeleton && organization?.updatedBy && " by "}
-                  {!skeleton ? <Link href={`/@${organization?.updatedBy?.username}`}>{organization?.updatedBy?.displayName}</Link> : "Organization Owner"}
-                </Text>
-              </Flex>
+              <Tooltip label={toActualTime(organization?.updatedAt as string)}>
+                <Flex align={'center'} color={'gray.500'} gap={1} w={'fit-content'}>
+                  <Icon as={BiRefresh} />
+                  <Text size={'sm'} textUnderlineOffset={4} cursor={'help'}>
+                    {!skeleton ? toRelativeTime(organization?.updatedAt) : "Last Updated"}
+                    {!skeleton && organization?.updatedBy && " by "}
+                    {!skeleton ? <Link href={`/@${organization?.updatedBy?.username}`}>{organization?.updatedBy?.displayName}</Link> : "Organization Owner"}
+                  </Text>
+                </Flex>
+              </Tooltip>
               <Text size={'sm'} variant={'subtext'} maxW={{ base: '500px', md: '384px', lg: '500px' }} overflow={'hidden'} textOverflow={'ellipsis'}>
                 {!skeleton ? organization?.description : "Organization Description"}
               </Text>
@@ -88,24 +160,11 @@ function TableEntry({ key, organization, skeleton }: { key: number | string, org
       </Td>
       <Td isNumeric>
         <Skeleton isLoaded={!skeleton}>
-          <Text>
-            {!skeleton ? Object.values(organization?.members || {}).filter((member: OrganizationMember) => ['user'].includes(member.type)).length : 0}
-          </Text>
-        </Skeleton>
-      </Td>
-      <Td isNumeric>
-        <Skeleton isLoaded={!skeleton}>
-          <Text>
-            {!skeleton ? organization?.statistics?.numLocations : 0}
-          </Text>
-        </Skeleton>
-      </Td>
-      <Td isNumeric>
-        <Skeleton isLoaded={!skeleton}>
           <ButtonGroup>
             <Button
-              as={Link}
-              href={`/organizations/${organization?.id}`}
+              onClick={() => {
+                push(`/organizations/${organization?.id}`);
+              }}
               size={"sm"}
               variant={"solid"}
               textDecor={"unset !important"}
@@ -113,14 +172,16 @@ function TableEntry({ key, organization, skeleton }: { key: number | string, org
               View Public Page
             </Button>
             <Button
-              as={Link}
-              href={`/organizations/${organization?.id}/settings`}
+              onClick={() => {
+                push(`/organizations/${organization?.id}/settings`);
+              }}
               size={"sm"}
               variant={"solid"}
-              colorScheme='blue'
+              colorScheme='black'
               textDecor={"unset !important"}
+              leftIcon={<Icon as={AiFillSetting} />}
             >
-              View Details
+              Manage
             </Button>
           </ButtonGroup>
         </Skeleton>
@@ -264,10 +325,10 @@ export default function PlatformOrganizations() {
   return (
     <>
       <Head>
-        <title>Restrafes XCS – Organizations</title>
+        <title>Organizations - Restrafes XCS</title>
         <meta
           property="og:title"
-          content="Restrafes XCS – Manage Organizations"
+          content="Manage Organizations - Restrafes XCS"
         />
         <meta
           property="og:site_name"
@@ -345,7 +406,8 @@ export default function PlatformOrganizations() {
             leftIcon={<MdMail />}
             onClick={onViewInvitationsModalOpen}
           >
-            View Invitations<Flex as={'span'} fontFamily={'sans-serif'} align={'center'} justify={'center'} ml={2} px={2} borderRadius={'full'} minW={'1.5em'} h={'1.5em'} bg={useColorModeValue('blackAlpha.100', 'whiteAlpha.200')}>{" "}{currentUser?.statistics?.organizationInvitations || 0}</Flex>
+            View Invitations
+            <Flex as={'span'} fontFamily={'sans-serif'} align={'center'} justify={'center'} ml={2} px={2} borderRadius={'full'} minW={'1.5em'} h={'1.5em'} bg={useColorModeValue('blackAlpha.100', 'whiteAlpha.200')}>{" "}{currentUser?.statistics?.organizationInvitations || 0}</Flex>
           </Button>
           <Input
             placeholder={'Search'}
@@ -397,9 +459,6 @@ export default function PlatformOrganizations() {
                     <Thead>
                       <Tr>
                         <Th>Organization</Th>
-                        <Th isNumeric># Members</Th>
-                        <Th isNumeric># Locations</Th>
-                        {/* <Th>Last Updated</Th> */}
                         <Th isNumeric>Actions</Th>
                       </Tr>
                     </Thead>
@@ -422,93 +481,11 @@ export default function PlatformOrganizations() {
                   {
                     organizationsLoading ? (
                       Array.from({ length: 6 }).map((_, i) => (
-                        <Flex key={i} flexDir={'column'} w={{ base: 'full', md: '224px' }}>
-                          <Skeleton>
-                            <Flex
-                              border={'1px solid'}
-                              borderRadius={'lg'}
-                              borderColor={useColorModeValue('gray.200', 'gray.700')}
-                              aspectRatio={1}
-                            >
-                            </Flex>
-                          </Skeleton>
-                          <Flex py={4} flexDir={'column'} textUnderlineOffset={4} gap={2}>
-                            <Skeleton>
-                              <Heading
-                                as={'h3'}
-                                size={'md'}
-                                fontWeight={'bold'}
-                              >
-                                Organization
-                              </Heading>
-                            </Skeleton>
-                            <Skeleton>
-                              <Text color={"gray.500"}>
-                                Author
-                              </Text>
-                            </Skeleton>
-                            <Flex align={'center'} color={'gray.500'} gap={1} fontSize={'md'}>
-                              <Skeleton>
-                                <Text color={'gray.500'}>
-                                  Updated Date
-                                </Text>
-                              </Skeleton>
-                            </Flex>
-                          </Flex>
-                        </Flex>
+                        <GridEntry key={i} />
                       ))
                     ) : (
                       filteredOrganizations.map((organization: Organization) => (
-                        <Tooltip label={organization.name} placement={'top'} key={organization.id}>
-                          <Flex key={organization.id} flexDir={'column'} w={{ base: 'full', md: '224px' }}>
-                            {/* icon */}
-                            <Flex
-                              border={'1px solid'}
-                              borderRadius={'lg'}
-                              borderColor={useColorModeValue('gray.200', 'gray.700')}
-                              aspectRatio={1}
-                            >
-                              <Link href={`/organizations/${organization.id}/settings`}>
-                                <Avatar
-                                  ignoreFallback={true}
-                                  borderRadius={'lg'}
-                                  size={'lg'}
-                                  src={organization.avatar || '/images/default-avatar.png'}
-                                  cursor={'pointer'}
-                                  w={'full'}
-                                  h={'full'}
-                                  transition={'opacity 0.2s ease-out'} _hover={{ opacity: 0.75 }} _active={{ opacity: 0.5 }}
-                                />
-                              </Link>
-                            </Flex>
-                            {/* text */}
-                            <Flex p={4} flexDir={'column'} textUnderlineOffset={4}>
-                              <Heading
-                                as={'h3'}
-                                size={'md'}
-                                fontWeight={'bold'}
-                                noOfLines={1}
-                                wordBreak={'break-word'}
-                              >
-                                <Link href={`/organizations/${organization.id}/settings`}>
-                                  {organization.name}
-                                </Link>
-                              </Heading>
-                              <Text color={"gray.500"}>
-                                by{' '}
-                                <Link href={`/@${organization.owner?.username}`}>
-                                  {organization.owner?.displayName}
-                                </Link>
-                              </Text>
-                              <Flex align={'center'} color={'gray.500'} gap={1} fontSize={'md'}>
-                                <Icon as={BiRefresh} />
-                                <Text color={'gray.500'}>
-                                  {!organizationsLoading ? toRelativeTime(organization.updatedAt) : "Last Updated"}
-                                </Text>
-                              </Flex>
-                            </Flex>
-                          </Flex>
-                        </Tooltip>
+                        <GridEntry key={organization.id} organization={organization} />
                       ))
                     )
                   }
@@ -525,7 +502,7 @@ export default function PlatformOrganizations() {
                   py={4}
                 >
                   <Text fontSize={'2xl'} fontWeight={'bold'}>No Organizations Found</Text>
-                  <Text color={'gray.500'}>Try adjusting your search query or creating a new organization.</Text>
+                  <Text color={'gray.500'}>Try adjusting your search query or create a new organization.</Text>
                 </Flex>
               )
             }

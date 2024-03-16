@@ -7,9 +7,9 @@ export default function StatBox({ label, value, helper }: { label: string; value
       border={'1px solid'}
       borderColor={useColorModeValue('gray.200', 'gray.700')}
       p={4}
-      px={8}
-      minW={'256px'}
+      px={4}
       h={'full'}
+      flexGrow={1}
     >
       <Stat>
         <Text>{label}</Text>

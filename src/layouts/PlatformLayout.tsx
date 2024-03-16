@@ -17,7 +17,7 @@ import { useAuthContext } from '@/contexts/AuthContext';
 // Components
 import Footer from '@/components/Footer';
 import PlatformAlert from '@/components/PlatformAlert';
-import PlatformNav from '@/components/PlatformNav';
+import PlatformNav from '@/components/nav/PlatformNav';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { user, currentUser, isAuthLoaded } = useAuthContext();

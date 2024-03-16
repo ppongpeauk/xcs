@@ -1,45 +1,43 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with
-[`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# R&C XCS - Card Access Management Platform
 
-## Getting Started
+R&C XCS is a card access management platform that allows users to manage their card access to access points within experiences on the Roblox platform.
 
-First, run the development server:
+### Features:
+- Create and manage access points
+- Organization and location-based access control
+- Different allow-list parameters (e.g. card numbers, user ID, group ID assocation, etc.)
+- Access groups
+- Scan logs
+- Member management
+- Invitation links for organizations and registration
+- ...and more!
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+This project uses the following technologies:
+- [React](https://reactjs.org/)
+- [Next.js](https://nextjs.org/)
+- [MongoDB](https://www.mongodb.com/)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The backend is *serverless* and is bundled with Next.js in the `src/pages/api` directory.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## Installation
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on
-[http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+### Prerequisites
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as
-[API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+- [Node.js](https://nodejs.org/en/) (v20.8.0 or higher)
+- [Bun](https://bun.sh/) (1.0.7 or higher, recommended) or [npm](https://www.npmjs.com/) (9.8.0 or higher)
+- [MongoDB Community Server](https://www.mongodb.com/)
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and
-load Inter, a custom Google Font.
+### Setup
 
-## Learn More
+1. Clone the repository
+2. Run `bun install` or `npm install` to install dependencies
+3. Clone `.env.example` to `.env` and fill in the values
+3. Run `bun dev` or `npm run dev` to start the development server
 
-To learn more about Next.js, take a look at the following resources:
+## Contributing
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+This project is open to contributions. I don't have a contributing guide yet, but feel free to open a pull request and I'll review it.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions
-are welcome!
+## License
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the
-[Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme)
-from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+This project is licensed under the MIT license. See [LICENSE.md](LICENSE.md) for more information.

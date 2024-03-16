@@ -94,10 +94,10 @@ export default function OrganizationPublic({ organization }: { organization: Org
   return (
     <>
       <Head>
-        <title>Restrafes XCS – {organization?.name}</title>
+        <title>{organization?.name} - Restrafes XCS</title>
         <meta
           property="og:title"
-          content={`Restrafes XCS – ${organization?.name}`}
+          content={`${organization?.name} - Restrafes XCS`}
         />
         <meta
           property="og:site_name"
@@ -117,7 +117,7 @@ export default function OrganizationPublic({ organization }: { organization: Org
         />
         <meta
           property="og:image"
-          content={organization?.avatar || '/images/default-avatar.png'}
+          content={organization?.avatar || '/images/default-avatar-organization.png'}
         />
       </Head>
       <Container maxW="full" p={8}>
@@ -125,7 +125,7 @@ export default function OrganizationPublic({ organization }: { organization: Org
           <Skeleton isLoaded={!!organization}>
             <Avatar
               name={organization?.name}
-              src={organization?.avatar || '/images/default-avatar.png'}
+              src={organization?.avatar || '/images/default-avatar-organization.png'}
               boxSize={{ base: '6rem', md: '10rem' }}
               borderRadius={'lg'}
               overflow={'hidden'}
@@ -144,7 +144,7 @@ export default function OrganizationPublic({ organization }: { organization: Org
               </Text>
               {
                 organization?.verified &&
-                <Tooltip label='Verified'>
+                <Tooltip label='Verified Organization'>
                   <span>
                     <Icon
                       as={VscVerifiedFilled}
@@ -237,6 +237,7 @@ export default function OrganizationPublic({ organization }: { organization: Org
             <Flex align={'center'} w={'fit-content'}>
               <Skeleton as={Flex} isLoaded={!!organization} py={1} gap={4} flexDir={{ base: 'column', md: 'row' }}>
                 <Button
+                  colorScheme={'black'}
                   leftIcon={<Icon as={AiFillSetting} />}
                   onClick={() => push(`/organizations/${query.id}/settings`)}
                 >

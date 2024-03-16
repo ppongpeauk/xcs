@@ -3,8 +3,6 @@ import { useEffect } from 'react';
 import admin from 'firebase-admin';
 import { getDownloadURL, getStorage } from 'firebase-admin/storage';
 
-const sharp = require('sharp');
-
 function b64_to_utf8(str: string) {
   return decodeURIComponent(escape(atob(str)));
 }

@@ -6,9 +6,11 @@ import {
   Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator,
   Button,
   Container,
+  Flex,
   FormControl,
   FormHelperText,
   FormLabel,
+  HStack,
   Heading,
   Input,
   InputGroup,
@@ -20,6 +22,7 @@ import {
   Switch,
   Text,
   Textarea,
+  Tooltip,
   useColorModeValue,
   useDisclosure,
   useToast
@@ -331,9 +334,23 @@ export default function LocationInfo({ location, query, idToken, refreshData }: 
                           autoComplete="off"
                           placeholder="Universe ID"
                           variant={'outline'}
-                          // isDisabled={true}
+                          isReadOnly={true}
                           isDisabled={location?.self.role < 2 || location?.roblox?.universe?.id !== null}
                         />
+                        <Button
+                          onClick={() => {
+                            if (location?.roblox?.universe?.id !== null) {
+                              window.open(`https://www.roblox.com/games/${location?.roblox?.place?.rootPlaceId}/game`, '_blank');
+                            }
+                          }}
+                          variant={'solid'}
+                          leftIcon={<SiRoblox />}
+                          isDisabled={location?.roblox?.universe?.id === null}
+                          px={16}
+                          ml={4}
+                        >
+                          View Experience
+                        </Button>
                       </InputGroup>
                       <FormHelperText>This cannot be changed once set.</FormHelperText>
                     </FormControl>
@@ -381,16 +398,24 @@ export default function LocationInfo({ location, query, idToken, refreshData }: 
                   >
                     Save Changes
                   </Button>
-                  <Button
-                    mb={2}
-                    onClick={downloadStarterPack}
-                    isLoading={packLoading}
-                    variant={'solid'}
-                    leftIcon={<BiSolidDownload />}
-                    isDisabled={location?.self.role < 2}
-                  >
-                    Download Template
-                  </Button>
+                  <Tooltip label={<Flex flexDir={'column'} p={2}>
+                    <Text fontSize={'lg'} fontWeight={'bold'}>Download Template</Text>
+                    <Text>
+                      Download everything you need to integrate XCS into your experience, including pre-configured server scripts and access point readers.
+                    </Text>
+
+                  </Flex>}>
+                    <Button
+                      mb={2}
+                      onClick={downloadStarterPack}
+                      isLoading={packLoading}
+                      variant={'solid'}
+                      leftIcon={<BiSolidDownload />}
+                      isDisabled={location?.self.role < 2}
+                    >
+                      Download Template
+                    </Button>
+                  </Tooltip>
                   <Button
                     colorScheme="red"
                     ml={'auto'}

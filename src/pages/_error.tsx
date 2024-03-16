@@ -4,7 +4,7 @@ import { NextPageContext } from 'next';
 
 import Error from '@/components/Error';
 import Footer from '@/components/Footer';
-import Nav from '@/components/Nav';
+import Nav from '@/components/nav/Nav';
 
 function ErrorPage({ statusCode }: { statusCode: string }) {
   return (

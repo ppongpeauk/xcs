@@ -8,16 +8,21 @@ import {
   FormControl,
   FormLabel,
   HStack,
+  Icon,
   Input,
   InputGroup,
+  InputRightElement,
   SkeletonCircle,
   Stack,
+  Text,
   Textarea,
+  Tooltip,
   VStack,
+  chakra,
   useToast
 } from '@chakra-ui/react';
 
-import { IoSave } from 'react-icons/io5';
+import { IoInformation, IoInformationCircle, IoSave } from 'react-icons/io5';
 
 import { Field, Form, Formik } from 'formik';
 
@@ -30,34 +35,37 @@ export default function SettingsProfile() {
 
   const defaultImage = `${process.env.NEXT_PUBLIC_ROOT_URL}/images/default-avatar.png`;
   const [image, setImage] = useState<null | undefined | string>(undefined);
-  const [croppedImage, setCroppedImage] = useState<null | string>(null);
+  const [emailEditable, setEmailEditable] = useState<boolean>(false);
 
   const toast = useToast();
 
   const avatarChooser = useRef<HTMLInputElement>(null);
 
-  const handleChange = useCallback(async (e: any) => {
-    console.log(e.target.files[0]);
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
+  const handleChange = useCallback(
+    async (e: any) => {
+      console.log(e.target.files[0]);
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
 
-    // check if file is an image
-    if (file.type.split('/')[0] !== 'image') {
-      toast({
-        title: 'File is not an image.',
-        status: 'error',
-        duration: 3000,
-        isClosable: true
-      });
-      return;
-    }
+      // check if file is an image
+      if (file.type.split('/')[0] !== 'image') {
+        toast({
+          title: 'File is not an image.',
+          status: 'error',
+          duration: 3000,
+          isClosable: true
+        });
+        return;
+      }
 
-    reader.onloadend = () => {
-      setImage(reader.result as string);
-    };
-  }, []);
+      reader.onloadend = () => {
+        setImage(reader.result as string);
+      };
+    },
+    [toast]
+  );
 
   const removeAvatar = useCallback(() => {
     // download default avatar and set it as the image
@@ -70,7 +78,7 @@ export default function SettingsProfile() {
           setImage(reader.result as string);
         };
       });
-  }, []);
+  }, [defaultImage]);
 
   useEffect(() => {
     if (!currentUser) return;
@@ -84,6 +92,7 @@ export default function SettingsProfile() {
           <Formik
             enableReinitialize={true}
             initialValues={{
+              emailEditable: false,
               displayName: currentUser?.displayName as string,
               username: currentUser?.username as string,
               bio: currentUser?.bio as string,
@@ -113,17 +122,19 @@ export default function SettingsProfile() {
                       });
                     }
                   })
-                  .then((data) => {
+                  .then(async (data) => {
                     toast({
                       title: data.message,
                       status: 'success',
                       duration: 3000,
                       isClosable: true
                     });
+
                     refreshCurrentUser();
                     // refresh form values
                     actions.resetForm({
                       values: {
+                        emailEditable: false,
                         displayName: currentUser?.displayName as string,
                         username: currentUser?.username as string,
                         bio: currentUser?.bio as string,
@@ -133,8 +144,9 @@ export default function SettingsProfile() {
 
                     if (values.email !== currentUser?.email?.address) {
                       toast({
-                        title: 'You\'ve been logged out.',
-                        description: 'Because you\'ve changed your email address, you have been logged out. Please log in again to continue using Restrafes XCS.',
+                        title: "You've been logged out.",
+                        description:
+                          "Because you've changed your email address, you have been logged out. Please log in again with your new email address to continue using Restrafes XCS.",
                         status: 'info',
                         duration: 9000,
                         isClosable: true
@@ -225,7 +237,20 @@ export default function SettingsProfile() {
                   <Field name="username">
                     {({ field, form }: any) => (
                       <FormControl w={'fit-content'}>
-                        <FormLabel>Username</FormLabel>
+                        <FormLabel>
+                          <Flex align={'center'}>
+                            <Text>Username</Text>
+                            {/* <Tooltip label={'You cannot change your username.'}>
+                              <chakra.span>
+                                <Icon
+                                  as={IoInformationCircle}
+                                  ml={0.5}
+                                  size={'xl'}
+                                />
+                              </chakra.span>
+                            </Tooltip> */}
+                          </Flex>
+                        </FormLabel>
                         <InputGroup mb={2}>
                           <Input
                             {...field}
@@ -251,7 +276,21 @@ export default function SettingsProfile() {
                           autoComplete="off"
                           placeholder="Email address"
                           variant={'outline'}
+                          isDisabled={!props.values.emailEditable}
                         />
+                        {!props.values.emailEditable && (
+                          <InputRightElement width="4.5rem">
+                            <Button
+                              h="1.75rem"
+                              size="sm"
+                              onClick={() => {
+                                form.setValues({ emailEditable: true });
+                              }}
+                            >
+                              Edit
+                            </Button>
+                          </InputRightElement>
+                        )}
                       </InputGroup>
                     </FormControl>
                   )}

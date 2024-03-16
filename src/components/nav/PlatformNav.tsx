@@ -17,7 +17,9 @@ import {
   MenuList,
   Popover,
   PopoverBody,
+  PopoverCloseButton,
   PopoverContent,
+  PopoverHeader,
   PopoverTrigger,
   Skeleton,
   SkeletonCircle,
@@ -33,10 +35,12 @@ import {
 import { HamburgerIcon } from '@chakra-ui/icons';
 
 import { AiFillHome, AiFillInfoCircle, AiFillSetting } from 'react-icons/ai';
-import { BiSolidExit, BiSolidTime } from 'react-icons/bi';
-import { FaBuilding, FaIdBadge } from 'react-icons/fa';
+import { BiSolidExit, BiSolidNotification, BiSolidTime } from 'react-icons/bi';
+import { FaBell, FaBuilding, FaIdBadge } from 'react-icons/fa';
 import { ImTree } from 'react-icons/im';
-import { RiAdminFill } from 'react-icons/ri';
+import { IoHomeSharp } from 'react-icons/io5';
+import { PiCubeFill } from 'react-icons/pi';
+import { RiAdminFill, RiHome6Fill } from 'react-icons/ri';
 
 import NextImage from 'next/image';
 import NextLink from 'next/link';
@@ -94,7 +98,7 @@ function AvatarPopover({ currentUser, onLogoutOpen }: { currentUser?: any; onLog
           w={{ base: '100vw', md: 'auto' }}
           bg={useColorModeValue('white', 'none')}
           backdropFilter={'blur(2em)'}
-          rounded={'xl'}
+          rounded={'lg'}
         >
           <PopoverBody>
             <Stack>
@@ -150,7 +154,7 @@ function AvatarPopover({ currentUser, onLogoutOpen }: { currentUser?: any; onLog
 
                   <Button
                     as={NextLink}
-                    href={'/settings'}
+                    href={'/settings/profile'}
                     variant={'outline'}
                     size={'md'}
                     leftIcon={<AiFillSetting />}
@@ -165,7 +169,7 @@ function AvatarPopover({ currentUser, onLogoutOpen }: { currentUser?: any; onLog
               {currentUser?.platform.staff && (
                 <Button
                   as={NextLink}
-                  href={'/settings/5'}
+                  href={'/settings/staff-settings'}
                   variant={'outline'}
                   size={'md'}
                   leftIcon={<RiAdminFill />}
@@ -311,7 +315,7 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
   const { push } = useRouter();
 
   return (
-    <Suspense fallback={<></>}>
+    <>
       <DeleteDialog
         isOpen={isLogoutOpen}
         onClose={onLogoutClose}
@@ -329,7 +333,7 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
         display={{ base: 'none', md: 'flex' }}
         position={'fixed'}
         top={0}
-        h={'100vh'}
+        h={'100dvh'}
         w={'240px'}
         flexDir={'column'}
         align={'flex-start'}
@@ -395,14 +399,14 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
                 <NavLink
                   href={'/home'}
                   pathname={pathname}
-                  leftIcon={<AiFillHome />}
+                  leftIcon={<RiHome6Fill />}
                 >
                   Home
                 </NavLink>
                 <NavLink
                   href={'/event-logs'}
                   pathname={pathname}
-                  leftIcon={<BiSolidTime />}
+                  leftIcon={<PiCubeFill />}
                 >
                   Event Logs
                 </NavLink>
@@ -528,18 +532,17 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
             align={'center'}
             justify={'flex-end'}
             spacing={4}
-            px={4}
           >
             {/* Notifications */}
-            {/* <Popover>
+            <Popover>
               <PopoverTrigger>
                 <Button
                   variant={"unstyled"}
                   rounded={"full"}
-                  onClick={() => {}}
+                  onClick={() => { }}
                   aria-label="Notifications"
                 >
-                  {<FaBell size={24} />}
+                  {<BiSolidNotification size={24} />}
                 </Button>
               </PopoverTrigger>
               <PopoverContent
@@ -550,7 +553,7 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
                 minW={{ base: "100vw", md: "320px" }}
                 bg={useColorModeValue("white", "none")}
                 backdropFilter={"blur(2em)"}
-                rounded={"xl"}
+                rounded={"lg"}
               >
                 <PopoverCloseButton />
                 <PopoverHeader>
@@ -560,7 +563,7 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
                   <Text fontSize={"md"}>The service is unavailable.</Text>
                 </PopoverBody>
               </PopoverContent>
-            </Popover> */}
+            </Popover>
 
             {/* Avatar */}
             <AvatarPopover
@@ -637,7 +640,7 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
                     <MenuItem
                       as={MenuLink}
                       icon={<RiAdminFill />}
-                      href="/settings/5"
+                      href="/settings/staff-settings"
                     >
                       Staff Settings
                     </MenuItem>
@@ -676,6 +679,6 @@ export default function PlatformNav({ type, title }: { type?: string; title?: st
           </HStack>
         </Flex>
       </Flex>
-    </Suspense>
+    </>
   );
 }

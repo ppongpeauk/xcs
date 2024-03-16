@@ -90,7 +90,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (name !== undefined) {
       name = name.trim();
       if (name.length > 32 || name.length < 1) {
-        return res.status(400).json({ message: 'Name must be between 1-32 characters.' });
+        return res.status(400).json({ message: 'Location name must be between 1-32 characters.' });
       }
     }
 
@@ -98,7 +98,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       description = description.trim();
       if (description.length >= 256) {
         return res.status(400).json({
-          message: 'Description must be less than or equal to 256 characters.'
+          message: 'Location description must be less than or equal to 256 characters.'
         });
       }
     }
@@ -146,7 +146,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     );
 
     return res.status(200).json({
-      message: 'Successfully created a location!',
+      message: 'Successfully created a location.',
       success: true,
       locationId: id
     });

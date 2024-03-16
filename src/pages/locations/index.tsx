@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Key, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import {
   Avatar,
@@ -43,14 +43,76 @@ import Layout from '@/layouts/PlatformLayout';
 
 import CreateLocationDialog from '@/components/CreateLocationDialog';
 import { Location, Organization } from '@/types';
+import { AiFillSetting } from 'react-icons/ai';
 import { BiGrid, BiRefresh } from 'react-icons/bi';
 import { BsListUl } from 'react-icons/bs';
 
+const toRelativeTime = (date: string) => {
+  return moment(new Date(date)).fromNow();
+}
+const toActualTime = (date: string) => {
+  return moment(new Date(date)).format('MMMM Do YYYY, h:mm:ss a');
+}
+
+function GridEntry({ key, location }: { key: Key, location?: Location }) {
+  return <>
+    <Tooltip label={location?.name} placement={'top'} key={location?.id}>
+      <Flex key={location?.id} flexDir={'column'} w={{ base: '45%', md: '128px', lg: '224px' }}>
+        {/* icon */}
+        <Skeleton isLoaded={!!location}>
+          <Flex
+            border={'1px solid'}
+            borderRadius={'lg'}
+            borderColor={useColorModeValue('gray.200', 'gray.700')}
+            aspectRatio={1}
+          >
+            <Link href={`/locations/${location?.id}/general`}>
+              <Avatar
+                ignoreFallback={true}
+                borderRadius={'lg'}
+                size={'lg'}
+                src={location?.roblox?.place?.thumbnail || '/images/default-avatar-location.png'}
+                cursor={'pointer'}
+                w={'full'}
+                h={'full'}
+                transition={'opacity 0.2s ease-out'} _hover={{ opacity: 0.75 }} _active={{ opacity: 0.5 }}
+              />
+            </Link>
+          </Flex>
+        </Skeleton>
+        {/* text */}
+        <Skeleton isLoaded={!!location} my={4} px={2}>
+          <Flex flexDir={'column'} textUnderlineOffset={4}>
+            <Heading
+              as={'h3'}
+              size={'md'}
+              fontWeight={'bold'}
+              noOfLines={1}
+              wordBreak={'break-word'}
+            >
+              <Link href={`/locations/${location?.id}/general`}>
+                {location?.name || "Location"}
+              </Link>
+            </Heading>
+            <Tooltip label={toActualTime(location?.updatedAt as string)}>
+              <Flex align={'center'} color={'gray.500'} gap={1} fontSize={'md'}>
+                <Icon as={BiRefresh} />
+                <Text color={'gray.500'} cursor={'help'}>
+                  {
+                    toRelativeTime(location?.updatedAt as string)
+                  }
+                </Text>
+              </Flex>
+            </Tooltip>
+          </Flex>
+        </Skeleton>
+      </Flex>
+    </Tooltip>
+  </>
+}
 
 function TableEntry({ key, location, skeleton }: { key: number | string, location?: Location, skeleton?: boolean }) {
-  const toRelativeTime = useMemo(() => (date: string | Date) => {
-    return moment(new Date(date)).fromNow();
-  }, []);
+  const { push } = useRouter();
 
   return <>
     <Tr key={key}>
@@ -58,7 +120,7 @@ function TableEntry({ key, location, skeleton }: { key: number | string, locatio
         <Stack flexDir={'row'} align={'center'}>
           <Skeleton isLoaded={!skeleton}>
             <Tooltip label={location?.roblox?.place?.name || location?.name} placement={'top'}>
-              <Avatar as={Link} href={location?.roblox?.place ? `https://www.roblox.com/games/${location?.roblox?.place?.rootPlaceId}/game` : `/locations/${location?.id}/general`} target={location?.roblox?.place ? '_blank' : '_self'} transition={'opacity 0.2s ease-out'} _hover={{ opacity: 0.75 }} _active={{ opacity: 0.5 }} borderRadius={'lg'} size={'md'} src={location?.roblox?.place?.thumbnail || '/images/default-avatar.png'} />
+              <Avatar as={Link} href={location?.roblox?.place ? `https://www.roblox.com/games/${location?.roblox?.place?.rootPlaceId}/game` : `/locations/${location?.id}/general`} target={location?.roblox?.place ? '_blank' : '_self'} transition={'opacity 0.2s ease-out'} _hover={{ opacity: 0.75 }} _active={{ opacity: 0.5 }} borderRadius={'lg'} size={'md'} src={location?.roblox?.place?.thumbnail || '/images/default-avatar-location.png'} />
             </Tooltip>
           </Skeleton>
 
@@ -68,17 +130,19 @@ function TableEntry({ key, location, skeleton }: { key: number | string, locatio
                 {!skeleton ? location?.name : "Location Name"}
               </Text>
               {!skeleton && location?.roblox?.place && (
-                <Text variant={'subtext'}>
+                <Text variant={'subtext'} fontWeight={'bold'}>
                   {location?.roblox?.place?.name}
                 </Text>
               )}
-              <Flex align={'center'} color={'gray.500'} gap={1}>
-                <Icon as={BiRefresh} />
-                <Text size={'sm'}>
-                  {!skeleton ? toRelativeTime(location?.updatedAt as string) : "Last Updated"}
-                </Text>
-              </Flex>
-              <Text variant={'subtext'}>
+              <Tooltip label={toActualTime(location?.updatedAt as string)}>
+                <Flex align={'center'} color={'gray.500'} gap={1} w={'fit-content'}>
+                  <Icon as={BiRefresh} />
+                  <Text size={'sm'} cursor={'help'}>
+                    {!skeleton ? toRelativeTime(location?.updatedAt as string) : "Last Updated"}
+                  </Text>
+                </Flex>
+              </Tooltip>
+              <Text variant={'subtext'} maxW={'lg'} whiteSpace={'pre-wrap'}>
                 {!skeleton ? location?.description || "No description available." : "Location Description"}
               </Text>
             </Skeleton>
@@ -91,9 +155,9 @@ function TableEntry({ key, location, skeleton }: { key: number | string, locatio
             {
               location?.roblox?.place && (
                 <Button
-                  as={Link}
-                  href={`https://www.roblox.com/games/${location?.roblox?.place?.rootPlaceId}/game`}
-                  target='_blank'
+                  onClick={() => {
+                    window.open(`https://www.roblox.com/games/${location?.roblox?.place?.rootPlaceId}/game`, '_blank');
+                  }}
                   size={"sm"}
                   variant={"solid"}
                   colorScheme='gray'
@@ -104,14 +168,16 @@ function TableEntry({ key, location, skeleton }: { key: number | string, locatio
               )
             }
             <Button
-              as={Link}
-              href={`/locations/${location?.id}/general`}
+              onClick={() => {
+                push(`/locations/${location?.id}/general`)
+              }}
               size={"sm"}
               variant={"solid"}
-              colorScheme='blue'
+              colorScheme='black'
               textDecor={"unset !important"}
+              leftIcon={<Icon as={AiFillSetting} />}
             >
-              View Details
+              Manage
             </Button>
           </ButtonGroup>
         </Skeleton>
@@ -254,10 +320,10 @@ export default function PlatformLocations() {
   return (
     <>
       <Head>
-        <title>Restrafes XCS – Locations</title>
+        <title>Locations - Restrafes XCS</title>
         <meta
           property="og:title"
-          content="Restrafes XCS – Manage Locations"
+          content="Manage Locations - Restrafes XCS"
         />
         <meta
           property="og:site_name"
@@ -404,87 +470,11 @@ export default function PlatformLocations() {
                   {
                     locationsLoading ? (
                       Array.from({ length: 6 }).map((_, i) => (
-                        <Flex key={i} flexDir={'column'} w={{ base: 'full', md: '224px' }}>
-                          <Skeleton>
-                            <Flex
-                              border={'1px solid'}
-                              borderRadius={'lg'}
-                              borderColor={useColorModeValue('gray.200', 'gray.700')}
-                              aspectRatio={1}
-                            >
-                            </Flex>
-                          </Skeleton>
-                          <Flex py={4} flexDir={'column'} textUnderlineOffset={4} gap={2}>
-                            <Skeleton>
-                              <Heading
-                                as={'h3'}
-                                size={'md'}
-                                fontWeight={'bold'}
-                              >
-                                Location
-                              </Heading>
-                            </Skeleton>
-                            <Skeleton>
-                              <Text color={"gray.500"}>
-                                Author
-                              </Text>
-                            </Skeleton>
-                            <Flex align={'center'} color={'gray.500'} gap={1} fontSize={'md'}>
-                              <Skeleton>
-                                <Text color={'gray.500'}>
-                                  Updated Date
-                                </Text>
-                              </Skeleton>
-                            </Flex>
-                          </Flex>
-                        </Flex>
+                        <GridEntry key={i} />
                       ))
                     ) : (
                       filteredLocations.map((location: Location) => (
-                        <Tooltip label={location.name} placement={'top'} key={location.id}>
-                          <Flex key={location.id} flexDir={'column'} w={{ base: 'full', md: '224px' }}>
-                            {/* icon */}
-                            <Flex
-                              border={'1px solid'}
-                              borderRadius={'lg'}
-                              borderColor={useColorModeValue('gray.200', 'gray.700')}
-                              aspectRatio={1}
-                            >
-                              <Link href={`/locations/${location.id}/general`}>
-                                <Avatar
-                                  ignoreFallback={true}
-                                  borderRadius={'lg'}
-                                  size={'lg'}
-                                  src={location?.roblox?.place?.thumbnail || '/images/default-avatar.png'}
-                                  cursor={'pointer'}
-                                  w={'full'}
-                                  h={'full'}
-                                  transition={'opacity 0.2s ease-out'} _hover={{ opacity: 0.75 }} _active={{ opacity: 0.5 }}
-                                />
-                              </Link>
-                            </Flex>
-                            {/* text */}
-                            <Flex p={4} flexDir={'column'} textUnderlineOffset={4}>
-                              <Heading
-                                as={'h3'}
-                                size={'md'}
-                                fontWeight={'bold'}
-                                noOfLines={1}
-                                wordBreak={'break-word'}
-                              >
-                                <Link href={`/locations/${location.id}/general`}>
-                                  {location.name}
-                                </Link>
-                              </Heading>
-                              <Flex align={'center'} color={'gray.500'} gap={1} fontSize={'md'}>
-                                <Icon as={BiRefresh} />
-                                <Text color={'gray.500'}>
-                                  {!organizationsLoading ? toRelativeTime(location.updatedAt) : "Last Updated"}
-                                </Text>
-                              </Flex>
-                            </Flex>
-                          </Flex>
-                        </Tooltip>
+                        <GridEntry key={location.id} location={location} />
                       ))
                     )
                   }
@@ -501,7 +491,7 @@ export default function PlatformLocations() {
                   py={4}
                 >
                   <Text fontSize={'2xl'} fontWeight={'bold'}>No Locations Found</Text>
-                  <Text color={'gray.500'}>Try adjusting your search query or creating a new location.</Text>
+                  <Text color={'gray.500'}>Try adjusting your search query or create a new location.</Text>
                 </Flex>
               )
             }

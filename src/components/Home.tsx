@@ -1,20 +1,11 @@
-import { Box, Button, Container, Flex, Heading, Icon, Image, Text, chakra, useColorModeValue } from '@chakra-ui/react';
+import { Box, Button, Container, Flex, Heading, Icon, Image, Spacer, Text, chakra, useColorModeValue } from '@chakra-ui/react';
 
-// import { Familjen_Grotesk, Manrope } from "next/font/google";
-// const font1 = Familjen_Grotesk({ subsets: ["latin"] });
+import moment from 'moment';
 import NextImage from 'next/image';
 import Link from 'next/link';
 import Marquee from 'react-fast-marquee';
 import { BsArrowRight } from 'react-icons/bs';
 import Section from './section';
-
-
-// const Image = chakra(NextImage, {
-//   baseStyle: {
-//     maxH: '100%',
-//     maxW: '100%'
-//   }
-// });
 
 const ChakraImage = chakra(NextImage, {
   baseStyle: { maxH: 120, maxW: 120 },
@@ -28,7 +19,7 @@ const ChakraMarquee = chakra(Marquee, {
   },
 });
 
-export default function Home() {
+export default function Home({ allPostsData: posts }: { allPostsData: any }) {
   return (
     // New Bold Typography Design
     <>
@@ -52,7 +43,7 @@ export default function Home() {
           pb={24}
         >
           <Section>
-            <Heading as={'h1'} size={{ base: 'xl', md: '4xl' }} fontWeight={'normal'} pb={{ base: 8, md: 16 }} w={{ base: 'full', md: '50%' }}>
+            <Heading as={'h1'} size={{ base: 'xl', md: '4xl' }} fontWeight={'normal'} pb={{ base: 8, md: 16 }} w={{ base: 'full', md: '66%' }}>
               Powering the future of access control.
             </Heading>
           </Section>
@@ -73,6 +64,49 @@ export default function Home() {
             />
           </Flex>
         </Flex>
+        {/* <Flex
+          flexDir={'column'}
+          minH={'50vh'}
+          w={'container.xl'}
+          mx={{ base: 4, md: 16 }}
+          py={16}
+          borderBottom={'1px solid'}
+          borderColor={useColorModeValue('blackAlpha.900', 'whiteAlpha.900')}
+        >
+          <Box
+            flexGrow={1}
+            flexBasis={1}
+            pb={8}
+            display={{ base: 'none', md: 'block' }}
+          >
+            <Heading
+              size={'xl'}
+              fontWeight={'400'}
+              pb={2}
+            >
+              Blog Posts
+            </Heading>
+            <Spacer />
+          </Box>
+          <Box
+            flexGrow={1}
+            flexBasis={1}
+          >
+            <Flex flexDir={'column'} gap={4} w={'540px'}>
+              <Link href={`/blog/${posts[0].id}`}>
+                <Image src={posts[0].thumbnail} alt={posts[0].thumbnailAlt} objectFit={'cover'} aspectRatio={2 / 1} />
+              </Link>
+              <Flex flexDir={'column'}>
+                <Heading size={'md'}>
+                  {posts[0].title}
+                </Heading>
+                <Text>
+                  {moment(posts[0].date).format('MMMM Do, YYYY')}
+                </Text>
+              </Flex>
+            </Flex>
+          </Box>
+        </Flex> */}
         <Flex
           minH={'50vh'}
           maxW={'container.xl'}
@@ -173,52 +207,6 @@ export default function Home() {
           </Box>
         </Flex>
       </Container>
-      {/* <Flex position={'relative'}>
-        <Flex
-          flexDir={'column'}
-          w={'full'}
-          pos={'relative'}
-          fontSize={['4em', '8em', '12em']}
-          lineHeight={1}
-          justify={'center'}
-          py={16}
-        >
-          <ChakraMarquee
-            autoFill={true}
-            direction={'left'}
-            className={'overflow-hidden'}
-          >
-            <Heading
-              as={'h3'}
-              fontSize={'4xl'}
-              fontWeight={'normal'}
-            >
-              Restrafes XCS
-              <Box
-                as={'span'}
-                mx={8}
-              ></Box>
-            </Heading>
-          </ChakraMarquee>
-          <ChakraMarquee
-            autoFill={true}
-            direction={'right'}
-            className={'overflow-hidden'}
-          >
-            <Heading
-              as={'h3'}
-              fontSize={'4xl'}
-              fontWeight={'normal'}
-            >
-              Restrafes XCS
-              <Box
-                as={'span'}
-                mx={8}
-              ></Box>
-            </Heading>
-          </ChakraMarquee>
-        </Flex>
-      </Flex> */}
     </>
   );
 }

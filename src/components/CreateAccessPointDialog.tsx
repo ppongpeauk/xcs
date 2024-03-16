@@ -84,6 +84,7 @@ export default function CreateAccessPointDialog({
                   duration: 5000,
                   isClosable: true
                 });
+                actions.resetForm();
                 onClose();
                 onCreate(data.accessPointId);
               })
@@ -118,7 +119,7 @@ export default function CreateAccessPointDialog({
                   <VStack spacing={2}>
                     <Field name="name">
                       {({ field, form }: any) => (
-                        <FormControl>
+                        <FormControl isRequired>
                           <FormLabel>Name</FormLabel>
                           <Input
                             {...field}
@@ -133,14 +134,14 @@ export default function CreateAccessPointDialog({
                     <Field name="template">
                       {({ field, form }: any) => (
                         <FormControl>
-                          <FormLabel>Template</FormLabel>
+                          <FormLabel>Copy Configuration from Access Point</FormLabel>
                           <Select
                             {...field}
                             options={(accessPoints || []).map((ap: AccessPoint) => ({
                               value: ap.id,
                               label: ap.name
                             })) || []}
-                            placeholder={'Select access point... (optional)'}
+                            placeholder={'Access Point (optional)'}
                             onChange={(value) => {
                               form.setFieldValue('template', value);
                             }}
@@ -184,7 +185,7 @@ export default function CreateAccessPointDialog({
 
                 <ModalFooter>
                   <Button
-                    colorScheme={'blue'}
+                    colorScheme={'black'}
                     mr={3}
                     isLoading={props.isSubmitting}
                     type={'submit'}

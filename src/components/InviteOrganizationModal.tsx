@@ -197,7 +197,7 @@ export default function InviteOrganizationModal({
                   {!inviteCode ? (
                     <HStack>
                       <Button
-                        colorScheme={'blue'}
+                        colorScheme={'black'}
                         isLoading={props.isSubmitting}
                         type={'submit'}
                       >
@@ -208,7 +208,7 @@ export default function InviteOrganizationModal({
                   ) : (
                     <HStack>
                       <Button
-                        colorScheme={'blue'}
+                        colorScheme={'black'}
                         onClick={copyInviteLink}
                       >
                         {!clipboardHasCopied ? 'Copy Link' : 'Copied!'}

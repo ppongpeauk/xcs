@@ -1,22 +1,23 @@
 import Footer from '@/components/Footer';
-import Nav from '@/components/Nav';
-import { Box, Container, Heading, Link, Text } from '@chakra-ui/react';
+import Nav from '@/components/nav/Nav';
+import { Box, Container, Heading, Link, Text, useColorModeValue } from '@chakra-ui/react';
 import Head from 'next/head';
 
 export default function Terms() {
   return (
     <>
       <Head>
-        <title>Restrafes XCS – Privacy Policy</title>
+        <title>Privacy Policy - Restrafes XCS</title>
       </Head>
       <Nav />
+      <Box bg={useColorModeValue('black', 'white')} w={'full'} h={'240px'} />
       <Container
         maxW={'container.md'}
         py={16}
       >
         <Heading
           as="h1"
-          size="2xl"
+          size="xl"
           mb={4}
         >
           Privacy Policy
@@ -29,7 +30,7 @@ export default function Terms() {
 
           <Heading
             as="h2"
-            size="lg"
+            size="md"
             mt={4}
           >
             Information Collection
@@ -43,7 +44,7 @@ export default function Terms() {
 
           <Heading
             as="h2"
-            size="lg"
+            size="md"
             mt={4}
           >
             Information Use
@@ -56,7 +57,7 @@ export default function Terms() {
 
           <Heading
             as="h2"
-            size="lg"
+            size="md"
             mt={4}
           >
             Cookies
@@ -70,7 +71,7 @@ export default function Terms() {
 
           <Heading
             as="h2"
-            size="lg"
+            size="md"
             mt={4}
           >
             Data Sharing
@@ -83,7 +84,7 @@ export default function Terms() {
 
           <Heading
             as="h2"
-            size="lg"
+            size="md"
             mt={4}
           >
             Minor Privacy
@@ -99,7 +100,7 @@ export default function Terms() {
 
           <Heading
             as="h2"
-            size="lg"
+            size="md"
             mt={4}
           >
             Data Security
@@ -113,7 +114,7 @@ export default function Terms() {
 
           <Heading
             as="h2"
-            size="lg"
+            size="md"
             mt={4}
           >
             User Rights
@@ -126,7 +127,7 @@ export default function Terms() {
 
           <Heading
             as="h2"
-            size="lg"
+            size="md"
             mt={4}
           >
             Breach Notification
@@ -138,7 +139,7 @@ export default function Terms() {
 
           <Heading
             as="h2"
-            size="lg"
+            size="md"
             mt={4}
           >
             Contact Us
@@ -151,7 +152,7 @@ export default function Terms() {
 
           <Heading
             as="h2"
-            size="lg"
+            size="md"
             mt={4}
           >
             Changes to Policy

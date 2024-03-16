@@ -194,7 +194,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       const avatarUrl = `${process.env.NEXT_PUBLIC_ROOT_URL}/images/logo-square.jpeg`;
       const webhook = body.config.webhook;
-      const webhookRes = await fetch(webhook.url, {
+      const webhookRes = fetch(webhook.url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -297,7 +297,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     );
 
-    return res.status(200).json({ message: 'Successfully updated access point!', success: true });
+    return res.status(200).json({ message: 'Successfully updated access point.', success: true });
   }
 
   // Deleting Location Data

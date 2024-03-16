@@ -412,7 +412,7 @@ export default function InviteOrganizationFlowModal({
               setActiveStep(0);
               setRadioMemberType('user');
             }}
-            size={'md'}
+            size={'lg'}
           >
             <ModalOverlay />
             <Form>
@@ -423,7 +423,7 @@ export default function InviteOrganizationFlowModal({
                 <ModalCloseButton />
                 <ModalBody minH={'xl'}>
                   <Stack gap={0} py={2}>
-                    <Stepper size='sm' index={activeStep} gap='0'>
+                    <Stepper size='sm' index={activeStep} gap='0' colorScheme='black'>
                       {steps.map((step, index) => (
                         <Step as={chakra.div} key={index} gap={0}>
                           <StepIndicator>
@@ -856,7 +856,7 @@ export default function InviteOrganizationFlowModal({
                     <Button
                       onClick={() => { setActiveStep(activeStep + 1) }}
                       isDisabled={activeStep === steps.length - 1}
-                      colorScheme='blue'
+                      colorScheme='black'
                     >
                       Next
                     </Button>
@@ -864,7 +864,7 @@ export default function InviteOrganizationFlowModal({
                     <Button
                       type="submit"
                       isLoading={props.isSubmitting}
-                      colorScheme={'blue'}
+                      colorScheme={'black'}
                       isDisabled={
                         (props.values.type === 'user' && (!props.values.id || !props.values.role)) ||
                         (props.values.type === 'roblox' && !props.values.username) ||
@@ -872,7 +872,7 @@ export default function InviteOrganizationFlowModal({
                         (props.values.type === 'card' && (!props.values.name || !props.values.cardNumbers))
                       }
                     >
-                      Add Member
+                      {(props.values.type === 'user') ? "Invite" : "Add"} Member
                     </Button>
                   )}
                   <Button onClick={onClose}>Cancel</Button>

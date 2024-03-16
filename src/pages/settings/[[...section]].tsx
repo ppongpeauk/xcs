@@ -38,14 +38,27 @@ import { useAuthContext } from '@/contexts/AuthContext';
 // Layouts
 import Layout from '@/layouts/PlatformLayout';
 
-import SettingsAdmin from '@/components/SettingsAdmin';
-import SettingsAppearance from '@/components/SettingsAppearance';
-import SettingsInvite from '@/components/SettingsInvite';
-import SettingsLinkedAccounts from '@/components/SettingsLinkedAccounts';
-import SettingsProfile from '@/components/SettingsProfile';
+import SettingsAdmin from '@/components/settings/SettingsAdmin';
+import SettingsAppearance from '@/components/settings/SettingsAppearance';
+import SettingsInvite from '@/components/settings/SettingsInvite';
+import SettingsLinkedAccounts from '@/components/settings/SettingsLinkedAccounts';
+import SettingsProfile from '@/components/settings/SettingsProfile';
 
-function StyledTab({ children, index, icon }: { children: React.ReactNode; index: number; icon?: any }) {
+function StyledTab({
+  children,
+  index,
+  icon,
+  demoAllowed = true
+}: {
+  children: React.ReactNode;
+  index: number;
+  icon?: any;
+  demoAllowed?: boolean;
+}) {
+  const { currentUser } = useAuthContext();
   const { push } = useRouter();
+
+  // if (!demoAllowed && currentUser?.platform?.demo) return null;
 
   return (
     <Tab
@@ -64,11 +77,23 @@ function StyledTab({ children, index, icon }: { children: React.ReactNode; index
         color: useColorModeValue('gray.900', 'white')
       }}
       _selected={{
-        bg: useColorModeValue('gray.100', 'white'),
+        bg: useColorModeValue('gray.100', '#E2E8F0'),
         color: useColorModeValue('black', 'gray.900')
       }}
       onClick={() => {
-        push(`/settings/${index + 1}`);
+        push(
+          `/settings/${
+            index === 0
+              ? 'profile'
+              : index === 1
+              ? 'appearance'
+              : index === 2
+              ? 'linked-accounts'
+              : index === 3
+              ? 'referrals'
+              : 'staff-settings'
+          }`
+        );
       }}
     >
       {icon ? (
@@ -89,7 +114,28 @@ export default function Settings() {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    query.section && setIndex(parseInt(query.section as string) - 1);
+    if (!query.section) return;
+    let section;
+    switch (query.section[0]) {
+      case 'profile':
+        section = 0;
+        break;
+      case 'appearance':
+        section = 1;
+        break;
+      case 'linked-accounts':
+        section = 2;
+        break;
+      case 'referrals':
+        section = 3;
+        break;
+      case 'staff-settings':
+        section = 4;
+        break;
+      default:
+        section = 0;
+    }
+    setIndex(section);
   }, [query]);
 
   useEffect(() => {
@@ -134,18 +180,30 @@ export default function Settings() {
   return (
     <>
       <Head>
-        <title>Restrafes XCS – Settings</title>
+        <title>Settings - Restrafes XCS</title>
+        <meta
+          property="og:title"
+          content="Settings - Restrafes XCS"
+        />
         <meta
           property="og:site_name"
           content="Restrafes XCS"
+        />
+        <meta
+          property="og:url"
+          content="https://xcs.restrafes.co"
+        />
+        <meta
+          property="og:description"
+          content="Control your access points with ease."
         />
         <meta
           property="og:type"
           content="website"
         />
         <meta
-          property="og:title"
-          content="Settings"
+          property="og:image"
+          content="/images/logo-square.jpg"
         />
       </Head>
       <Container
@@ -223,6 +281,7 @@ export default function Settings() {
           >
             <StyledTab
               index={0}
+              demoAllowed={false}
               icon={BiSolidUserDetail}
             >
               <Text>Profile</Text>

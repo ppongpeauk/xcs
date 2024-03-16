@@ -177,7 +177,7 @@ export default function PlatformAccessPoint() {
             };
             optionsMap[(member.type as string) || 'user'].options.push({
               label,
-              value: member.formattedId || member.id
+              value: member.formattedId !== null ? member.formattedId : member.id
             });
           });
 
@@ -347,10 +347,10 @@ export default function PlatformAccessPoint() {
   return (
     <>
       <Head>
-        <title>Restrafes XCS – {accessPoint?.name}</title>
+        <title>{accessPoint?.name} - Restrafes XCS</title>
         <meta
           property="og:title"
-          content="Restrafes XCS – Manage Access Point"
+          content="Manage Access Point - Restrafes XCS"
         />
         <meta
           property="og:site_name"
@@ -695,7 +695,7 @@ export default function PlatformAccessPoint() {
                                   <InputGroup>
                                     <Switch
                                       {...field}
-                                      colorScheme="blue"
+                                      colorScheme="black"
                                       placeholder="Active"
                                       variant={'outline'}
                                       width={'fit-content'}

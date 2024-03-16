@@ -142,7 +142,7 @@ export default function Verify() {
   return (
     <>
       <Head>
-        <title>Restrafes XCS – Verification</title>
+        <title>Verification - Restrafes XCS</title>
       </Head>
       <Container
         maxW={'container.lg'}
@@ -156,7 +156,7 @@ export default function Verify() {
           Account Verification
         </Text>
         <Stepper
-          colorScheme={'blue'}
+          colorScheme={'black'}
           index={activeStep}
           py={8}
         >
@@ -208,7 +208,7 @@ export default function Verify() {
                   pt={8}
                 >
                   <Button
-                    colorScheme={'blue'}
+                    colorScheme={'black'}
                     onClick={() => {
                       robloxGenerateCode();
                       setActiveStep(1);
@@ -256,7 +256,7 @@ export default function Verify() {
                   pt={8}
                 >
                   <Button
-                    colorScheme={'blue'}
+                    colorScheme={'black'}
                     isLoading={isLoading}
                     onClick={() => checkRobloxVerification()}
                   >
@@ -280,7 +280,7 @@ export default function Verify() {
                   pt={8}
                 >
                   <Button
-                    colorScheme={'blue'}
+                    colorScheme={'black'}
                     onClick={() => push('/home')}
                   >
                     Go Home

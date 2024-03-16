@@ -104,7 +104,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       name: name,
       description: '',
       ownerId: uid,
-      avatar: 'https://xcs.restrafes.co/images/default-avatar.png',
+      avatar: 'https://xcs.restrafes.co/images/default-avatar-organization.png',
 
       accessGroups: {},
       members: {
@@ -148,7 +148,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     );
 
     return res.status(200).json({
-      message: 'Successfully created an organization!',
+      message: 'Successfully created an organization.',
       success: true,
       organizationId: id
     });

@@ -78,6 +78,7 @@ export default function CreateLocationDialog({
                   duration: 5000,
                   isClosable: true
                 });
+                actions.resetForm();
                 onClose();
                 onCreate(data.locationId);
               })
@@ -165,7 +166,7 @@ export default function CreateLocationDialog({
 
                 <ModalFooter>
                   <Button
-                    colorScheme={'blue'}
+                    colorScheme={'black'}
                     mr={3}
                     isLoading={props.isSubmitting}
                     type={'submit'}

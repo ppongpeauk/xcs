@@ -77,7 +77,7 @@ function TableEntry({ key, invitation, skeleton, action }: { key: number | strin
       <Td>
         <Skeleton isLoaded={!skeleton}>
           <Flex align={'center'} gap={2}>
-            <Avatar as={Link} href={`/@${invitation?.createdBy?.username}`} target='_blank' transition={'opacity 0.2s ease-out'} _hover={{ opacity: 0.75 }} _active={{ opacity: 0.5 }} size={'sm'} src={invitation?.createdBy?.avatar || '/images/default-avatar.png'} />
+            <Avatar as={Link} href={`/@${invitation?.createdBy?.username}`} target='_blank' transition={'opacity 0.2s ease-out'} _hover={{ opacity: 0.75 }} _active={{ opacity: 0.5 }} size={'sm'} mr={2} src={invitation?.createdBy?.avatar || '/images/default-avatar.png'} />
             <Flex flexDir={'column'} justify={'center'}>
               <Text fontWeight={'bold'}>
                 {!skeleton ? invitation?.createdBy?.displayName : "N/A"}

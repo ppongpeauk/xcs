@@ -77,6 +77,7 @@ export default function CreateAccessGroupDialog({
                   duration: 5000,
                   isClosable: true
                 });
+                actions.resetForm();
                 onClose();
                 onCreate(data.id);
               })
@@ -144,7 +145,7 @@ export default function CreateAccessGroupDialog({
 
                 <ModalFooter>
                   <Button
-                    colorScheme={'blue'}
+                    colorScheme={'black'}
                     mr={3}
                     isLoading={props.isSubmitting}
                     type={'submit'}

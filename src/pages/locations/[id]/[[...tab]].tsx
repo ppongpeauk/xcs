@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import {
   Box,
@@ -32,8 +32,8 @@ import { useAuthContext } from '@/contexts/AuthContext';
 
 import Layout from '@/layouts/PlatformLayout';
 
-import LocationAccessPoints from '@/components/LocationAccessPoints';
-import LocationInfo from '@/components/LocationInfo';
+import LocationAccessPoints from '@/components/location/LocationAccessPoints';
+import LocationInfo from '@/components/location/LocationInfo';
 
 function StyledTab({ children }: { children: React.ReactNode }) {
   return (
@@ -53,7 +53,7 @@ function StyledTab({ children }: { children: React.ReactNode }) {
         color: useColorModeValue('gray.900', 'white')
       }}
       _selected={{
-        bg: useColorModeValue('gray.100', 'white'),
+        bg: useColorModeValue('gray.100', '#E2E8F0'),
         color: useColorModeValue('black', 'gray.900')
       }}
     >
@@ -70,7 +70,7 @@ export default function PlatformLocation() {
   const [tabIndex, setTabIndex] = useState(0);
   const toast = useToast();
 
-  let refreshData = () => {
+  let refreshData = useCallback(() => {
     setLocation(null);
     user.getIdToken().then((token: string) => {
       fetch(`/api/v1/locations/${query.id}`, {
@@ -96,14 +96,15 @@ export default function PlatformLocation() {
           setLocation(data.location);
         });
     });
-  };
+  }, [push, query.id, toast, user]);
 
   // Fetch location data
   useEffect(() => {
     if (!query.id) return;
     if (!user) return;
+    if (location) return;
     refreshData();
-  }, [query, user]);
+  }, [query, user, location, refreshData]);
 
   const indexSwitch = (index: number) => {
     let route = '';
@@ -134,10 +135,10 @@ export default function PlatformLocation() {
   return (
     <>
       <Head>
-        <title>Restrafes XCS – {location?.name}</title>
+        <title>{location?.name} - Restrafes XCS</title>
         <meta
           property="og:title"
-          content="Restrafes XCS – Manage Location"
+          content="Manage Location - Restrafes XCS"
         />
         <meta
           property="og:site_name"

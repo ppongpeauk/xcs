@@ -107,7 +107,9 @@ export const getRobloxUsers = async (userIds: string[]) => {
   }
 
   for (let i = 0; i < robloxResponse.length; i++) {
-    robloxResponse[i].avatar = robloxUserAvatar[i].imageUrl;
+    // find the avatar from targetId
+    const avatar = robloxUserAvatar.find((a: any) => a.targetId === robloxResponse[i].id);
+    robloxResponse[i].avatar = avatar?.imageUrl;
   }
 
   let response = Object();
@@ -157,7 +159,9 @@ export const getRobloxGroups = async (groupIds: string[]) => {
   }
 
   for (let i = 0; i < robloxResponse.length; i++) {
-    robloxResponse[i].avatar = robloxGroupThumbnail[i].imageUrl;
+    // find the avatar from targetId
+    const avatar = robloxGroupThumbnail.find((a: any) => a.targetId === robloxResponse[i].id);
+    robloxResponse[i].avatar = avatar?.imageUrl;
   }
 
   // get roles for each group
@@ -188,34 +192,30 @@ export const getRobloxGroups = async (groupIds: string[]) => {
 
 export const getRandomAccessPointName = () => {
   let accessPointNames = [
-    'Front Entrance',
-    'Back Entrance',
-    'Main Lobby',
-    'Reception Area',
-    'Supply Closet',
-    'Conference Room A',
-    'Conference Room B',
-    'Conference Room C',
-    'Conference Room D',
-    'Break Room',
-    'Cafeteria',
-    'Kitchen',
-    'Bathrooms',
-    'Electrical Room',
-    'Boiler Room',
+    'Main Entrance',
+    'Lobby Left',
+    'Lobby Right',
+    'Service Corridor',
+    'Parking Entry',
+    'Elevator Hall',
+    'Roof Access',
+    'Rear Exit',
+    'Basement Door',
     'Loading Dock',
-    'Front Desk',
-    'Lobby Desk',
-    'Security Office',
-    'East Wing',
-    'West Wing',
-    'North Wing',
-    'South Wing',
-    'Server Room',
-    'Storage Room',
-    'Mechanical Room',
-    'Telecom Room',
-    'Electrical Closet'
+    'Conference Room',
+    'West Wing Entry',
+    'East Wing Entry',
+    'Executive Suite',
+    'Fitness Center Door',
+    'Penthouse Floor',
+    'Pool Area',
+    'Library Access',
+    'Cafeteria Entry',
+    'Maintenance Room',
+    'Security Desk',
+    'Stairwell A',
+    'Stairwell B',
+    'Emergency Exit'
   ];
 
   return accessPointNames[Math.floor(Math.random() * accessPointNames.length)];
@@ -223,74 +223,28 @@ export const getRandomAccessPointName = () => {
 
 export const getRandomLocationName = () => {
   let locationNames = [
-    'Acme Headquarters',
-    'Century Plaza',
-    'Commerce Tower',
-    'Innovation Park',
-    'Paragon Office Complex',
-    'Park Avenue Tower',
-    'Riverfront Corporate Center',
-    'Skyline Tower',
-    'Spark Innovation Campus',
-    'Tech City Center',
-    'Guardia Tower',
-    'Zenith Tower',
-    'Alpha Office Park',
-    'Gamma Plaza',
-    'Epsilon Square',
-    'Zeta Tower',
-    'Sigma Center',
-    'Omega Complex',
-    'Delta Hub',
-    'Phi Tower',
-    'Halcyon Center',
-    'Prometheus Tower',
-    'Athena Complex',
-    'Helix Hub',
-    'Cortex Building',
-    'Foresight Headquarters',
-    'Apex Facility',
-    'Photon Power Plant',
-    'Galactus Arena',
-    'Wayne Tech Offices',
-    'Tyrell Offices',
-    'Weyland Hangar',
-    'Hyperion Headquarters',
-    'Stark Hangar',
-    'Sanctuary Clinic',
-    'Tranquility Hospital',
-    'Gattaca Spaceport',
-    'Artemis Test Site',
-    'Kronos Annex',
-    'Zephyrus Plant',
-    'Atlas Factory',
-    'Achilles Facility',
-    'Hera Building',
-    'Poseidon Rig',
-    'Apollo Launchpad',
-    'Hades Data Center',
-    'Erebus Reactor',
-    'Nyx Labs',
-    'Selene Space Center',
-    'Helios Solar Array',
-    'Iris Optics Lab',
-    'Kairos Institute',
-    'Themis Distribution Center',
-    'Janus Clinic',
-    'Rhea Habitat',
-    'Kronos Lab',
-    'Hyperion Plant',
-    'Neptune Aquatic Center',
-    'Juno Space Observatory',
-    'Mercury Testing Grounds',
-    'Venus Atmospheric Station',
-    'Saturn Orbital Platform',
-    'Jupiter Gas Mining Rig',
-    'Mars Terraforming Site',
-    'Uranus Weather Station',
-    'Pluto Research Base',
-    'Europa Underground Ocean Lab',
-    'Ganymede Hydroponics Dome'
+    'Titan Towers',
+    'Horizon Heights',
+    'Silver Skyline',
+    'Eclipse Estates',
+    'Pinnacle Point',
+    'Crown Crest',
+    'Azure Altitude',
+    'Summit Structures',
+    'Peak Plaza',
+    'Twilight Tower',
+    'Rise Residences',
+    'Stratosphere Suites',
+    'Nimbus Nook',
+    'Skyward Sanctum',
+    'Celestial Center',
+    'Lunar Loft',
+    'Olympus Offices',
+    'Vista View',
+    'Polaris Place',
+    'Galaxy Gateway',
+    'Nebula Nexus',
+    'Atlas Atrium'
   ];
 
   return locationNames[Math.floor(Math.random() * locationNames.length)];
@@ -313,11 +267,8 @@ export const getRandomOrganizationName = () => {
     'Gattaca Aerospace',
     'Kronos Technologies',
     'Atlas Robotics',
-    'Achilles Cybernetics',
     'Hades Computing',
-    'Luna Systems',
-    'Polaris Enterprises',
-    'Ganymede Agricorp'
+    'Luna Systems'
   ];
 
   return organizationNames[Math.floor(Math.random() * organizationNames.length)];

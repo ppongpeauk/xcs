@@ -56,7 +56,7 @@ export default function Invite({ invite, errorMessage }: { invite: any; errorMes
   return (
     <>
       <Head>
-        <title>Restrafes XCS – Invitation</title>
+        <title>Invitation - Restrafes XCS</title>
 
         {invite ? (
           <>
@@ -66,7 +66,7 @@ export default function Invite({ invite, errorMessage }: { invite: any; errorMes
             />
             <meta
               name="og:title"
-              content={'Restrafes XCS – Invitation'}
+              content={'Invitation - Restrafes XCS'}
             />
             <meta
               name="og:url"

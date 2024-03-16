@@ -76,6 +76,7 @@ export default function CreateOrganizationDialog({
                   duration: 5000,
                   isClosable: true
                 });
+                actions.resetForm();
                 onClose();
                 onCreate(data.organizationId);
               })
@@ -156,7 +157,7 @@ export default function CreateOrganizationDialog({
 
                 <ModalFooter>
                   <Button
-                    colorScheme={'blue'}
+                    colorScheme={'black'}
                     mr={3}
                     isLoading={props.isSubmitting}
                     type={'submit'}
