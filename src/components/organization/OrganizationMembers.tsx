@@ -88,6 +88,7 @@ import CreateOrganization from '../modals/organizations/CreateOrganization';
 import CreateMember from '../modals/organizations/CreateMember';
 import InfoLink from '../InfoLink';
 import ManageMember from '../modals/organizations/ManageMember';
+import CreateLink from '../modals/organizations/CreateLink';
 
 export default function OrganizationMembers({ data, refreshData }: { data: Organization; refreshData: () => void }) {
   const [sortStatus, setSortStatus] = useState<DataTableSortStatus<any>>({
@@ -105,6 +106,7 @@ export default function OrganizationMembers({ data, refreshData }: { data: Organ
   const { push } = useRouter();
   const { colorScheme } = useMantineColorScheme();
   const [isCreateModalOpen, { open: openCreateModal, close: closeCreateModal }] = useDisclosure(false);
+  const [isCreateLinkModalOpen, { open: openCreateLinkModal, close: closeCreateLinkModal }] = useDisclosure(false);
 
   const [tagsOptions, setTagsOptions] = useState<any>([]);
 
@@ -161,7 +163,13 @@ export default function OrganizationMembers({ data, refreshData }: { data: Organ
       <CreateMember
         opened={isCreateModalOpen}
         onClose={closeCreateModal}
-        organization={data}
+        organization={data as Organization}
+        refresh={refreshMembers}
+      />
+      <CreateLink
+        opened={isCreateLinkModalOpen}
+        onClose={closeCreateLinkModal}
+        organization={data as Organization}
         refresh={refreshMembers}
       />
 
@@ -189,7 +197,7 @@ export default function OrganizationMembers({ data, refreshData }: { data: Organ
           <Button
             leftSection={<IconLinkPlus size={'16px'} />}
             variant={'default'}
-            onClick={openCreateModal}
+            onClick={openCreateLinkModal}
             size="xs"
           >
             Create Invite Link

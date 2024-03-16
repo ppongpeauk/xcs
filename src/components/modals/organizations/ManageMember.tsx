@@ -17,12 +17,14 @@ import {
   useMantineColorScheme,
   MantineComponent,
   Box,
-  ButtonGroup
+  ButtonGroup,
+  Alert
 } from '@mantine/core';
 import { modals } from '@mantine/modals';
 import { notifications } from '@mantine/notifications';
 import {
   IconIdBadge,
+  IconJson,
   IconKey,
   IconKeyframe,
   IconMessageCircle,
@@ -180,41 +182,42 @@ export default function ManageMember({
                 </Group>
               </Flex>
             </Group>
+            {!member?.joined && (
+              <Alert
+                color="red"
+                title="Some actions are disabled until this member has accepted the invitation."
+                mt={16}
+              />
+            )}
             <Tabs
               variant="outline"
-              defaultValue="gallery"
+              defaultValue="permissions"
               pt={16}
             >
-              <Tabs.List>
-                <Tabs.Tab
-                  value="gallery"
+              <Tabs.List fw={'bold'}>
+                {/* <Tabs.Tab
+                  disabled
+                  value="general"
                   leftSection={<IconPhoto style={iconStyle} />}
                 >
-                  Gallery
-                </Tabs.Tab>
+                  General Settings
+                </Tabs.Tab> */}
                 <Tabs.Tab
-                  value="messages"
+                  value="permissions"
                   leftSection={<IconKey style={iconStyle} />}
                 >
                   Permissions
                 </Tabs.Tab>
                 <Tabs.Tab
                   value="swipe-data"
-                  leftSection={<IconIdBadge style={iconStyle} />}
+                  leftSection={<IconJson style={iconStyle} />}
                 >
                   Swipe Data
-                </Tabs.Tab>
-                <Tabs.Tab
-                  value="settings"
-                  leftSection={<IconSettings style={iconStyle} />}
-                >
-                  Advanced Settings
                 </Tabs.Tab>
               </Tabs.List>
 
               <Flex pt={16}>
                 <Tabs.Panel value="gallery">Gallery tab content</Tabs.Panel>
-
                 <Tabs.Panel
                   value="swipe-data"
                   w={'100%'}
@@ -243,7 +246,6 @@ export default function ManageMember({
                       // }}
                     />
                   </Flex>
-                  <Button variant={'default'}>Save Changes</Button>
                 </Tabs.Panel>
 
                 <Tabs.Panel value="settings">
@@ -251,6 +253,12 @@ export default function ManageMember({
                 </Tabs.Panel>
               </Flex>
             </Tabs>
+            <Button
+              variant={'default'}
+              w={'fit-content'}
+            >
+              Save Changes
+            </Button>
           </>
         )}
       </>

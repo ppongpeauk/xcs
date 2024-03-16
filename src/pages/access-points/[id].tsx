@@ -34,7 +34,12 @@ import {
   Tooltip,
   useMantineColorScheme,
   ActionIcon,
-  CopyButton
+  CopyButton,
+  Tabs,
+  Fieldset,
+  Badge,
+  Box,
+  Pill
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import {
@@ -44,8 +49,13 @@ import {
   IconCopy,
   IconDeviceFloppy,
   IconElevator,
+  IconGrid3x3,
+  IconGridDots,
+  IconJson,
   IconRecycle,
-  IconTrash
+  IconTrash,
+  IconUsersGroup,
+  IconWebhook
 } from '@tabler/icons-react';
 import { DataTable } from 'mantine-datatable';
 import { notifications } from '@mantine/notifications';
@@ -177,13 +187,10 @@ export default function PlatformAccessPoint() {
         />
       </Head>
       {/* main container */}
-      <Container
-        size={'100%'}
-        pt={16}
-      >
+      <Container size={'100%'}>
         {/* breadcrumbs */}
         <Skeleton
-          mb={16}
+          my={16}
           visible={!accessPoint}
         >
           <Breadcrumbs
@@ -196,28 +203,48 @@ export default function PlatformAccessPoint() {
           </Breadcrumbs>
         </Skeleton>
         {/* page title */}
-        <Group>
+        <Group mb={16}>
           <Tooltip.Floating label={accessPoint?.type !== 'elevator' ? 'Access Point' : 'Elevator'}>
-            {accessPoint?.type !== 'elevator' ? <IconAccessPoint size={32} /> : <IconElevator size={32} />}
+            {accessPoint?.type !== 'elevator' ? <IconAccessPoint size={64} /> : <IconElevator size={64} />}
           </Tooltip.Floating>
           <Skeleton
             visible={!accessPoint}
             w={'fit-content'}
           >
-            <Title fw={'bold'}>{accessPoint?.name || 'Unknown Access Point'}</Title>
             <Title
-              size={'md'}
+              order={2}
+              fw={'bold'}
+            >
+              {accessPoint?.name || 'Unknown Access Point'}
+            </Title>
+            <Title
+              order={5}
               fw={'normal'}
             >
               {accessPoint?.location?.name || 'Unknown Location'} –{' '}
               {accessPoint?.organization?.name || 'Unknown Organization'}
             </Title>
+            <Group
+              mt={4}
+              gap={4}
+            >
+              {accessPoint?.tags?.map((tag: string, index: number) => (
+                <Badge
+                  key={index}
+                  variant="default"
+                >
+                  {tag}
+                </Badge>
+              ))}
+            </Group>
           </Skeleton>
         </Group>
-        <Divider my={24} />
+        {/* <Divider my={24} /> */}
         <Flex>
           {/* form */}
-          <form
+          <Box
+            component="form"
+            w={'100%'}
             onSubmit={form.onSubmit((values) => {
               setFormSubmitting(true);
               user.getIdToken().then(async (idToken: any) => {
@@ -271,79 +298,122 @@ export default function PlatformAccessPoint() {
               });
             })}
           >
-            <Stack
-              maw={480}
-              gap={8}
+            <Tabs
+              variant="outline"
+              defaultValue="general"
+              w={'100%'}
+              flex={1}
             >
-              <Group>
-                <TextInput
-                  name="name"
-                  label="Name"
-                  description="The name of this access point."
-                  placeholder="Front Door"
-                  withAsterisk
-                  {...form.getInputProps('name')}
-                />
-                <TextInput
-                  name="id"
-                  label="Unique ID"
-                  description="The ID of this access point."
-                  placeholder="Access Point ID"
-                  readOnly
-                  rightSection={
-                    <CopyButton value={form.values.id}>
-                      {({ copied, copy }) => (
-                        <ActionIcon
-                          variant="transparent"
-                          size="xs"
-                          color={colorScheme === 'dark' ? 'white' : 'black'}
-                          onClick={copy}
-                        >
-                          {copied ? <IconCheck /> : <IconCopy />}
-                        </ActionIcon>
-                      )}
-                    </CopyButton>
-                  }
-                  {...form.getInputProps('id')}
-                  onFocus={(e) => {
-                    e.target.select();
-                  }}
-                  style={{
-                    width: 'fit-content'
-                  }}
-                />
-              </Group>
-              <Textarea
-                name="description"
-                label="Description"
-                description="A short description of this access point. (optional)"
-                placeholder="This is the front door of the building."
-                minRows={2}
-                {...form.getInputProps('description')}
-              />
-              <TagsInput
-                label="Tags"
-                description="Use tags to help organize your access points. (optional)"
-                data={occupiedTags}
-                placeholder="Add tags..."
-                clearable
-                {...form.getInputProps('tags')}
-              />
-              <Stack py={8}>
-                <Switch
-                  label="Active"
-                  description="Whether or not this access point is active."
-                  {...form.getInputProps('active')}
-                  checked={form.values.active}
-                />
-                <Switch
-                  label="Armed"
-                  description="Turning this off will disable all security."
-                  {...form.getInputProps('armed')}
-                  checked={form.values.armed}
-                />
-              </Stack>
-            </Stack>
+              <Tabs.List fw={'bold'}>
+                <Tabs.Tab
+                  value="general"
+                  leftSection={<IconGridDots size={16} />}
+                >
+                  General Settings
+                </Tabs.Tab>
+                <Tabs.Tab
+                  value="permissions"
+                  leftSection={<IconUsersGroup size={16} />}
+                >
+                  Permissions
+                </Tabs.Tab>
+                <Tabs.Tab
+                  value="swipe-data"
+                  leftSection={<IconJson size={16} />}
+                >
+                  Swipe Data
+                </Tabs.Tab>
+                <Tabs.Tab
+                  value="webhook"
+                  leftSection={<IconWebhook size={16} />}
+                >
+                  Webhook Integration
+                </Tabs.Tab>
+              </Tabs.List>
+              <Tabs.Panel
+                value="general"
+                pt={8}
+              >
+                <Stack
+                  maw={480}
+                  gap={8}
+                >
+                  <Fieldset legend="Access Point Details">
+                    <Group mb={8}>
+                      <TextInput
+                        name="name"
+                        label="Name"
+                        description="The name of this access point."
+                        placeholder="Front Door"
+                        withAsterisk
+                        {...form.getInputProps('name')}
+                        flex={1}
+                      />
+                      <TextInput
+                        name="id"
+                        label="Unique ID"
+                        description="The ID of this access point."
+                        placeholder="Access Point ID"
+                        readOnly
+                        rightSection={
+                          <CopyButton value={form.values.id}>
+                            {({ copied, copy }) => (
+                              <ActionIcon
+                                variant="transparent"
+                                size="xs"
+                                color={colorScheme === 'dark' ? 'white' : 'black'}
+                                onClick={copy}
+                              >
+                                {copied ? <IconCheck /> : <IconCopy />}
+                              </ActionIcon>
+                            )}
+                          </CopyButton>
+                        }
+                        {...form.getInputProps('id')}
+                        onFocus={(e) => {
+                          e.target.select();
+                        }}
+                        style={{
+                          width: 'fit-content'
+                        }}
+                      />
+                    </Group>
+                    <Textarea
+                      name="description"
+                      label="Description"
+                      description="A short description of this access point. (optional)"
+                      placeholder="This is the front door of the building."
+                      minRows={2}
+                      {...form.getInputProps('description')}
+                    />
+                    <Stack pt={16}>
+                      <Switch
+                        label="Active"
+                        description="Whether or not this access point is active."
+                        {...form.getInputProps('active')}
+                        checked={form.values.active}
+                      />
+                      <Switch
+                        label="Armed"
+                        description='Turning this off will disable all security and leave this access point in an "unlocked" state.'
+                        {...form.getInputProps('armed')}
+                        checked={form.values.armed}
+                      />
+                    </Stack>
+                  </Fieldset>
+                  <Fieldset legend="Organization">
+                    <TagsInput
+                      label="Tags"
+                      description="Use tags to help organize your access points. (optional)"
+                      data={occupiedTags}
+                      placeholder="Add tags..."
+                      clearable
+                      {...form.getInputProps('tags')}
+                    />
+                  </Fieldset>
+                </Stack>
+              </Tabs.Panel>
+            </Tabs>
             <Flex
               mt={16}
               style={{
@@ -395,7 +465,7 @@ export default function PlatformAccessPoint() {
                 Delete
               </Button>
             </Flex>
-          </form>
+          </Box>
         </Flex>
       </Container>
     </>

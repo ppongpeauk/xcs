@@ -201,23 +201,10 @@ export default function PlatformLocation() {
               Roles &amp; Permissions
             </Tabs.Tab>
             <Tabs.Tab
-              value="event-log"
-              leftSection={<IconHistory style={iconStyle} />}
-            >
-              Event Logs
-            </Tabs.Tab>
-            <Tabs.Tab
               value="access-points"
               leftSection={<IconAccessPoint style={iconStyle} />}
             >
               Access Points
-            </Tabs.Tab>
-            <Tabs.Tab
-              disabled
-              value="routines"
-              leftSection={<IconTimelineEvent style={iconStyle} />}
-            >
-              Routines
             </Tabs.Tab>
           </Tabs.List>
 

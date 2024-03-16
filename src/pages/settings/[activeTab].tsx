@@ -217,7 +217,7 @@ export default function Settings() {
               value="developer"
               leftSection={<IconCode style={iconStyle} />}
             >
-              Developer Settings
+              Developer API
             </Tabs.Tab>
           </Tabs.List>
 
@@ -326,12 +326,12 @@ export default function Settings() {
                 py={4}
                 mb={8}
               >
-                Developer Settings
+                Developer API
                 <InfoLink
-                  title="Developer Settings"
+                  title="Developer API"
                   description={
                     <Stack>
-                      <Text>Developer settings are only available to users with the &quot;Beta&quot; atrribute.</Text>
+                      <Text>The Developer API are only available to users with the &quot;Beta&quot; atrribute.</Text>
                     </Stack>
                   }
                 />

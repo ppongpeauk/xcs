@@ -175,7 +175,7 @@ export default function SettingsDeveloper() {
         />
 
         <Paper
-          shadow="xs"
+          shadow="sm"
           radius="sm"
           p={16}
           withBorder

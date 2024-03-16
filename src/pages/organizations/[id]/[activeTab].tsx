@@ -232,13 +232,6 @@ export default function PlatformOrganization() {
             >
               Members
             </Tabs.Tab>
-
-            <Tabs.Tab
-              value="developer"
-              leftSection={<IconCode style={iconStyle} />}
-            >
-              Developer Settings
-            </Tabs.Tab>
             <Tabs.Tab
               value="locations"
               leftSection={<IconLocation style={iconStyle} />}

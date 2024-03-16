@@ -8,6 +8,7 @@ import {
   Box,
   Button,
   Center,
+  Checkbox,
   Combobox,
   Fieldset,
   Flex,
@@ -197,7 +198,22 @@ export default function CreateMember({
                   </Text>
                 </>
               )}
-              {form.values.type === 'roblox-group' && <></>}
+              {form.values.type === 'roblox-group' && (
+                <>
+                  <TextInput
+                    label="Roblox Group ID"
+                    description="The Roblox group ID of the group to add."
+                    placeholder="1234567"
+                    {...form.getInputProps('robloxGroupId')}
+                  />
+                  <Text
+                    size="xs"
+                    c={'gray'}
+                  >
+                    You will be able to configure the group&apos;s permissions after it has been added.
+                  </Text>
+                </>
+              )}
               <Button
                 mt={8}
                 ml={'auto'}
